@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "build:orb": "esbuild thinkingOrbMount.jsx --bundle --format=iife --global-name=ThinkingOrbMountBundle --outfile=thinkingOrbMount.js --jsx=automatic",
+    "start": "node server.js",
+    "validate:knowledge": "node validateKnowledge.js",
+    "embeddings:build": "node buildEmbeddings.js",
+    "embeddings:validate": "node validateEmbeddings.js",
+    "rag:test": "node testRag.js",
+    "rag:validate": "node validateRag.js",
+    "llm:test": "node testLlm.js",
+    "llm:validate": "node validateLlm.js",
+    "ai:evaluate": "node evaluateAi.js",
+    "ai:regression": "node regressionAi.js"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "thinking-orbs": "^0.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

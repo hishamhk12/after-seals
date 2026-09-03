@@ -1,0 +1,416 @@
+{
+  "timestamp": "2026-09-01T11:20:57.409Z",
+  "mode": "regression",
+  "pageId": "intro-tour",
+  "metrics": {
+    "total": 7,
+    "passCount": 7,
+    "failCount": 0,
+    "overallAccuracy": 100,
+    "supportedAccuracy": 100,
+    "unsupportedRefusalAccuracy": 100,
+    "sequenceAccuracy": 100,
+    "retrievalAccuracy": 100,
+    "byCategory": {
+      "field-comparison": {
+        "total": 1,
+        "passCount": 1,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "appointment-booking": {
+        "total": 1,
+        "passCount": 1,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "workflow-sequence": {
+        "total": 2,
+        "passCount": 2,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "driver-portal": {
+        "total": 1,
+        "passCount": 1,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "unsupported": {
+        "total": 2,
+        "passCount": 2,
+        "failCount": 0,
+        "accuracy": 100
+      }
+    }
+  },
+  "thresholds": {
+    "overallAccuracyAtLeast90": true,
+    "unsupportedRefusalAccuracy100": true,
+    "criticalWorkflowSequence100": true,
+    "fieldAccuracyAtLeast90": true,
+    "phaseCanPass": true
+  },
+  "results": [
+    {
+      "id": "compare-001",
+      "category": "field-comparison",
+      "question": "شو الفرق بين Assign و Assignees؟",
+      "path": "deterministic",
+      "answer": "Assignees هو المشرف المسؤول عن متابعة المهمة والإشراف على تنفيذها. Assign هو الشخص المنفذ فعليًا للخدمة، وفي خدمة التوصيل يكون السائق.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [],
+      "topScore": null,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "booking-001",
+      "category": "appointment-booking",
+      "question": "متى العميل بيقدر يحجز موعد؟",
+      "path": "rag",
+      "answer": "يمكن للعميل حجز موعد التوصيل في **مرحلة جدولة التوصيل**، حيث تصبح المهمة جاهزة لتحديد الموعد ويظهر رابط حجز الموعد الذي يمكن إرساله للعميل ليقوم بالحجز بنفسه (أو عبر خدمة العملاء نيابة عنه). \n\nويتاح له اختيار التاريخ والوقت المناسبين **ضمن الفترة المحددة مسبقاً بين تاريخ بداية الحجز وتاريخ نهايته**.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [
+        {
+          "id": "intro-tour:stage:delivery-scheduling",
+          "title": "جدولة التوصيل",
+          "type": "stage",
+          "stageId": "delivery-scheduling",
+          "score": 0.83825,
+          "semanticScore": 0.72825,
+          "lexicalBoost": 0.11
+        },
+        {
+          "id": "intro-tour:stage:appointment-booking",
+          "title": "حجز موعد التوصيل",
+          "type": "stage",
+          "stageId": "appointment-booking",
+          "score": 0.792221,
+          "semanticScore": 0.752221,
+          "lexicalBoost": 0.04
+        },
+        {
+          "id": "intro-tour:stage:appointment-booking:substep:customer-location",
+          "title": "بيانات العميل وموقع التنفيذ",
+          "type": "stage",
+          "stageId": "appointment-booking",
+          "score": 0.781632,
+          "semanticScore": 0.741632,
+          "lexicalBoost": 0.04
+        },
+        {
+          "id": "intro-tour:workflow:appointment-booking",
+          "title": "حجز موعد التوصيل",
+          "type": "workflow",
+          "stageId": "appointment-booking",
+          "score": 0.774029,
+          "semanticScore": 0.734029,
+          "lexicalBoost": 0.04
+        },
+        {
+          "id": "intro-tour:stage:appointment-booking:substep:date-time-selection",
+          "title": "اختيار التاريخ والوقت",
+          "type": "stage",
+          "stageId": "appointment-booking",
+          "score": 0.770989,
+          "semanticScore": 0.750989,
+          "lexicalBoost": 0.02
+        }
+      ],
+      "topScore": 0.83825,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "workflow-001",
+      "category": "workflow-sequence",
+      "question": "اشرحلي من وقت تعيين السائق لحد انتهاء التوصيل",
+      "path": "rag",
+      "answer": "خطوات سير العمل من وقت تعيين السائق حتى اكتمال التوصيل:\n\n1. **تعيين السائق**: تصل المهمة إلى `Stage = تعيين سائق` ويتم تعيين السائق المسؤول، مع تفعيل `Task Forms` المرتبطة بالمهمة وظهور نموذج سند التحميل.\n2. **بدء المهمة**: يفتح السائق رابط بوابة المهمة (بوابة السائق) ويضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n3. **توثيق التنفيذ**: يرفع السائق صورة التنفيذ لتوثيق الخدمة.\n4. **إنهاء المهمة**: بعد رفع الصورة المطلوبة، يظهر خيار **End Task**.\n5. **تأكيد الاستلام**: عند إنهاء المهمة، يُرسل رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n6. **اكتمال التوصيل**: بعد تأكيد رمز **OTP** بنجاح، تتحول المهمة إلى **Completed** ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [
+        {
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 1.007431,
+          "semanticScore": 0.867431,
+          "lexicalBoost": 0.14
+        },
+        {
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 1.000739,
+          "semanticScore": 0.862167,
+          "lexicalBoost": 0.138571
+        },
+        {
+          "id": "intro-tour:relationship:8",
+          "title": "Driver Assignment followed by Driver Portal Execution",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.876125,
+          "semanticScore": 0.84184,
+          "lexicalBoost": 0.034286
+        },
+        {
+          "id": "intro-tour:workflow:driver-assignment-task-form",
+          "title": "تعيين السائق",
+          "type": "workflow",
+          "stageId": "driver-assignment-task-form",
+          "score": 0.868259,
+          "semanticScore": 0.798973,
+          "lexicalBoost": 0.069286
+        },
+        {
+          "id": "intro-tour:stage:driver-portal-execution",
+          "title": "تنفيذ التوصيل من بوابة السائق",
+          "type": "stage",
+          "stageId": "driver-portal-execution",
+          "score": 0.863936,
+          "semanticScore": 0.82965,
+          "lexicalBoost": 0.034286
+        }
+      ],
+      "topScore": 1.007431,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "workflow-002",
+      "category": "workflow-sequence",
+      "question": "شو ترتيب التنفيذ من تعيين السائق للنهاية؟",
+      "path": "rag",
+      "answer": "ترتيب التنفيذ من تعيين السائق حتى اكتمال التوصيل:\n\n1. تصل المهمة إلى **Stage = تعيين سائق** ويتم تعيين السائق المسؤول عن تنفيذ خدمة التوصيل.\n2. يتم تفعيل **Task Forms** المرتبطة بالمهمة ويظهر نموذج سند التحميل.\n3. يفتح السائق رابط بوابة المهمة ويضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n4. يرفع السائق صورة التنفيذ لتوثيق تنفيذ الخدمة.\n5. بعد رفع الصورة المطلوبة، يظهر خيار **End Task**.\n6. عند إنهاء المهمة، يتم إرسال رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n7. بعد تأكيد رمز **OTP** بنجاح، تتحول المهمة إلى **Completed** ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [
+        {
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.900077,
+          "semanticScore": 0.817077,
+          "lexicalBoost": 0.083
+        },
+        {
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.899225,
+          "semanticScore": 0.816225,
+          "lexicalBoost": 0.083
+        },
+        {
+          "id": "intro-tour:relationship:8",
+          "title": "Driver Assignment followed by Driver Portal Execution",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.876388,
+          "semanticScore": 0.828388,
+          "lexicalBoost": 0.048
+        },
+        {
+          "id": "intro-tour:workflow:driver-assignment-task-form",
+          "title": "تعيين السائق",
+          "type": "workflow",
+          "stageId": "driver-assignment-task-form",
+          "score": 0.852423,
+          "semanticScore": 0.785423,
+          "lexicalBoost": 0.067
+        },
+        {
+          "id": "intro-tour:stage:driver-portal-execution",
+          "title": "تنفيذ التوصيل من بوابة السائق",
+          "type": "stage",
+          "stageId": "driver-portal-execution",
+          "score": 0.847031,
+          "semanticScore": 0.799031,
+          "lexicalBoost": 0.048
+        }
+      ],
+      "topScore": 0.900077,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "driver-003",
+      "category": "driver-portal",
+      "question": "شو بصير بعد End Task؟",
+      "path": "rag",
+      "answer": "بعد خيار إنهاء المهمة (**End Task**)، يحدث ما يلي:\n\n1. **إرسال رمز OTP**: يتم إرسال رمز تأكيد (OTP) إلى العميل لتأكيد استلام الخدمة.\n2. **اكتمال التوصيل**: بعد تأكيد رمز OTP بنجاح، تتحول المهمة إلى **Completed** ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [
+        {
+          "id": "intro-tour:field:end-task",
+          "title": "End Task",
+          "type": "field",
+          "stageId": null,
+          "score": 0.901371,
+          "semanticScore": 0.806371,
+          "lexicalBoost": 0.095
+        },
+        {
+          "id": "intro-tour:stage:driver-portal-execution:substep:end-task",
+          "title": "إنهاء المهمة",
+          "type": "stage",
+          "stageId": "driver-portal-execution",
+          "score": 0.88681,
+          "semanticScore": 0.79181,
+          "lexicalBoost": 0.095
+        },
+        {
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.850061,
+          "semanticScore": 0.735061,
+          "lexicalBoost": 0.115
+        },
+        {
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.848546,
+          "semanticScore": 0.753546,
+          "lexicalBoost": 0.095
+        },
+        {
+          "id": "intro-tour:stage:driver-portal-execution",
+          "title": "تنفيذ التوصيل من بوابة السائق",
+          "type": "stage",
+          "stageId": "driver-portal-execution",
+          "score": 0.812394,
+          "semanticScore": 0.717394,
+          "lexicalBoost": 0.095
+        }
+      ],
+      "topScore": 0.901371,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "unsupported-001",
+      "category": "unsupported",
+      "question": "كيف بعمل مرتجع؟",
+      "path": "rag",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "expectedType": "fallback",
+      "expectedFallback": true,
+      "isFallback": true,
+      "retrievedChunks": [],
+      "topScore": 0.678304,
+      "thresholdTriggered": true,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "unsupported-009",
+      "category": "unsupported",
+      "question": "كيف بعمل Refund؟",
+      "path": "rag",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "expectedType": "fallback",
+      "expectedFallback": true,
+      "isFallback": true,
+      "retrievedChunks": [],
+      "topScore": 0.667452,
+      "thresholdTriggered": true,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    }
+  ],
+  "failures": []
+}

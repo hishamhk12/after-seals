@@ -1,4 +1,4 @@
-const { buildGroundedPrompt, FALLBACK_ANSWER, hasRequiredExactTerms } = require("./llmService");
+const { buildGroundedPrompt, FALLBACK_ANSWER, hasRequiredExactTerms, stripGroundingIntro } = require("./llmService");
 
 const retrievedContext = [
   "[Chunk: intro-tour:field:stage]",
@@ -16,12 +16,15 @@ const retrievedContext = [
 
 const prompt = buildGroundedPrompt({ question: "شو يعني Stage؟", retrievedContext });
 const checks = [
-  ["usesRetrievedChunks", prompt.includes("Retrieved chunks:") && prompt.includes(retrievedContext)],
+  ["usesFacts", prompt.includes("Facts:") && prompt.includes(retrievedContext)],
+  ["hidesInternalGroundingLanguage", !prompt.includes("Retrieved chunks:") && !prompt.includes("retrieved context") && !prompt.includes("current page") && !prompt.includes("knowledge base") && !prompt.includes("RAG")],
+  ["blocksGroundingIntros", prompt.includes("according to the available information") && prompt.includes("based on the page")],
   ["doesNotUseFullPageContextLabel", !prompt.includes("CURRENT PAGE KNOWLEDGE") && !prompt.includes("STAGES AND SCREENS:")],
   ["strictFallbackPresent", prompt.includes(FALLBACK_ANSWER)],
   ["preservesOdooTerms", ["Assign", "Assignees", "Stage", "Appointment From", "Appointment To", "Task Forms", "OTP", "Completed"].every((term) => prompt.includes(term))],
   ["lengthAdaptationPresent", prompt.includes("Adapt answer length")],
-  ["multiChunkSequencePresent", prompt.includes("multi-chunk sequence")],
+  ["multiPartSequencePresent", prompt.includes("multi-part sequence")],
+  ["stripsGroundingIntro", stripGroundingIntro("وفقًا للمعلومات المتاحة في الصفحة: خدمة التوصيل هي الخدمة المرتبطة بالمهمة.") === "خدمة التوصيل هي الخدمة المرتبطة بالمهمة."],
   ["operationCaseRejected", hasRequiredExactTerms("شو هو Operation Case؟", "Title: Operations\nContent: Operations indicator") === false],
   ["endTaskAccepted", hasRequiredExactTerms("شو بصير بعد End Task؟", "Title: End Task\nContent: End Task appears after upload") === true],
 ];

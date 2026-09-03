@@ -312,6 +312,64 @@ const pageKnowledge = {
     ],
     sequences: [
       {
+        id: "full-delivery-workflow",
+        title: "تسلسل خدمة التوصيل الكامل",
+        start: "الفاتورة",
+        end: "Completed",
+        steps: [
+          "تبدأ الدورة من الفاتورة التي تحتوي على خدمة التوصيل.",
+          "من الفاتورة يتم الوصول إلى Tasks.",
+          "تظهر مهمة التوصيل المرتبطة بالفاتورة.",
+          "تُراجع بيانات المهمة وحقول Appointment From / Appointment To.",
+          "يتم الانتقال إلى جدولة التوصيل وظهور رابط حجز الموعد.",
+          "يحجز العميل موعد التوصيل ضمن الفترة المحددة.",
+          "تصل المهمة إلى تعيين السائق.",
+          "يتم تفعيل Task Forms وظهور نموذج سند التحميل.",
+          "ينفذ السائق الخدمة من بوابة السائق.",
+          "يضغط السائق على Start لبدء التنفيذ.",
+          "يرفع السائق صورة التنفيذ.",
+          "بعد رفع الصورة يظهر خيار End Task.",
+          "يتم إرسال رمز OTP إلى العميل لتأكيد الاستلام.",
+          "بعد تأكيد OTP بنجاح تتحول المهمة إلى Completed.",
+        ],
+        relatedTerms: [
+          "تسلسل",
+          "تسلسل الخدمات",
+          "تسلسل الخدمة",
+          "تسلسل خدمة التوصيل",
+          "ترتيب الخدمات",
+          "ترتيب الخدمة",
+          "ترتيب الخطوات",
+          "مراحل",
+          "مراحل الخدمة",
+          "مراحل التوصيل",
+          "دورة الخدمة",
+          "دورة التوصيل",
+          "السايكل",
+          "الفلو",
+          "الفلو كامل",
+          "workflow",
+          "cycle",
+          "sequence",
+          "من البداية للنهاية",
+          "الفاتورة",
+          "Tasks",
+          "مهمة التوصيل",
+          "Appointment From",
+          "Appointment To",
+          "جدولة التوصيل",
+          "حجز الموعد",
+          "تعيين السائق",
+          "Task Forms",
+          "بوابة السائق",
+          "Start",
+          "رفع صورة التنفيذ",
+          "End Task",
+          "OTP",
+          "Completed",
+        ],
+      },
+      {
         id: "driver-assignment-to-completion",
         title: "من تعيين السائق حتى اكتمال التوصيل",
         start: "تعيين السائق",
@@ -344,6 +402,62 @@ const pageKnowledge = {
       },
     ],
     supportedQuestions: [
+      {
+        id: "full-delivery-workflow-question",
+        questions: [
+          "شو تسلسل الخدمات؟",
+          "شو تسلسل الخدمة؟",
+          "شو تسلسل خدمة التوصيل؟",
+          "شو ترتيب الخدمات؟",
+          "شو ترتيب الخدمة؟",
+          "شو ترتيب الخطوات؟",
+          "شو مراحل الخدمة؟",
+          "شو مراحل التوصيل؟",
+          "شو دورة الخدمة؟",
+          "شو دورة التوصيل؟",
+          "اشرح السايكل",
+          "اشرح الفلو",
+          "شو الفلو كامل؟",
+          "شو بصير من البداية للنهاية؟",
+        ],
+        answer:
+          "تسلسل خدمة التوصيل الكامل: الفاتورة → Tasks → مهمة التوصيل → Appointment From / Appointment To → جدولة التوصيل → حجز الموعد → تعيين السائق → Task Forms → بوابة السائق → Start → رفع صورة التنفيذ → End Task → OTP → Completed.",
+        relatedTerms: [
+          "تسلسل",
+          "تسلسل الخدمات",
+          "تسلسل الخدمة",
+          "تسلسل خدمة التوصيل",
+          "ترتيب الخدمات",
+          "ترتيب الخدمة",
+          "ترتيب الخطوات",
+          "مراحل",
+          "مراحل الخدمة",
+          "مراحل التوصيل",
+          "دورة الخدمة",
+          "دورة التوصيل",
+          "السايكل",
+          "الفلو",
+          "workflow",
+          "cycle",
+          "sequence",
+          "من البداية للنهاية",
+          "الفاتورة",
+          "Tasks",
+          "مهمة التوصيل",
+          "Appointment From",
+          "Appointment To",
+          "جدولة التوصيل",
+          "حجز الموعد",
+          "تعيين السائق",
+          "Task Forms",
+          "بوابة السائق",
+          "Start",
+          "رفع صورة التنفيذ",
+          "End Task",
+          "OTP",
+          "Completed",
+        ],
+      },
       {
         id: "assign-vs-assignees",
         questions: ["شو الفرق بين Assign و Assignees؟", "ما الفرق بين Assign و Assignees؟"],
@@ -653,12 +767,29 @@ function findSupportedAnswer(pageId, question) {
   }
 
   const normalizedQuestion = normalizeText(question);
+  const naturalAnswer = findNaturalSupportedAnswer(pageId, normalizedQuestion);
+
+  if (naturalAnswer) {
+    return naturalAnswer;
+  }
 
   return (
     knowledge.supportedQuestions.find((item) =>
       item.questions.some((supportedQuestion) => normalizeText(supportedQuestion) === normalizedQuestion),
     )?.answer || ""
   );
+}
+
+function findNaturalSupportedAnswer(pageId, normalizedQuestion) {
+  if (pageId !== "intro-tour") {
+    return "";
+  }
+
+  if (SERVICE_DELIVERY_QUESTIONS.has(normalizedQuestion)) {
+    return "خدمة التوصيل هي الخدمة المرتبطة بمهمة التوصيل، ويتم تنفيذها من خلال بوابة السائق بعد تعيين السائق، ثم يبدأ التنفيذ عبر Start، وترفع صورة التنفيذ، ثم End Task، ثم تأكيد العميل عبر OTP، وبعدها تكتمل المهمة Completed.";
+  }
+
+  return "";
 }
 
 function normalizeText(value) {
@@ -668,6 +799,10 @@ function normalizeText(value) {
     .replace(/\s+/g, " ")
     .toLowerCase();
 }
+
+const SERVICE_DELIVERY_QUESTIONS = new Set(
+  ["شو هي خدمة التوصيل؟", "ما هي خدمة التوصيل؟", "ايش هي خدمة التوصيل؟"].map(normalizeText),
+);
 
 function slugify(value) {
   return String(value)

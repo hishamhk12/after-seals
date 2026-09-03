@@ -47,7 +47,7 @@ async function answerFromRetrievedContext({ question, retrievedContext }) {
   }
 
   const data = await geminiResponse.json();
-  const answer = data?.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("").trim();
+  const answer = stripGroundingIntro(data?.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("").trim());
 
   return answer || FALLBACK_ANSWER;
 }
@@ -56,25 +56,38 @@ function buildGroundedPrompt({ question, retrievedContext }) {
   return [
     "You are the LLM generation layer for an internal Arabic Odoo After-Sales training assistant.",
     "",
-    "You are answering from retrieved knowledge chunks from the current training page only.",
+    "Use only the source material provided below to answer. Treat it as the complete allowed source for this turn.",
     "",
-    "Strict grounding rules:",
-    `- If the retrieved chunks do not directly support the answer, respond exactly: ${FALLBACK_ANSWER}`,
+    "Internal accuracy rules:",
+    `- If the source material does not directly support the answer, respond exactly: ${FALLBACK_ANSWER}`,
     "- Do not use outside Odoo knowledge.",
     "- Do not invent missing workflow behavior, missing fields, future stages, or business rules.",
-    "- Do not answer from a similar-sounding term if the exact requested concept is not present in the retrieved chunks.",
+    "- Do not answer from a similar-sounding term if the exact requested concept is not present in the source material.",
     "- Preserve Odoo terms exactly when useful: Assign, Assignees, Stage, Appointment From, Appointment To, Task Forms, Start, End Task, OTP, Completed.",
-    "- For multi-chunk sequence questions, combine the retrieved chunks into the clearest supported sequence.",
-    "- For appointment or booking timing questions, include both the scheduling/readiness point and the allowed booking window when those details are present in the retrieved chunks.",
+    "- For multi-part sequence questions, combine the relevant facts into the clearest supported sequence.",
+    "- For appointment or booking timing questions, include both the scheduling/readiness point and the allowed booking window when those details are present.",
+    "- Start supported answers directly with the useful answer.",
+    "- Do not include provenance, source, scope, or retrieval-process preambles in supported answers.",
+    "- Do not begin with Arabic phrases that mean 'according to the available information' or 'based on the page'.",
     "- Adapt answer length to the question: define simple terms briefly, compare two fields in 2-3 lines, and use a short ordered list for sequence questions.",
     "- Answer in clear Arabic.",
     "",
-    "Retrieved chunks:",
+    "Facts:",
     retrievedContext,
     "",
     "User question:",
     question,
   ].join("\n");
+}
+
+function stripGroundingIntro(answer) {
+  if (answer === FALLBACK_ANSWER) {
+    return answer;
+  }
+
+  return String(answer || "")
+    .replace(/^\s*(وفقًا للمعلومات المتاحة في الصفحة|وفقًا للمعلومات المتاحة|حسب المعلومات المتاحة|حسب المعلومات المتوفرة|بناءً على المعلومات المتاحة)\s*[:：،.-]?\s*/i, "")
+    .trim();
 }
 
 function hasRequiredExactTerms(question, retrievedContext) {
@@ -125,4 +138,5 @@ module.exports = {
   answerFromRetrievedContext,
   buildGroundedPrompt,
   hasRequiredExactTerms,
+  stripGroundingIntro,
 };

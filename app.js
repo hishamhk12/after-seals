@@ -675,7 +675,13 @@ function initPageAssistant() {
   function renderAssistantAnswer(text) {
     window.ThinkingOrbMount?.unmount();
     answer.removeAttribute("aria-busy");
-    answer.innerHTML = formatAssistantAnswer(text);
+    answer.innerHTML = formatAssistantAnswer(stripGroundingIntro(text));
+  }
+
+  function stripGroundingIntro(text) {
+    return String(text || "")
+      .replace(/^\s*(وفقًا للمعلومات المتاحة في الصفحة|وفقًا للمعلومات المتاحة|حسب المعلومات المتاحة|حسب المعلومات المتوفرة|بناءً على المعلومات المتاحة)\s*[:：،.-]?\s*/i, "")
+      .trim();
   }
 
   function formatAssistantAnswer(text) {

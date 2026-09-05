@@ -33,18 +33,15 @@ const deliveryWorkflow = [
 
 const introductoryTour = {
   id: "intro-tour",
-  title: "خدمة توصيل",
-  subtitle: "خدمة توصيل من غير منتجات، تعرّف على أهم الحقول",
+  title: "دورة عمل خدمة التوصيل",
+  subtitle: "تعرّف على رحلة خدمة التوصيل من وصول الفاتورة من SAP وحتى إكمال الخدمة لدى العميل",
   children: [
-    { id: "invoice", title: "الفاتورة", targetId: "step-invoice" },
-    { id: "tasks", title: "المهام المرتبطة بالخدمة", targetId: "step-tasks" },
-    { id: "task-details", title: "تفاصيل مهمة التوصيل", targetId: "step-task-details" },
-    { id: "execution-data", title: "بيانات التنفيذ والموعد", targetId: "step-execution-data" },
-    { id: "appointment-window", title: "تحديد فترة حجز الموعد", targetId: "step-appointment-window" },
-    { id: "delivery-scheduling", title: "جدولة التوصيل", targetId: "step-delivery-scheduling" },
-    { id: "appointment-booking", title: "حجز موعد التوصيل", targetId: "step-appointment-booking" },
-    { id: "driver-assignment-task-form", title: "تعيين السائق ونموذج المهمة", targetId: "step-driver-assignment-task-form" },
-    { id: "driver-portal-execution", title: "تنفيذ التوصيل من بوابة السائق", targetId: "step-driver-portal-execution" },
+    { id: "invoice", title: "فاتورة من SAP", targetId: "step-invoice" },
+    { id: "delivery-task-preparation", title: "تجهيز مهمة التوصيل", targetId: "step-task-details" },
+    { id: "delivery-scheduling", title: "إرسال رابط الحجز للعميل", targetId: "step-delivery-scheduling" },
+    { id: "driver-assignment-task-form", title: "تعبئة نموذج السائق", targetId: "step-driver-assignment-task-form" },
+    { id: "driver-portal-execution", title: "تنفيذ التوصيل", targetId: "step-driver-portal-execution" },
+    { id: "service-receipt", title: "استلام الخدمة", targetId: "step-service-receipt" },
   ],
 };
 
@@ -58,9 +55,7 @@ let tourStepObserver = null;
 const trainingFlow = [
   "فاتورة توصيل فقط",
   "اعتماد الفاتورة",
-  "إنشاء Operation",
   "إنشاء Task",
-  "إنشاء Service",
   "فتح Tasks",
   "التأكد أن Project = خدمة التوصيل",
   "فتح مهمة التوصيل",
@@ -91,11 +86,6 @@ const taskFields = [
     label: "Stage",
     value: "طلب توصيل",
     info: "المرحلة الحالية للمهمة ضمن سير خدمة التوصيل.",
-  },
-  {
-    label: "Operation Case",
-    value: "OPS/2026/00155",
-    info: "رقم حالة التشغيل المرتبطة بخدمة التوصيل الناتجة من الفاتورة.",
   },
   {
     label: "Invoice",

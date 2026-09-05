@@ -17,7 +17,8 @@ const retrievedContext = [
 const prompt = buildGroundedPrompt({ question: "شو يعني Stage؟", retrievedContext });
 const checks = [
   ["usesFacts", prompt.includes("Facts:") && prompt.includes(retrievedContext)],
-  ["hidesInternalGroundingLanguage", !prompt.includes("Retrieved chunks:") && !prompt.includes("retrieved context") && !prompt.includes("current page") && !prompt.includes("knowledge base") && !prompt.includes("RAG")],
+  ["hidesInternalGroundingLanguage", !prompt.includes("Retrieved chunks:") && !prompt.includes("retrieved context") && !prompt.includes("knowledge base") && !prompt.includes("RAG")],
+  ["statusGuidancePresent", prompt.includes("PAGE KNOWLEDGE") && prompt.includes("GLOBAL KNOWLEDGE") && prompt.includes("Never present requirement")],
   ["blocksGroundingIntros", prompt.includes("according to the available information") && prompt.includes("based on the page")],
   ["doesNotUseFullPageContextLabel", !prompt.includes("CURRENT PAGE KNOWLEDGE") && !prompt.includes("STAGES AND SCREENS:")],
   ["strictFallbackPresent", prompt.includes(FALLBACK_ANSWER)],

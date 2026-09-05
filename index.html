@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>دليل خدمات ما بعد البيع</title>
+    <title>دورة عمل خدمة التوصيل</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -24,8 +24,8 @@
         <header class="page-header">
           <div>
             <p class="eyebrow">Odoo After-Sales Service</p>
-            <h1>دليل خدمات ما بعد البيع</h1>
-            <p class="subtitle">بوابة التدريب لخدمات ما بعد البيع في Odoo</p>
+            <h1>بوابة التدريب — خدمات ما بعد البيع</h1>
+            <p class="subtitle">اختر التجربة التدريبية التي تريد مراجعتها.</p>
             <div id="headerProgress" class="header-progress workflow-only" aria-label="مؤشر تقدم خدمة التوصيل"></div>
           </div>
           <div class="header-status workflow-only">
@@ -45,253 +45,73 @@
           <div id="caseCards" class="case-cards"></div>
         </section>
 
-        <section id="caseHeader" class="case-header" aria-labelledby="caseTitle" hidden>
-          <h1 id="caseTitle"></h1>
-          <p id="caseSubtitle"></p>
-        </section>
+        <header id="caseHeader" class="case-header workflow-only" hidden>
+          <div>
+            <p class="eyebrow">Odoo Delivery Workflow</p>
+            <h1 id="caseTitle"></h1>
+            <p id="caseSubtitle" class="subtitle"></p>
+          </div>
+        </header>
 
         <div id="workflowContent" class="workflow-content" hidden>
+
+          <!-- STEP 01 — وصول الفاتورة من SAP -->
           <section id="step-invoice" class="panel invoice-training-section" aria-labelledby="invoiceTitle">
             <div class="section-title">
               <span class="icon-tile" aria-hidden="true">01</span>
               <div>
-                <h2 id="invoiceTitle">الفاتورة</h2>
-                <p>عند اعتماد فاتورة تحتوي على خدمة التوصيل، ينشئ Odoo العناصر المرتبطة بالخدمة.</p>
+                <h2 id="invoiceTitle">فاتورة من SAP</h2>
               </div>
             </div>
-            <div class="invoice-training">
-              <figure class="odoo-screenshot-frame">
-                <img
-                  src="assest/Screenshot%202026-08-31%20121641.png"
-                  alt="فاتورة Odoo رقم INV/2026/00129 تحتوي على خدمة توصيل وزر Tasks"
-                />
-              </figure>
-
-              <aside class="invoice-brief" aria-label="النقاط المهمة في الفاتورة">
-                <p>
-                  تصل إلى Odoo فاتورة تتضمن خدمة محددة، مثل خدمة التوصيل أو التركيب. ينشئ النظام العناصر المرتبطة بالخدمة تلقائيًا.
-                </p>
-
-                <dl class="invoice-points">
-                  <div>
-                    <dt>رقم الفاتورة</dt>
-                    <dd>INV/2026/00129</dd>
-                  </div>
-                  <div>
-                    <dt>الخدمة الموجودة في الفاتورة</dt>
-                    <dd>أجور توصيل الرياض - جنوب الرياض</dd>
-                  </div>
-                  <div>
-                    <dt>Operations</dt>
-                    <dd>1</dd>
-                  </div>
-                  <div>
-                    <dt>Tasks</dt>
-                    <dd>1</dd>
-                  </div>
-                  <div>
-                    <dt>Services</dt>
-                    <dd>1</dd>
-                  </div>
-                </dl>
-
-                <p class="next-step">يظهر زر Tasks للوصول إلى مهمة التوصيل وعرض تفاصيل الخدمة المرتبطة بالفاتورة.</p>
-              </aside>
-            </div>
+            <figure class="odoo-screenshot-frame">
+              <img
+                src="assest/a2.png"
+                alt="فاتورة من SAP تظهر داخل Odoo في مرحلة طلب توصيل"
+              />
+            </figure>
+            <p class="field-explanation-intro step-invoice-summary">تبدأ دورة العمل بوصول الفاتورة من SAP. وإذا كانت الفاتورة تتضمن خدمة توصيل، فإنها تظهر داخل Odoo في مرحلة "طلب توصيل" لبدء متابعة التنفيذ.</p>
           </section>
 
-          <section id="step-tasks" class="panel invoice-training-section task-training-section" aria-labelledby="tasksLinkedTitle">
+          <!-- STEP 02 — تجهيز مهمة التوصيل -->
+          <section id="step-task-details" class="panel invoice-training-section delivery-task-details-section" aria-labelledby="deliveryTaskDetailsTitle">
             <div class="section-title">
               <span class="icon-tile" aria-hidden="true">02</span>
               <div>
-                <h2 id="tasksLinkedTitle">المهام المرتبطة بالخدمة</h2>
-              </div>
-            </div>
-            <div class="invoice-training">
-              <div class="training-screen-column">
-                <figure class="odoo-screenshot-frame">
-                  <img
-                    src="assest/2.png"
-                    alt="شاشة مهام Odoo تعرض المهمة INV/2026/00129 - 1 المرتبطة بخدمة التوصيل"
-                  />
-                </figure>
-
-                <div class="field-explanation" aria-labelledby="fieldExplanationTitle">
-                  <p class="field-explanation-intro">هذه هي المهمة المرتبطة بالفاتورة لتنفيذ خدمة التوصيل.</p>
-                  <h3 id="fieldExplanationTitle">توضيح الحقول</h3>
-                  <ul>
-                    <li>
-                      <strong>Assignees</strong>
-                      <span>المشرف المسؤول عن متابعة المهمة والإشراف على تنفيذها.</span>
-                    </li>
-                    <li>
-                      <strong>Assign</strong>
-                      <span>الشخص الذي ينفذ الخدمة فعليًا؛ في خدمة التوصيل يكون السائق، وفي خدمة التركيب يكون الفني.</span>
-                    </li>
-                    <li>
-                      <strong>Stage</strong>
-                      <span>المرحلة الحالية التي وصلت إليها المهمة ضمن دورة تنفيذ الخدمة، مثل: طلب توصيل، جدولة التوصيل، تعيين سائق، جاري التوصيل، تم التوصيل.</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <aside class="invoice-brief" aria-label="النقاط المهمة في شاشة المهام">
-                <dl class="invoice-points">
-                  <div>
-                    <dt>Task</dt>
-                    <dd>INV/2026/00129 - 1</dd>
-                  </div>
-                  <div>
-                    <dt>Project</dt>
-                    <dd>خدمة التوصيل</dd>
-                  </div>
-                  <div>
-                    <dt>Assignees</dt>
-                    <dd>المشرف المسؤول عن متابعة الخدمة</dd>
-                  </div>
-                  <div>
-                    <dt>Stage</dt>
-                    <dd>طلب توصيل</dd>
-                  </div>
-                  <div>
-                    <dt>Assign</dt>
-                    <dd>السائق / منفذ الخدمة</dd>
-                  </div>
-                  <div>
-                    <dt>Trip Date</dt>
-                    <dd>تاريخ الرحلة</dd>
-                  </div>
-                </dl>
-
-                <p class="next-step">يظهر رقم المهمة INV/2026/00129 - 1 كمدخل إلى تفاصيل خدمة التوصيل.</p>
-              </aside>
-            </div>
-          </section>
-
-          <section id="step-task-details" class="panel invoice-training-section delivery-task-details-section" aria-labelledby="deliveryTaskDetailsTitle">
-            <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">03</span>
-              <div>
-                <h2 id="deliveryTaskDetailsTitle">تفاصيل مهمة التوصيل</h2>
+                <h2 id="deliveryTaskDetailsTitle">تجهيز مهمة التوصيل</h2>
+                <p>بعد وصول الفاتورة وظهورها ضمن مهمة التوصيل، يتم الدخول إلى المهمة وبدء تجهيزها، وذلك من خلال تعيين المشرف المسؤول عن المتابعة، وتحديد المسؤول عن تنفيذ الخدمة، وتحديد موعد الخدمة، بالإضافة إلى تحديد الفترة المسموح خلالها بحجز الموعد.</p>
               </div>
             </div>
             <div class="training-screen-column">
               <figure class="odoo-screenshot-frame">
                 <img
                   src="assest/3.png"
-                  alt="شاشة تفاصيل مهمة التوصيل في Odoo للمهمة INV/2026/00129 - 1"
+                  alt="شاشة تفاصيل مهمة التوصيل وبيانات المهمة داخل Odoo"
                 />
               </figure>
 
-              <div class="field-explanation" aria-label="شرح حقول مهمة التوصيل">
-                <p class="field-explanation-intro">في هذه الشاشة تظهر تفاصيل مهمة التوصيل المرتبطة بالفاتورة.</p>
-                <ul>
-                  <li>
-                    <strong>Stage — طلب توصيل</strong>
-                    <span>هذه هي المرحلة الحالية للمهمة، أي أن طلب التوصيل تم إنشاؤه وما زال في بداية دورة التنفيذ.</span>
-                  </li>
-                  <li>
-                    <strong>Project</strong>
-                    <span>يوضح نوع الخدمة المرتبطة بالمهمة، وهنا هي خدمة التوصيل.</span>
-                  </li>
-                  <li>
-                    <strong>Assignees</strong>
-                    <span>المشرف المسؤول عن متابعة المهمة والإشراف عليها.</span>
-                  </li>
-                  <li>
-                    <strong>Invoice</strong>
-                    <span>رقم الفاتورة المرتبطة بهذه المهمة.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section id="step-execution-data" class="panel invoice-training-section execution-appointment-section" aria-labelledby="executionAppointmentTitle">
-            <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">04</span>
-              <div>
-                <h2 id="executionAppointmentTitle">بيانات التنفيذ والموعد</h2>
-              </div>
-            </div>
-            <div class="training-screen-column">
               <figure class="odoo-screenshot-frame compact-screenshot">
                 <img
                   src="assest/4.png"
-                  alt="حقول Assign و Trip Date و Appointment From و Appointment To في مهمة التوصيل"
+                  alt="شاشة تجهيز موعد الخدمة ومعلومات الحجز في مهمة التوصيل"
                 />
               </figure>
 
-              <div class="field-explanation" aria-label="شرح بيانات التنفيذ والموعد">
-                <p class="field-explanation-intro">توضح هذه الحقول بيانات منفذ الخدمة والفترة المتاحة لحجز موعد التوصيل.</p>
-                <ul>
-                  <li>
-                    <strong>Assign</strong>
-                    <span>الشخص الذي ينفذ الخدمة فعليًا، وفي خدمة التوصيل يكون السائق.</span>
-                  </li>
-                  <li>
-                    <strong>Trip Date</strong>
-                    <span>تاريخ الرحلة أو التنفيذ المخطط للخدمة.</span>
-                  </li>
-                  <li>
-                    <strong>Appointment From</strong>
-                    <span>بداية الفترة المسموح خلالها بحجز موعد التوصيل.</span>
-                  </li>
-                  <li>
-                    <strong>Appointment To</strong>
-                    <span>نهاية الفترة المسموح خلالها بحجز موعد التوصيل.</span>
-                  </li>
-                </ul>
-                <p class="business-rule-note">تعرض هذه المنطقة الفترة التي يكون موعد التوصيل ضمنها بين Appointment From و Appointment To.</p>
-                <p class="next-step">تظهر هنا علاقة موعد التوصيل بالفترة المحددة قبل متابعة تنفيذ الخدمة.</p>
+              <div class="workflow-action-list" aria-label="مسار تجهيز مهمة التوصيل">
+                <p class="field-explanation-intro">بعد ظهور مهمة التوصيل، يتم تجهيزها للتنفيذ من خلال تعيين المشرف المسؤول عن المتابعة، وتحديد السائق الذي سينفذ الخدمة، ثم تحديد موعد الخدمة والفترة المسموح للعميل خلالها بالحجز.</p>
+              </div>
+
+              <div class="field-explanation" aria-label="سياق تحديد فترة حجز الموعد">
               </div>
             </div>
           </section>
 
-          <section id="step-appointment-window" class="panel invoice-training-section appointment-window-section" aria-labelledby="appointmentWindowTitle">
-            <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">05</span>
-              <div>
-                <h2 id="appointmentWindowTitle">تحديد فترة حجز الموعد</h2>
-              </div>
-            </div>
-            <div class="training-screen-column">
-              <figure class="odoo-screenshot-frame compact-screenshot">
-                <img
-                  src="assest/5.png"
-                  alt="تحديد Appointment From و Appointment To وحفظ مهمة التوصيل في Odoo"
-                />
-              </figure>
-
-              <div class="field-explanation" aria-label="شرح تحديد فترة حجز الموعد">
-                <p class="field-explanation-intro">في هذه الشاشة تظهر الفترة المسموح خلالها بحجز موعد التوصيل.</p>
-                <ul>
-                  <li>
-                    <strong>Appointment From</strong>
-                    <span>تاريخ بداية الفترة المسموح خلالها بحجز موعد التوصيل.</span>
-                  </li>
-                  <li>
-                    <strong>Appointment To</strong>
-                    <span>تاريخ نهاية الفترة المسموح خلالها بحجز موعد التوصيل.</span>
-                  </li>
-                  <li>
-                    <strong>Save</strong>
-                    <span>زر الحفظ الذي تظهر من خلاله إمكانية حفظ التعديلات على المهمة.</span>
-                  </li>
-                </ul>
-                <p class="action-flow">Appointment From → Appointment To → Save</p>
-                <p class="business-rule-note">تعرض هذه الحقول حدود الفترة المحددة بين Appointment From و Appointment To.</p>
-                <p class="next-step">بعد حفظ البيانات، تظهر فترة الحجز محفوظة على المهمة ضمن سياق جدولة التوصيل.</p>
-              </div>
-            </div>
-          </section>
-
+          <!-- STEP 03 — إرسال رابط الحجز للعميل -->
           <section id="step-delivery-scheduling" class="panel invoice-training-section delivery-scheduling-section" aria-labelledby="deliverySchedulingTitle">
             <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">06</span>
+              <span class="icon-tile" aria-hidden="true">03</span>
               <div>
-                <h2 id="deliverySchedulingTitle">جدولة التوصيل</h2>
+                <h2 id="deliverySchedulingTitle">إرسال رابط الحجز للعميل</h2>
+                <p>بعد تجهيز بيانات الخدمة وفترة الحجز، يتم إنشاء رابط خاص بالعميل لاستكمال بيانات الموعد.</p>
               </div>
             </div>
             <div class="training-screen-column">
@@ -302,37 +122,7 @@
                 />
               </figure>
 
-              <div class="field-explanation" aria-label="شرح مرحلة جدولة التوصيل">
-                <p class="field-explanation-intro">تظهر هنا مرحلة جدولة التوصيل بعد تحديد السائق والفترة المسموح خلالها بحجز الموعد.</p>
-                <ul>
-                  <li>
-                    <strong>جدولة التوصيل</strong>
-                    <span>تشير هذه المرحلة إلى أن المهمة أصبحت جاهزة لتحديد موعد التوصيل.</span>
-                  </li>
-                  <li>
-                    <strong>رابط حجز الموعد</strong>
-                    <span>في مرحلة جدولة التوصيل يظهر رابط حجز الموعد، ويمكن استخدامه بإحدى الطريقتين:</span>
-                  </li>
-                  <li>
-                    <strong>إرسال الرابط إلى العميل</strong>
-                    <span>إرسال الرابط إلى العميل ليقوم بحجز موعد التوصيل بنفسه.</span>
-                  </li>
-                  <li>
-                    <strong>الحجز من قبل خدمة العملاء</strong>
-                    <span>قيام خدمة العملاء بحجز موعد التوصيل نيابةً عن العميل.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section id="step-appointment-booking" class="panel invoice-training-section booking-tour-section" aria-labelledby="appointmentBookingTitle">
-            <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">07</span>
-              <div>
-                <h2 id="appointmentBookingTitle">حجز موعد التوصيل</h2>
-                <p>توضح هذه الخطوة مراحل حجز موعد التوصيل، بدءًا من اختيار الموعد وحتى تأكيد الحجز.</p>
-              </div>
+              <p class="field-explanation-intro" dir="rtl">بعد تجهيز بيانات المهمة، يظهر رابط حجز الموعد ليتم إرساله إلى العميل. يفتح العميل الرابط، ويحدد موقع التنفيذ والموعد المناسب ضمن الفترة المسموح بها، ثم يؤكد الحجز. وإذا لزم الأمر، يمكن لخدمة العملاء تنفيذ الحجز نيابةً عن العميل.</p>
             </div>
 
             <div class="booking-tour-grid">
@@ -351,8 +141,8 @@
                   />
                 </figure>
 
-                <div class="field-explanation" aria-label="شرح اختيار التاريخ والوقت">
-                  <p class="field-explanation-intro">تظهر في هذه الشاشة المواعيد المتاحة للحجز ضمن الفترة المحددة مسبقًا بين تاريخ بداية الحجز وتاريخ نهايته (راجع الخطوة 05). ويختار المستخدم التاريخ والوقت المناسبين لموعد التوصيل.</p>
+                <div class="field-explanation" aria-label="اختيار التاريخ والوقت">
+                  <p class="field-explanation-intro">يختار العميل التاريخ والوقت المناسبين له ضمن الفترة المتاحة للحجز.</p>
                 </div>
               </article>
 
@@ -371,8 +161,8 @@
                   />
                 </figure>
 
-                <div class="field-explanation" aria-label="شرح بيانات العميل وموقع التنفيذ">
-                  <p class="field-explanation-intro">يقوم العميل بإدخال اسمه، والبريد الإلكتروني، ورقم الجوال، ثم يحدد موقع تنفيذ الخدمة على الخريطة قبل تأكيد الموعد.</p>
+                <div class="field-explanation" aria-label="بيانات العميل وموقع التنفيذ">
+                  <p class="field-explanation-intro">بعدها يراجع العميل بياناته ويحدد موقع تنفيذ الخدمة قبل تأكيد الموعد.</p>
                 </div>
               </article>
             </div>
@@ -392,17 +182,18 @@
                 />
               </figure>
 
-              <div class="field-explanation" aria-label="شرح تأكيد الموعد">
-                <p class="field-explanation-intro">تُعرض تفاصيل الموعد بعد إتمام الحجز للتأكد من تسجيل موعد التوصيل بنجاح.</p>
+              <div class="field-explanation" aria-label="تأكيد الموعد">
+                <p class="field-explanation-intro">بعد تأكيد البيانات والموعد، يتم تثبيت الحجز وتظهر للعميل رسالة تأكيد الموعد.</p>
               </div>
             </article>
           </section>
 
+          <!-- STEP 04 — تعبئة نموذج السائق -->
           <section id="step-driver-assignment-task-form" class="panel invoice-training-section driver-assignment-task-form-section" aria-labelledby="driverAssignmentTaskFormTitle">
             <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">08</span>
+              <span class="icon-tile" aria-hidden="true">04</span>
               <div>
-                <h2 id="driverAssignmentTaskFormTitle">تعيين السائق ونموذج المهمة</h2>
+                <h2 id="driverAssignmentTaskFormTitle">تعبئة نموذج السائق</h2>
               </div>
             </div>
             <div class="training-screen-column">
@@ -413,36 +204,30 @@
                 />
               </figure>
 
-              <div class="field-explanation" aria-label="شرح تعيين السائق ونموذج المهمة">
-                <p class="field-explanation-intro">عند وصول المهمة إلى مرحلة تعيين سائق، يتم تعيين السائق المسؤول عن تنفيذ خدمة التوصيل.</p>
-                <ul>
-                  <li>
-                    <strong>Stage = تعيين سائق</strong>
-                    <span>توضح المرحلة أن المهمة وصلت إلى مرحلة تعيين السائق.</span>
-                  </li>
-                  <li>
-                    <strong>Task Forms</strong>
-                    <span>في هذه المرحلة يتم تفعيل Task Forms المرتبطة بالمهمة.</span>
-                  </li>
-                  <li>
-                    <strong>نموذج سند تحميل</strong>
-                    <span>في خدمة التوصيل يظهر نموذج سند التحميل ليتم تعبئته من قبل السائق أثناء تنفيذ الخدمة.</span>
-                  </li>
-                </ul>
-              </div>
+              <p class="field-explanation-intro" dir="rtl">عند انتقال المهمة إلى مرحلة تعيين السائق، يظهر  النموذج المربوط بالمهة، مثل نموذج سند التحميل في حال التوصيل .</p>
+            </div>
+            <div class="training-screen-column">
+              <figure class="odoo-screenshot-frame">
+                <img
+                  src="assest/17.png"
+                  alt="نموذج السائق لتسجيل بيانات تنفيذ خدمة التوصيل"
+                />
+              </figure>
+
             </div>
           </section>
 
+          <!-- STEP 05 — تنفيذ التوصيل من بوابة السائق -->
           <section id="step-driver-portal-execution" class="panel invoice-training-section driver-portal-execution-section" aria-labelledby="driverPortalExecutionTitle">
             <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">09</span>
+              <span class="icon-tile" aria-hidden="true">05</span>
               <div>
-                <h2 id="driverPortalExecutionTitle">تنفيذ التوصيل من بوابة السائق</h2>
-                <p>بعد تعيين السائق، يتم تنفيذ خدمة التوصيل من خلال بوابة السائق، بدءًا من تشغيل المهمة وحتى تأكيد الاستلام واكتمال التوصيل.</p>
+                <h2 id="driverPortalExecutionTitle">تنفيذ التوصيل</h2>
+                <p>يتم تنفيذ خدمة التوصيل من خلال بوابة السائق بدءًا من تشغيل المهمة وحتى تأكيد الاستلام واكتمال التوصيل.</p>
               </div>
             </div>
 
-            <p class="driver-portal-flow">بدء المهمة ← رفع الصورة ← إنهاء المهمة ← تأكيد العميل ← اكتمال التوصيل</p>
+            <p class="driver-portal-flow">بدء المهمة ← توثيق التنفيذ ← إنهاء المهمة</p>
 
             <div class="driver-portal-sequence" aria-label="تسلسل تنفيذ التوصيل من بوابة السائق">
               <article class="driver-portal-step">
@@ -452,9 +237,9 @@
                     alt="بوابة السائق تعرض خيار Start لبدء مهمة التوصيل"
                   />
                 </figure>
-                <div class="field-explanation" aria-label="شرح بدء المهمة">
+                <div class="field-explanation" aria-label="بدء المهمة">
                   <h3>بدء المهمة</h3>
-                  <p class="field-explanation-intro">بعد تعيين السائق، يصل إليه رابط بوابة المهمة. يفتح السائق الرابط ويضغط على Start لبدء تنفيذ خدمة التوصيل.</p>
+                  <p class="field-explanation-intro">عند وصول السائق إلى موقع العميل يبدأ تنفيذ المهمة من خلال Start.</p>
                 </div>
               </article>
 
@@ -465,9 +250,9 @@
                     alt="بوابة السائق تعرض قسم رفع صورة التنفيذ"
                   />
                 </figure>
-                <div class="field-explanation" aria-label="شرح رفع صورة التنفيذ">
-                  <h3>رفع صورة التنفيذ</h3>
-                  <p class="field-explanation-intro">بعد بدء المهمة، يظهر للسائق قسم رفع الصور لتوثيق تنفيذ الخدمة.</p>
+                <div class="field-explanation" aria-label="توثيق التنفيذ">
+                  <h3>توثيق التنفيذ</h3>
+                  <p class="field-explanation-intro">أثناء تنفيذ الخدمة يقوم السائق برفع صورة لتوثيق عملية التوصيل.</p>
                 </div>
               </article>
 
@@ -478,11 +263,26 @@
                     alt="بوابة السائق تعرض خيار End Task بعد رفع الصورة المطلوبة"
                   />
                 </figure>
-                <div class="field-explanation" aria-label="شرح إنهاء المهمة">
+                <div class="field-explanation" aria-label="إنهاء المهمة">
                   <h3>إنهاء المهمة</h3>
-                  <p class="field-explanation-intro">بعد رفع الصورة المطلوبة، تصبح المهمة جاهزة للإنهاء ويظهر خيار End Task.</p>
+                  <p class="field-explanation-intro">بعد الانتهاء من تنفيذ التوصيل يختار السائق End Task.</p>
                 </div>
               </article>
+            </div>
+          </section>
+
+          <!-- STEP 06 — استلام الخدمة -->
+          <section id="step-service-receipt" class="panel invoice-training-section driver-portal-execution-section" aria-labelledby="serviceReceiptTitle">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">06</span>
+              <div>
+                <h2 id="serviceReceiptTitle">استلام الخدمة</h2>
+              </div>
+            </div>
+
+            <p class="driver-portal-flow">تأكيد العميل ← اكتمال التوصيل</p>
+
+            <div class="driver-portal-sequence" aria-label="تسلسل استلام خدمة التوصيل">
 
               <article class="driver-portal-step">
                 <figure class="odoo-screenshot-frame">
@@ -491,9 +291,9 @@
                     alt="بوابة السائق تعرض تأكيد الاستلام باستخدام رمز OTP"
                   />
                 </figure>
-                <div class="field-explanation" aria-label="شرح تأكيد الاستلام عبر OTP">
-                  <h3>تأكيد الاستلام عبر OTP</h3>
-                  <p class="field-explanation-intro">عند إنهاء المهمة، يتم إرسال رمز تأكيد إلى العميل، ويُستخدم الرمز لتأكيد استلام الخدمة.</p>
+                <div class="field-explanation" aria-label="تأكيد العميل">
+                  <h3>تأكيد العميل</h3>
+                  <p class="field-explanation-intro">بعد إنهاء المهمة يتم إرسال رمز OTP إلى العميل للتأكد من استلام الخدمة.</p>
                 </div>
               </article>
 
@@ -504,9 +304,9 @@
                     alt="بوابة السائق تعرض اكتمال مهمة التوصيل بحالة Completed"
                   />
                 </figure>
-                <div class="field-explanation" aria-label="شرح اكتمال التوصيل">
-                  <h3>اكتمال التوصيل</h3>
-                  <p class="field-explanation-intro">بعد تأكيد الرمز بنجاح، تتحول المهمة إلى Completed ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.</p>
+                <div class="field-explanation" aria-label="اكتمال الخدمة">
+                  <h3>اكتمال الخدمة</h3>
+                  <p class="field-explanation-intro">بعد إدخال رمز OTP بنجاح تصبح المهمة Completed ويتم تأكيد اكتمال خدمة التوصيل.</p>
                 </div>
               </article>
             </div>

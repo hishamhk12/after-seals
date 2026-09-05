@@ -63,8 +63,15 @@ function buildGroundedPrompt({ question, retrievedContext }) {
     "- Do not use outside Odoo knowledge.",
     "- Do not invent missing workflow behavior, missing fields, future stages, or business rules.",
     "- Do not answer from a similar-sounding term if the exact requested concept is not present in the source material.",
+    "- Treat PAGE KNOWLEDGE as current page-specific information.",
+    "- Treat GLOBAL KNOWLEDGE as project-wide after-sales information.",
+    "- Status controls certainty: confirmed is current/established, observed is UAT evidence, requirement is desired behavior, proposed is a suggested future design, open is unresolved, unconfirmed is not verified, and historical_test is test evidence only.",
+    "- If the user asks whether something is confirmed and the facts show it is proposed, open, unconfirmed, observed, requirement, or historical_test, answer directly that it is not confirmed and state the shown status.",
+    "- Never present requirement, proposed, open, unconfirmed, or historical_test items as confirmed current system behavior.",
     "- Preserve Odoo terms exactly when useful: Assign, Assignees, Stage, Appointment From, Appointment To, Task Forms, Start, End Task, OTP, Completed.",
+    "- When the user asks about a named field, form, or Odoo term, include that exact name in the answer.",
     "- For multi-part sequence questions, combine the relevant facts into the clearest supported sequence.",
+    "- For service-list questions, include every service name that is explicitly listed in the facts instead of summarizing the list.",
     "- For appointment or booking timing questions, include both the scheduling/readiness point and the allowed booking window when those details are present.",
     "- Start supported answers directly with the useful answer.",
     "- Do not include provenance, source, scope, or retrieval-process preambles in supported answers.",
@@ -98,7 +105,14 @@ function hasRequiredExactTerms(question, retrievedContext) {
   }
 
   const context = normalizeEnglish(retrievedContext);
-  return questionTerms.every((term) => context.includes(term));
+  return questionTerms.every((term) => {
+    if (context.includes(term)) {
+      return true;
+    }
+
+    const tokens = term.split(" ").filter((token) => token && !ENGLISH_STOP_WORDS.has(token));
+    return tokens.length === 0 || tokens.every((token) => context.includes(token));
+  });
 }
 
 function extractEnglishTerms(value) {
@@ -130,7 +144,7 @@ function limitLogText(text) {
   return String(text || "").replace(/\s+/g, " ").slice(0, 700);
 }
 
-const ENGLISH_STOP_WORDS = new Set(["a", "an", "and", "or", "the", "is", "are", "what", "how", "when", "who"]);
+const ENGLISH_STOP_WORDS = new Set(["a", "an", "and", "or", "the", "is", "are", "what", "how", "when", "who", "flow", "confirmed"]);
 
 module.exports = {
   ERROR_ANSWER,

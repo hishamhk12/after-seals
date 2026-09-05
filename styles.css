@@ -683,6 +683,9 @@ p {
 
 .workflow-flow {
   position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
   display: flex;
   direction: rtl;
   align-items: stretch;
@@ -1474,6 +1477,27 @@ body.lightbox-open {
   line-height: var(--leading-body);
 }
 
+.step-invoice-summary {
+  max-width: 860px;
+  margin: var(--spacing-20) 0 0;
+}
+
+.workflow-action-list {
+  max-width: 860px;
+  margin-top: var(--spacing-16);
+}
+
+.workflow-action-list ul {
+  display: grid;
+  gap: var(--spacing-8);
+  margin: 0;
+  padding-inline-start: var(--spacing-20);
+  color: var(--color-carbon-edge);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-body);
+}
+
 .field-explanation h3 {
   margin-bottom: var(--spacing-12);
   color: var(--color-midnight-navy);
@@ -1953,5 +1977,293 @@ tbody tr:last-child td {
   .field-item,
   .field-item:nth-child(2n) {
     border-left: 0;
+  }
+}
+
+/* Unified visual rhythm for the visible delivery workflow. */
+.workflow-content > .invoice-training-section {
+  width: 100%;
+  max-width: 880px;
+  margin-inline: auto;
+  padding-block: 40px;
+  border-top: 0;
+}
+
+.workflow-flow + .invoice-training-section,
+.workflow-content > .invoice-training-section + .invoice-training-section {
+  margin-top: 0;
+}
+
+.workflow-content > .invoice-training-section > .section-title {
+  width: 100%;
+  max-width: none;
+  margin-bottom: 20px;
+}
+
+.workflow-content .training-screen-column {
+  width: 100%;
+  gap: 20px;
+}
+
+.workflow-content .field-explanation-intro,
+.workflow-content .workflow-action-list,
+.workflow-content .driver-portal-flow {
+  width: 100%;
+  max-width: none;
+  direction: rtl;
+  text-align: right;
+}
+
+.workflow-content .field-explanation-intro {
+  margin: 0 0 20px;
+  font-size: 18px;
+  line-height: 1.9;
+}
+
+.workflow-content .field-explanation {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.workflow-content .field-explanation:not(:has(*)) {
+  display: none;
+}
+
+.workflow-content .workflow-action-list {
+  margin: 0;
+}
+
+.workflow-content .workflow-action-list .field-explanation-intro {
+  margin-bottom: 0;
+}
+
+.workflow-content .odoo-screenshot-frame,
+.workflow-content .compact-screenshot,
+.workflow-content .booking-confirmation-frame,
+.workflow-content .driver-portal-step .odoo-screenshot-frame {
+  width: 100%;
+  max-width: 880px;
+  height: auto;
+  aspect-ratio: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(9, 30, 66, 0.14);
+  border-radius: 14px;
+  background: var(--color-pure-white);
+  box-shadow: 0 2px 10px rgba(9, 30, 66, 0.06);
+}
+
+.workflow-content .odoo-screenshot-frame img,
+.workflow-content .compact-screenshot img,
+.workflow-content .driver-portal-step .odoo-screenshot-frame img {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+/* Put each existing explanation between its title and screenshot. */
+#step-invoice {
+  display: flex;
+  flex-direction: column;
+}
+
+#step-invoice > .section-title {
+  order: 1;
+}
+
+#step-invoice > .step-invoice-summary {
+  order: 2;
+  margin: 0 0 20px;
+}
+
+#step-invoice > .odoo-screenshot-frame {
+  order: 3;
+}
+
+#step-task-details > .training-screen-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+#step-task-details .workflow-action-list {
+  order: -1;
+  grid-column: 1 / -1;
+}
+
+#step-delivery-scheduling > .training-screen-column,
+#step-driver-assignment-task-form > .training-screen-column {
+  display: flex;
+  flex-direction: column;
+}
+
+#step-delivery-scheduling > .training-screen-column > .field-explanation-intro,
+#step-driver-assignment-task-form > .training-screen-column > .field-explanation-intro {
+  order: -1;
+  margin-bottom: 0;
+}
+
+#step-driver-assignment-task-form > .training-screen-column + .training-screen-column {
+  margin-top: 32px;
+}
+
+.workflow-content .booking-tour-grid {
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.workflow-content .booking-tour-grid .training-screen-column,
+.workflow-content .booking-confirmation-step,
+.workflow-content .driver-portal-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.workflow-content .booking-tour-grid .section-title,
+.workflow-content .booking-confirmation-step .section-title {
+  order: 1;
+  width: 100%;
+  max-width: none;
+  margin-bottom: 12px;
+}
+
+.workflow-content .booking-tour-grid .field-explanation,
+.workflow-content .booking-confirmation-step .field-explanation {
+  order: 2;
+}
+
+.workflow-content .booking-tour-grid .odoo-screenshot-frame,
+.workflow-content .booking-confirmation-step .odoo-screenshot-frame {
+  order: 3;
+}
+
+.workflow-content .booking-confirmation-step {
+  margin-top: 24px;
+}
+
+.workflow-content .booking-confirmation-step .booking-confirmation-frame {
+  max-width: 480px;
+  margin-inline: auto;
+}
+
+.workflow-content .driver-portal-flow {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  line-height: 1.8;
+}
+
+.workflow-content .driver-portal-sequence {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+#step-service-receipt .driver-portal-sequence {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.workflow-content .driver-portal-step .field-explanation {
+  order: 1;
+  margin: 0 0 20px;
+}
+
+.workflow-content .driver-portal-step .field-explanation h3 {
+  min-height: 0;
+  margin-bottom: 8px;
+}
+
+.workflow-content .driver-portal-step .field-explanation-intro {
+  margin-bottom: 0;
+}
+
+.workflow-content .driver-portal-step .odoo-screenshot-frame {
+  order: 2;
+}
+
+.workflow-content > .invoice-training-section > .section-title h2 {
+  font-size: clamp(28px, 2.2vw, 34px);
+}
+
+.workflow-content > .invoice-training-section > .section-title p {
+  max-width: none;
+  font-size: 18px;
+  line-height: 1.9;
+}
+
+#step-driver-portal-execution > .section-title p {
+  color: #000;
+}
+
+.workflow-content .booking-tour-grid h2,
+.workflow-content .booking-confirmation-step h2,
+.workflow-content .driver-portal-step .field-explanation h3 {
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.workflow-content .booking-tour-grid .field-explanation-intro,
+.workflow-content .booking-confirmation-step .field-explanation-intro,
+.workflow-content .driver-portal-step .field-explanation-intro {
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* Shared rows align paired titles, captions and frames without fixing image heights. */
+.workflow-content .booking-tour-grid {
+  align-items: stretch;
+}
+
+.workflow-content .booking-tour-grid > .training-screen-column {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+}
+
+.workflow-content .driver-portal-sequence > .driver-portal-step {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+}
+
+#step-driver-portal-execution .driver-portal-step:last-child {
+  grid-column: 1 / -1;
+}
+
+#step-task-details .odoo-screenshot-frame,
+.workflow-content .booking-tour-grid .odoo-screenshot-frame,
+.workflow-content .driver-portal-step .odoo-screenshot-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+}
+
+@media (max-width: 900px) {
+  #step-task-details > .training-screen-column,
+  .workflow-content .driver-portal-sequence,
+  #step-service-receipt .driver-portal-sequence {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .workflow-content > .invoice-training-section {
+    padding-block: 32px;
+  }
+
+  .workflow-content > .invoice-training-section > .section-title {
+    grid-template-columns: auto minmax(0, 1fr);
   }
 }

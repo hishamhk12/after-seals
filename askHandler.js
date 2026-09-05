@@ -1,7 +1,7 @@
 const { loadEnvFile } = require("./embeddingService");
 const { ERROR_ANSWER, FALLBACK_ANSWER, answerFromRetrievedContext } = require("./llmService");
+const { buildHybridRetrievedContext, retrieveHybridChunks } = require("./hybridRetrievalService");
 const { pageKnowledge, findSupportedAnswer } = require("./pageKnowledge");
-const { buildRetrievedContext, retrieveRelevantChunks } = require("./retrievalService");
 
 const MAX_QUESTION_LENGTH = 500;
 const INVALID_QUESTION_ANSWER = "يرجى كتابة سؤال واضح لا يتجاوز 500 حرف.";
@@ -36,12 +36,12 @@ async function handleAskPayload(body, logger = console) {
   }
 
   try {
-    const retrieval = await retrieveRelevantChunks({ pageId, question });
+    const retrieval = await retrieveHybridChunks({ pageId, question });
 
     logger.log?.(
       [
-        `RAG retrieval: pageId=${pageId}`,
-        `retrieved=${retrieval.chunks.map((chunk) => `${chunk.id}:${chunk.score}`).join(", ") || "none"}`,
+        `Hybrid RAG retrieval: pageId=${pageId}`,
+        `retrieved=${retrieval.chunks.map((chunk) => `${chunk.sourceType}:${chunk.id}:${chunk.score}:${chunk.status}`).join(", ") || "none"}`,
         `topScore=${retrieval.topScore}`,
         `thresholdTriggered=${retrieval.thresholdTriggered}`,
       ].join("; "),
@@ -53,7 +53,7 @@ async function handleAskPayload(body, logger = console) {
 
     const answer = await answerFromRetrievedContext({
       question,
-      retrievedContext: buildRetrievedContext(retrieval.chunks),
+      retrievedContext: buildHybridRetrievedContext(retrieval.chunks),
     });
 
     return jsonResult(200, { answer: answer || FALLBACK_ANSWER });

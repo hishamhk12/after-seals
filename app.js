@@ -37,10 +37,11 @@ const introductoryTour = {
   subtitle: "تعرّف على رحلة خدمة التوصيل من وصول الفاتورة من SAP وحتى إكمال الخدمة لدى العميل",
   children: [
     { id: "invoice", title: "فاتورة من SAP", targetId: "step-invoice" },
-    { id: "delivery-task-preparation", title: "تجهيز مهمة التوصيل", targetId: "step-task-details" },
-    { id: "delivery-scheduling", title: "إرسال رابط الحجز للعميل", targetId: "step-delivery-scheduling" },
-    { id: "driver-assignment-task-form", title: "تعبئة نموذج السائق", targetId: "step-driver-assignment-task-form" },
-    { id: "driver-portal-execution", title: "تنفيذ التوصيل", targetId: "step-driver-portal-execution" },
+    { id: "delivery-task-preparation", title: "طلب توصيل", targetId: "step-task-details" },
+    { id: "delivery-scheduling", title: "جدولة التوصيل", targetId: "step-delivery-scheduling" },
+    { id: "driver-linking", title: "ربط الخدمة بالسائق", targetId: "step-driver-linking" },
+    { id: "driver-task-form", title: "ملئ النموذج", targetId: "step-driver-task-form" },
+    { id: "driver-portal-execution", title: "جاري التوصيل", targetId: "step-driver-portal-execution" },
     { id: "service-receipt", title: "استلام الخدمة", targetId: "step-service-receipt" },
   ],
 };
@@ -249,6 +250,7 @@ function renderWorkflowFlow(caseNode) {
               <span class="workflow-flow-index">${String(index + 1).padStart(2, "0")}</span>
               <span>${flowNode.title}</span>
             </button>
+            ${index < flowNodes.length - 1 ? '<span class="workflow-flow-arrow" aria-hidden="true">←</span>' : ""}
           `;
         })
         .join("")}

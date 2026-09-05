@@ -704,6 +704,16 @@ p {
   display: none;
 }
 
+.workflow-flow-arrow {
+  flex: 0 0 20px;
+  align-self: center;
+  color: var(--color-atlassian-blue);
+  font-size: 24px;
+  line-height: 1;
+  text-align: center;
+  pointer-events: none;
+}
+
 .workflow-flow-node {
   position: relative;
   flex: 0 0 116px;
@@ -2084,9 +2094,20 @@ tbody tr:last-child td {
   order: 3;
 }
 
+#step-invoice > .step-invoice-note {
+  order: 4;
+  margin: 14px 0 0;
+  padding-inline-start: 12px;
+  border-inline-start: 2px solid var(--color-fog-white);
+  color: var(--color-muted-indigo);
+  font-size: 15px;
+  line-height: 1.8;
+  text-align: start;
+}
+
 #step-task-details > .training-screen-column {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: stretch;
 }

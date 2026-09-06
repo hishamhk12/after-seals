@@ -46,6 +46,7 @@ async function runCase(test) {
         : await answerFromRetrievedContext({
             question: test.question,
             retrievedContext: buildRetrievedContext(retrievedChunks),
+            queryUnderstanding: retrieval.understanding,
           });
   }
 
@@ -100,7 +101,9 @@ function evaluateCase(test, answer, retrievedChunks, retrieval, pathName) {
     pathName === "deterministic" ||
     (test.expectedFallback
       ? Boolean(retrieval?.thresholdTriggered) || isFallback
-      : (test.expectedChunkTerms || []).every((term) => conceptMatches(retrievedText, term)));
+      : test.expectedRetrievalTopics
+        ? retrievalTopicsMatch(retrievedText, test.expectedRetrievalTopics)
+        : (test.expectedChunkTerms || []).every((term) => conceptMatches(retrievedText, term)));
 
   if (!retrievalPass) {
     failures.push("retrieval relevance failure");
@@ -255,7 +258,11 @@ function sequenceMatches(text, expectedSequence) {
   let cursor = -1;
 
   for (const step of expectedSequence) {
-    const index = text.indexOf(normalize(step), cursor + 1);
+    const alternatives = Array.isArray(step) ? step : [step];
+    const matchingIndexes = alternatives
+      .map((alternative) => text.indexOf(normalize(alternative), cursor + 1))
+      .filter((index) => index !== -1);
+    const index = matchingIndexes.length > 0 ? Math.min(...matchingIndexes) : -1;
 
     if (index === -1) {
       return false;
@@ -265,6 +272,10 @@ function sequenceMatches(text, expectedSequence) {
   }
 
   return true;
+}
+
+function retrievalTopicsMatch(retrievedText, expectedTopics) {
+  return expectedTopics.every((topic) => conceptMatches(retrievedText, topic));
 }
 
 function containsEnglishConcept(concept) {
@@ -293,7 +304,17 @@ function isGrounded(answer, retrievedText, pathName) {
     return true;
   }
 
-  return importantTerms.every((term) => retrievedText.includes(normalize(term)));
+  return importantTerms.every((term) => groundedTermMatches(retrievedText, term));
+}
+
+function groundedTermMatches(retrievedText, term) {
+  const normalizedTerm = normalize(term);
+
+  if (retrievedText.includes(normalizedTerm)) {
+    return true;
+  }
+
+  return (GROUNDED_TERM_ALIASES[normalizedTerm] || []).some((alias) => retrievedText.includes(normalize(alias)));
 }
 
 function extractImportantTerms(answer) {
@@ -333,6 +354,9 @@ function normalize(value) {
 }
 
 const ENGLISH_STOP_WORDS = new Set(["a", "an", "and", "or", "the", "is", "are", "what", "how", "when", "who"]);
+const GROUNDED_TERM_ALIASES = {
+  "driver portal": ["بوابة السائق"],
+};
 
 main().catch((error) => {
   console.error(error.message);

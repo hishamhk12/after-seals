@@ -223,6 +223,85 @@ const pageKnowledge = {
         ]
       }
     },
+    "currentWorkflow": [
+      {
+        "id": "current-sap-invoice",
+        "order": 1,
+        "title": "فاتورة من SAP",
+        "summary": "تبدأ دورة العمل بوصول الفاتورة التي تحتوي على خدمة التوصيل من SAP إلى Odoo، حيث تظهر في مرحلة طلب توصيل لبدء تنفيذ الخدمة.",
+        "details": [
+          "الفاتورة القادمة من SAP هي نقطة بداية دورة خدمة التوصيل الحالية في Odoo.",
+          "تبقى تفاصيل Invoice و Source Invoice و Tasks ومهمة التوصيل معرفة مساندة لشرح الربط بين الفاتورة والمهمة."
+        ],
+        "relatedTerms": ["فاتورة من SAP", "SAP", "Odoo", "Invoice", "Source Invoice", "Tasks", "طلب توصيل"]
+      },
+      {
+        "id": "current-delivery-request",
+        "order": 2,
+        "title": "طلب توصيل",
+        "summary": "في حال كانت خدمة التوصيل غير مرتبطة بخدمات أخرى مثل التركيب، تنتقل بشكل تلقائي بعد فترة محددة إلى مرحلة جدولة التوصيل. أما إذا كانت مرتبطة بخدمة أخرى، فيجب انتهاء الخدمة المرتبطة بها أولًا، مثل خدمة التركيب، قبل الانتقال إلى مرحلة جدولة التوصيل.",
+        "details": [
+          "تظل معرفة إنشاء Task وحقول Stage وAssignees وAssign وAppointment From وAppointment To معرفة تفصيلية مساندة لهذه المرحلة.",
+          "Assignees هو المشرف أو المتابع، بينما Assign هو منفذ الخدمة الفعلي ولا يجوز دمج المفهومين."
+        ],
+        "relatedTerms": ["طلب توصيل", "Task", "Tasks", "Stage", "المشرف", "Assignees", "Assign", "Appointment From", "Appointment To", "التركيب", "الخدمة المرتبطة"]
+      },
+      {
+        "id": "current-delivery-scheduling",
+        "order": 3,
+        "title": "جدولة التوصيل",
+        "summary": "في هذه المرحلة يظهر رابط حجز الموعد ليتم إرساله إلى العميل. يفتح العميل الرابط، ويحدد موقع التنفيذ والموعد المناسب.",
+        "details": [
+          "يختار العميل التاريخ والوقت ويراجع الموقع والتفاصيل ثم يؤكد الموعد.",
+          "يمكن لخدمة العملاء حجز الموعد نيابة عن العميل عند الحاجة.",
+          "يجب أن يبقى الموعد ضمن الفترة المحددة بين Appointment From و Appointment To."
+        ],
+        "relatedTerms": ["جدولة التوصيل", "رابط حجز الموعد", "حجز الموعد", "العميل", "موقع التنفيذ", "التاريخ والوقت", "تأكيد الموعد", "خدمة العملاء", "Appointment From", "Appointment To"]
+      },
+      {
+        "id": "current-driver-linking",
+        "order": 4,
+        "title": "ربط الخدمة بالسائق",
+        "summary": "بعد الانتهاء من جدولة موعد التوصيل، ننتقل إلى ربط الخدمة بالسائق. في هذه المرحلة يتم تعيين السائق المرتبط بهذه الخدمة.",
+        "details": [
+          "Assign أو تعيين السائق يحدد السائق المنفذ فعليًا لخدمة التوصيل.",
+          "Assignees يحدد المشرف أو المتابع، وليس السائق المنفذ، لذلك يبقى منفصلًا عن Assign."
+        ],
+        "relatedTerms": ["ربط الخدمة بالسائق", "تعيين السائق", "Assign", "Assignees", "السائق", "المشرف", "منفذ الخدمة"]
+      },
+      {
+        "id": "current-form-filling",
+        "order": 5,
+        "title": "ملئ النموذج",
+        "summary": "عند انتقال المهمة إلى مرحلة ملئ النموذج، يظهر النموذج المربوط بالمهمة، مثل نموذج سند التحميل في حال التوصيل.",
+        "details": [
+          "بعد تعيين السائق، يقوم السائق بتعبئة نموذج المهمة وتسجيل بيانات التنفيذ المطلوبة.",
+          "تظهر النماذج المرتبطة بالمهمة ضمن Task Forms."
+        ],
+        "relatedTerms": ["ملئ النموذج", "ملء النموذج", "Task Forms", "نموذج المهمة", "نموذج سند التحميل", "بيانات التنفيذ"]
+      },
+      {
+        "id": "current-delivery-in-progress",
+        "order": 6,
+        "title": "جاري التوصيل",
+        "summary": "جاري التوصيل هي مرحلة التنفيذ النشط التي ينفذها السائق من بوابة السائق.",
+        "details": [
+          "تسلسل التنفيذ النشط هو Start → رفع صورة التنفيذ → End Task.",
+          "تبقى بوابة السائق ورابط بوابة المهمة جزءًا من معرفة تنفيذ الخدمة."
+        ],
+        "relatedTerms": ["جاري التوصيل", "بوابة السائق", "driver portal", "Start", "رفع صورة التنفيذ", "upload photo", "End Task"]
+      },
+      {
+        "id": "current-service-receipt",
+        "order": 7,
+        "title": "استلام الخدمة",
+        "summary": "بعد End Task يرسل النظام رمز OTP إلى العميل، وبعد تأكيد OTP تصبح المهمة Completed ويُسجل استلام الخدمة واكتمالها.",
+        "details": [
+          "تسلسل الاستلام هو End Task → إرسال OTP إلى العميل → تأكيد OTP → Completed / استلام الخدمة."
+        ],
+        "relatedTerms": ["استلام الخدمة", "End Task", "OTP", "OTP confirmation", "Completed", "تم التوصيل", "تأكيد الاستلام"]
+      }
+    ],
     "stages": [
       {
         "id": "invoice",
@@ -548,6 +627,22 @@ const pageKnowledge = {
     ],
     "sequences": [
       {
+        "id": "current-seven-stage-delivery-workflow",
+        "title": "المسار الحالي المرئي لخدمة التوصيل",
+        "start": "فاتورة من SAP",
+        "end": "استلام الخدمة",
+        "steps": [
+          "01 — فاتورة من SAP",
+          "02 — طلب توصيل",
+          "03 — جدولة التوصيل",
+          "04 — ربط الخدمة بالسائق",
+          "05 — ملئ النموذج",
+          "06 — جاري التوصيل",
+          "07 — استلام الخدمة"
+        ],
+        "relatedTerms": ["المسار الحالي", "الواجهة الحالية", "مراحل خدمة التوصيل", "تسلسل خدمة التوصيل", "الفلو", "workflow", "فاتورة من SAP", "طلب توصيل", "جدولة التوصيل", "ربط الخدمة بالسائق", "ملئ النموذج", "ملء النموذج", "جاري التوصيل", "استلام الخدمة"]
+      },
+      {
         "id": "full-delivery-workflow",
         "title": "تسلسل خدمة التوصيل الكامل",
         "start": "SAP إلى Odoo",
@@ -643,6 +738,48 @@ const pageKnowledge = {
       }
     ],
     "supportedQuestions": [
+      {
+        "id": "current-delivery-workflow-question",
+        "questions": ["شو مراحل خدمة التوصيل؟", "شو تسلسل خدمة التوصيل؟", "شو الفلو؟", "كيف بتمشي خدمة التوصيل؟"],
+        "answer": "المسار الحالي المرئي لخدمة التوصيل هو: 01 — فاتورة من SAP → 02 — طلب توصيل → 03 — جدولة التوصيل → 04 — ربط الخدمة بالسائق → 05 — ملئ النموذج → 06 — جاري التوصيل → 07 — استلام الخدمة. وتبقى تفاصيل Tasks وTask وProject وStage وAssignees وAssign وTrip Date وAppointment From وAppointment To وTask Forms وبوابة السائق وStart ورفع الصورة وEnd Task وOTP وCompleted معرفة مساندة داخل هذه المراحل.",
+        "relatedTerms": ["مراحل خدمة التوصيل", "تسلسل خدمة التوصيل", "الفلو", "كيف بتمشي خدمة التوصيل", "المسار الحالي", "فاتورة من SAP", "طلب توصيل", "جدولة التوصيل", "ربط الخدمة بالسائق", "ملئ النموذج", "جاري التوصيل", "استلام الخدمة"]
+      },
+      {
+        "id": "current-delivery-request-question",
+        "questions": ["شو بصير بعد طلب توصيل؟", "متى بتنتقل لجدولة التوصيل؟", "شو بصير إذا التوصيل مرتبط بالتركيب؟"],
+        "answer": "إذا كانت خدمة التوصيل غير مرتبطة بخدمة أخرى مثل التركيب، تنتقل تلقائيًا بعد فترة محددة من طلب توصيل إلى جدولة التوصيل. وإذا كانت مرتبطة بخدمة أخرى، فيجب اكتمال الخدمة المرتبطة أولًا قبل الانتقال إلى جدولة التوصيل.",
+        "relatedTerms": ["طلب توصيل", "جدولة التوصيل", "الانتقال التلقائي", "فترة محددة", "خدمة مرتبطة", "التركيب", "اكتمال الخدمة المرتبطة"]
+      },
+      {
+        "id": "current-delivery-scheduling-question",
+        "questions": ["شو بصير بجدولة التوصيل؟"],
+        "answer": "في جدولة التوصيل يظهر رابط حجز الموعد ليُرسل إلى العميل. يفتح العميل الرابط ويحدد موقع التنفيذ والتاريخ والوقت المناسبين، ويراجع التفاصيل ثم يؤكد الموعد. ويمكن لخدمة العملاء الحجز نيابة عنه عند الحاجة، على أن يكون الموعد ضمن Appointment From و Appointment To.",
+        "relatedTerms": ["جدولة التوصيل", "رابط حجز الموعد", "موقع التنفيذ", "التاريخ والوقت", "تأكيد الموعد", "خدمة العملاء", "Appointment From", "Appointment To"]
+      },
+      {
+        "id": "current-driver-linking-question",
+        "questions": ["شو يعني ربط الخدمة بالسائق؟"],
+        "answer": "بعد جدولة الموعد يتم ربط الخدمة بالسائق بتعيين السائق المنفذ في Assign. هذا يختلف عن Assignees، فهو المشرف أو المتابع وليس منفذ الخدمة.",
+        "relatedTerms": ["ربط الخدمة بالسائق", "تعيين السائق", "Assign", "Assignees", "السائق", "المشرف"]
+      },
+      {
+        "id": "current-form-filling-question",
+        "questions": ["شو بصير بمرحلة ملئ النموذج؟", "شو النموذج اللي بيظهر بالتوصيل؟"],
+        "answer": "عند انتقال المهمة إلى ملئ النموذج يظهر النموذج المربوط بها ضمن Task Forms، مثل نموذج سند التحميل في التوصيل. وبعد تعيينه، يعبئ السائق نموذج المهمة ويسجل بيانات التنفيذ المطلوبة.",
+        "relatedTerms": ["ملئ النموذج", "ملء النموذج", "Task Forms", "نموذج سند التحميل", "السائق", "بيانات التنفيذ"]
+      },
+      {
+        "id": "current-delivery-in-progress-question",
+        "questions": ["شو بصير بجاري التوصيل؟"],
+        "answer": "جاري التوصيل هي مرحلة التنفيذ النشط من بوابة السائق، وتسلسلها: Start → رفع صورة التنفيذ → End Task.",
+        "relatedTerms": ["جاري التوصيل", "بوابة السائق", "Start", "رفع صورة التنفيذ", "End Task"]
+      },
+      {
+        "id": "current-service-receipt-question",
+        "questions": ["كيف بتنتهي الخدمة؟", "شو بصير وقت استلام الخدمة؟"],
+        "answer": "عند استلام الخدمة يكون التسلسل: End Task → إرسال OTP إلى العميل → تأكيد OTP → Completed. بعد تأكيد الرمز يُسجل استلام الخدمة واكتمالها.",
+        "relatedTerms": ["استلام الخدمة", "انتهاء الخدمة", "End Task", "OTP", "تأكيد OTP", "Completed"]
+      },
       {
         "id": "full-delivery-workflow-question",
         "questions": [
@@ -804,6 +941,18 @@ const pageKnowledge = {
         "relation": "execution sequence",
         "to": "Start → Upload Photo → End Task → OTP Confirmation → Completed",
         "description": "تنفيذ التوصيل من بوابة السائق يبدأ بـ Start ثم رفع الصورة ثم End Task ثم OTP ثم Completed."
+      },
+      {
+        "from": "Delivery Request without linked service",
+        "relation": "moves automatically after a defined period to",
+        "to": "Delivery Scheduling",
+        "description": "إذا لم تكن خدمة التوصيل مرتبطة بخدمة أخرى مثل التركيب، تنتقل تلقائيًا بعد فترة محددة من طلب توصيل إلى جدولة التوصيل."
+      },
+      {
+        "from": "Delivery Request with linked service",
+        "relation": "waits for completion of",
+        "to": "Linked Service",
+        "description": "إذا كانت خدمة التوصيل مرتبطة بخدمة أخرى مثل التركيب، يجب اكتمال الخدمة المرتبطة أولًا قبل الانتقال إلى جدولة التوصيل."
       }
     ],
     "businessRules": [
@@ -817,6 +966,18 @@ const pageKnowledge = {
           "فترة الحجز",
           "موعد التوصيل"
         ]
+      },
+      {
+        "id": "BR-INTRO-002",
+        "title": "الانتقال التلقائي للتوصيل غير المرتبط",
+        "rule": "إذا كانت خدمة التوصيل غير مرتبطة بخدمة أخرى مثل التركيب، يمكن أن تنتقل تلقائيًا بعد فترة محددة من طلب توصيل إلى جدولة التوصيل.",
+        "relatedTerms": ["طلب توصيل", "جدولة التوصيل", "الانتقال التلقائي", "فترة محددة", "خدمة غير مرتبطة"]
+      },
+      {
+        "id": "BR-INTRO-003",
+        "title": "اعتماد التوصيل على الخدمة المرتبطة",
+        "rule": "إذا كانت خدمة التوصيل مرتبطة بخدمة أخرى، فيجب اكتمال الخدمة المرتبطة أولًا، مثل خدمة التركيب، قبل الانتقال من طلب توصيل إلى جدولة التوصيل.",
+        "relatedTerms": ["طلب توصيل", "جدولة التوصيل", "الخدمة المرتبطة", "التركيب", "اعتماد سير العمل"]
       }
     ],
     "glossary": [
@@ -890,6 +1051,18 @@ function buildPageContext(pageId) {
     `TITLE: ${knowledge.title}`,
     `SCOPE: ${knowledge.scope}`,
     "",
+    "CURRENT VISIBLE DELIVERY WORKFLOW (PRIMARY):",
+    ...knowledge.currentWorkflow.map((stage) =>
+      [
+        `${String(stage.order).padStart(2, "0")} — ${stage.title}`,
+        `Summary: ${stage.summary}`,
+        ...stage.details.map((detail) => `Detail: ${detail}`),
+        `Related terms: ${stage.relatedTerms.join(", ")}`,
+      ].join("\n"),
+    ),
+    "",
+    "The current seven-stage workflow above is primary. The stages, fields, and workflow below are retained as detailed field knowledge, legacy page wording, and supporting knowledge.",
+    "",
     "DIRECTLY SUPPORTED QUESTIONS:",
     ...knowledge.supportedQuestions.map((item) =>
       [`- ${item.questions.join(" / ")}`, `  Answer: ${item.answer}`, `  Related terms: ${item.relatedTerms.join(", ")}`].join("\n"),
@@ -916,7 +1089,7 @@ function buildPageContext(pageId) {
         .join("\n"),
     ),
     "",
-    "STAGES AND SCREENS:",
+    "DETAILED SUPPORTING / LEGACY STAGES AND SCREENS:",
     ...knowledge.stages.map((stage) =>
       [
         `${String(stage.order).padStart(2, "0")} - ${stage.title}`,
@@ -927,7 +1100,7 @@ function buildPageContext(pageId) {
       ].join("\n"),
     ),
     "",
-    "WORKFLOW:",
+    "DETAILED SUPPORTING / LEGACY WORKFLOW:",
     ...knowledge.workflow.map((step) =>
       [
         `${String(step.order).padStart(2, "0")} - ${step.action}`,
@@ -979,6 +1152,22 @@ function buildKnowledgeChunks(pageId) {
     text: [knowledge.title, knowledge.scope].filter(Boolean).join("\n"),
     relatedTerms: ["جولة تعريفية", "الشاشات", "Odoo", "دورة العمل", "تدريب تنفيذي تفصيلي"],
   });
+
+  for (const stage of knowledge.currentWorkflow) {
+    addChunk({
+      id: `${pageId}:current-workflow:${stage.id}`,
+      type: "current-workflow",
+      title: `${String(stage.order).padStart(2, "0")} — ${stage.title}`,
+      text: [
+        "المسار الحالي المرئي لخدمة التوصيل (المعرفة الأساسية الحالية).",
+        `${String(stage.order).padStart(2, "0")} — ${stage.title}`,
+        stage.summary,
+        ...stage.details,
+      ].join("\n"),
+      relatedTerms: ["المسار الحالي", "الواجهة الحالية", ...stage.relatedTerms],
+      stageId: stage.id,
+    });
+  }
 
   for (const [fieldName, field] of Object.entries(knowledge.fields)) {
     addChunk({

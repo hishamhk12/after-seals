@@ -1,0 +1,994 @@
+{
+  "timestamp": "2026-09-06T05:39:15.471Z",
+  "pageId": "intro-tour",
+  "metrics": {
+    "total": 33,
+    "passCount": 24,
+    "failCount": 9,
+    "overallAccuracy": 72.73,
+    "intentAccuracy": {
+      "total": 33,
+      "passed": 30,
+      "failed": 3,
+      "accuracy": 90.91
+    },
+    "paraphraseAccuracy": {
+      "total": 13,
+      "passed": 7,
+      "failed": 6,
+      "accuracy": 53.85
+    },
+    "nextStepAccuracy": {
+      "total": 8,
+      "passed": 6,
+      "failed": 2,
+      "accuracy": 75
+    },
+    "previousStepAccuracy": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "accuracy": 100
+    },
+    "mixedLanguageAccuracy": {
+      "total": 7,
+      "passed": 5,
+      "failed": 2,
+      "accuracy": 71.43
+    },
+    "unsupportedRefusalAccuracy": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "accuracy": 100
+    }
+  },
+  "failures": [
+    {
+      "id": "nlu-workflow-006",
+      "category": "workflow-paraphrase",
+      "question": "شو بيصير من البداية للنهاية؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "unsupported",
+      "confidence": 0.3,
+      "normalizedQuery": "ماذا يحدث من البداية للنهاية",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل من البداية حتى النهاية:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يضغط المستخدم على زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يُحدد المشرف المسؤول عن متابعة العملية في Assignees.\n6. تُحدد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يُنشأ رابط حجز الموعد ويُرسل إلى العميل.\n8. يحدد العميل الموقع والتاريخ والوقت ثم يؤكد الموعد.\n9. يُعيّن السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحاً.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق Start لبدء التنفيذ.\n13. يرفع السائق صورة التنفيذ.\n14. يضغط السائق End Task بعد التنفيذ.\n15. يرسل النظام رمز OTP إلى العميل.\n16. يتم تأكيد رمز OTP.\n17. تصبح المهمة Completed.",
+      "scores": {
+        "intent": false,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "intent: expected workflow_sequence, got unsupported; required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-workflow-008",
+      "category": "workflow-paraphrase",
+      "question": "اشرحلي الرحلة كاملة",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.9,
+      "normalizedQuery": "اشرحلي الرحلة كاملة",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "تسلسل رحلة خدمة التوصيل الكاملة من البداية حتى النهاية:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يستخدم المستخدم زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يتم تحديد المشرف المسؤول عن متابعة العملية في Assignees.\n6. يتم تحديد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يتم إنشاء رابط حجز الموعد وإرساله إلى العميل.\n8. يختار العميل الموقع والتاريخ والوقت ثم يؤكد الموعد.\n9. يتم تعيين السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق على Start لبدء التنفيذ.\n13. يرفع السائق صورة التنفيذ.\n14. يضغط السائق على End Task بعد التنفيذ.\n15. يرسل النظام رمز OTP إلى العميل.\n16. يتم تأكيد رمز OTP.\n17. تصبح المهمة Completed وتسجل اكتمال الخدمة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-workflow-009",
+      "category": "workflow-paraphrase",
+      "question": "اشرحلي الفلو كامل",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "اشرحلي الفلو كامل",
+      "concepts": [
+        "workflow"
+      ],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل من البداية وحتى الاكتمال:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يستخدم المستخدم زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يتم تحديد المشرف المسؤول عن متابعة العملية في Assignees.\n6. يتم تحديد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يتم إنشاء رابط حجز الموعد وإرساله إلى العميل.\n8. يختار العميل الموقع والتاريخ والوقت ثم يؤكد الموعد (جدولة التوصيل).\n9. يتم تعيين السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق Start لبدء التنفيذ.\n13. يرفع السائق",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-next-002",
+      "category": "next-step",
+      "question": "بعد الجدولة شو بصير؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "بعد الجدولة ماذا يحدث",
+      "concepts": [
+        "appointment"
+      ],
+      "exactTerms": [],
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "scores": {
+        "intent": true,
+        "refusal": false,
+        "concepts": false,
+        "sequence": true
+      },
+      "pass": false,
+      "failureReason": "supported answer fell back; required answer concept missing"
+    },
+    {
+      "id": "nlu-next-005",
+      "category": "mixed-language",
+      "question": "شو stage بعد جدولة التوصيل؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "appointment_booking",
+      "confidence": 0.65,
+      "normalizedQuery": "ماذا stage بعد جدولة التوصيل",
+      "concepts": [
+        "service",
+        "appointment",
+        "stage"
+      ],
+      "exactTerms": [
+        "Stage"
+      ],
+      "answer": "الخطوة أو الـ Stage التي تلي جدولة التوصيل مباشرة في التسلسل هي **حجز الموعد** (حيث يختار العميل الموقع والتاريخ والوقت ويؤكد الموعد)، ويليها بعد ذلك تعيين السائق في Assign.",
+      "scores": {
+        "intent": false,
+        "refusal": true,
+        "concepts": false,
+        "sequence": true
+      },
+      "pass": false,
+      "failureReason": "intent: expected next_step, got appointment_booking; required answer concept missing"
+    },
+    {
+      "id": "nlu-mixed-004",
+      "category": "mixed-language",
+      "question": "شو ال Stage الحالي؟",
+      "expectedIntent": "current_status",
+      "predictedIntent": "current_status",
+      "confidence": 1,
+      "normalizedQuery": "ماذا ال stage الحالي",
+      "concepts": [
+        "stage"
+      ],
+      "exactTerms": [
+        "Stage"
+      ],
+      "answer": "الـ Stage الحالي هو **طلب توصيل**، وهو يمثل بداية دورة تنفيذ مهمة التوصيل في Odoo بعد إنشائها من الفاتورة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": true
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing"
+    },
+    {
+      "id": "nlu-dialect-003",
+      "category": "dialect",
+      "question": "من وين بتبلش الشغلة؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "unsupported",
+      "confidence": 0.2,
+      "normalizedQuery": "من أين بتبلش الخدمة",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "تبدأ دورة خدمة التوصيل بوصول الفاتورة من SAP إلى Odoo (المرحلة 01 — فاتورة من SAP).",
+      "scores": {
+        "intent": false,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "intent: expected workflow_sequence, got unsupported; required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-number-001",
+      "category": "singular-plural",
+      "question": "شو تسلسل الخدمة؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "ماذا تسلسل الخدمة",
+      "concepts": [
+        "workflow",
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل:\n\nالفاتورة ← Tasks ← مهمة التوصيل ← Appointment From ← Appointment To ← جدولة التوصيل ← حجز الموعد ← تعيين السائق ← Task Forms ← بوابة السائق ← Start ← رفع صورة التنفيذ ← End Task ← OTP ← Completed.\n\nالخطوات بالتفصيل:\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يستخدم المستخدم زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يتم تحديد المشرف المسؤول عن متابعة العملية في Assignees.\n6. يتم تحديد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يتم إنشاء رابط حجز الموعد وإرساله إلى العميل.\n8. يختار العميل الموقع والتاريخ والوقت ثم يؤكد الموعد.\n9. يتم تعيين السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق Start لبدء التنفيذ.\n13. يرفع السائق صورة التنفيذ.\n14. يضغط السائق End Task بعد التنفيذ.\n15. يرسل النظام OTP إلى العميل.\n16. يتم تأكيد OTP.\n17. تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-number-002",
+      "category": "singular-plural",
+      "question": "شو تسلسل الخدمات؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "ماذا تسلسل الخدمات",
+      "concepts": [
+        "workflow",
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل:\n\nالفاتورة ← Tasks ← مهمة التوصيل ← Appointment From ← Appointment To ← جدولة التوصيل ← حجز الموعد ← تعيين السائق ← Task Forms ← بوابة السائق ← Start ← رفع صورة التنفيذ ← End Task ← OTP ← Completed.\n\nخطوات التسلسل بالتفصيل:\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة ويضغط على زر Tasks للوصول إلى مهمة التوصيل.\n3. تظهر المهمة في مرحلة طلب توصيل، ويتم تحديد المشرف المسؤول في Assignees.\n4. تُحدد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n5. يُنشأ رابط حجز الموعد ويُرسل إلى العميل ليحدد الموقع والتاريخ والوقت ويؤكد الموعد.\n6. يتم تعيين السائق في Assign وتنتقل العملية إلى جدولة التوصيل.\n7. تظهر Task Forms ويتاح نموذج سند التحميل.\n8. يفتح السائق بوابة السائق ويضغط Start لبدء التنفيذ.\n9. يرفع السائق صورة التنفيذ ثم يضغط End Task.\n10. يُرسل النظام رمز OTP إلى العميل، وبمجرد تأكيده تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    }
+  ],
+  "results": [
+    {
+      "id": "nlu-workflow-001",
+      "category": "workflow-paraphrase",
+      "question": "شو الفلو؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.35,
+      "normalizedQuery": "ماذا الفلو",
+      "concepts": [
+        "workflow"
+      ],
+      "exactTerms": [],
+      "answer": "المسار الحالي المرئي لخدمة التوصيل هو: 01 — فاتورة من SAP → 02 — طلب توصيل → 03 — جدولة التوصيل → 04 — ربط الخدمة بالسائق → 05 — ملئ النموذج → 06 — جاري التوصيل → 07 — استلام الخدمة. وتبقى تفاصيل Tasks وTask وProject وStage وAssignees وAssign وTrip Date وAppointment From وAppointment To وTask Forms وبوابة السائق وStart ورفع الصورة وEnd Task وOTP وCompleted معرفة مساندة داخل هذه المراحل.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-workflow-002",
+      "category": "workflow-paraphrase",
+      "question": "شو السايكل؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.35,
+      "normalizedQuery": "ماذا السايكل",
+      "concepts": [
+        "workflow"
+      ],
+      "exactTerms": [],
+      "answer": "المسار المرئي لخدمة التوصيل يتكون من 7 مراحل أساسية:\n1. **01 — فاتورة من SAP**\n2. **02 — طلب توصيل**\n3. **03 — جدولة التوصيل**\n4. **04 — ربط الخدمة بالسائق**\n5. **05 — ملئ النموذج**\n6. **06 — جاري التوصيل**\n7. **07 — استلام الخدمة**\n\n---\n\n**تسلسل خطوات العمل الكاملة بالتفصيل:**\n1. تصل الفاتورة من SAP إلى Odoo، ويفتح المستخدم الفاتورة المحتوية على خدمة التوصيل.\n2. يضغط المستخدم على زر **Tasks** للوصول إلى مهمة التوصيل المرتبطة (تظهر في مرحلة طلب توصيل).\n3. يتم تحديد المشرف المسؤول في **Assignees**.\n4. يتم تحديد الفترة المسموحة لحجز الموعد بين **Appointment From** و **Appointment To**.\n5. يتم إنشاء رابط حجز الموعد وإرساله للعميل، ليقوم باختيار الموقع والتاريخ والوقت وتأكيد الموعد.\n6. يتم تعيين السائق المسؤول عن التنفيذ في **Assign**.\n7. تظهر **Task Forms** ويصبح نموذج سند التحميل متاحاً.\n8. يفتح السائق بوابة السائق ويضغط **Start** لبدء التنفيذ.\n9. يرفع السائق صورة التنفيذ، ثم يضغط **End Task**.\n10. يرسل النظام رمز **OTP** إلى العميل ويتم تأكيده.\n11. تصبح المهمة مكتملة **Completed**.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-workflow-003",
+      "category": "workflow-paraphrase",
+      "question": "شو ترتيب الخدمة؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "ماذا ترتيب الخدمة",
+      "concepts": [
+        "workflow",
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "المسار الحالي المرئي لخدمة التوصيل:\n\n1. **01 — فاتورة من SAP**\n2. **02 — طلب توصيل**\n3. **03 — جدولة التوصيل**\n4. **04 — ربط الخدمة بالسائق**\n5. **05 — ملئ النموذج**\n6. **06 — جاري التوصيل**\n7. **07 — استلام الخدمة**\n\n---\n\nالتسلسل التفصيلي الكامل للخطوات:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة ويستخدم زر **Tasks** للوصول إلى مهمة التوصيل.\n3. تظهر المهمة في مرحلة طلب توصيل، ويتم تحديد المشرف في **Assignees**.\n4. يتم تحديد الفترة المسموحة للحجز بين **Appointment From** و **Appointment To**.\n5. يتم إنشاء رابط حجز الموعد وإرساله للعميل ليختار الموقع والوقت ويؤكد الموعد.\n6. يتم تعيين السائق في **Assign**.\n7. تظهر **Task Forms** ويصبح نموذج سند التحميل متاحاً.\n8. يفتح السائق **بوابة السائق** ويضغط **Start** لبدء التنفيذ.\n9. يرفع السائق صورة التنفيذ ثم يضغط **End Task**.\n10. يرسل النظام رمز **OTP** للعميل ويتم تأكيده.\n11. تصبح المهمة **Completed**.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-workflow-004",
+      "category": "workflow-paraphrase",
+      "question": "كيف بتمشي الخدمة؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.9,
+      "normalizedQuery": "كيف بتمشي الخدمة",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "المسار المرئي لمراحل خدمة التوصيل:\n\n1. 01 — فاتورة من SAP\n2. 02 — طلب توصيل\n3. 03 — جدولة التوصيل\n4. 04 — ربط الخدمة بالسائق\n5. 05 — ملئ النموذج\n6. 06 — جاري التوصيل\n7. 07 — استلام الخدمة\n\nتسلسل خطوات التنفيذ بالتفصيل:\n1. تصل الفاتورة من SAP إلى Odoo، ويفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n2. يدخل المستخدم عبر زر Tasks للوصول إلى مهمة التوصيل، وتظهر في مرحلة \"طلب توصيل\".\n3. يتم تحديد المشرف المسؤول في Assignees وتحديد نافذة الحجز المسموحة بين Appointment From و Appointment To.\n4. يُرسل رابط حجز الموعد إلى العميل ليحدد الموقع والتاريخ والوقت ويؤكد الموعد.\n5. يتم تعيين السائق في Assign وتفعيل Task Forms (نموذج سند التحميل).\n6. يفتح السائق بوابة السائق ويضغط Start، ثم يرفع صورة التنفيذ لتوثيق الخدمة.\n7. يضغط السائق على End Task، فيُرسل رمز OTP إلى العميل، وبمجرد تأكيده تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-workflow-005",
+      "category": "workflow-paraphrase",
+      "question": "شو مراحل التوصيل؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "ماذا مراحل التوصيل",
+      "concepts": [
+        "workflow",
+        "service",
+        "stage"
+      ],
+      "exactTerms": [],
+      "answer": "المسار الحالي المرئي لمراحل خدمة التوصيل:\n\n1. 01 — فاتورة من SAP\n2. 02 — طلب توصيل\n3. 03 — جدولة التوصيل\n4. 04 — ربط الخدمة بالسائق\n5. 05 — ملئ النموذج\n6. 06 — جاري التوصيل\n7. 07 — استلام الخدمة\n\nوتسلسل الخطوات التفصيلي للخدمة:\n- وصول الفاتورة من SAP إلى Odoo وفتحها من قِبل المستخدم.\n- الدخول إلى مهمة التوصيل عبر زر Tasks لتظهر في مرحلة \"طلب توصيل\".\n- تحديد المشرف في Assignees وتحديد الفترة المسموحة للحجز بين Appointment From و Appointment To.\n- إرسال رابط حجز الموعد ليقوم العميل باختيار الموقع والتاريخ والوقت وتأكيد الحجز.\n- تعيين السائق في Assign وظهور Task Forms (نموذج سند التحميل).\n- فتح السائق لبوابة السائق والضغط على Start لبدء التنفيذ.\n- رفع صورة التنفيذ ثم الضغط على End Task.\n- إرسال رمز OTP إلى العميل وتأكيده لتصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-workflow-006",
+      "category": "workflow-paraphrase",
+      "question": "شو بيصير من البداية للنهاية؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "unsupported",
+      "confidence": 0.3,
+      "normalizedQuery": "ماذا يحدث من البداية للنهاية",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل من البداية حتى النهاية:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يضغط المستخدم على زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يُحدد المشرف المسؤول عن متابعة العملية في Assignees.\n6. تُحدد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يُنشأ رابط حجز الموعد ويُرسل إلى العميل.\n8. يحدد العميل الموقع والتاريخ والوقت ثم يؤكد الموعد.\n9. يُعيّن السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحاً.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق Start لبدء التنفيذ.\n13. يرفع السائق صورة التنفيذ.\n14. يضغط السائق End Task بعد التنفيذ.\n15. يرسل النظام رمز OTP إلى العميل.\n16. يتم تأكيد رمز OTP.\n17. تصبح المهمة Completed.",
+      "scores": {
+        "intent": false,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "intent: expected workflow_sequence, got unsupported; required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-workflow-007",
+      "category": "mixed-language",
+      "question": "شو ال flow تبع delivery؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.9,
+      "normalizedQuery": "ماذا ال flow خاص بـ delivery",
+      "concepts": [
+        "workflow",
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "المسار الحالي لخدمة التوصيل يتكون من 7 مراحل:\n\n1. **01 — فاتورة من SAP**: تصل الفاتورة من SAP إلى Odoo، ويتم فتح الفاتورة والدخول إلى مهمة التوصيل عبر زر **Tasks**.\n2. **02 — طلب توصيل**: تظهر المهمة في هذه المرحلة، ويُحدد المشرف المسؤول في **Assignees**، وتُحدد الفترة المسموحة للحجز بين **Appointment From** و **Appointment To**.\n3. **03 — جدولة التوصيل**: يُرسل رابط الحجز للعميل لاختيار الموقع والتاريخ والوقت وتأكيد الموعد.\n4. **04 — ربط الخدمة بالسائق**: يتم تعيين السائق المسؤول عن التنفيذ عبر **Assign**.\n5. **05 — ملئ النموذج**: تظهر **Task Forms** ويصبح نموذج سند التحميل متاحاً.\n6. **06 — جاري التوصيل**: يفتح السائق بوابة السائق ويضغط **Start** لبدء التنفيذ، ثم يرفع صورة التنفيذ ويضغط **End Task**.\n7. **07 — استلام الخدمة**: يُرسل النظام رمز **OTP** إلى العميل لتأكيده، وبعد التأكيد تصبح المهمة **Completed**.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-workflow-008",
+      "category": "workflow-paraphrase",
+      "question": "اشرحلي الرحلة كاملة",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.9,
+      "normalizedQuery": "اشرحلي الرحلة كاملة",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "تسلسل رحلة خدمة التوصيل الكاملة من البداية حتى النهاية:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يستخدم المستخدم زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يتم تحديد المشرف المسؤول عن متابعة العملية في Assignees.\n6. يتم تحديد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يتم إنشاء رابط حجز الموعد وإرساله إلى العميل.\n8. يختار العميل الموقع والتاريخ والوقت ثم يؤكد الموعد.\n9. يتم تعيين السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق على Start لبدء التنفيذ.\n13. يرفع السائق صورة التنفيذ.\n14. يضغط السائق على End Task بعد التنفيذ.\n15. يرسل النظام رمز OTP إلى العميل.\n16. يتم تأكيد رمز OTP.\n17. تصبح المهمة Completed وتسجل اكتمال الخدمة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-workflow-009",
+      "category": "workflow-paraphrase",
+      "question": "اشرحلي الفلو كامل",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "اشرحلي الفلو كامل",
+      "concepts": [
+        "workflow"
+      ],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل من البداية وحتى الاكتمال:\n\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يستخدم المستخدم زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يتم تحديد المشرف المسؤول عن متابعة العملية في Assignees.\n6. يتم تحديد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يتم إنشاء رابط حجز الموعد وإرساله إلى العميل.\n8. يختار العميل الموقع والتاريخ والوقت ثم يؤكد الموعد (جدولة التوصيل).\n9. يتم تعيين السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق Start لبدء التنفيذ.\n13. يرفع السائق",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-next-001",
+      "category": "next-step",
+      "question": "شو بعد طلب توصيل؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا بعد طلب توصيل",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "المرحلة التالية بعد \"طلب توصيل\" هي **جدولة التوصيل**:\n\n- **إذا كانت الخدمة غير مرتبطة بخدمة أخرى:** تنتقل تلقائيًا بعد فترة محددة إلى مرحلة جدولة التوصيل.\n- **إذا كانت مرتبطة بخدمة أخرى (مثل التركيب):** يجب اكتمال الخدمة المرتبطة أولًا قبل الانتقال إلى مرحلة جدولة التوصيل.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-next-002",
+      "category": "next-step",
+      "question": "بعد الجدولة شو بصير؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "بعد الجدولة ماذا يحدث",
+      "concepts": [
+        "appointment"
+      ],
+      "exactTerms": [],
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "scores": {
+        "intent": true,
+        "refusal": false,
+        "concepts": false,
+        "sequence": true
+      },
+      "pass": false,
+      "failureReason": "supported answer fell back; required answer concept missing"
+    },
+    {
+      "id": "nlu-next-003",
+      "category": "next-step",
+      "question": "شو بعد ربط الخدمة بالسائق؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا بعد ربط الخدمة بالسائق",
+      "concepts": [
+        "service",
+        "driver"
+      ],
+      "exactTerms": [],
+      "answer": "المرحلة التالية بعد \"04 — ربط الخدمة بالسائق\" في مسار خدمة التوصيل هي:\n\n**05 — ملئ النموذج**",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-next-004",
+      "category": "next-step",
+      "question": "شو المرحلة يلي بعد ربط الخدمة بالسائق؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا المرحلة الذي بعد ربط الخدمة بالسائق",
+      "concepts": [
+        "service",
+        "driver",
+        "stage"
+      ],
+      "exactTerms": [],
+      "answer": "المرحلة التي تلي ربط الخدمة بالسائق مباشرة هي **05 — ملئ النموذج**.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-next-005",
+      "category": "mixed-language",
+      "question": "شو stage بعد جدولة التوصيل؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "appointment_booking",
+      "confidence": 0.65,
+      "normalizedQuery": "ماذا stage بعد جدولة التوصيل",
+      "concepts": [
+        "service",
+        "appointment",
+        "stage"
+      ],
+      "exactTerms": [
+        "Stage"
+      ],
+      "answer": "الخطوة أو الـ Stage التي تلي جدولة التوصيل مباشرة في التسلسل هي **حجز الموعد** (حيث يختار العميل الموقع والتاريخ والوقت ويؤكد الموعد)، ويليها بعد ذلك تعيين السائق في Assign.",
+      "scores": {
+        "intent": false,
+        "refusal": true,
+        "concepts": false,
+        "sequence": true
+      },
+      "pass": false,
+      "failureReason": "intent: expected next_step, got appointment_booking; required answer concept missing"
+    },
+    {
+      "id": "nlu-previous-001",
+      "category": "previous-step",
+      "question": "شو قبل جاري التوصيل؟",
+      "expectedIntent": "previous_step",
+      "predictedIntent": "previous_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا قبل جاري التوصيل",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "المرحلة التي تسبق «جاري التوصيل» في المسار الحالي هي: **05 — ملئ النموذج**.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-previous-002",
+      "category": "previous-step",
+      "question": "شو قبل ملئ النموذج؟",
+      "expectedIntent": "previous_step",
+      "predictedIntent": "previous_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا قبل ملئ النموذج",
+      "concepts": [
+        "form"
+      ],
+      "exactTerms": [],
+      "answer": "المرحلة السابقة لمرحلة **ملئ النموذج** هي **04 — ربط الخدمة بالسائق**.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-previous-003",
+      "category": "previous-step",
+      "question": "شو كان قبل جاري التوصيل؟",
+      "expectedIntent": "previous_step",
+      "predictedIntent": "previous_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا كان قبل جاري التوصيل",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "المرحلة التي تسبق «جاري التوصيل» في المسار الحالي هي «05 — ملئ النموذج».",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-mixed-001",
+      "category": "mixed-language",
+      "question": "شو يعني Task Forms؟",
+      "expectedIntent": "field_definition",
+      "predictedIntent": "field_definition",
+      "confidence": 1,
+      "normalizedQuery": "ماذا يعني task forms",
+      "concepts": [
+        "task",
+        "form"
+      ],
+      "exactTerms": [
+        "Task Forms"
+      ],
+      "answer": "**Task Forms** هي النماذج المرتبطة بالمهمة التي تصبح متاحة عند تجهيز مهمة التوصيل للسائق، ومن خلالها يظهر النموذج المطلوب تعبئته أثناء التنفيذ لتسجيل بيانات التنفيذ (مثل نموذج سند التحميل في خدمة التوصيل).",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-mixed-002",
+      "category": "mixed-language",
+      "question": "بعد End Task شو بصير؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "بعد end task ماذا يحدث",
+      "concepts": [
+        "task",
+        "completion"
+      ],
+      "exactTerms": [
+        "End Task"
+      ],
+      "answer": "بعد **End Task** يحدث الآتي:\n\n1. يرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n2. بعد تأكيد رمز **OTP**، تصبح المهمة **Completed** ويُسجل استلام الخدمة واكتمالها.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-mixed-003",
+      "category": "mixed-language",
+      "question": "شو الفرق بين Assign و Assignees؟",
+      "expectedIntent": "field_definition",
+      "predictedIntent": "field_definition",
+      "confidence": 0.95,
+      "normalizedQuery": "ماذا الفرق بين assign و assignees",
+      "concepts": [
+        "supervisor"
+      ],
+      "exactTerms": [
+        "Assignees",
+        "Assign"
+      ],
+      "answer": "Assignees هو المشرف المسؤول عن متابعة المهمة والإشراف على تنفيذها. Assign هو الشخص المنفذ فعليًا للخدمة، وفي خدمة التوصيل يكون السائق.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-mixed-004",
+      "category": "mixed-language",
+      "question": "شو ال Stage الحالي؟",
+      "expectedIntent": "current_status",
+      "predictedIntent": "current_status",
+      "confidence": 1,
+      "normalizedQuery": "ماذا ال stage الحالي",
+      "concepts": [
+        "stage"
+      ],
+      "exactTerms": [
+        "Stage"
+      ],
+      "answer": "الـ Stage الحالي هو **طلب توصيل**، وهو يمثل بداية دورة تنفيذ مهمة التوصيل في Odoo بعد إنشائها من الفاتورة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": true
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing"
+    },
+    {
+      "id": "nlu-mixed-005",
+      "category": "mixed-language",
+      "question": "شو بيصير بعد assign؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "ماذا يحدث بعد assign",
+      "concepts": [],
+      "exactTerms": [
+        "Assign"
+      ],
+      "answer": "بعد تعيين السائق في Assign، تحدث الخطوات التالية:\n\n1. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا ضمن المهمة.\n2. يفتح السائق بوابة السائق.\n3. يضغط السائق Start لبدء التنفيذ.\n4. يرفع السائق صورة التنفيذ.\n5. يضغط السائق End Task بعد التنفيذ.\n6. يرسل النظام رمز OTP إلى العميل.\n7. يتم تأكيد OTP.\n8. تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-dialect-001",
+      "category": "dialect",
+      "question": "شلون بتمشي خدمة التوصيل؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 0.9,
+      "normalizedQuery": "كيف بتمشي خدمة التوصيل",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "المسار الحالي المرئي لخدمة التوصيل يتكون من المراحل التالية:\n\n1. **01 — فاتورة من SAP**: تصل الفاتورة من SAP إلى Odoo ويتم فتحها.\n2. **02 — طلب توصيل**: يتم الدخول إلى مهمة التوصيل عبر زر Tasks، وتحديد المشرف المسؤول في Assignees.\n3. **03 — جدولة التوصيل**: تحديد الفترة المسموحة للحجز بين Appointment From و Appointment To، وإرسال رابط الحجز للعميل ليختار الموقع والتاريخ والوقت ثم يؤكد الموعد.\n4. **04 — ربط الخدمة بالسائق**: تعيين السائق المسؤول عن التنفيذ في Assign.\n5. **05 — ملئ النموذج**: تفعيل Task Forms وظهور نموذج سند التحميل.\n6. **06 — جاري التوصيل**: يفتح السائق بوابة السائق، يضغط Start لبدء التنفيذ، ثم يرفع صورة التنفيذ ويضغط End Task.\n7. **07 — استلام الخدمة**: يُرسل رمز OTP إلى العميل، وبعد تأكيده بنجاح تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-dialect-002",
+      "category": "dialect",
+      "question": "بعدين شو بيصير مع السائق؟",
+      "expectedIntent": "next_step",
+      "predictedIntent": "next_step",
+      "confidence": 1,
+      "normalizedQuery": "بعد ذلك ماذا يحدث مع السائق",
+      "concepts": [
+        "driver"
+      ],
+      "exactTerms": [],
+      "answer": "بعد تعيين السائق وتحديد المنفذ في Assign، تسير الخطوات التالية مع السائق حتى اكتمال الخدمة كالتالي:\n\n1. **تفعيل النماذج:** تتاح وتُفعّل Task Forms المرتبطة بالمهمة ويظهر نموذج سند التحميل.\n2. **بدء التنفيذ:** يفتح السائق رابط المهمة عبر بوابة السائق ويضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n3. **توثيق التنفيذ:** يرفع السائق صورة التنفيذ لتوثيق تقديم الخدمة.\n4. **إنهاء المهمة:** بعد رفع الصورة المطلوبة، يضغط السائق على **End Task**.\n5. **رمز التحقق:** يرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n6. **الاكتمال:** بعد إدخال وتأكيد رمز **OTP** بنجاح، تتحول حالة المهمة إلى **Completed** ويُسجل اكتمال التوصيل.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-dialect-003",
+      "category": "dialect",
+      "question": "من وين بتبلش الشغلة؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "unsupported",
+      "confidence": 0.2,
+      "normalizedQuery": "من أين بتبلش الخدمة",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "تبدأ دورة خدمة التوصيل بوصول الفاتورة من SAP إلى Odoo (المرحلة 01 — فاتورة من SAP).",
+      "scores": {
+        "intent": false,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "intent: expected workflow_sequence, got unsupported; required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-number-001",
+      "category": "singular-plural",
+      "question": "شو تسلسل الخدمة؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "ماذا تسلسل الخدمة",
+      "concepts": [
+        "workflow",
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل:\n\nالفاتورة ← Tasks ← مهمة التوصيل ← Appointment From ← Appointment To ← جدولة التوصيل ← حجز الموعد ← تعيين السائق ← Task Forms ← بوابة السائق ← Start ← رفع صورة التنفيذ ← End Task ← OTP ← Completed.\n\nالخطوات بالتفصيل:\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة التي تحتوي على خدمة التوصيل.\n3. يستخدم المستخدم زر Tasks للوصول إلى مهمة التوصيل المرتبطة بالفاتورة.\n4. تظهر المهمة في مرحلة طلب توصيل.\n5. يتم تحديد المشرف المسؤول عن متابعة العملية في Assignees.\n6. يتم تحديد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n7. يتم إنشاء رابط حجز الموعد وإرساله إلى العميل.\n8. يختار العميل الموقع والتاريخ والوقت ثم يؤكد الموعد.\n9. يتم تعيين السائق المسؤول عن التنفيذ في Assign.\n10. تظهر Task Forms ويصبح نموذج سند التحميل متاحًا.\n11. يفتح السائق بوابة السائق.\n12. يضغط السائق Start لبدء التنفيذ.\n13. يرفع السائق صورة التنفيذ.\n14. يضغط السائق End Task بعد التنفيذ.\n15. يرسل النظام OTP إلى العميل.\n16. يتم تأكيد OTP.\n17. تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-number-002",
+      "category": "singular-plural",
+      "question": "شو تسلسل الخدمات؟",
+      "expectedIntent": "workflow_sequence",
+      "predictedIntent": "workflow_sequence",
+      "confidence": 1,
+      "normalizedQuery": "ماذا تسلسل الخدمات",
+      "concepts": [
+        "workflow",
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "تسلسل خدمة التوصيل الكامل:\n\nالفاتورة ← Tasks ← مهمة التوصيل ← Appointment From ← Appointment To ← جدولة التوصيل ← حجز الموعد ← تعيين السائق ← Task Forms ← بوابة السائق ← Start ← رفع صورة التنفيذ ← End Task ← OTP ← Completed.\n\nخطوات التسلسل بالتفصيل:\n1. تصل الفاتورة من SAP إلى Odoo.\n2. يفتح المستخدم الفاتورة ويضغط على زر Tasks للوصول إلى مهمة التوصيل.\n3. تظهر المهمة في مرحلة طلب توصيل، ويتم تحديد المشرف المسؤول في Assignees.\n4. تُحدد الفترة المسموحة لحجز الموعد بين Appointment From و Appointment To.\n5. يُنشأ رابط حجز الموعد ويُرسل إلى العميل ليحدد الموقع والتاريخ والوقت ويؤكد الموعد.\n6. يتم تعيين السائق في Assign وتنتقل العملية إلى جدولة التوصيل.\n7. تظهر Task Forms ويتاح نموذج سند التحميل.\n8. يفتح السائق بوابة السائق ويضغط Start لبدء التنفيذ.\n9. يرفع السائق صورة التنفيذ ثم يضغط End Task.\n10. يُرسل النظام رمز OTP إلى العميل، وبمجرد تأكيده تصبح المهمة Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": false,
+        "sequence": false
+      },
+      "pass": false,
+      "failureReason": "required answer concept missing; answer sequence mismatch"
+    },
+    {
+      "id": "nlu-service-list-001",
+      "category": "intent-boundary",
+      "question": "شو الخدمات الموجودة عنا؟",
+      "expectedIntent": "service_list",
+      "predictedIntent": "service_list",
+      "confidence": 1,
+      "normalizedQuery": "ماذا الخدمات الموجودة عنا",
+      "concepts": [
+        "service"
+      ],
+      "exactTerms": [],
+      "answer": "الخدمات الموجودة هي: خدمة التصميم، خدمة رفع القياسات، خدمة التوصيل، خدمة التركيب، خدمة التصنيع، خدمة الصيانة الميدانية، والتحويلات الداخلية / النقل الداخلي.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-definition-001",
+      "category": "intent-boundary",
+      "question": "شو يعني Stage؟",
+      "expectedIntent": "field_definition",
+      "predictedIntent": "field_definition",
+      "confidence": 1,
+      "normalizedQuery": "ماذا يعني stage",
+      "concepts": [
+        "stage"
+      ],
+      "exactTerms": [
+        "Stage"
+      ],
+      "answer": "Stage هو حقل المرحلة الحالية للمهمة؛ يوضح أين وصلت المهمة داخل مسار خدمة التوصيل، مثل طلب توصيل أو تعيين سائق أو Completed.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-definition-002",
+      "category": "intent-boundary",
+      "question": "شو يعني OTP؟",
+      "expectedIntent": "field_definition",
+      "predictedIntent": "field_definition",
+      "confidence": 1,
+      "normalizedQuery": "ماذا يعني otp",
+      "concepts": [
+        "completion"
+      ],
+      "exactTerms": [
+        "OTP"
+      ],
+      "answer": "OTP هو رمز يُرسل إلى العميل بعد End Task لتأكيد استلام خدمة التوصيل.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-unsupported-001",
+      "category": "unsupported",
+      "question": "شو عاصمة اليابان؟",
+      "expectedIntent": "unsupported",
+      "predictedIntent": "unsupported",
+      "confidence": 0.3,
+      "normalizedQuery": "ماذا عاصمة اليابان",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-unsupported-002",
+      "category": "unsupported",
+      "question": "كيف اطبخ كبسة؟",
+      "expectedIntent": "unsupported",
+      "predictedIntent": "unsupported",
+      "confidence": 0.3,
+      "normalizedQuery": "كيف اطبخ كبسة",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    },
+    {
+      "id": "nlu-unsupported-003",
+      "category": "unsupported",
+      "question": "كم عمر الشمس؟",
+      "expectedIntent": "unsupported",
+      "predictedIntent": "unsupported",
+      "confidence": 0.3,
+      "normalizedQuery": "كم عمر الشمس",
+      "concepts": [],
+      "exactTerms": [],
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "scores": {
+        "intent": true,
+        "refusal": true,
+        "concepts": true,
+        "sequence": true
+      },
+      "pass": true,
+      "failureReason": ""
+    }
+  ]
+}

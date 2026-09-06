@@ -1,8 +1,9 @@
 const { createEmbedding, getEmbeddingModel } = require("./embeddingService");
 const { isValidEmbedding, loadEmbeddingStore, validateEmbeddingStore } = require("./embeddingStore");
 const { GLOBAL_PAGE_ID, buildGlobalKnowledgeChunks, loadGlobalEmbeddingStore, validateGlobalEmbeddingStore } = require("./globalKnowledgeStore");
-const { buildKnowledgeChunks } = require("./pageKnowledge");
+const { buildKnowledgeChunks, pageKnowledge } = require("./pageKnowledge");
 const { calculateLexicalBoost, cosineSimilarity } = require("./retrievalService");
+const { calculateNluRecordBoost, understandQuery } = require("./queryUnderstanding");
 
 const DEFAULT_PAGE_TOP_K = 5;
 const DEFAULT_GLOBAL_TOP_K = 5;
@@ -22,9 +23,13 @@ async function retrieveHybridChunks({
   pagePriorityBoost = readNumberEnv("HYBRID_PAGE_PRIORITY_BOOST", DEFAULT_PAGE_PRIORITY_BOOST),
   serviceBoost = readNumberEnv("HYBRID_SERVICE_BOOST", DEFAULT_SERVICE_BOOST),
   globalIntentBoost = readNumberEnv("HYBRID_GLOBAL_INTENT_BOOST", DEFAULT_GLOBAL_INTENT_BOOST),
+  queryUnderstanding = null,
 } = {}) {
+  const understanding = queryUnderstanding || understandQuery(question);
+  const retrievalQuery = understanding.retrievalQuery || question;
   const pageStore = loadEmbeddingStore(pageId);
   const pageChunks = buildKnowledgeChunks(pageId);
+  const currentWorkflow = pageKnowledge[pageId]?.currentWorkflow || [];
   const pageValidation = validateEmbeddingStore(pageId, pageChunks, pageStore);
 
   if (!pageValidation.ok) {
@@ -46,7 +51,7 @@ async function retrieveHybridChunks({
 
   const model = pageStore.model || getEmbeddingModel();
   const dimension = Number(pageStore.embeddingDimension);
-  const queryEmbedding = await createEmbedding(["task: retrieval_query", question].join("\n"), {
+  const queryEmbedding = await createEmbedding(["task: retrieval_query", retrievalQuery].join("\n"), {
     model,
     outputDimensionality: dimension,
   });
@@ -55,27 +60,31 @@ async function retrieveHybridChunks({
     throw new Error("Hybrid query embedding is invalid.");
   }
 
-  const mentionedServices = detectMentionedServices(question);
-  const hasGlobalIntent = detectGlobalIntent(question);
+  const mentionedServices = detectMentionedServices(retrievalQuery);
+  const hasGlobalIntent = understanding.primaryIntent === "service_list" || detectGlobalIntent(retrievalQuery);
   const pageCandidates = rankRecords({
     records: pageStore.records,
     queryEmbedding,
-    question,
+    question: retrievalQuery,
     topK: pageTopK,
     sourceType: "page",
     sourceBoost: hasGlobalIntent ? 0 : pagePriorityBoost,
     serviceBoost: 0,
     mentionedServices,
+    understanding,
+    currentWorkflow,
   });
   const globalCandidates = rankRecords({
     records: globalStore.records,
     queryEmbedding,
-    question,
+    question: retrievalQuery,
     topK: globalTopK,
     sourceType: "global",
     sourceBoost: hasGlobalIntent ? globalIntentBoost : 0,
     serviceBoost,
     mentionedServices,
+    understanding,
+    currentWorkflow: [],
   });
 
   const chunks = mergeCandidates([...pageCandidates, ...globalCandidates], mergedTopK);
@@ -95,6 +104,7 @@ async function retrieveHybridChunks({
     globalIntentBoost,
     hasGlobalIntent,
     mentionedServices,
+    understanding,
   };
 }
 
@@ -121,7 +131,7 @@ function buildHybridRetrievedContext(retrievedChunks) {
     .join("\n\n");
 }
 
-function rankRecords({ records, queryEmbedding, question, topK, sourceType, sourceBoost, serviceBoost, mentionedServices }) {
+function rankRecords({ records, queryEmbedding, question, topK, sourceType, sourceBoost, serviceBoost, mentionedServices, understanding, currentWorkflow }) {
   return records
     .map((record) => {
       const semanticScore = cosineSimilarity(queryEmbedding, record.embedding);
@@ -129,7 +139,8 @@ function rankRecords({ records, queryEmbedding, question, topK, sourceType, sour
       const matchedServices = sourceType === "global" ? getMatchedServices(record.service, mentionedServices) : [];
       const appliedServiceBoost = matchedServices.length > 0 ? serviceBoost : 0;
       const intentBoost = calculateIntentBoost(question, record, sourceType);
-      const score = semanticScore + lexicalBoost + sourceBoost + appliedServiceBoost + intentBoost;
+      const nluBoost = sourceType === "page" ? calculateNluRecordBoost({ record, understanding, currentWorkflow }) : 0;
+      const score = semanticScore + lexicalBoost + sourceBoost + appliedServiceBoost + intentBoost + nluBoost;
 
       return {
         id: record.id,
@@ -148,6 +159,7 @@ function rankRecords({ records, queryEmbedding, question, topK, sourceType, sour
         sourceBoost: roundScore(sourceBoost),
         serviceBoost: roundScore(appliedServiceBoost),
         intentBoost: roundScore(intentBoost),
+        nluBoost: roundScore(nluBoost),
       };
     })
     .filter((item) => Number.isFinite(item.score))

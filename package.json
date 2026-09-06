@@ -17,7 +17,8 @@
     "llm:test": "node testLlm.js",
     "llm:validate": "node validateLlm.js",
     "ai:evaluate": "node evaluateAi.js",
-    "ai:regression": "node regressionAi.js"
+    "ai:regression": "node regressionAi.js",
+    "nlu:evaluate": "node evaluateNlu.js"
   },
   "dependencies": {
     "react": "^19.2.8",

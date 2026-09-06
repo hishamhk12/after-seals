@@ -1,6 +1,7 @@
 const { createEmbedding, getEmbeddingModel } = require("./embeddingService");
 const { isValidEmbedding, loadEmbeddingStore, validateEmbeddingStore } = require("./embeddingStore");
-const { buildKnowledgeChunks } = require("./pageKnowledge");
+const { buildKnowledgeChunks, pageKnowledge } = require("./pageKnowledge");
+const { calculateNluRecordBoost, understandQuery } = require("./queryUnderstanding");
 
 const DEFAULT_TOP_K = 5;
 const DEFAULT_MIN_SCORE = 0.72;
@@ -8,8 +9,11 @@ const LEXICAL_BOOST_WEIGHT = 0.08;
 const EXACT_TERM_BOOST = 0.035;
 
 async function retrieveRelevantChunks({ pageId, question, topK = DEFAULT_TOP_K, minScore = DEFAULT_MIN_SCORE }) {
+  const understanding = understandQuery(question);
+  const retrievalQuery = understanding.retrievalQuery || question;
   const store = loadEmbeddingStore(pageId);
   const chunks = buildKnowledgeChunks(pageId);
+  const currentWorkflow = pageKnowledge[pageId]?.currentWorkflow || [];
   const storeValidation = validateEmbeddingStore(pageId, chunks, store);
 
   if (!storeValidation.ok) {
@@ -18,7 +22,7 @@ async function retrieveRelevantChunks({ pageId, question, topK = DEFAULT_TOP_K, 
 
   const model = store.model || getEmbeddingModel();
   const dimension = Number(store.embeddingDimension);
-  const queryEmbedding = await createEmbedding(formatQueryForEmbedding(question), {
+  const queryEmbedding = await createEmbedding(formatQueryForEmbedding(retrievalQuery), {
     model,
     outputDimensionality: dimension,
   });
@@ -30,8 +34,9 @@ async function retrieveRelevantChunks({ pageId, question, topK = DEFAULT_TOP_K, 
   const ranked = store.records
     .map((record) => {
       const semanticScore = cosineSimilarity(queryEmbedding, record.embedding);
-      const lexicalBoost = calculateLexicalBoost(question, record);
-      const score = semanticScore + lexicalBoost;
+      const lexicalBoost = calculateLexicalBoost(retrievalQuery, record);
+      const nluBoost = calculateNluRecordBoost({ record, understanding, currentWorkflow });
+      const score = semanticScore + lexicalBoost + nluBoost;
 
       return {
         id: record.id,
@@ -43,6 +48,7 @@ async function retrieveRelevantChunks({ pageId, question, topK = DEFAULT_TOP_K, 
         score: roundScore(score),
         semanticScore: roundScore(semanticScore),
         lexicalBoost: roundScore(lexicalBoost),
+        nluBoost: roundScore(nluBoost),
       };
     })
     .filter((item) => Number.isFinite(item.score))
@@ -59,6 +65,7 @@ async function retrieveRelevantChunks({ pageId, question, topK = DEFAULT_TOP_K, 
     queryEmbeddingDimension: queryEmbedding.length,
     topK,
     minScore,
+    understanding,
   };
 }
 

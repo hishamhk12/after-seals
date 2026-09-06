@@ -1,16 +1,16 @@
 {
-  "timestamp": "2026-09-03T10:44:24.699Z",
+  "timestamp": "2026-09-06T05:40:39.500Z",
   "mode": "full",
   "pageId": "intro-tour",
   "metrics": {
-    "total": 48,
+    "total": 49,
     "passCount": 48,
-    "failCount": 0,
-    "overallAccuracy": 100,
-    "supportedAccuracy": 100,
+    "failCount": 1,
+    "overallAccuracy": 97.96,
+    "supportedAccuracy": 97.5,
     "unsupportedRefusalAccuracy": 100,
     "sequenceAccuracy": 100,
-    "retrievalAccuracy": 100,
+    "retrievalAccuracy": 97.06,
     "byCategory": {
       "field-definition": {
         "total": 6,
@@ -31,8 +31,8 @@
         "accuracy": 100
       },
       "workflow-sequence": {
-        "total": 12,
-        "passCount": 12,
+        "total": 13,
+        "passCount": 13,
         "failCount": 0,
         "accuracy": 100
       },
@@ -50,9 +50,9 @@
       },
       "multi-chunk": {
         "total": 2,
-        "passCount": 2,
-        "failCount": 0,
-        "accuracy": 100
+        "passCount": 1,
+        "failCount": 1,
+        "accuracy": 50
       },
       "terminology-preservation": {
         "total": 2,
@@ -112,7 +112,7 @@
       "category": "field-definition",
       "question": "شو يعني Appointment From؟",
       "path": "rag",
-      "answer": "حقل **Appointment From** يحدد بداية الفترة التي يُسمح للعميل خلالها بحجز موعد التوصيل.",
+      "answer": "**Appointment From** يحدد بداية الفترة التي يُسمح للعميل خلالها بحجز موعد التوصيل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -122,48 +122,48 @@
           "title": "Appointment From",
           "type": "field",
           "stageId": null,
-          "score": 0.919363,
-          "semanticScore": 0.831029,
-          "lexicalBoost": 0.088333
+          "score": 0.919735,
+          "semanticScore": 0.871402,
+          "lexicalBoost": 0.048333
         },
         {
           "id": "intro-tour:stage:appointment-window",
           "title": "تحديد فترة حجز الموعد",
           "type": "stage",
           "stageId": "appointment-window",
-          "score": 0.871128,
-          "semanticScore": 0.782795,
-          "lexicalBoost": 0.088333
+          "score": 0.865485,
+          "semanticScore": 0.812708,
+          "lexicalBoost": 0.052778
         },
         {
           "id": "intro-tour:business-rule:BR-INTRO-001",
           "title": "نافذة حجز الموعد",
           "type": "business-rule",
           "stageId": null,
-          "score": 0.861679,
-          "semanticScore": 0.773346,
-          "lexicalBoost": 0.088333
-        },
-        {
-          "id": "intro-tour:relationship:6",
-          "title": "Appointment From + Appointment To define Allowed Booking Window",
-          "type": "relationship",
-          "stageId": null,
-          "score": 0.844711,
-          "semanticScore": 0.791378,
-          "lexicalBoost": 0.053333
+          "score": 0.842674,
+          "semanticScore": 0.789896,
+          "lexicalBoost": 0.052778
         },
         {
           "id": "intro-tour:field:appointment-to",
           "title": "Appointment To",
           "type": "field",
           "stageId": null,
-          "score": 0.82074,
-          "semanticScore": 0.794073,
-          "lexicalBoost": 0.026667
+          "score": 0.828998,
+          "semanticScore": 0.820109,
+          "lexicalBoost": 0.008889
+        },
+        {
+          "id": "intro-tour:relationship:6",
+          "title": "Appointment From + Appointment To define Allowed Booking Window",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.826152,
+          "semanticScore": 0.808374,
+          "lexicalBoost": 0.017778
         }
       ],
-      "topScore": 0.919363,
+      "topScore": 0.919735,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -193,48 +193,48 @@
           "title": "Appointment To",
           "type": "field",
           "stageId": null,
-          "score": 0.910651,
-          "semanticScore": 0.822317,
-          "lexicalBoost": 0.088333
-        },
-        {
-          "id": "intro-tour:business-rule:BR-INTRO-001",
-          "title": "نافذة حجز الموعد",
-          "type": "business-rule",
-          "stageId": null,
-          "score": 0.857768,
-          "semanticScore": 0.769435,
-          "lexicalBoost": 0.088333
+          "score": 0.92511,
+          "semanticScore": 0.876777,
+          "lexicalBoost": 0.048333
         },
         {
           "id": "intro-tour:stage:appointment-window",
           "title": "تحديد فترة حجز الموعد",
           "type": "stage",
           "stageId": "appointment-window",
-          "score": 0.856993,
-          "semanticScore": 0.76866,
-          "lexicalBoost": 0.088333
+          "score": 0.863866,
+          "semanticScore": 0.811088,
+          "lexicalBoost": 0.052778
         },
         {
-          "id": "intro-tour:relationship:6",
-          "title": "Appointment From + Appointment To define Allowed Booking Window",
-          "type": "relationship",
+          "id": "intro-tour:business-rule:BR-INTRO-001",
+          "title": "نافذة حجز الموعد",
+          "type": "business-rule",
           "stageId": null,
-          "score": 0.843175,
-          "semanticScore": 0.789841,
-          "lexicalBoost": 0.053333
+          "score": 0.85008,
+          "semanticScore": 0.797302,
+          "lexicalBoost": 0.052778
         },
         {
           "id": "intro-tour:field:appointment-from",
           "title": "Appointment From",
           "type": "field",
           "stageId": null,
-          "score": 0.818173,
-          "semanticScore": 0.791507,
-          "lexicalBoost": 0.026667
+          "score": 0.837868,
+          "semanticScore": 0.828979,
+          "lexicalBoost": 0.008889
+        },
+        {
+          "id": "intro-tour:relationship:6",
+          "title": "Appointment From + Appointment To define Allowed Booking Window",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.833069,
+          "semanticScore": 0.815291,
+          "lexicalBoost": 0.017778
         }
       ],
-      "topScore": 0.910651,
+      "topScore": 0.92511,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -310,52 +310,52 @@
       "isFallback": false,
       "retrievedChunks": [
         {
+          "id": "intro-tour:workflow-question:current-service-receipt-question",
+          "title": "كيف بتنتهي الخدمة؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.970555,
+          "semanticScore": 0.832222,
+          "lexicalBoost": 0.138333
+        },
+        {
+          "id": "intro-tour:current-workflow:current-service-receipt",
+          "title": "07 — استلام الخدمة",
+          "type": "current-workflow",
+          "stageId": "current-service-receipt",
+          "score": 0.934814,
+          "semanticScore": 0.803147,
+          "lexicalBoost": 0.131667
+        },
+        {
           "id": "intro-tour:field:otp",
           "title": "OTP",
           "type": "field",
           "stageId": null,
-          "score": 0.954652,
-          "semanticScore": 0.839652,
-          "lexicalBoost": 0.115
+          "score": 0.928217,
+          "semanticScore": 0.879884,
+          "lexicalBoost": 0.048333
+        },
+        {
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.892693,
+          "semanticScore": 0.761027,
+          "lexicalBoost": 0.131667
         },
         {
           "id": "intro-tour:stage:driver-portal-execution:substep:otp-confirmation",
           "title": "تأكيد الاستلام عبر OTP",
           "type": "stage",
           "stageId": "driver-portal-execution",
-          "score": 0.891437,
-          "semanticScore": 0.776437,
-          "lexicalBoost": 0.115
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.805767,
-          "semanticScore": 0.690767,
-          "lexicalBoost": 0.115
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.800005,
-          "semanticScore": 0.685005,
-          "lexicalBoost": 0.115
-        },
-        {
-          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
-          "title": "من تعيين السائق حتى اكتمال التوصيل",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.789401,
-          "semanticScore": 0.674401,
-          "lexicalBoost": 0.115
+          "score": 0.890309,
+          "semanticScore": 0.835309,
+          "lexicalBoost": 0.055
         }
       ],
-      "topScore": 0.954652,
+      "topScore": 0.970555,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -400,58 +400,58 @@
       "category": "field-comparison",
       "question": "مين المسؤول عن متابعة المهمة ومين ينفذها؟",
       "path": "rag",
-      "answer": "المسؤول عن متابعة المهمة والإشراف عليها هو المشرف المحدد عبر **Assignees**، بينما منفذ الخدمة الفعلي هو المحدد عبر **Assign** (ويكون السائق في خدمة التوصيل).",
+      "answer": "- **Assignees**: هو المشرف المسؤول عن متابعة المهمة والإشراف على تنفيذها.\n- **Assign**: هو منفذ الخدمة الفعلي، وفي خدمة التوصيل يكون السائق.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
+          "id": "intro-tour:relationship:4",
+          "title": "Assignees supervises Task",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.949386,
+          "semanticScore": 0.856529,
+          "lexicalBoost": 0.092857
+        },
+        {
           "id": "intro-tour:stage:supervisor",
           "title": "تحديد المشرف المسؤول",
           "type": "stage",
           "stageId": "supervisor",
-          "score": 0.832293,
-          "semanticScore": 0.792293,
-          "lexicalBoost": 0.04
+          "score": 0.928583,
+          "semanticScore": 0.830012,
+          "lexicalBoost": 0.098571
         },
         {
           "id": "intro-tour:workflow-question:assign-vs-assignees",
           "title": "شو الفرق بين Assign و Assignees؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.814567,
-          "semanticScore": 0.774567,
-          "lexicalBoost": 0.04
-        },
-        {
-          "id": "intro-tour:relationship:4",
-          "title": "Assignees supervises Task",
-          "type": "relationship",
-          "stageId": null,
-          "score": 0.806582,
-          "semanticScore": 0.766582,
-          "lexicalBoost": 0.04
+          "score": 0.916052,
+          "semanticScore": 0.823195,
+          "lexicalBoost": 0.092857
         },
         {
           "id": "intro-tour:field:assignees",
           "title": "Assignees",
           "type": "field",
           "stageId": null,
-          "score": 0.791946,
-          "semanticScore": 0.765279,
-          "lexicalBoost": 0.026667
+          "score": 0.894832,
+          "semanticScore": 0.836975,
+          "lexicalBoost": 0.057857
         },
         {
-          "id": "intro-tour:workflow:supervisor",
-          "title": "تحديد المشرف المسؤول",
-          "type": "workflow",
-          "stageId": "supervisor",
-          "score": 0.778546,
-          "semanticScore": 0.75188,
-          "lexicalBoost": 0.026667
+          "id": "intro-tour:current-workflow:current-delivery-request",
+          "title": "02 — طلب توصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-request",
+          "score": 0.874269,
+          "semanticScore": 0.75784,
+          "lexicalBoost": 0.116429
         }
       ],
-      "topScore": 0.832293,
+      "topScore": 0.949386,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -471,7 +471,7 @@
       "category": "field-comparison",
       "question": "الفرق بين المشرف والسائق شو هو؟",
       "path": "rag",
-      "answer": "- **المشرف (`Assignees`):** هو المسؤول عن متابعة المهمة والإشراف على تنفيذ عملية التوصيل حتى اكتمالها.\n- **السائق (`Assign`):** هو منفذ الخدمة الفعلي الذي يقوم بتنفيذ التوصيل من خلال بوابة السائق.",
+      "answer": "المشرف يُحدد في حقل **Assignees** وهو المسؤول عن متابعة المهمة والإشراف على تنفيذها، بينما السائق يُحدد في حقل **Assign** وهو المنفذ الفعلي للخدمة.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -481,48 +481,48 @@
           "title": "شو الفرق بين Assign و Assignees؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.952712,
-          "semanticScore": 0.822712,
-          "lexicalBoost": 0.13
+          "score": 0.987419,
+          "semanticScore": 0.847419,
+          "lexicalBoost": 0.14
+        },
+        {
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.982043,
+          "semanticScore": 0.842043,
+          "lexicalBoost": 0.14
         },
         {
           "id": "intro-tour:stage:supervisor",
           "title": "تحديد المشرف المسؤول",
           "type": "stage",
           "stageId": "supervisor",
-          "score": 0.897406,
-          "semanticScore": 0.807406,
-          "lexicalBoost": 0.09
+          "score": 0.980062,
+          "semanticScore": 0.840062,
+          "lexicalBoost": 0.14
         },
         {
-          "id": "intro-tour:field:assignees",
-          "title": "Assignees",
-          "type": "field",
-          "stageId": null,
-          "score": 0.795602,
-          "semanticScore": 0.740602,
-          "lexicalBoost": 0.055
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.952201,
+          "semanticScore": 0.812201,
+          "lexicalBoost": 0.14
         },
         {
           "id": "intro-tour:field:assign",
           "title": "Assign",
           "type": "field",
           "stageId": null,
-          "score": 0.756537,
-          "semanticScore": 0.721537,
-          "lexicalBoost": 0.035
-        },
-        {
-          "id": "intro-tour:glossary:driver-portal",
-          "title": "Driver Portal",
-          "type": "glossary",
-          "stageId": null,
-          "score": 0.747609,
-          "semanticScore": 0.747609,
-          "lexicalBoost": 0
+          "score": 0.897278,
+          "semanticScore": 0.784659,
+          "lexicalBoost": 0.112619
         }
       ],
-      "topScore": 0.952712,
+      "topScore": 0.987419,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -567,58 +567,58 @@
       "category": "appointment-booking",
       "question": "من ايمت لإيمت بقدر احجز؟",
       "path": "rag",
-      "answer": "يمكنك الحجز حصراً ضمن الفترة المحددة مسبقاً بين:\n- **Appointment From**: الذي يحدد بداية الفترة المتاحة لحجز موعد التوصيل.\n- **Appointment To**: الذي يحدد نهاية الفترة المتاحة لحجز موعد التوصيل.\n\nوتظهر المواعيد المتاحة للاختيار بين هذين التاريخين، ويجب أن يكون الموعد المختار ضمن هذه الفترة المحددة.",
+      "answer": "يمكن حجز الموعد بعد تجهيز بيانات الخدمة وحفظ فترة الحجز وظهور رابط حجز الموعد، ويجب أن يكون الموعد المختار ضمن الفترة المحددة مسبقاً بين Appointment From و Appointment To (بين تاريخ بداية الحجز وتاريخ نهايته).",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.877297,
+          "semanticScore": 0.78063,
+          "lexicalBoost": 0.096667
+        },
+        {
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.873836,
+          "semanticScore": 0.745979,
+          "lexicalBoost": 0.127857
+        },
+        {
+          "id": "intro-tour:stage:appointment-booking",
+          "title": "حجز موعد التوصيل",
+          "type": "stage",
+          "stageId": "appointment-booking",
+          "score": 0.827792,
+          "semanticScore": 0.769934,
+          "lexicalBoost": 0.057857
+        },
+        {
+          "id": "intro-tour:stage:delivery-scheduling",
+          "title": "إرسال رابط الحجز للعميل",
+          "type": "stage",
+          "stageId": "delivery-scheduling",
+          "score": 0.827565,
+          "semanticScore": 0.765898,
+          "lexicalBoost": 0.061667
+        },
+        {
           "id": "intro-tour:stage:appointment-booking:substep:date-time-selection",
           "title": "اختيار التاريخ والوقت",
           "type": "stage",
           "stageId": "appointment-booking",
-          "score": 0.745692,
-          "semanticScore": 0.745692,
-          "lexicalBoost": 0
-        },
-        {
-          "id": "intro-tour:field:appointment-from",
-          "title": "Appointment From",
-          "type": "field",
-          "stageId": null,
-          "score": 0.739218,
-          "semanticScore": 0.739218,
-          "lexicalBoost": 0
-        },
-        {
-          "id": "intro-tour:relationship:7",
-          "title": "Allowed Booking Window constrains Available Appointment Selection",
-          "type": "relationship",
-          "stageId": null,
-          "score": 0.737975,
-          "semanticScore": 0.737975,
-          "lexicalBoost": 0
-        },
-        {
-          "id": "intro-tour:stage:appointment-window",
-          "title": "تحديد فترة حجز الموعد",
-          "type": "stage",
-          "stageId": "appointment-window",
-          "score": 0.733593,
-          "semanticScore": 0.733593,
-          "lexicalBoost": 0
-        },
-        {
-          "id": "intro-tour:relationship:6",
-          "title": "Appointment From + Appointment To define Allowed Booking Window",
-          "type": "relationship",
-          "stageId": null,
-          "score": 0.72381,
-          "semanticScore": 0.72381,
-          "lexicalBoost": 0
+          "score": 0.827039,
+          "semanticScore": 0.776801,
+          "lexicalBoost": 0.050238
         }
       ],
-      "topScore": 0.745692,
+      "topScore": 0.877297,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -638,58 +638,58 @@
       "category": "appointment-booking",
       "question": "شو الفترة المسموحة للحجز؟",
       "path": "rag",
-      "answer": "الفترة المسموحة للحجز (Allowed Booking Window) هي الفترة المحددة مسبقًا التي يُسمح للعميل خلالها باختيار موعد تنفيذ خدمة التوصيل، وتتحدد بالحقول التالية:\n\n- **Appointment From**: يحدد بداية فترة الحجز المتاحة للعميل.\n- **Appointment To**: يحدد نهاية فترة الحجز المتاحة للعميل.\n\nوتظهر المواعيد المتاحة للحجز ضمن هذه الفترة ليختار العميل التاريخ والوقت المناسبين.",
+      "answer": "يظهر رابط الحجز بعد تجهيز بيانات الخدمة وحفظ فترة الحجز، وتكون الفترة المسموحة للحجز محددة ضمن الفترة المحددة مسبقاً بين Appointment From و Appointment To (بين تاريخ بداية الحجز وتاريخ نهايته).",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:relationship:7",
-          "title": "Allowed Booking Window constrains Available Appointment Selection",
-          "type": "relationship",
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.885611,
+          "semanticScore": 0.752611,
+          "lexicalBoost": 0.133
+        },
+        {
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
           "stageId": null,
-          "score": 0.809123,
-          "semanticScore": 0.75579,
-          "lexicalBoost": 0.053333
+          "score": 0.884946,
+          "semanticScore": 0.786946,
+          "lexicalBoost": 0.098
+        },
+        {
+          "id": "intro-tour:stage:delivery-scheduling",
+          "title": "إرسال رابط الحجز للعميل",
+          "type": "stage",
+          "stageId": "delivery-scheduling",
+          "score": 0.84448,
+          "semanticScore": 0.78148,
+          "lexicalBoost": 0.063
+        },
+        {
+          "id": "intro-tour:stage:appointment-booking",
+          "title": "حجز موعد التوصيل",
+          "type": "stage",
+          "stageId": "appointment-booking",
+          "score": 0.842268,
+          "semanticScore": 0.775268,
+          "lexicalBoost": 0.067
         },
         {
           "id": "intro-tour:stage:appointment-booking:substep:date-time-selection",
           "title": "اختيار التاريخ والوقت",
           "type": "stage",
           "stageId": "appointment-booking",
-          "score": 0.790665,
-          "semanticScore": 0.737332,
-          "lexicalBoost": 0.053333
-        },
-        {
-          "id": "intro-tour:workflow:appointment-window",
-          "title": "تحديد فترة حجز الموعد",
-          "type": "workflow",
-          "stageId": "appointment-window",
-          "score": 0.785223,
-          "semanticScore": 0.73189,
-          "lexicalBoost": 0.053333
-        },
-        {
-          "id": "intro-tour:glossary:allowed-booking-window",
-          "title": "Allowed Booking Window",
-          "type": "glossary",
-          "stageId": null,
-          "score": 0.775207,
-          "semanticScore": 0.74854,
-          "lexicalBoost": 0.026667
-        },
-        {
-          "id": "intro-tour:stage:appointment-window",
-          "title": "تحديد فترة حجز الموعد",
-          "type": "stage",
-          "stageId": "appointment-window",
-          "score": 0.77193,
-          "semanticScore": 0.745263,
-          "lexicalBoost": 0.026667
+          "score": 0.839274,
+          "semanticScore": 0.780274,
+          "lexicalBoost": 0.059
         }
       ],
-      "topScore": 0.809123,
+      "topScore": 0.885611,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -734,58 +734,58 @@
       "category": "appointment-booking",
       "question": "العميل فيو يحجز بأي تاريخ؟",
       "path": "rag",
-      "answer": "لا، لا يمكن للعميل الحجز في أي تاريخ عشوائي؛ بل يختار من المواعيد المتاحة للحجز فقط ضمن الفترة المحددة مسبقًا بين تاريخ بداية الحجز وتاريخ نهايته.",
+      "answer": "لا، لا يمكن للعميل الحجز في أي تاريخ عشوائي؛ بل يجب أن يكون الموعد المختار ضمن المواعيد المتاحة والفترة المحددة مسبقاً بين Appointment From و Appointment To.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:stage:delivery-scheduling",
-          "title": "إرسال رابط الحجز للعميل",
-          "type": "stage",
-          "stageId": "delivery-scheduling",
-          "score": 0.754497,
-          "semanticScore": 0.703497,
-          "lexicalBoost": 0.051
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.908245,
+          "semanticScore": 0.779245,
+          "lexicalBoost": 0.129
         },
         {
-          "id": "intro-tour:stage:appointment-booking",
-          "title": "حجز موعد التوصيل",
-          "type": "stage",
-          "stageId": "appointment-booking",
-          "score": 0.741485,
-          "semanticScore": 0.709485,
-          "lexicalBoost": 0.032
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.901054,
+          "semanticScore": 0.803054,
+          "lexicalBoost": 0.098
         },
         {
           "id": "intro-tour:workflow:appointment-booking",
           "title": "حجز العميل للموعد",
           "type": "workflow",
           "stageId": "appointment-booking",
-          "score": 0.738185,
-          "semanticScore": 0.722185,
-          "lexicalBoost": 0.016
+          "score": 0.871616,
+          "semanticScore": 0.816616,
+          "lexicalBoost": 0.055
         },
         {
-          "id": "intro-tour:stage:appointment-booking:substep:customer-location",
-          "title": "بيانات العميل وموقع التنفيذ",
+          "id": "intro-tour:stage:appointment-booking",
+          "title": "حجز موعد التوصيل",
           "type": "stage",
           "stageId": "appointment-booking",
-          "score": 0.735399,
-          "semanticScore": 0.719399,
-          "lexicalBoost": 0.016
+          "score": 0.85869,
+          "semanticScore": 0.79569,
+          "lexicalBoost": 0.063
         },
         {
-          "id": "intro-tour:stage:appointment-booking:substep:date-time-selection",
-          "title": "اختيار التاريخ والوقت",
+          "id": "intro-tour:stage:delivery-scheduling",
+          "title": "إرسال رابط الحجز للعميل",
           "type": "stage",
-          "stageId": "appointment-booking",
-          "score": 0.713444,
-          "semanticScore": 0.697444,
-          "lexicalBoost": 0.016
+          "stageId": "delivery-scheduling",
+          "score": 0.852955,
+          "semanticScore": 0.789955,
+          "lexicalBoost": 0.063
         }
       ],
-      "topScore": 0.754497,
+      "topScore": 0.908245,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -805,7 +805,7 @@
       "category": "appointment-booking",
       "question": "شو بتعرض شاشة اختيار التاريخ والوقت؟",
       "path": "rag",
-      "answer": "تَعرِض المواعيد المتاحة للحجز ضمن الفترة المحددة مسبقًا بين تاريخ بداية الحجز وتاريخ نهايته، حيث يختار المستخدم التاريخ والوقت المناسبين لموعد التوصيل.",
+      "answer": "تظهر المواعيد المتاحة للحجز ضمن الفترة المحددة مسبقًا بين تاريخ بداية الحجز وتاريخ نهايته، ويختار المستخدم من خلالها التاريخ والوقت المناسبين لموعد التوصيل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -815,48 +815,48 @@
           "title": "اختيار التاريخ والوقت",
           "type": "stage",
           "stageId": "appointment-booking",
-          "score": 0.879836,
-          "semanticScore": 0.796836,
-          "lexicalBoost": 0.083
+          "score": 0.864475,
+          "semanticScore": 0.789475,
+          "lexicalBoost": 0.075
         },
         {
           "id": "intro-tour:stage:appointment-booking",
           "title": "حجز موعد التوصيل",
           "type": "stage",
           "stageId": "appointment-booking",
-          "score": 0.7988,
-          "semanticScore": 0.7508,
-          "lexicalBoost": 0.048
+          "score": 0.78534,
+          "semanticScore": 0.74534,
+          "lexicalBoost": 0.04
+        },
+        {
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.775142,
+          "semanticScore": 0.713475,
+          "lexicalBoost": 0.061667
         },
         {
           "id": "intro-tour:workflow:appointment-booking",
           "title": "حجز العميل للموعد",
           "type": "workflow",
           "stageId": "appointment-booking",
-          "score": 0.78789,
-          "semanticScore": 0.70489,
-          "lexicalBoost": 0.083
+          "score": 0.773075,
+          "semanticScore": 0.698075,
+          "lexicalBoost": 0.075
         },
         {
-          "id": "intro-tour:stage:appointment-booking:substep:appointment-confirmation",
-          "title": "تأكيد الموعد",
-          "type": "stage",
-          "stageId": "appointment-booking",
-          "score": 0.737082,
-          "semanticScore": 0.737082,
-          "lexicalBoost": 0
-        },
-        {
-          "id": "intro-tour:stage:appointment-window",
-          "title": "تحديد فترة حجز الموعد",
-          "type": "stage",
-          "stageId": "appointment-window",
-          "score": 0.730804,
-          "semanticScore": 0.730804,
-          "lexicalBoost": 0
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.758573,
+          "semanticScore": 0.696907,
+          "lexicalBoost": 0.061667
         }
       ],
-      "topScore": 0.879836,
+      "topScore": 0.864475,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -876,7 +876,7 @@
       "category": "workflow-sequence",
       "question": "اشرحلي من وقت تعيين السائق لحد انتهاء التوصيل",
       "path": "rag",
-      "answer": "من وقت تعيين السائق حتى اكتمال التوصيل، تسير العملية وفق الخطوات التالية:\n\n1. **تعيين السائق**: يتم تحديد وتعيين السائق المسؤول عن تنفيذ خدمة التوصيل في Assign.\n2. **تفعيل النماذج**: تفعيل Task Forms المرتبطة بالمهمة وظهور نموذج سند التحميل في خدمة التوصيل.\n3. **بدء التنفيذ**: يفتح السائق بوابة السائق ويضغط على Start لبدء تنفيذ خدمة التوصيل.\n4. **توثيق الخدمة**: يرفع السائق صورة التنفيذ لتوثيق تنفيذ الخدمة.\n5. **إنهاء المهمة**: يضغط السائق على خيار End Task الذي يظهر بعد رفع الصورة المطلوبة.\n6. **رمز التأكيد**: يُرسل النظام رمز OTP إلى العميل لتأكيد استلام الخدمة.\n7. **اكتمال الخدمة**: بعد تأكيد رمز OTP بنجاح، تتحول المهمة إلى Completed ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "answer": "من وقت تعيين السائق حتى اكتمال التوصيل، تسير الخطوات بالتسلسل التالي:\n\n1. **تعيين السائق**: تصل المهمة إلى مرحلة تعيين سائق، ويتم تحديد السائق المسؤول عن التنفيذ في حقل **Assign**.\n2. **النماذج (Task Forms)**: يتم تفعيل **Task Forms** المرتبطة بالمهمة ويظهر نموذج سند التحميل.\n3. **بوابة السائق وبدء الخدمة**: يفتح السائق رابط بوابة السائق للمهمة، ثم يضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n4. **توثيق التنفيذ**: يرفع السائق صورة التنفيذ لتوثيق تقديم الخدمة.\n5. **إنهاء المهمة**: بعد رفع الصورة يظهر خيار **End Task** ويضغط عليه السائق.\n6. **رمز التحقق (OTP)**: يرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n7. **اكتمال الخدمة**: بعد تأكيد رمز **OTP** بنجاح، تتحول المهمة إلى **Completed** ويُسجل اكتمال التوصيل وتأكيد العميل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -886,8 +886,8 @@
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 1.011577,
-          "semanticScore": 0.871577,
+          "score": 1.026462,
+          "semanticScore": 0.886462,
           "lexicalBoost": 0.14
         },
         {
@@ -895,39 +895,64 @@
           "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
           "type": "workflow",
           "stageId": null,
-          "score": 1.003547,
-          "semanticScore": 0.864975,
-          "lexicalBoost": 0.138571
+          "score": 1.001994,
+          "semanticScore": 0.867903,
+          "lexicalBoost": 0.134091
         },
         {
-          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
-          "title": "شو تسلسل الخدمات؟",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.901261,
-          "semanticScore": 0.831975,
-          "lexicalBoost": 0.069286
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.949612,
+          "semanticScore": 0.82643,
+          "lexicalBoost": 0.123182
         },
         {
           "id": "intro-tour:workflow-sequence:full-delivery-workflow",
           "title": "تسلسل خدمة التوصيل الكامل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.896891,
-          "semanticScore": 0.827606,
-          "lexicalBoost": 0.069286
+          "score": 0.933556,
+          "semanticScore": 0.841738,
+          "lexicalBoost": 0.091818
         },
         {
-          "id": "intro-tour:relationship:9",
-          "title": "Driver Assignment followed by Driver Portal Execution",
-          "type": "relationship",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
+          "title": "شو تسلسل الخدمات؟",
+          "type": "workflow",
           "stageId": null,
-          "score": 0.876125,
-          "semanticScore": 0.84184,
-          "lexicalBoost": 0.034286
+          "score": 0.925961,
+          "semanticScore": 0.834142,
+          "lexicalBoost": 0.091818
         }
       ],
-      "topScore": 1.011577,
+      "topScore": 1.026462,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "workflow-current-001",
+      "category": "workflow-sequence",
+      "question": "شو تسلسل خدمة التوصيل؟",
+      "path": "deterministic",
+      "answer": "المسار الحالي المرئي لخدمة التوصيل هو: 01 — فاتورة من SAP → 02 — طلب توصيل → 03 — جدولة التوصيل → 04 — ربط الخدمة بالسائق → 05 — ملئ النموذج → 06 — جاري التوصيل → 07 — استلام الخدمة. وتبقى تفاصيل Tasks وTask وProject وStage وAssignees وAssign وTrip Date وAppointment From وAppointment To وTask Forms وبوابة السائق وStart ورفع الصورة وEnd Task وOTP وCompleted معرفة مساندة داخل هذه المراحل.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [],
+      "topScore": null,
       "thresholdTriggered": false,
       "critical": true,
       "pass": true,
@@ -1072,58 +1097,58 @@
       "category": "workflow-sequence",
       "question": "شو ترتيب التنفيذ من تعيين السائق للنهاية؟",
       "path": "rag",
-      "answer": "ترتيب خطوات التنفيذ من تعيين السائق حتى اكتمال التوصيل:\n\n1. تعيين السائق المسؤول عن تنفيذ خدمة التوصيل في Assign.\n2. تفعيل Task Forms وظهور نموذج سند التحميل.\n3. فتح السائق لبوابة السائق.\n4. الضغط على Start لبدء تنفيذ خدمة التوصيل.\n5. رفع صورة التنفيذ لتوثيق الخدمة.\n6. الضغط على End Task بعد رفع الصورة المطلوبة.\n7. إرسال رمز OTP إلى العميل لتأكيد الاستلام.\n8. تأكيد رمز OTP وتحول المهمة إلى Completed.",
+      "answer": "ترتيب الخطوات من تعيين السائق حتى النهاية:\n\n1. يتم تعيين السائق المسؤول عن تنفيذ الخدمة في **Assign**.\n2. تظهر وتتفعّل **Task Forms** ويصبح نموذج سند التحميل متاحاً.\n3. يفتح السائق بوابة السائق.\n4. يضغط السائق على **Start** لبدء التنفيذ.\n5. يرفع السائق صورة التنفيذ لتوثيق الخدمة.\n6. يضغط السائق على **End Task** بعد إنهاء التنفيذ.\n7. يرسل النظام رمز **OTP** إلى العميل لتأكيد الاستلام.\n8. يتم تأكيد رمز **OTP**.\n9. تتحول المهمة إلى **Completed** ويُسجَّل اكتمال خدمة التوصيل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.907013,
-          "semanticScore": 0.824013,
-          "lexicalBoost": 0.083
-        },
-        {
-          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
-          "title": "من تعيين السائق حتى اكتمال التوصيل",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.900104,
-          "semanticScore": 0.817104,
-          "lexicalBoost": 0.083
+          "score": 0.970529,
+          "semanticScore": 0.830529,
+          "lexicalBoost": 0.14
         },
         {
           "id": "intro-tour:workflow-question:full-delivery-workflow-question",
           "title": "شو تسلسل الخدمات؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.898951,
-          "semanticScore": 0.783951,
-          "lexicalBoost": 0.115
+          "score": 0.967361,
+          "semanticScore": 0.827361,
+          "lexicalBoost": 0.14
         },
         {
-          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
-          "title": "تسلسل خدمة التوصيل الكامل",
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.897405,
-          "semanticScore": 0.782405,
-          "lexicalBoost": 0.115
+          "score": 0.96349,
+          "semanticScore": 0.86789,
+          "lexicalBoost": 0.0956
         },
         {
-          "id": "intro-tour:relationship:9",
-          "title": "Driver Assignment followed by Driver Portal Execution",
-          "type": "relationship",
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
           "stageId": null,
-          "score": 0.876388,
-          "semanticScore": 0.828388,
-          "lexicalBoost": 0.048
+          "score": 0.944528,
+          "semanticScore": 0.858528,
+          "lexicalBoost": 0.086
+        },
+        {
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.942755,
+          "semanticScore": 0.824955,
+          "lexicalBoost": 0.1178
         }
       ],
-      "topScore": 0.907013,
+      "topScore": 0.970529,
       "thresholdTriggered": false,
       "critical": true,
       "pass": true,
@@ -1143,58 +1168,58 @@
       "category": "workflow-sequence",
       "question": "شو بصير بعد تعيين السائق؟",
       "path": "rag",
-      "answer": "بعد تعيين السائق، يتم استكمال تنفيذ الخدمة بالخطوات التالية:\n\n1. تفعيل **Task Forms** ويصبح نموذج سند التحميل متاحاً للتنفيذ.\n2. يفتح السائق بوابة السائق ويضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n3. يرفع السائق صورة التنفيذ لتوثيق الخدمة.\n4. يضغط السائق على **End Task**.\n5. يرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n6. بعد تأكيد رمز **OTP** بنجاح، تتحول المهمة إلى **Completed** ويُسجل اكتمال خدمة التوصيل.",
+      "answer": "بعد تعيين السائق، تسير الخطوات حتى اكتمال التوصيل كالتالي:\n\n1. تُفعّل نماذج **Task Forms** وتصبح متاحة ضمن المهمة (مثل نموذج سند التحميل).\n2. يفتح السائق رابط بوابة السائق ويضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n3. يرفع السائق صورة التنفيذ لتوثيق الخدمة.\n4. يظهر خيار **End Task** بعد رفع الصورة المطلوبة لإنهاء المهمة.\n5. يُرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n6. بعد تأكيد رمز **OTP** بنجاح، تتحول المهمة إلى **Completed** ويُسجّل اكتمال خدمة التوصيل وتأكيد العميل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.938202,
-          "semanticScore": 0.823202,
-          "lexicalBoost": 0.115
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.982632,
+          "semanticScore": 0.847156,
+          "lexicalBoost": 0.135476
         },
         {
           "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.935859,
-          "semanticScore": 0.820859,
-          "lexicalBoost": 0.115
+          "score": 0.919694,
+          "semanticScore": 0.846599,
+          "lexicalBoost": 0.073095
+        },
+        {
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.902242,
+          "semanticScore": 0.840575,
+          "lexicalBoost": 0.061667
+        },
+        {
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.896186,
+          "semanticScore": 0.807138,
+          "lexicalBoost": 0.089048
         },
         {
           "id": "intro-tour:stage:driver-assignment-task-form",
           "title": "تعيين السائق وتجهيز المهمة",
           "type": "stage",
           "stageId": "driver-assignment-task-form",
-          "score": 0.900976,
-          "semanticScore": 0.805976,
-          "lexicalBoost": 0.095
-        },
-        {
-          "id": "intro-tour:relationship:9",
-          "title": "Driver Assignment followed by Driver Portal Execution",
-          "type": "relationship",
-          "stageId": null,
-          "score": 0.87248,
-          "semanticScore": 0.81248,
-          "lexicalBoost": 0.06
-        },
-        {
-          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
-          "title": "شو تسلسل الخدمات؟",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.86412,
-          "semanticScore": 0.76912,
-          "lexicalBoost": 0.095
+          "score": 0.88794,
+          "semanticScore": 0.826274,
+          "lexicalBoost": 0.061667
         }
       ],
-      "topScore": 0.938202,
+      "topScore": 0.982632,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1239,58 +1264,58 @@
       "category": "workflow-sequence",
       "question": "شو الخطوة قبل OTP؟",
       "path": "rag",
-      "answer": "الخطوة التي تسبق إرسال رمز OTP هي إنهاء المهمة والضغط على End Task بعد رفع صورة التنفيذ.",
+      "answer": "الخطوة التي تسبق OTP مباشرة هي **End Task** (حيث يضغط السائق على End Task بعد رفع صورة التنفيذ، ليقوم النظام بعدها بإرسال رمز OTP إلى العميل).",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:field:otp",
-          "title": "OTP",
-          "type": "field",
-          "stageId": null,
-          "score": 0.853101,
-          "semanticScore": 0.791435,
-          "lexicalBoost": 0.061667
+          "id": "intro-tour:current-workflow:current-service-receipt",
+          "title": "07 — استلام الخدمة",
+          "type": "current-workflow",
+          "stageId": "current-service-receipt",
+          "score": 0.975873,
+          "semanticScore": 0.849055,
+          "lexicalBoost": 0.126818
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution:substep:otp-confirmation",
-          "title": "تأكيد الاستلام عبر OTP",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.842176,
-          "semanticScore": 0.780509,
-          "lexicalBoost": 0.061667
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.804596,
-          "semanticScore": 0.74293,
-          "lexicalBoost": 0.061667
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-question:current-service-receipt-question",
+          "title": "كيف بتنتهي الخدمة؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.803157,
-          "semanticScore": 0.74149,
-          "lexicalBoost": 0.061667
+          "score": 0.952309,
+          "semanticScore": 0.829128,
+          "lexicalBoost": 0.123182
         },
         {
           "id": "intro-tour:workflow-question:full-delivery-workflow-question",
           "title": "شو تسلسل الخدمات؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.796905,
-          "semanticScore": 0.735239,
-          "lexicalBoost": 0.061667
+          "score": 0.941943,
+          "semanticScore": 0.815125,
+          "lexicalBoost": 0.126818
+        },
+        {
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.936284,
+          "semanticScore": 0.809465,
+          "lexicalBoost": 0.126818
+        },
+        {
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.906384,
+          "semanticScore": 0.803656,
+          "lexicalBoost": 0.102727
         }
       ],
-      "topScore": 0.853101,
+      "topScore": 0.975873,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1310,7 +1335,7 @@
       "category": "workflow-sequence",
       "question": "شو الخطوة بعد رفع الصورة؟",
       "path": "rag",
-      "answer": "بعد رفع الصورة المطلوبة، تصبح المهمة جاهزة للإنهاء ويظهر خيار End Task (إنهاء المهمة)، وعند الضغط عليه يتم إرسال رمز OTP إلى العميل لتأكيد استلام الخدمة.",
+      "answer": "بعد رفع الصورة المطلوبة، تصبح المهمة جاهزة للإنهاء ويظهر خيار End Task لإنهاء المهمة.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -1320,48 +1345,48 @@
           "title": "رفع صورة التنفيذ",
           "type": "stage",
           "stageId": "driver-portal-execution",
-          "score": 0.938312,
-          "semanticScore": 0.808312,
-          "lexicalBoost": 0.13
+          "score": 0.926579,
+          "semanticScore": 0.808579,
+          "lexicalBoost": 0.118
         },
         {
           "id": "intro-tour:stage:driver-portal-execution",
           "title": "تنفيذ التوصيل من بوابة السائق",
           "type": "stage",
           "stageId": "driver-portal-execution",
-          "score": 0.847255,
-          "semanticScore": 0.752255,
-          "lexicalBoost": 0.095
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution:substep:end-task",
-          "title": "إنهاء المهمة",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.82399,
-          "semanticScore": 0.76399,
-          "lexicalBoost": 0.06
+          "score": 0.842091,
+          "semanticScore": 0.759091,
+          "lexicalBoost": 0.083
         },
         {
           "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
           "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.822648,
-          "semanticScore": 0.727648,
-          "lexicalBoost": 0.095
+          "score": 0.83826,
+          "semanticScore": 0.73926,
+          "lexicalBoost": 0.099
         },
         {
           "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.819275,
-          "semanticScore": 0.724275,
-          "lexicalBoost": 0.095
+          "score": 0.834019,
+          "semanticScore": 0.735019,
+          "lexicalBoost": 0.099
+        },
+        {
+          "id": "intro-tour:stage:driver-portal-execution:substep:end-task",
+          "title": "إنهاء المهمة",
+          "type": "stage",
+          "stageId": "driver-portal-execution",
+          "score": 0.817174,
+          "semanticScore": 0.769174,
+          "lexicalBoost": 0.048
         }
       ],
-      "topScore": 0.938312,
+      "topScore": 0.926579,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1381,58 +1406,58 @@
       "category": "workflow-sequence",
       "question": "متى بتصير المهمة Completed؟",
       "path": "rag",
-      "answer": "تتحول المهمة إلى Completed بعد تأكيد رمز OTP بنجاح، حيث يُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "answer": "تصبح المهمة في حالة **Completed** بعد الضغط على **End Task** وإرسال رمز **OTP** إلى العميل وتأكيد **OTP** بنجاح، حيث يُسجَّل حينها اكتمال خدمة التوصيل واستلامها.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
+          "id": "intro-tour:workflow-question:current-service-receipt-question",
+          "title": "كيف بتنتهي الخدمة؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.900627,
+          "semanticScore": 0.80777,
+          "lexicalBoost": 0.092857
+        },
+        {
+          "id": "intro-tour:current-workflow:current-service-receipt",
+          "title": "07 — استلام الخدمة",
+          "type": "current-workflow",
+          "stageId": "current-service-receipt",
+          "score": 0.87887,
+          "semanticScore": 0.786013,
+          "lexicalBoost": 0.092857
+        },
+        {
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.858409,
+          "semanticScore": 0.759838,
+          "lexicalBoost": 0.098571
+        },
+        {
           "id": "intro-tour:stage:driver-portal-execution:substep:completed-delivery",
           "title": "اكتمال التوصيل",
           "type": "stage",
           "stageId": "driver-portal-execution",
-          "score": 0.906319,
-          "semanticScore": 0.817986,
-          "lexicalBoost": 0.088333
+          "score": 0.851658,
+          "semanticScore": 0.799515,
+          "lexicalBoost": 0.052143
         },
         {
           "id": "intro-tour:field:completed",
           "title": "Completed",
           "type": "field",
           "stageId": null,
-          "score": 0.873855,
-          "semanticScore": 0.812189,
-          "lexicalBoost": 0.061667
-        },
-        {
-          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
-          "title": "من تعيين السائق حتى اكتمال التوصيل",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.861197,
-          "semanticScore": 0.772864,
-          "lexicalBoost": 0.088333
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.855244,
-          "semanticScore": 0.766911,
-          "lexicalBoost": 0.088333
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.83608,
-          "semanticScore": 0.747746,
-          "lexicalBoost": 0.088333
+          "score": 0.84887,
+          "semanticScore": 0.802442,
+          "lexicalBoost": 0.046429
         }
       ],
-      "topScore": 0.906319,
+      "topScore": 0.900627,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1452,58 +1477,58 @@
       "category": "driver-portal",
       "question": "كيف السائق ببلش المهمة؟",
       "path": "rag",
-      "answer": "بعد تعيين السائق، يصل إليه رابط بوابة المهمة، فيقوم بفتح الرابط والضغط على Start لبدء تنفيذ خدمة التوصيل.",
+      "answer": "بعد تعيين السائق، يصل إليه رابط بوابة المهمة، فيقوم بفتح الرابط والضغط على **Start** لبدء تنفيذ خدمة التوصيل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.900543,
+          "semanticScore": 0.810543,
+          "lexicalBoost": 0.09
+        },
+        {
+          "id": "intro-tour:field:assign",
+          "title": "Assign",
+          "type": "field",
+          "stageId": null,
+          "score": 0.89566,
+          "semanticScore": 0.81066,
+          "lexicalBoost": 0.085
+        },
+        {
           "id": "intro-tour:stage:driver-portal-execution:substep:start-task",
           "title": "بدء المهمة",
           "type": "stage",
           "stageId": "driver-portal-execution",
-          "score": 0.913519,
-          "semanticScore": 0.860185,
-          "lexicalBoost": 0.053333
+          "score": 0.894546,
+          "semanticScore": 0.879546,
+          "lexicalBoost": 0.015
         },
         {
-          "id": "intro-tour:stage:driver-assignment-task-form",
-          "title": "تعيين السائق وتجهيز المهمة",
-          "type": "stage",
-          "stageId": "driver-assignment-task-form",
-          "score": 0.871049,
-          "semanticScore": 0.782716,
-          "lexicalBoost": 0.088333
-        },
-        {
-          "id": "intro-tour:field:start",
-          "title": "Start",
-          "type": "field",
+          "id": "intro-tour:relationship:5",
+          "title": "Assign executes Task",
+          "type": "relationship",
           "stageId": null,
-          "score": 0.869556,
-          "semanticScore": 0.816223,
-          "lexicalBoost": 0.053333
+          "score": 0.890871,
+          "semanticScore": 0.840871,
+          "lexicalBoost": 0.05
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.859538,
-          "semanticScore": 0.806205,
-          "lexicalBoost": 0.053333
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-question:assign-vs-assignees",
+          "title": "شو الفرق بين Assign و Assignees؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.859066,
-          "semanticScore": 0.805732,
-          "lexicalBoost": 0.053333
+          "score": 0.883673,
+          "semanticScore": 0.793673,
+          "lexicalBoost": 0.09
         }
       ],
-      "topScore": 0.913519,
+      "topScore": 0.900543,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1523,7 +1548,7 @@
       "category": "driver-portal",
       "question": "شو بيظهر للسائق بعد بدء المهمة؟",
       "path": "rag",
-      "answer": "بعد بدء المهمة، يظهر للسائق قسم رفع الصور لتوثيق تنفيذ الخدمة.",
+      "answer": "بعد الضغط على **Start** لبدء تنفيذ خدمة التوصيل:\n\n1. يرفع السائق صورة التنفيذ لتوثيق تنفيذ الخدمة.\n2. بعد رفع الصورة المطلوبة يظهر خيار **End Task**.\n3. عند إنهاء المهمة، يتم إرسال رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n4. بعد تأكيد رمز OTP بنجاح، تتحول المهمة إلى **Completed** ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -1533,48 +1558,48 @@
           "title": "بدء المهمة",
           "type": "stage",
           "stageId": "driver-portal-execution",
-          "score": 0.918336,
-          "semanticScore": 0.835336,
-          "lexicalBoost": 0.083
+          "score": 0.917509,
+          "semanticScore": 0.862509,
+          "lexicalBoost": 0.055
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.901918,
+          "semanticScore": 0.811918,
+          "lexicalBoost": 0.09
+        },
+        {
+          "id": "intro-tour:stage:driver-assignment-task-form",
+          "title": "تعيين السائق وتجهيز المهمة",
           "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.855226,
-          "semanticScore": 0.791226,
-          "lexicalBoost": 0.064
+          "stageId": "driver-assignment-task-form",
+          "score": 0.880411,
+          "semanticScore": 0.825411,
+          "lexicalBoost": 0.055
         },
         {
-          "id": "intro-tour:field:start",
-          "title": "Start",
-          "type": "field",
-          "stageId": null,
-          "score": 0.853817,
-          "semanticScore": 0.786817,
-          "lexicalBoost": 0.067
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-question:assign-vs-assignees",
+          "title": "شو الفرق بين Assign و Assignees؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.835843,
-          "semanticScore": 0.803843,
-          "lexicalBoost": 0.032
+          "score": 0.875666,
+          "semanticScore": 0.789666,
+          "lexicalBoost": 0.086
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution:substep:upload-photo",
-          "title": "رفع صورة التنفيذ",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.834378,
-          "semanticScore": 0.770378,
-          "lexicalBoost": 0.064
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.873441,
+          "semanticScore": 0.845441,
+          "lexicalBoost": 0.028
         }
       ],
-      "topScore": 0.918336,
+      "topScore": 0.917509,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1594,58 +1619,58 @@
       "category": "driver-portal",
       "question": "شو بصير بعد End Task؟",
       "path": "rag",
-      "answer": "بعد الضغط على End Task يحدث ما يلي:\n\n1. يرسل النظام رمز OTP إلى العميل لتأكيد استلام الخدمة.\n2. بعد تأكيد رمز OTP بنجاح، تتحول المهمة إلى Completed ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "answer": "بعد End Task، يرسل النظام رمز OTP إلى العميل لتأكيد استلام الخدمة، وبعد تأكيد OTP تصبح المهمة Completed ويُسجل استلام الخدمة واكتمالها.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:field:end-task",
-          "title": "End Task",
-          "type": "field",
-          "stageId": null,
-          "score": 0.902929,
-          "semanticScore": 0.807929,
-          "lexicalBoost": 0.095
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution:substep:end-task",
-          "title": "إنهاء المهمة",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.88681,
-          "semanticScore": 0.79181,
-          "lexicalBoost": 0.095
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-question:current-service-receipt-question",
+          "title": "كيف بتنتهي الخدمة؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.873566,
-          "semanticScore": 0.758566,
-          "lexicalBoost": 0.115
+          "score": 0.965935,
+          "semanticScore": 0.837232,
+          "lexicalBoost": 0.128704
+        },
+        {
+          "id": "intro-tour:current-workflow:current-service-receipt",
+          "title": "07 — استلام الخدمة",
+          "type": "current-workflow",
+          "stageId": "current-service-receipt",
+          "score": 0.963981,
+          "semanticScore": 0.835278,
+          "lexicalBoost": 0.128704
         },
         {
           "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.849278,
-          "semanticScore": 0.734278,
-          "lexicalBoost": 0.115
+          "score": 0.929169,
+          "semanticScore": 0.82065,
+          "lexicalBoost": 0.108519
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.812394,
-          "semanticScore": 0.717394,
-          "lexicalBoost": 0.095
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.920178,
+          "semanticScore": 0.788511,
+          "lexicalBoost": 0.131667
+        },
+        {
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.919282,
+          "semanticScore": 0.819653,
+          "lexicalBoost": 0.09963
         }
       ],
-      "topScore": 0.902929,
+      "topScore": 0.965935,
       "thresholdTriggered": false,
       "critical": true,
       "pass": true,
@@ -1665,7 +1690,7 @@
       "category": "paraphrase-dialect",
       "question": "مين المشرف؟",
       "path": "rag",
-      "answer": "المشرف المسؤول عن متابعة عملية التوصيل والإشراف على تنفيذ المهمة حتى اكتمالها يتم تحديده عبر حقل **Assignees** (مع تمييزه عن المنفذ الفعلي أو السائق المحدد في حقل **Assign**).",
+      "answer": "المشرف هو الشخص المسؤول عن متابعة المهمة والإشراف على عملية التوصيل حتى اكتمالها، ويتم تحديده في حقل `Assignees`.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -1675,48 +1700,48 @@
           "title": "تحديد المشرف المسؤول",
           "type": "stage",
           "stageId": "supervisor",
-          "score": 0.833338,
-          "semanticScore": 0.758338,
-          "lexicalBoost": 0.075
+          "score": 0.934696,
+          "semanticScore": 0.809696,
+          "lexicalBoost": 0.125
         },
         {
           "id": "intro-tour:field:assignees",
           "title": "Assignees",
           "type": "field",
           "stageId": null,
-          "score": 0.822538,
-          "semanticScore": 0.747538,
-          "lexicalBoost": 0.075
+          "score": 0.930389,
+          "semanticScore": 0.830389,
+          "lexicalBoost": 0.1
         },
         {
           "id": "intro-tour:workflow-question:assign-vs-assignees",
           "title": "شو الفرق بين Assign و Assignees؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.812145,
-          "semanticScore": 0.737145,
-          "lexicalBoost": 0.075
-        },
-        {
-          "id": "intro-tour:workflow:supervisor",
-          "title": "تحديد المشرف المسؤول",
-          "type": "workflow",
-          "stageId": "supervisor",
-          "score": 0.782087,
-          "semanticScore": 0.742087,
-          "lexicalBoost": 0.04
+          "score": 0.9139,
+          "semanticScore": 0.7889,
+          "lexicalBoost": 0.125
         },
         {
           "id": "intro-tour:relationship:4",
           "title": "Assignees supervises Task",
           "type": "relationship",
           "stageId": null,
-          "score": 0.777187,
-          "semanticScore": 0.737187,
-          "lexicalBoost": 0.04
+          "score": 0.883488,
+          "semanticScore": 0.828488,
+          "lexicalBoost": 0.055
+        },
+        {
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.878429,
+          "semanticScore": 0.753429,
+          "lexicalBoost": 0.125
         }
       ],
-      "topScore": 0.833338,
+      "topScore": 0.934696,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1736,7 +1761,7 @@
       "category": "paraphrase-dialect",
       "question": "مين بينفذ الخدمة؟",
       "path": "rag",
-      "answer": "**Assign** هو الشخص المنفذ فعليًا للخدمة، وفي خدمة التوصيل يكون السائق.",
+      "answer": "المنفذ الفعلي للخدمة هو **Assign**، وفي خدمة التوصيل يكون هو السائق.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -1746,48 +1771,48 @@
           "title": "Assign executes Task",
           "type": "relationship",
           "stageId": null,
-          "score": 0.782325,
-          "semanticScore": 0.755658,
-          "lexicalBoost": 0.026667
+          "score": 0.791466,
+          "semanticScore": 0.780037,
+          "lexicalBoost": 0.011429
         },
         {
           "id": "intro-tour:workflow-question:assign-vs-assignees",
           "title": "شو الفرق بين Assign و Assignees؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.760581,
-          "semanticScore": 0.733915,
-          "lexicalBoost": 0.026667
+          "score": 0.763246,
+          "semanticScore": 0.740389,
+          "lexicalBoost": 0.022857
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution:substep:otp-confirmation",
-          "title": "تأكيد الاستلام عبر OTP",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.758429,
-          "semanticScore": 0.731762,
-          "lexicalBoost": 0.026667
+          "id": "intro-tour:field:assign",
+          "title": "Assign",
+          "type": "field",
+          "stageId": null,
+          "score": 0.757281,
+          "semanticScore": 0.734424,
+          "lexicalBoost": 0.022857
         },
         {
-          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
-          "title": "شو تسلسل الخدمات؟",
+          "id": "intro-tour:field:assignees",
+          "title": "Assignees",
+          "type": "field",
+          "stageId": null,
+          "score": 0.754478,
+          "semanticScore": 0.74305,
+          "lexicalBoost": 0.011429
+        },
+        {
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.75715,
-          "semanticScore": 0.730483,
-          "lexicalBoost": 0.026667
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.75694,
-          "semanticScore": 0.730273,
-          "lexicalBoost": 0.026667
+          "score": 0.754371,
+          "semanticScore": 0.742943,
+          "lexicalBoost": 0.011429
         }
       ],
-      "topScore": 0.782325,
+      "topScore": 0.791466,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1807,58 +1832,58 @@
       "category": "paraphrase-dialect",
       "question": "مين بيتابع التاسك؟",
       "path": "rag",
-      "answer": "المشرف المسؤول عن متابعة المهمة والإشراف عليها هو **Assignees**.",
+      "answer": "`Assignees` هو المشرف المسؤول عن متابعة المهمة (Task) والإشراف عليها.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:glossary:tasks",
-          "title": "Tasks",
-          "type": "glossary",
-          "stageId": null,
-          "score": 0.772671,
-          "semanticScore": 0.711005,
-          "lexicalBoost": 0.061667
-        },
-        {
-          "id": "intro-tour:field:tasks",
-          "title": "Tasks",
-          "type": "field",
-          "stageId": null,
-          "score": 0.770465,
-          "semanticScore": 0.708799,
-          "lexicalBoost": 0.061667
-        },
-        {
           "id": "intro-tour:relationship:4",
           "title": "Assignees supervises Task",
           "type": "relationship",
           "stageId": null,
-          "score": 0.761586,
-          "semanticScore": 0.761586,
-          "lexicalBoost": 0
+          "score": 0.852655,
+          "semanticScore": 0.806226,
+          "lexicalBoost": 0.046429
+        },
+        {
+          "id": "intro-tour:relationship:5",
+          "title": "Assign executes Task",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.825966,
+          "semanticScore": 0.779537,
+          "lexicalBoost": 0.046429
+        },
+        {
+          "id": "intro-tour:relationship:3",
+          "title": "Task belongs to Project",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.825846,
+          "semanticScore": 0.767989,
+          "lexicalBoost": 0.057857
+        },
+        {
+          "id": "intro-tour:current-workflow:current-delivery-request",
+          "title": "02 — طلب توصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-request",
+          "score": 0.799465,
+          "semanticScore": 0.741607,
+          "lexicalBoost": 0.057857
         },
         {
           "id": "intro-tour:stage:supervisor",
           "title": "تحديد المشرف المسؤول",
           "type": "stage",
           "stageId": "supervisor",
-          "score": 0.760798,
-          "semanticScore": 0.760798,
-          "lexicalBoost": 0
-        },
-        {
-          "id": "intro-tour:field:assignees",
-          "title": "Assignees",
-          "type": "field",
-          "stageId": null,
-          "score": 0.748092,
-          "semanticScore": 0.748092,
-          "lexicalBoost": 0
+          "score": 0.797986,
+          "semanticScore": 0.786557,
+          "lexicalBoost": 0.011429
         }
       ],
-      "topScore": 0.772671,
+      "topScore": 0.852655,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -1878,129 +1903,129 @@
       "category": "multi-chunk",
       "question": "كيف منحدد الموعد وبعدين شو بيصير مع السائق؟",
       "path": "rag",
-      "answer": "يتم تحديد الموعد ثم متابعة إجراءات السائق وفق الخطوات التالية:\n\n**1. حجز وتحديد الموعد:**\n* **بيانات العميل وموقع التنفيذ:** يقوم العميل بإدخال اسمه، بريده الإلكتروني، ورقم الجوال، ثم يحدد موقع التنفيذ على الخريطة.\n* **اختيار التاريخ والوقت:** يختار التاريخ والوقت المناسبين من المواعيد المتاحة ضمن الفترة المحددة مسبقاً (بين تاريخ بداية الحجز ونهايته).\n* **تأكيد الموعد:** يتم تأكيد الحجز وتسجيل موعد التوصيل بنجاح.\n\n**2. ما يحدث مع السائق بعد تأكيد الموعد:**\n* تصل المهمة إلى مرحلة تعيين سائق وتجهيز المهمة.\n* يتم تحديد السائق المسؤول عن تنفيذ خدمة التوصيل في **Assign**.\n* تظهر **Task Forms** ويصبح نموذج سند التحميل متاحاً ضمن المهمة للتنفيذ.\n* يبدأ السائق تنفيذ التوصيل عبر بوابة السائق بالتسلسل التالي: **Start** ← رفع صورة التنفيذ ← **End Task** ← إدخال رمز **OTP** ← الوصول إلى مرحلة الاكتمل **Completed**.",
+      "answer": "تحديد الموعد وما يحدث بعده مع السائق يتم وفق الخطوات التالية:\n\n**1. تحديد الموعد (جدولة التوصيل):**\n- يظهر رابط حجز الموعد ليتم إرساله إلى العميل.\n- يفتح العميل الرابط، ويحدد موقع التنفيذ والتاريخ والوقت المناسبين، ثم يراجع التفاصيل ويؤكد الموعد (كما يمكن لخدمة العملاء حجز الموعد نيابة عنه عند الحاجة).\n- يجب أن يكون الموعد المحدد ضمن الفترة بين `Appointment From` و `Appointment To`.\n\n**2. ما يحدث بعد ذلك مع السائق (ربط الخدمة بالسائق وتجهيز المهمة):**\n- بعد تأكيد العميل للموعد، تصل المهمة إلى مرحلة تعيين السائق وتجهيز المهمة.\n- يتم تحديد وتعيين السائق المسؤول عن تنفيذ خدمة التوصيل فعليًا في حقل `Assign` (مع بقائه منفصلًا عن `Assignees` الذي يحدد المشرف أو المتابع فقط).\n- تظهر تبويبات `Task Forms` ويصبح نموذج سند التحميل متاحًا ضمن المهمة للتنفيذ.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.909617,
+          "semanticScore": 0.817548,
+          "lexicalBoost": 0.092069
+        },
+        {
           "id": "intro-tour:stage:driver-assignment-task-form",
           "title": "تعيين السائق وتجهيز المهمة",
           "type": "stage",
           "stageId": "driver-assignment-task-form",
-          "score": 0.823898,
-          "semanticScore": 0.762231,
-          "lexicalBoost": 0.061667
+          "score": 0.848958,
+          "semanticScore": 0.794648,
+          "lexicalBoost": 0.05431
         },
         {
-          "id": "intro-tour:workflow:appointment-booking",
-          "title": "حجز العميل للموعد",
-          "type": "workflow",
-          "stageId": "appointment-booking",
-          "score": 0.808313,
-          "semanticScore": 0.79498,
-          "lexicalBoost": 0.013333
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.842534,
+          "semanticScore": 0.820465,
+          "lexicalBoost": 0.022069
         },
         {
-          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
-          "title": "شو تسلسل الخدمات؟",
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.799838,
-          "semanticScore": 0.773171,
-          "lexicalBoost": 0.026667
+          "score": 0.839851,
+          "semanticScore": 0.791057,
+          "lexicalBoost": 0.048793
         },
         {
-          "id": "intro-tour:stage:appointment-booking",
-          "title": "حجز موعد التوصيل",
-          "type": "stage",
-          "stageId": "appointment-booking",
-          "score": 0.799463,
-          "semanticScore": 0.78613,
-          "lexicalBoost": 0.013333
-        },
-        {
-          "id": "intro-tour:stage:appointment-booking:substep:date-time-selection",
-          "title": "اختيار التاريخ والوقت",
-          "type": "stage",
-          "stageId": "appointment-booking",
-          "score": 0.797324,
-          "semanticScore": 0.78399,
-          "lexicalBoost": 0.013333
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.838636,
+          "semanticScore": 0.822084,
+          "lexicalBoost": 0.016552
         }
       ],
-      "topScore": 0.823898,
+      "topScore": 0.909617,
       "thresholdTriggered": false,
       "critical": false,
-      "pass": true,
+      "pass": false,
       "scores": {
-        "correctness": true,
+        "correctness": false,
         "grounding": true,
-        "retrieval": true,
+        "retrieval": false,
         "refusal": true,
-        "sequence": true,
+        "sequence": false,
         "terminology": true
       },
-      "failureReason": "",
-      "failureType": "knowledge gap"
+      "failureReason": "required concept missing; retrieval relevance failure; sequence order failure",
+      "failureType": "retrieval failure"
     },
     {
       "id": "multi-002",
       "category": "multi-chunk",
       "question": "وين بشوف الفاتورة والمهمة المرتبطة فيها؟",
       "path": "rag",
-      "answer": "تظهر الفاتورة في **شاشة فاتورة Odoo** بعد وصولها من SAP، ولعرض مهمة التوصيل المرتبطة بها يتم الضغط على زر **Tasks** الموجود داخل الفاتورة للانتقال إلى **شاشة مهام Odoo** ومتابعة تفاصيل المهمة وتنفيذها.",
+      "answer": "تصل الفاتورة من SAP إلى Odoo في شاشة فاتورة Odoo، ويمكنك الانتقال إلى مهمة التوصيل المرتبطة بها والاطلاع على تفاصيلها عبر الضغط على زر **Tasks** الموجود داخل الفاتورة. كما يظهر رقم الفاتورة في حقل **Invoice** للرجوع إلى أصل المهمة.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:glossary:tasks",
-          "title": "Tasks",
-          "type": "glossary",
+          "id": "intro-tour:relationship:2",
+          "title": "Invoice creates/links to Task",
+          "type": "relationship",
           "stageId": null,
-          "score": 0.864471,
-          "semanticScore": 0.767805,
-          "lexicalBoost": 0.096667
-        },
-        {
-          "id": "intro-tour:field:tasks",
-          "title": "Tasks",
-          "type": "field",
-          "stageId": null,
-          "score": 0.863966,
-          "semanticScore": 0.767299,
-          "lexicalBoost": 0.096667
+          "score": 0.91845,
+          "semanticScore": 0.836142,
+          "lexicalBoost": 0.082308
         },
         {
           "id": "intro-tour:stage:invoice",
           "title": "وصول الفاتورة من SAP",
           "type": "stage",
           "stageId": "invoice",
-          "score": 0.850438,
-          "semanticScore": 0.788771,
-          "lexicalBoost": 0.061667
+          "score": 0.902956,
+          "semanticScore": 0.802186,
+          "lexicalBoost": 0.100769
         },
         {
           "id": "intro-tour:field:invoice",
           "title": "Invoice",
           "type": "field",
           "stageId": null,
-          "score": 0.841512,
-          "semanticScore": 0.779845,
-          "lexicalBoost": 0.061667
+          "score": 0.8915,
+          "semanticScore": 0.803039,
+          "lexicalBoost": 0.088462
         },
         {
-          "id": "intro-tour:stage:linked-tasks",
-          "title": "الوصول إلى مهمة التوصيل",
-          "type": "stage",
-          "stageId": "linked-tasks",
-          "score": 0.824319,
-          "semanticScore": 0.797653,
-          "lexicalBoost": 0.026667
+          "id": "intro-tour:field:tasks",
+          "title": "Tasks",
+          "type": "field",
+          "stageId": null,
+          "score": 0.876953,
+          "semanticScore": 0.788491,
+          "lexicalBoost": 0.088462
+        },
+        {
+          "id": "intro-tour:glossary:tasks",
+          "title": "Tasks",
+          "type": "glossary",
+          "stageId": null,
+          "score": 0.872011,
+          "semanticScore": 0.783549,
+          "lexicalBoost": 0.088462
         }
       ],
-      "topScore": 0.864471,
+      "topScore": 0.91845,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -2020,7 +2045,7 @@
       "category": "terminology-preservation",
       "question": "اذكر أسماء الحقول الخاصة بفترة الحجز",
       "path": "rag",
-      "answer": "أسماء الحقول الخاصة بفترة الحجز هي:\n- **Appointment From**\n- **Appointment To**",
+      "answer": "أسماء الحقول الخاصة بفترة الحجز هي:\n- **Appointment From**: يحدد بداية فترة الحجز المتاحة للعميل.\n- **Appointment To**: يحدد نهاية فترة الحجز المتاحة للعميل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -2030,48 +2055,48 @@
           "title": "تحديد فترة حجز الموعد",
           "type": "stage",
           "stageId": "appointment-window",
-          "score": 0.820869,
-          "semanticScore": 0.772536,
-          "lexicalBoost": 0.048333
+          "score": 0.878079,
+          "semanticScore": 0.821261,
+          "lexicalBoost": 0.056818
+        },
+        {
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.863086,
+          "semanticScore": 0.736268,
+          "lexicalBoost": 0.126818
+        },
+        {
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.856744,
+          "semanticScore": 0.757653,
+          "lexicalBoost": 0.099091
+        },
+        {
+          "id": "intro-tour:stage:delivery-scheduling",
+          "title": "إرسال رابط الحجز للعميل",
+          "type": "stage",
+          "stageId": "delivery-scheduling",
+          "score": 0.826785,
+          "semanticScore": 0.762694,
+          "lexicalBoost": 0.064091
         },
         {
           "id": "intro-tour:field:appointment-from",
           "title": "Appointment From",
           "type": "field",
           "stageId": null,
-          "score": 0.783202,
-          "semanticScore": 0.769869,
-          "lexicalBoost": 0.013333
-        },
-        {
-          "id": "intro-tour:glossary:allowed-booking-window",
-          "title": "Allowed Booking Window",
-          "type": "glossary",
-          "stageId": null,
-          "score": 0.773297,
-          "semanticScore": 0.724964,
-          "lexicalBoost": 0.048333
-        },
-        {
-          "id": "intro-tour:business-rule:BR-INTRO-001",
-          "title": "نافذة حجز الموعد",
-          "type": "business-rule",
-          "stageId": null,
-          "score": 0.769888,
-          "semanticScore": 0.721555,
-          "lexicalBoost": 0.048333
-        },
-        {
-          "id": "intro-tour:field:appointment-to",
-          "title": "Appointment To",
-          "type": "field",
-          "stageId": null,
-          "score": 0.763561,
-          "semanticScore": 0.750228,
-          "lexicalBoost": 0.013333
+          "score": 0.825751,
+          "semanticScore": 0.814842,
+          "lexicalBoost": 0.010909
         }
       ],
-      "topScore": 0.820869,
+      "topScore": 0.878079,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -2091,7 +2116,7 @@
       "category": "terminology-preservation",
       "question": "شو الكلمات المهمة ببوابة السائق؟",
       "path": "rag",
-      "answer": "الكلمات والمصطلحات الرئيسية المرتبطة ببوابة السائق (Driver Portal):\n\n* **رابط بوابة المهمة (بوابة السائق):** الرابط الذي يصل إلى السائق لتنفيذ خدمة التوصيل.\n* **Start:** الزر الذي يفتحه ويضغط عليه السائق لبدء تنفيذ خدمة التوصيل.\n* **رفع صورة التنفيذ:** القسم المخصص لتوثيق تنفيذ الخدمة عبر رفع الصور المطلوبة.\n* **End Task:** الخيار الذي يظهر لإنهاء المهمة بعد رفع الصورة.\n* **OTP:** رمز التأكيد الذي يُرسل إلى العميل لتأكيد استلام الخدمة عند إنهاء المهمة.\n* **Completed:** الحالة التي تتحول إليها المهمة بعد تأكيد رمز الـ OTP بنجاح لتسجيل اكتمال التوصيل.",
+      "answer": "المصطلحات والخيارات الأساسية المرتبطة ببوابة السائق (Driver Portal) وتنفيذها:\n\n- **Start**: زر يضغط عليه السائق في رابط بوابة المهمة لبدء تنفيذ خدمة التوصيل.\n- **صورة التنفيذ**: الصورة التي يرفعها السائق لتوثيق تنفيذ الخدمة.\n- **End Task**: الخيار الذي يظهر لإنهاء المهمة بعد رفع الصورة المطلوبة.\n- **OTP**: رمز يُرسل إلى العميل لتأكيد استلام الخدمة عند إنهاء المهمة.\n- **Completed**: الحالة التي تتحول إليها المهمة بعد تأكيد رمز OTP بنجاح لتسجيل اكتمال التوصيل.\n- **Task Forms**: النماذج المفعلة المرتبطة بالمهمة (مثل نموذج سند التحميل).\n- **Assign**: تعيين السائق الذي ينفذ الخدمة فعليًا عبر بوابة السائق.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -2101,48 +2126,48 @@
           "title": "Driver Portal",
           "type": "glossary",
           "stageId": null,
-          "score": 0.905086,
-          "semanticScore": 0.830086,
-          "lexicalBoost": 0.075
+          "score": 0.919314,
+          "semanticScore": 0.866536,
+          "lexicalBoost": 0.052778
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.83424,
-          "semanticScore": 0.75924,
-          "lexicalBoost": 0.075
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution:substep:start-task",
-          "title": "بدء المهمة",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.828193,
-          "semanticScore": 0.788193,
-          "lexicalBoost": 0.04
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
-          "type": "workflow",
+          "id": "intro-tour:field:assign",
+          "title": "Assign",
+          "type": "field",
           "stageId": null,
-          "score": 0.822945,
-          "semanticScore": 0.747945,
-          "lexicalBoost": 0.075
+          "score": 0.896278,
+          "semanticScore": 0.812945,
+          "lexicalBoost": 0.083333
+        },
+        {
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.890235,
+          "semanticScore": 0.802457,
+          "lexicalBoost": 0.087778
         },
         {
           "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.816144,
-          "semanticScore": 0.741144,
-          "lexicalBoost": 0.075
+          "score": 0.886953,
+          "semanticScore": 0.825287,
+          "lexicalBoost": 0.061667
+        },
+        {
+          "id": "intro-tour:workflow-question:assign-vs-assignees",
+          "title": "شو الفرق بين Assign و Assignees؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.876698,
+          "semanticScore": 0.788921,
+          "lexicalBoost": 0.087778
         }
       ],
-      "topScore": 0.905086,
+      "topScore": 0.919314,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -2217,7 +2242,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.666961,
+      "topScore": 0.677987,
       "thresholdTriggered": true,
       "critical": true,
       "pass": true,
@@ -2242,7 +2267,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.688732,
+      "topScore": 0.694785,
       "thresholdTriggered": true,
       "critical": false,
       "pass": true,
@@ -2268,52 +2293,52 @@
       "isFallback": true,
       "retrievedChunks": [
         {
+          "id": "intro-tour:relationship:13",
+          "title": "Delivery Request with linked service waits for completion of Linked Service",
+          "type": "relationship",
+          "stageId": null,
+          "score": 0.749141,
+          "semanticScore": 0.709141,
+          "lexicalBoost": 0.04
+        },
+        {
+          "id": "intro-tour:workflow-question:current-service-receipt-question",
+          "title": "كيف بتنتهي الخدمة؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.74373,
+          "semanticScore": 0.74373,
+          "lexicalBoost": 0
+        },
+        {
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.738483,
+          "semanticScore": 0.738483,
+          "lexicalBoost": 0
+        },
+        {
           "id": "intro-tour:workflow-question:full-delivery-workflow-question",
           "title": "شو تسلسل الخدمات؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.731255,
-          "semanticScore": 0.704589,
-          "lexicalBoost": 0.026667
+          "score": 0.737175,
+          "semanticScore": 0.723842,
+          "lexicalBoost": 0.013333
         },
         {
-          "id": "intro-tour:page:overview",
-          "title": "دورة عمل خدمة التوصيل",
-          "type": "page",
-          "stageId": null,
-          "score": 0.726365,
-          "semanticScore": 0.699698,
-          "lexicalBoost": 0.026667
-        },
-        {
-          "id": "intro-tour:stage:delivery-scheduling",
-          "title": "إرسال رابط الحجز للعميل",
-          "type": "stage",
-          "stageId": "delivery-scheduling",
-          "score": 0.726179,
-          "semanticScore": 0.699512,
-          "lexicalBoost": 0.026667
-        },
-        {
-          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
-          "title": "تسلسل خدمة التوصيل الكامل",
+          "id": "intro-tour:workflow-question:current-delivery-request-question",
+          "title": "شو بصير بعد طلب توصيل؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.715282,
-          "semanticScore": 0.688615,
+          "score": 0.736754,
+          "semanticScore": 0.710087,
           "lexicalBoost": 0.026667
-        },
-        {
-          "id": "intro-tour:workflow:appointment-booking",
-          "title": "حجز العميل للموعد",
-          "type": "workflow",
-          "stageId": "appointment-booking",
-          "score": 0.713486,
-          "semanticScore": 0.713486,
-          "lexicalBoost": 0
         }
       ],
-      "topScore": 0.731255,
+      "topScore": 0.749141,
       "thresholdTriggered": false,
       "critical": false,
       "pass": true,
@@ -2338,7 +2363,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.69687,
+      "topScore": 0.712384,
       "thresholdTriggered": true,
       "critical": false,
       "pass": true,
@@ -2388,7 +2413,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.70087,
+      "topScore": 0.702895,
       "thresholdTriggered": true,
       "critical": false,
       "pass": true,
@@ -2412,9 +2437,55 @@
       "expectedType": "fallback",
       "expectedFallback": true,
       "isFallback": true,
-      "retrievedChunks": [],
-      "topScore": 0.674898,
-      "thresholdTriggered": true,
+      "retrievedChunks": [
+        {
+          "id": "intro-tour:glossary:شو-بصير",
+          "title": "شو بصير",
+          "type": "glossary",
+          "stageId": null,
+          "score": 0.728128,
+          "semanticScore": 0.701461,
+          "lexicalBoost": 0.026667
+        },
+        {
+          "id": "intro-tour:field:stage",
+          "title": "Stage",
+          "type": "field",
+          "stageId": null,
+          "score": 0.686509,
+          "semanticScore": 0.686509,
+          "lexicalBoost": 0
+        },
+        {
+          "id": "intro-tour:field:otp",
+          "title": "OTP",
+          "type": "field",
+          "stageId": null,
+          "score": 0.685132,
+          "semanticScore": 0.685132,
+          "lexicalBoost": 0
+        },
+        {
+          "id": "intro-tour:field:completed",
+          "title": "Completed",
+          "type": "field",
+          "stageId": null,
+          "score": 0.683473,
+          "semanticScore": 0.683473,
+          "lexicalBoost": 0
+        },
+        {
+          "id": "intro-tour:page:overview",
+          "title": "دورة عمل خدمة التوصيل",
+          "type": "page",
+          "stageId": null,
+          "score": 0.682144,
+          "semanticScore": 0.682144,
+          "lexicalBoost": 0
+        }
+      ],
+      "topScore": 0.728128,
+      "thresholdTriggered": false,
       "critical": false,
       "pass": true,
       "scores": {
@@ -2463,7 +2534,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.660417,
+      "topScore": 0.668879,
       "thresholdTriggered": true,
       "critical": true,
       "pass": true,
@@ -2479,5 +2550,62 @@
       "failureType": "knowledge gap"
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "id": "multi-001",
+      "question": "كيف منحدد الموعد وبعدين شو بيصير مع السائق؟",
+      "expectedBehavior": "answer",
+      "actualAnswer": "تحديد الموعد وما يحدث بعده مع السائق يتم وفق الخطوات التالية:\n\n**1. تحديد الموعد (جدولة التوصيل):**\n- يظهر رابط حجز الموعد ليتم إرساله إلى العميل.\n- يفتح العميل الرابط، ويحدد موقع التنفيذ والتاريخ والوقت المناسبين، ثم يراجع التفاصيل ويؤكد الموعد (كما يمكن لخدمة العملاء حجز الموعد نيابة عنه عند الحاجة).\n- يجب أن يكون الموعد المحدد ضمن الفترة بين `Appointment From` و `Appointment To`.\n\n**2. ما يحدث بعد ذلك مع السائق (ربط الخدمة بالسائق وتجهيز المهمة):**\n- بعد تأكيد العميل للموعد، تصل المهمة إلى مرحلة تعيين السائق وتجهيز المهمة.\n- يتم تحديد وتعيين السائق المسؤول عن تنفيذ خدمة التوصيل فعليًا في حقل `Assign` (مع بقائه منفصلًا عن `Assignees` الذي يحدد المشرف أو المتابع فقط).\n- تظهر تبويبات `Task Forms` ويصبح نموذج سند التحميل متاحًا ضمن المهمة للتنفيذ.",
+      "retrievedChunks": [
+        {
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.909617,
+          "semanticScore": 0.817548,
+          "lexicalBoost": 0.092069
+        },
+        {
+          "id": "intro-tour:stage:driver-assignment-task-form",
+          "title": "تعيين السائق وتجهيز المهمة",
+          "type": "stage",
+          "stageId": "driver-assignment-task-form",
+          "score": 0.848958,
+          "semanticScore": 0.794648,
+          "lexicalBoost": 0.05431
+        },
+        {
+          "id": "intro-tour:current-workflow:current-delivery-scheduling",
+          "title": "03 — جدولة التوصيل",
+          "type": "current-workflow",
+          "stageId": "current-delivery-scheduling",
+          "score": 0.842534,
+          "semanticScore": 0.820465,
+          "lexicalBoost": 0.022069
+        },
+        {
+          "id": "intro-tour:workflow-question:current-driver-linking-question",
+          "title": "شو يعني ربط الخدمة بالسائق؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.839851,
+          "semanticScore": 0.791057,
+          "lexicalBoost": 0.048793
+        },
+        {
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question",
+          "title": "شو بصير بجدولة التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.838636,
+          "semanticScore": 0.822084,
+          "lexicalBoost": 0.016552
+        }
+      ],
+      "topScore": 0.909617,
+      "failureReason": "required concept missing; retrieval relevance failure; sequence order failure",
+      "failureType": "retrieval failure"
+    }
+  ]
 }

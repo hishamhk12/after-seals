@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-09-03T10:43:02.886Z",
+  "timestamp": "2026-09-06T05:40:51.759Z",
   "mode": "regression",
   "pageId": "intro-tour",
   "metrics": {
-    "total": 8,
-    "passCount": 8,
+    "total": 9,
+    "passCount": 9,
     "failCount": 0,
     "overallAccuracy": 100,
     "supportedAccuracy": 100,
@@ -25,8 +25,8 @@
         "accuracy": 100
       },
       "workflow-sequence": {
-        "total": 3,
-        "passCount": 3,
+        "total": 4,
+        "passCount": 4,
         "failCount": 0,
         "accuracy": 100
       },
@@ -107,7 +107,7 @@
       "category": "workflow-sequence",
       "question": "اشرحلي من وقت تعيين السائق لحد انتهاء التوصيل",
       "path": "rag",
-      "answer": "خطوات تنفيذ الخدمة من وقت تعيين السائق حتى انتهاء التوصيل:\n\n1. **تعيين السائق**: يتم تحديد وتعيين السائق المسؤول عن تنفيذ خدمة التوصيل في Assign.\n2. **تفعيل النماذج**: يتم تفعيل Task Forms ويصبح نموذج سند التحميل متاحاً في خدمة التوصيل.\n3. **بدء التنفيذ**: يفتح السائق بوابة السائق ويضغط على **Start** لبدء تنفيذ المهمة.\n4. **توثيق التنفيذ**: يرفع السائق صورة التنفيذ لتوثيق تقديم الخدمة.\n5. **إنهاء المهمة**: بعد رفع الصورة المطلوبة يضغط السائق على **End Task**.\n6. **رمز التحقق**: يرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n7. **اكتمال الخدمة**: بعد تأكيد رمز **OTP** بنجاح، تتحول حالة المهمة إلى **Completed** ويُسجل اكتمال خدمة التوصيل.",
+      "answer": "من وقت تعيين السائق حتى اكتمال التوصيل، تسير الخطوات بالتسلسل التالي:\n\n1. **تعيين السائق**: يتم تحديد السائق المسؤول عن تنفيذ الخدمة في حقل **Assign**.\n2. **النماذج (Task Forms)**: يتم تفعيل **Task Forms** ويصبح نموذج سند التحميل متاحاً في خدمة التوصيل.\n3. **بوابة السائق وبدء الخدمة**: يفتح السائق رابط المهمة عبر بوابة السائق ويضغط على **Start** لبدء تنفيذ خدمة التوصيل.\n4. **توثيق التنفيذ**: يرفع السائق صورة التنفيذ لتوثيق الخدمة.\n5. **إنهاء المهمة**: يضغط السائق على **End Task** بعد رفع الصورة المطلوبة.\n6. **رمز التحقق (OTP)**: يرسل النظام رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n7. **اكتمال المهمة**: بعد تأكيد رمز **OTP** بنجاح، تتحول حالة المهمة إلى **Completed** ويُسجَّل اكتمال التوصيل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
@@ -117,8 +117,8 @@
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 1.011577,
-          "semanticScore": 0.871577,
+          "score": 1.026462,
+          "semanticScore": 0.886462,
           "lexicalBoost": 0.14
         },
         {
@@ -126,39 +126,64 @@
           "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
           "type": "workflow",
           "stageId": null,
-          "score": 1.003547,
-          "semanticScore": 0.864975,
-          "lexicalBoost": 0.138571
+          "score": 1.001994,
+          "semanticScore": 0.867903,
+          "lexicalBoost": 0.134091
         },
         {
-          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
-          "title": "شو تسلسل الخدمات؟",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.901261,
-          "semanticScore": 0.831975,
-          "lexicalBoost": 0.069286
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.949612,
+          "semanticScore": 0.82643,
+          "lexicalBoost": 0.123182
         },
         {
           "id": "intro-tour:workflow-sequence:full-delivery-workflow",
           "title": "تسلسل خدمة التوصيل الكامل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.896891,
-          "semanticScore": 0.827606,
-          "lexicalBoost": 0.069286
+          "score": 0.933556,
+          "semanticScore": 0.841738,
+          "lexicalBoost": 0.091818
         },
         {
-          "id": "intro-tour:relationship:9",
-          "title": "Driver Assignment followed by Driver Portal Execution",
-          "type": "relationship",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question",
+          "title": "شو تسلسل الخدمات؟",
+          "type": "workflow",
           "stageId": null,
-          "score": 0.876125,
-          "semanticScore": 0.84184,
-          "lexicalBoost": 0.034286
+          "score": 0.925961,
+          "semanticScore": 0.834142,
+          "lexicalBoost": 0.091818
         }
       ],
-      "topScore": 1.011577,
+      "topScore": 1.026462,
+      "thresholdTriggered": false,
+      "critical": true,
+      "pass": true,
+      "scores": {
+        "correctness": true,
+        "grounding": true,
+        "retrieval": true,
+        "refusal": true,
+        "sequence": true,
+        "terminology": true
+      },
+      "failureReason": "",
+      "failureType": "knowledge gap"
+    },
+    {
+      "id": "workflow-current-001",
+      "category": "workflow-sequence",
+      "question": "شو تسلسل خدمة التوصيل؟",
+      "path": "deterministic",
+      "answer": "المسار الحالي المرئي لخدمة التوصيل هو: 01 — فاتورة من SAP → 02 — طلب توصيل → 03 — جدولة التوصيل → 04 — ربط الخدمة بالسائق → 05 — ملئ النموذج → 06 — جاري التوصيل → 07 — استلام الخدمة. وتبقى تفاصيل Tasks وTask وProject وStage وAssignees وAssign وTrip Date وAppointment From وAppointment To وTask Forms وبوابة السائق وStart ورفع الصورة وEnd Task وOTP وCompleted معرفة مساندة داخل هذه المراحل.",
+      "expectedType": "answer",
+      "expectedFallback": false,
+      "isFallback": false,
+      "retrievedChunks": [],
+      "topScore": null,
       "thresholdTriggered": false,
       "critical": true,
       "pass": true,
@@ -203,58 +228,58 @@
       "category": "workflow-sequence",
       "question": "شو ترتيب التنفيذ من تعيين السائق للنهاية؟",
       "path": "rag",
-      "answer": "ترتيب خطوات التنفيذ من تعيين السائق حتى اكتمال التوصيل:\n\n1. تعيين السائق المسؤول عن تنفيذ الخدمة في **Assign**.\n2. تفعيل **Task Forms** وظهور نموذج سند التحميل.\n3. فتح بوابة السائق والضغط على **Start** لبدء التنفيذ.\n4. رفع صورة التنفيذ لتوثيق الخدمة.\n5. الضغط على **End Task**.\n6. إرسال رمز **OTP** إلى العميل لتأكيد استلام الخدمة.\n7. تأكيد رمز **OTP** لتتحول المهمة إلى **Completed**.",
+      "answer": "ترتيب التنفيذ من تعيين السائق حتى النهاية:\n\n1. **تعيين السائق**: يتم تحديد السائق المسؤول عن تنفيذ الخدمة في Assign.\n2. **إتاحة النماذج**: تظهر Task Forms ويصبح نموذج سند التحميل متاحاً.\n3. **فتح بوابة السائق**: يفتح السائق بوابة السائق لبدء متابعة المهمة.\n4. **بدء التنفيذ**: يضغط السائق على Start لبدء تنفيذ خدمة التوصيل.\n5. **رفع صورة التنفيذ**: يقوم السائق برفع صورة التنفيذ لتوثيق الخدمة.\n6. **إنهاء المهمة**: يضغط السائق على End Task.\n7. **إرسال رمز OTP**: يرسل النظام رمز OTP إلى العميل لتأكيد الاستلام.\n8. **تأكيد الرمز والاكتمال**: بعد تأكيد OTP بنجاح، تتحول المهمة إلى Completed وتكتمل خدمة التوصيل.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.907013,
-          "semanticScore": 0.824013,
-          "lexicalBoost": 0.083
-        },
-        {
-          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
-          "title": "من تعيين السائق حتى اكتمال التوصيل",
-          "type": "workflow",
-          "stageId": null,
-          "score": 0.900104,
-          "semanticScore": 0.817104,
-          "lexicalBoost": 0.083
+          "score": 0.970529,
+          "semanticScore": 0.830529,
+          "lexicalBoost": 0.14
         },
         {
           "id": "intro-tour:workflow-question:full-delivery-workflow-question",
           "title": "شو تسلسل الخدمات؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.898951,
-          "semanticScore": 0.783951,
-          "lexicalBoost": 0.115
+          "score": 0.967361,
+          "semanticScore": 0.827361,
+          "lexicalBoost": 0.14
         },
         {
-          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
-          "title": "تسلسل خدمة التوصيل الكامل",
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
+          "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.897405,
-          "semanticScore": 0.782405,
-          "lexicalBoost": 0.115
+          "score": 0.96349,
+          "semanticScore": 0.86789,
+          "lexicalBoost": 0.0956
         },
         {
-          "id": "intro-tour:relationship:9",
-          "title": "Driver Assignment followed by Driver Portal Execution",
-          "type": "relationship",
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
           "stageId": null,
-          "score": 0.876388,
-          "semanticScore": 0.828388,
-          "lexicalBoost": 0.048
+          "score": 0.944528,
+          "semanticScore": 0.858528,
+          "lexicalBoost": 0.086
+        },
+        {
+          "id": "intro-tour:current-workflow:current-driver-linking",
+          "title": "04 — ربط الخدمة بالسائق",
+          "type": "current-workflow",
+          "stageId": "current-driver-linking",
+          "score": 0.942755,
+          "semanticScore": 0.824955,
+          "lexicalBoost": 0.1178
         }
       ],
-      "topScore": 0.907013,
+      "topScore": 0.970529,
       "thresholdTriggered": false,
       "critical": true,
       "pass": true,
@@ -274,58 +299,58 @@
       "category": "driver-portal",
       "question": "شو بصير بعد End Task؟",
       "path": "rag",
-      "answer": "بعد الضغط على End Task:\n\n1. يتم الانتقال إلى تأكيد الاستلام وإرسال رمز OTP إلى العميل.\n2. بعد تأكيد رمز OTP بنجاح، تتحول المهمة إلى Completed ويُسجل اكتمال خدمة التوصيل وتأكيد العميل.",
+      "answer": "بعد End Task، يرسل النظام رمز OTP إلى العميل لتأكيد استلام الخدمة، وبعد تأكيد OTP تصبح المهمة Completed ويُسجل استلام الخدمة واكتمالها.",
       "expectedType": "answer",
       "expectedFallback": false,
       "isFallback": false,
       "retrievedChunks": [
         {
-          "id": "intro-tour:field:end-task",
-          "title": "End Task",
-          "type": "field",
-          "stageId": null,
-          "score": 0.902929,
-          "semanticScore": 0.807929,
-          "lexicalBoost": 0.095
-        },
-        {
-          "id": "intro-tour:stage:driver-portal-execution:substep:end-task",
-          "title": "إنهاء المهمة",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.88681,
-          "semanticScore": 0.79181,
-          "lexicalBoost": 0.095
-        },
-        {
-          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
-          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "id": "intro-tour:workflow-question:current-service-receipt-question",
+          "title": "كيف بتنتهي الخدمة؟",
           "type": "workflow",
           "stageId": null,
-          "score": 0.873566,
-          "semanticScore": 0.758566,
-          "lexicalBoost": 0.115
+          "score": 0.965935,
+          "semanticScore": 0.837232,
+          "lexicalBoost": 0.128704
+        },
+        {
+          "id": "intro-tour:current-workflow:current-service-receipt",
+          "title": "07 — استلام الخدمة",
+          "type": "current-workflow",
+          "stageId": "current-service-receipt",
+          "score": 0.963981,
+          "semanticScore": 0.835278,
+          "lexicalBoost": 0.128704
         },
         {
           "id": "intro-tour:workflow-sequence:driver-assignment-to-completion",
           "title": "من تعيين السائق حتى اكتمال التوصيل",
           "type": "workflow",
           "stageId": null,
-          "score": 0.849278,
-          "semanticScore": 0.734278,
-          "lexicalBoost": 0.115
+          "score": 0.929169,
+          "semanticScore": 0.82065,
+          "lexicalBoost": 0.108519
         },
         {
-          "id": "intro-tour:stage:driver-portal-execution",
-          "title": "تنفيذ التوصيل من بوابة السائق",
-          "type": "stage",
-          "stageId": "driver-portal-execution",
-          "score": 0.812394,
-          "semanticScore": 0.717394,
-          "lexicalBoost": 0.095
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow",
+          "title": "تسلسل خدمة التوصيل الكامل",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.920178,
+          "semanticScore": 0.788511,
+          "lexicalBoost": 0.131667
+        },
+        {
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question",
+          "title": "شو بصير من وقت تعيين السائق لحد انتهاء التوصيل؟",
+          "type": "workflow",
+          "stageId": null,
+          "score": 0.919282,
+          "semanticScore": 0.819653,
+          "lexicalBoost": 0.09963
         }
       ],
-      "topScore": 0.902929,
+      "topScore": 0.965935,
       "thresholdTriggered": false,
       "critical": true,
       "pass": true,
@@ -350,7 +375,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.666961,
+      "topScore": 0.677987,
       "thresholdTriggered": true,
       "critical": true,
       "pass": true,
@@ -375,7 +400,7 @@
       "expectedFallback": true,
       "isFallback": true,
       "retrievedChunks": [],
-      "topScore": 0.660417,
+      "topScore": 0.668879,
       "thresholdTriggered": true,
       "critical": true,
       "pass": true,

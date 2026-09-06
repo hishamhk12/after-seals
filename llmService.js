@@ -6,7 +6,7 @@ const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.7-flash";
 const MAX_OUTPUT_TOKENS = 1400;
 const TEMPERATURE = 0.05;
 
-async function answerFromRetrievedContext({ question, retrievedContext }) {
+async function answerFromRetrievedContext({ question, retrievedContext, queryUnderstanding = null }) {
   loadEnvFile();
 
   if (!process.env.ai) {
@@ -17,7 +17,7 @@ async function answerFromRetrievedContext({ question, retrievedContext }) {
     return FALLBACK_ANSWER;
   }
 
-  const prompt = buildGroundedPrompt({ question, retrievedContext });
+  const prompt = buildGroundedPrompt({ question, retrievedContext, queryUnderstanding });
   const geminiResponse = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`,
     {
@@ -52,7 +52,9 @@ async function answerFromRetrievedContext({ question, retrievedContext }) {
   return answer || FALLBACK_ANSWER;
 }
 
-function buildGroundedPrompt({ question, retrievedContext }) {
+function buildGroundedPrompt({ question, retrievedContext, queryUnderstanding = null }) {
+  const understandingSection = buildUnderstandingSection(queryUnderstanding);
+
   return [
     "You are the LLM generation layer for an internal Arabic Odoo After-Sales training assistant.",
     "",
@@ -71,20 +73,42 @@ function buildGroundedPrompt({ question, retrievedContext }) {
     "- Preserve Odoo terms exactly when useful: Assign, Assignees, Stage, Appointment From, Appointment To, Task Forms, Start, End Task, OTP, Completed.",
     "- When the user asks about a named field, form, or Odoo term, include that exact name in the answer.",
     "- For multi-part sequence questions, combine the relevant facts into the clearest supported sequence.",
+    "- For a general workflow_sequence question, answer with only the authoritative current high-level stage sequence found in the facts. Prefer current/primary workflow chunks over detailed supporting or legacy workflow chunks. Do not append Tasks, Appointment From/To, Assign, Task Forms, Start, End Task, OTP, Completed, or other internal details unless the user asks for detailed execution.",
+    "- For next-step and previous-step questions, use the authoritative current workflow sequence in the facts and answer with the immediately adjacent current stage. Do not substitute booking actions or older supporting navigation wording for a current stage name.",
+    "- If a multi-part question asks how the appointment is set and what happens afterward with the driver, answer both parts completely: include the booking link, customer location, date/time and confirmation, then continue through every driver step supported by the facts, including driver linking/assignment, Task Forms or form filling, Driver Portal, Start, execution photo, End Task, OTP, and Completed/service receipt. Do not stop at driver assignment or Task Forms when later supported steps are present.",
     "- For service-list questions, include every service name that is explicitly listed in the facts instead of summarizing the list.",
     "- For appointment or booking timing questions, include both the scheduling/readiness point and the allowed booking window when those details are present.",
+    "- A current_status question does not provide access to a live Odoo record. Do not claim a real live stage; explain the training-page context or state that live status needs a specific record.",
     "- Start supported answers directly with the useful answer.",
     "- Do not include provenance, source, scope, or retrieval-process preambles in supported answers.",
     "- Do not begin with Arabic phrases that mean 'according to the available information' or 'based on the page'.",
     "- Adapt answer length to the question: define simple terms briefly, compare two fields in 2-3 lines, and use a short ordered list for sequence questions.",
     "- Answer in clear Arabic.",
     "",
+    understandingSection,
+    understandingSection ? "" : "",
     "Facts:",
     retrievedContext,
     "",
     "User question:",
     question,
   ].join("\n");
+}
+
+function buildUnderstandingSection(queryUnderstanding) {
+  if (!queryUnderstanding || queryUnderstanding.primaryIntent === "unsupported") {
+    return "";
+  }
+
+  return [
+    "Query understanding hints (retrieval aids, not factual sources):",
+    `- Primary intent: ${queryUnderstanding.primaryIntent}`,
+    queryUnderstanding.secondaryIntents?.length ? `- Secondary intents: ${queryUnderstanding.secondaryIntents.join(", ")}` : "",
+    queryUnderstanding.concepts?.length ? `- Recognized concepts: ${queryUnderstanding.concepts.join(", ")}` : "",
+    queryUnderstanding.exactTerms?.length ? `- Preserve exact Odoo terms: ${queryUnderstanding.exactTerms.join(", ")}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function stripGroundingIntro(answer) {
@@ -144,13 +168,40 @@ function limitLogText(text) {
   return String(text || "").replace(/\s+/g, " ").slice(0, 700);
 }
 
-const ENGLISH_STOP_WORDS = new Set(["a", "an", "and", "or", "the", "is", "are", "what", "how", "when", "who", "flow", "confirmed"]);
+const ENGLISH_STOP_WORDS = new Set([
+  "a",
+  "an",
+  "and",
+  "or",
+  "the",
+  "is",
+  "are",
+  "what",
+  "how",
+  "when",
+  "who",
+  "flow",
+  "workflow",
+  "cycle",
+  "delivery",
+  "service",
+  "services",
+  "driver",
+  "technician",
+  "supervisor",
+  "execution",
+  "booking",
+  "form",
+  "forms",
+  "confirmed",
+]);
 
 module.exports = {
   ERROR_ANSWER,
   FALLBACK_ANSWER,
   answerFromRetrievedContext,
   buildGroundedPrompt,
+  buildUnderstandingSection,
   hasRequiredExactTerms,
   stripGroundingIntro,
 };

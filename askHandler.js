@@ -29,6 +29,7 @@ async function handleAskPayload(body, logger = console) {
   const supportedAnswer = findSupportedAnswer(pageId, question);
 
   if (supportedAnswer && shouldUseSupportedAnswer(pageId, supportedAnswer, queryUnderstanding)) {
+    logger.log?.(`Retrieval path: exact_structured; pageId=${pageId}`);
     return jsonResult(200, { answer: formatSupportedAnswer(pageId, supportedAnswer, queryUnderstanding) });
   }
 
@@ -43,18 +44,26 @@ async function handleAskPayload(body, logger = console) {
     logger.log?.(
       [
         `Hybrid RAG retrieval: pageId=${pageId}`,
+        `retrievalMode=${retrieval.retrievalMode}`,
+        retrieval.embeddingUnavailableReason ? `embeddingUnavailableReason=${retrieval.embeddingUnavailableReason}` : "",
         `intent=${retrieval.understanding?.primaryIntent || "unknown"}`,
         `intentConfidence=${retrieval.understanding?.confidence || 0}`,
         `concepts=${retrieval.understanding?.concepts?.join(",") || "none"}`,
         `retrieved=${retrieval.chunks.map((chunk) => `${chunk.sourceType}:${chunk.id}:${chunk.score}:${chunk.status}`).join(", ") || "none"}`,
         `topScore=${retrieval.topScore}`,
+        `effectiveMinScore=${retrieval.effectiveMinScore}`,
         `thresholdTriggered=${retrieval.thresholdTriggered}`,
-      ].join("; "),
+      ]
+        .filter(Boolean)
+        .join("; "),
     );
 
     if (retrieval.thresholdTriggered || retrieval.chunks.length === 0) {
+      logger.log?.(`Retrieval path: unsupported_fallback; pageId=${pageId}; retrievalMode=${retrieval.retrievalMode}`);
       return jsonResult(200, { answer: FALLBACK_ANSWER });
     }
+
+    logger.log?.(`Retrieval path: ${retrieval.retrievalMode}; pageId=${pageId}`);
 
     const answer = await answerFromRetrievedContext({
       question,
@@ -142,7 +151,8 @@ function formatSupportedAnswer(pageId, supportedAnswer, queryUnderstanding) {
   const currentStages = pageKnowledge[pageId]?.currentWorkflow || [];
   if (currentStages.length === 0) return supportedAnswer;
 
-  return `المسار الحالي المرئي لخدمة التوصيل هو: ${currentStages
+  const workflowLabel = pageKnowledge[pageId]?.workflowLabel || "المسار الحالي المرئي";
+  return `${workflowLabel} هو: ${currentStages
     .map((stage) => `${String(stage.order).padStart(2, "0")} — ${stage.title}`)
     .join(" → ")}.`;
 }

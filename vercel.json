@@ -6,7 +6,8 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "data/embeddings/intro-tour.json"
+          "data/embeddings/intro-tour.json",
+          "data/embeddings/internal-transfer.json"
         ]
       }
     },

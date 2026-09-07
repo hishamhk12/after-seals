@@ -9,9 +9,16 @@ const DEFAULT_PAGE_TOP_K = 5;
 const DEFAULT_GLOBAL_TOP_K = 5;
 const DEFAULT_MERGED_TOP_K = 7;
 const DEFAULT_MIN_SCORE = 0.72;
+const DEFAULT_LEXICAL_FALLBACK_MIN_SCORE = 0.08;
 const DEFAULT_PAGE_PRIORITY_BOOST = 0.045;
 const DEFAULT_SERVICE_BOOST = 0.035;
 const DEFAULT_GLOBAL_INTENT_BOOST = 0.09;
+
+const DEFAULT_EMBEDDING_DIMENSION = 768;
+
+const RETRIEVAL_MODE_SEMANTIC = "semantic";
+const RETRIEVAL_MODE_LEXICAL_FALLBACK = "lexical_fallback";
+const RETRIEVAL_MODE_PAGE_STORE_MISSING_FALLBACK = "page_store_missing_fallback";
 
 async function retrieveHybridChunks({
   pageId,
@@ -20,6 +27,7 @@ async function retrieveHybridChunks({
   globalTopK = DEFAULT_GLOBAL_TOP_K,
   mergedTopK = DEFAULT_MERGED_TOP_K,
   minScore = DEFAULT_MIN_SCORE,
+  lexicalFallbackMinScore = readNumberEnv("HYBRID_LEXICAL_FALLBACK_MIN_SCORE", DEFAULT_LEXICAL_FALLBACK_MIN_SCORE),
   pagePriorityBoost = readNumberEnv("HYBRID_PAGE_PRIORITY_BOOST", DEFAULT_PAGE_PRIORITY_BOOST),
   serviceBoost = readNumberEnv("HYBRID_SERVICE_BOOST", DEFAULT_SERVICE_BOOST),
   globalIntentBoost = readNumberEnv("HYBRID_GLOBAL_INTENT_BOOST", DEFAULT_GLOBAL_INTENT_BOOST),
@@ -27,43 +35,73 @@ async function retrieveHybridChunks({
 } = {}) {
   const understanding = queryUnderstanding || understandQuery(question);
   const retrievalQuery = understanding.retrievalQuery || question;
+
+  // Document vectors are always read from the existing on-disk stores below —
+  // Gemini is only ever called (and only may fail) for the query embedding further down.
   const pageStore = loadEmbeddingStore(pageId);
   const pageChunks = buildKnowledgeChunks(pageId);
   const currentWorkflow = pageKnowledge[pageId]?.currentWorkflow || [];
-  const pageValidation = validateEmbeddingStore(pageId, pageChunks, pageStore);
 
-  if (!pageValidation.ok) {
-    throw new Error(`Page embedding store validation failed: ${pageValidation.errors.join("; ")}`);
+  // A missing page embedding store (e.g. still pending generation) is not the same as a
+  // corrupt/stale one. pageKnowledge[pageId] is still a fully supported page, so this falls
+  // back to lexical/structured ranking over the freshly built pageChunks instead of failing
+  // the whole request the way a real validation error (stale hash, dimension mismatch, etc.) does.
+  const pageStoreMissing = !pageStore;
+
+  if (!pageStoreMissing) {
+    const pageValidation = validateEmbeddingStore(pageId, pageChunks, pageStore);
+
+    if (!pageValidation.ok) {
+      throw new Error(`Page embedding store validation failed: ${pageValidation.errors.join("; ")}`);
+    }
   }
 
   const globalStore = loadGlobalEmbeddingStore();
   const globalChunks = buildGlobalKnowledgeChunks();
+  const referenceModel = pageStore?.model || globalStore?.model || getEmbeddingModel();
+  const referenceDimension = Number(pageStore?.embeddingDimension) || Number(globalStore?.embeddingDimension) || DEFAULT_EMBEDDING_DIMENSION;
   const globalValidation = validateGlobalEmbeddingStore({
     chunks: globalChunks,
     store: globalStore,
-    expectedModel: pageStore.model || getEmbeddingModel(),
-    expectedDimension: Number(pageStore.embeddingDimension),
+    expectedModel: referenceModel,
+    expectedDimension: referenceDimension,
   });
 
   if (!globalValidation.ok) {
     throw new Error(`Global embedding store validation failed: ${globalValidation.errors.join("; ")}`);
   }
 
-  const model = pageStore.model || getEmbeddingModel();
-  const dimension = Number(pageStore.embeddingDimension);
-  const queryEmbedding = await createEmbedding(["task: retrieval_query", retrievalQuery].join("\n"), {
-    model,
-    outputDimensionality: dimension,
-  });
+  let queryEmbedding = null;
+  let embeddingUnavailableReason = pageStoreMissing ? "page_store_missing" : null;
 
-  if (!isValidEmbedding(queryEmbedding, dimension)) {
-    throw new Error("Hybrid query embedding is invalid.");
+  if (!pageStoreMissing) {
+    try {
+      const candidateEmbedding = await createEmbedding(["task: retrieval_query", retrievalQuery].join("\n"), {
+        model: referenceModel,
+        outputDimensionality: referenceDimension,
+      });
+
+      if (!isValidEmbedding(candidateEmbedding, referenceDimension)) {
+        embeddingUnavailableReason = "invalid_embedding";
+      } else {
+        queryEmbedding = candidateEmbedding;
+      }
+    } catch (error) {
+      embeddingUnavailableReason = isGeminiRateLimitError(error) ? "rate_limited" : "embedding_error";
+    }
   }
+
+  const retrievalMode = queryEmbedding
+    ? RETRIEVAL_MODE_SEMANTIC
+    : pageStoreMissing
+      ? RETRIEVAL_MODE_PAGE_STORE_MISSING_FALLBACK
+      : RETRIEVAL_MODE_LEXICAL_FALLBACK;
+  const effectiveMinScore = queryEmbedding ? minScore : lexicalFallbackMinScore;
 
   const mentionedServices = detectMentionedServices(retrievalQuery);
   const hasGlobalIntent = understanding.primaryIntent === "service_list" || detectGlobalIntent(retrievalQuery);
   const pageCandidates = rankRecords({
-    records: pageStore.records,
+    records: pageStoreMissing ? pageChunks : pageStore.records,
     queryEmbedding,
     question: retrievalQuery,
     topK: pageTopK,
@@ -91,14 +129,19 @@ async function retrieveHybridChunks({
   const topScore = chunks[0]?.score || 0;
 
   return {
-    chunks: topScore >= minScore ? chunks : [],
+    chunks: topScore >= effectiveMinScore ? chunks : [],
     topScore,
-    thresholdTriggered: topScore < minScore,
-    queryEmbeddingDimension: queryEmbedding.length,
+    thresholdTriggered: topScore < effectiveMinScore,
+    queryEmbeddingDimension: queryEmbedding?.length || 0,
+    retrievalMode,
+    embeddingUnavailableReason,
+    pageStoreMissing,
     pageTopK,
     globalTopK,
     mergedTopK,
     minScore,
+    lexicalFallbackMinScore,
+    effectiveMinScore,
     pagePriorityBoost,
     serviceBoost,
     globalIntentBoost,
@@ -134,7 +177,7 @@ function buildHybridRetrievedContext(retrievedChunks) {
 function rankRecords({ records, queryEmbedding, question, topK, sourceType, sourceBoost, serviceBoost, mentionedServices, understanding, currentWorkflow }) {
   return records
     .map((record) => {
-      const semanticScore = cosineSimilarity(queryEmbedding, record.embedding);
+      const semanticScore = queryEmbedding ? cosineSimilarity(queryEmbedding, record.embedding) : 0;
       const lexicalBoost = calculateLexicalBoost(question, record);
       const matchedServices = sourceType === "global" ? getMatchedServices(record.service, mentionedServices) : [];
       const appliedServiceBoost = matchedServices.length > 0 ? serviceBoost : 0;
@@ -253,6 +296,10 @@ function readNumberEnv(name, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function isGeminiRateLimitError(error) {
+  return error?.status === 429 || /RESOURCE_EXHAUSTED|Too Many Requests|status=429/i.test(error?.message || "");
+}
+
 function roundScore(score) {
   return Number(score.toFixed(6));
 }
@@ -314,14 +361,19 @@ module.exports = {
   DEFAULT_GLOBAL_TOP_K,
   DEFAULT_MERGED_TOP_K,
   DEFAULT_MIN_SCORE,
+  DEFAULT_LEXICAL_FALLBACK_MIN_SCORE,
   DEFAULT_PAGE_PRIORITY_BOOST,
   DEFAULT_PAGE_TOP_K,
   DEFAULT_SERVICE_BOOST,
+  RETRIEVAL_MODE_SEMANTIC,
+  RETRIEVAL_MODE_LEXICAL_FALLBACK,
+  RETRIEVAL_MODE_PAGE_STORE_MISSING_FALLBACK,
   buildHybridRetrievedContext,
   detectGlobalIntent,
   detectBusinessRuleIntent,
   detectKnownErrorIntent,
   detectMentionedServices,
   detectServiceListIntent,
+  isGeminiRateLimitError,
   retrieveHybridChunks,
 };

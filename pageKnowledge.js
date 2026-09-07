@@ -3,6 +3,7 @@ const pageKnowledge = {
     "id": "intro-tour",
     "title": "دورة عمل خدمة التوصيل",
     "scope": "هذه الصفحة تعرض دورة عمل خدمة التوصيل كمسار تنفيذي يبدأ بوصول الفاتورة من SAP إلى Odoo، ثم الانتقال من الفاتورة إلى مهمة التوصيل، وتحديد المشرف وفترة الحجز، وإرسال رابط العميل، وحجز الموعد، وتعيين السائق، وتنفيذ التوصيل من بوابة السائق حتى OTP و Completed.",
+    "workflowLabel": "المسار الحالي المرئي لخدمة التوصيل",
     "entities": {
       "invoice": {
         "name": "الفاتورة",
@@ -1036,6 +1037,443 @@ const pageKnowledge = {
         ]
       }
     ]
+  },
+  "internal-transfer": {
+    "id": "internal-transfer",
+    "title": "دورة عمل النقل الداخلي",
+    "scope": "هذه الصفحة تعرض دورة عمل النقل الداخلي لنقل البضاعة بين المواقع داخل Odoo، بدءًا من وصول فاتورة من SAP قد تستدعي نقل البضاعة من موقعها الحالي إلى مكان التجميع، مرورًا بتسجيل النقل وتحديد الكمية عبر Record Transfer، وحتى تأكيد استلام الكمية عبر Confirm Receipt. هذه الصفحة منفصلة تمامًا عن دورة عمل خدمة التوصيل إلى العميل ولا تشترك معها في نفس المسار أو المصطلحات التنفيذية.",
+    "workflowLabel": "المسار الحالي المرئي للنقل الداخلي",
+    "entities": {
+      "invoice": {
+        "name": "الفاتورة",
+        "description": "الفاتورة القادمة من SAP، والتي قد تستدعي إنشاء نقل داخلي عندما تكون صادرة لفرع أو مدينة مختلفة عن موقع البضاعة الحالي.",
+        "relatedTerms": [
+          "فاتورة",
+          "Invoice",
+          "فاتورة من SAP"
+        ]
+      },
+      "transferTask": {
+        "name": "مهمة النقل الداخلي",
+        "description": "المهمة التي تُنشأ داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب، وتنتقل بين مراحل طلب جديد وجاري النقل وتم الاستلام.",
+        "relatedTerms": [
+          "النقل الداخلي",
+          "مهمة النقل الداخلي",
+          "Internal Transfer"
+        ]
+      },
+      "sourceLocation": {
+        "name": "موقع البضاعة الحالي",
+        "description": "الموقع الذي توجد فيه البضاعة قبل تنفيذ النقل الداخلي، مثل الرياض في المثال الموضح على الصفحة.",
+        "examples": ["الرياض"],
+        "relatedTerms": [
+          "موقع البضاعة",
+          "الموقع الحالي"
+        ]
+      },
+      "destinationLocation": {
+        "name": "مكان التجميع",
+        "description": "المكان الذي يجب أن تصل إليه البضاعة بعد النقل الداخلي، وهو الفرع أو المدينة الصادرة لها الفاتورة، مثل جدة في المثال الموضح على الصفحة.",
+        "examples": ["جدة"],
+        "relatedTerms": [
+          "مكان التجميع",
+          "الوجهة"
+        ]
+      },
+      "sap": {
+        "name": "SAP",
+        "description": "مصدر الفاتورة التي تبدأ منها دورة النقل الداخلي عند اختلاف موقع البضاعة عن مكان التجميع المطلوب.",
+        "relatedTerms": [
+          "SAP",
+          "مصدر الفاتورة"
+        ]
+      }
+    },
+    "fields": {
+      "Record Transfer": {
+        "meaning": "زر يُستخدم مرتين ضمن مرحلة طلب جديد: أولًا لفتح نافذة تسجيل عملية النقل الداخلي، وثانيًا لتأكيد الكمية المحددة داخل تلك النافذة وإتمام تسجيل النقل.",
+        "relatedTerms": [
+          "Record Transfer",
+          "طلب جديد",
+          "تسجيل النقل"
+        ]
+      },
+      "Partial Transfer": {
+        "meaning": "خيار داخل نافذة تسجيل النقل (Record Transfer) لنقل جزء فقط من الكمية المطلوبة.",
+        "relatedTerms": [
+          "Partial Transfer",
+          "نقل جزئي",
+          "Record Transfer"
+        ]
+      },
+      "Full Remaining Transfer": {
+        "meaning": "خيار داخل نافذة تسجيل النقل (Record Transfer) لنقل كامل الكمية المتبقية دفعة واحدة.",
+        "relatedTerms": [
+          "Full Remaining Transfer",
+          "نقل الكمية المتبقية بالكامل",
+          "Record Transfer"
+        ]
+      },
+      "Required Qty": {
+        "meaning": "الكمية الإجمالية المطلوب نقلها ضمن عملية النقل الداخلي، وتظهر داخل نافذة تسجيل النقل عند الضغط على Record Transfer.",
+        "relatedTerms": [
+          "Required Qty",
+          "تحديد الكمية",
+          "Record Transfer"
+        ]
+      },
+      "Remaining": {
+        "meaning": "الكمية المتبقية التي لم تُنقل بعد من إجمالي الكمية المطلوبة، وتظهر داخل نافذة تسجيل النقل.",
+        "relatedTerms": [
+          "Remaining",
+          "Required Qty",
+          "Record Transfer"
+        ]
+      },
+      "Quantity Now": {
+        "meaning": "الكمية التي يتم تحديدها لتُنقل في عملية التسجيل الحالية عند استخدام Record Transfer.",
+        "relatedTerms": [
+          "Quantity Now",
+          "تحديد الكمية",
+          "Record Transfer"
+        ]
+      },
+      "Confirm Receipt": {
+        "meaning": "زر يُستخدم مرتين ضمن مرحلة جاري النقل: أولًا لفتح نافذة تسجيل الكمية المستلمة، وثانيًا لتأكيد الكمية المستلمة داخل تلك النافذة.",
+        "relatedTerms": [
+          "Confirm Receipt",
+          "جاري النقل",
+          "تسجيل الكمية المستلمة"
+        ]
+      },
+      "Sent Quantity": {
+        "meaning": "الكمية المرسلة كما تظهر داخل نافذة Confirm Receipt عند تسجيل الاستلام.",
+        "relatedTerms": [
+          "Sent Quantity",
+          "الكمية المرسلة",
+          "Confirm Receipt"
+        ]
+      },
+      "Received Quantity": {
+        "meaning": "الخانة التي يتم فيها إدخال الكمية التي تم استلامها فعليًا داخل نافذة Confirm Receipt.",
+        "relatedTerms": [
+          "Received Quantity",
+          "الكمية المستلمة",
+          "Confirm Receipt"
+        ]
+      },
+      "Difference": {
+        "meaning": "الفرق الذي يظهر تلقائيًا داخل نافذة Confirm Receipt في حال اختلاف الكمية المرسلة عن الكمية المستلمة.",
+        "relatedTerms": [
+          "Difference",
+          "الفرق",
+          "Sent Quantity",
+          "Received Quantity"
+        ]
+      },
+      "Notes": {
+        "meaning": "حقل ملاحظة داخل نافذة Confirm Receipt يمكن استخدامه لتوضيح سبب الفرق بين الكمية المرسلة والمستلمة.",
+        "relatedTerms": [
+          "Notes",
+          "ملاحظة",
+          "Difference",
+          "Confirm Receipt"
+        ]
+      }
+    },
+    "currentWorkflow": [
+      {
+        "id": "internal-current-invoice",
+        "order": 1,
+        "title": "فاتورة من SAP",
+        "summary": "تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. إذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.",
+        "details": [
+          "مثال: إذا كانت الفاتورة صادرة من جدة بينما البضاعة موجودة في الرياض، يتم إنشاء نقل داخلي من الرياض إلى جدة، باعتبار جدة مكان التجميع."
+        ],
+        "relatedTerms": ["فاتورة من SAP", "SAP", "Odoo", "نقل داخلي", "مكان التجميع", "موقع البضاعة"]
+      },
+      {
+        "id": "internal-current-request",
+        "order": 2,
+        "title": "طلب جديد",
+        "summary": "بعد إنشاء عملية النقل الداخلي وظهورها في مرحلة طلب جديد، يتم فتح المهمة والضغط على زر Record Transfer لبدء تسجيل عملية النقل.",
+        "details": [
+          "بعد الضغط على Record Transfer تظهر نافذة تسجيل النقل، ويمكن اختيار Partial Transfer أو Full Remaining Transfer، ثم تحديد الكمية المراد نقلها والضغط على Record Transfer لتأكيد العملية.",
+          "بعد تسجيل عملية النقل، تنتقل المهمة إلى مرحلة جاري النقل."
+        ],
+        "relatedTerms": ["طلب جديد", "Record Transfer", "Partial Transfer", "Full Remaining Transfer", "Required Qty", "Remaining", "Quantity Now", "تسجيل النقل", "تحديد الكمية"]
+      },
+      {
+        "id": "internal-current-transit",
+        "order": 3,
+        "title": "جاري النقل",
+        "summary": "عند وصول الشحنة إلى موقع الاستلام، ومن داخل مرحلة جاري النقل، يتم فتح مهمة النقل الداخلي والضغط على زر Confirm Receipt لبدء تسجيل الكمية المستلمة.",
+        "details": [
+          "تظهر نافذة Confirm Receipt وبداخلها الكمية المرسلة (Sent Quantity). يتم إدخال الكمية التي تم استلامها فعليًا في خانة Received Quantity، ثم الضغط على Confirm Receipt لتأكيد الاستلام.",
+          "في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق (Difference) ويمكن تسجيل ملاحظة (Notes) توضح السبب.",
+          "بعد نجاح Confirm Receipt، تنتقل العملية من مرحلة جاري النقل إلى مرحلة تم الاستلام."
+        ],
+        "relatedTerms": ["جاري النقل", "Confirm Receipt", "Sent Quantity", "Received Quantity", "Difference", "Notes"]
+      },
+      {
+        "id": "internal-current-received",
+        "order": 4,
+        "title": "تم الاستلام",
+        "summary": "مرحلة تم الاستلام هي المرحلة النهائية بعد تأكيد استلام الشحنة بنجاح، وبذلك يكتمل مسار النقل الداخلي.",
+        "details": [
+          "Confirm Receipt يحدث أثناء مرحلة جاري النقل، والتأكيد الناجح له هو ما ينقل العملية إلى مرحلة تم الاستلام."
+        ],
+        "relatedTerms": ["تم الاستلام", "اكتمال النقل الداخلي", "Confirm Receipt"]
+      }
+    ],
+    "stages": [
+      {
+        "id": "internal-invoice",
+        "order": 1,
+        "title": "وصول الفاتورة من SAP وإنشاء النقل الداخلي",
+        "screen": "فاتورة من SAP وربطها بمكان التجميع",
+        "summary": "تبدأ عملية النقل الداخلي بوصول فاتورة من SAP قد تستدعي نقل البضاعة من موقعها الحالي إلى مكان التجميع.",
+        "facts": [
+          "تبدأ عملية النقل الداخلي بوصول فاتورة من SAP.",
+          "إذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.",
+          "مثال: فاتورة صادرة من جدة والبضاعة موجودة في الرياض تُنشئ نقلًا داخليًا من الرياض إلى جدة، باعتبار جدة مكان التجميع."
+        ],
+        "relatedTerms": ["فاتورة من SAP", "SAP", "Odoo", "نقل داخلي", "مكان التجميع"]
+      },
+      {
+        "id": "internal-request",
+        "order": 2,
+        "title": "طلب جديد",
+        "screen": "مهمة النقل الداخلي في مرحلة طلب جديد",
+        "summary": "في مرحلة طلب جديد يتم تسجيل عملية النقل الداخلي وتحديد الكمية المطلوب نقلها عبر Record Transfer.",
+        "subSteps": [
+          {
+            "id": "record-transfer-open",
+            "title": "فتح عملية النقل (Record Transfer)",
+            "summary": "بعد إنشاء عملية النقل الداخلي وظهورها في مرحلة طلب جديد، يتم فتح المهمة والضغط على زر Record Transfer لبدء تسجيل عملية النقل.",
+            "relatedTerms": ["Record Transfer", "طلب جديد"]
+          },
+          {
+            "id": "record-transfer-quantity",
+            "title": "تسجيل النقل وتحديد الكمية",
+            "summary": "بعد الضغط على Record Transfer تظهر نافذة تسجيل النقل، ويمكن اختيار Partial Transfer أو Full Remaining Transfer، ثم تحديد الكمية المراد نقلها (Required Qty وRemaining وQuantity Now) والضغط على Record Transfer لتأكيد العملية. بعدها تنتقل المهمة إلى مرحلة جاري النقل.",
+            "relatedTerms": ["Partial Transfer", "Full Remaining Transfer", "Required Qty", "Remaining", "Quantity Now", "Record Transfer"]
+          }
+        ],
+        "relatedTerms": ["طلب جديد", "Record Transfer", "Partial Transfer", "Full Remaining Transfer"]
+      },
+      {
+        "id": "internal-transit",
+        "order": 3,
+        "title": "جاري النقل",
+        "screen": "مهمة النقل الداخلي في مرحلة جاري النقل",
+        "summary": "في مرحلة جاري النقل يتم تأكيد استلام الكمية عند وصول الشحنة إلى موقع الاستلام عبر Confirm Receipt.",
+        "subSteps": [
+          {
+            "id": "confirm-receipt-open",
+            "title": "فتح Confirm Receipt",
+            "summary": "عند وصول الشحنة إلى موقع الاستلام، ومن داخل مرحلة جاري النقل، يتم فتح مهمة النقل الداخلي والضغط على زر Confirm Receipt لبدء تسجيل الكمية المستلمة.",
+            "relatedTerms": ["Confirm Receipt", "جاري النقل"]
+          },
+          {
+            "id": "confirm-receipt-quantity",
+            "title": "تسجيل الكمية المستلمة",
+            "summary": "تظهر نافذة Confirm Receipt وبداخلها الكمية المرسلة (Sent Quantity). يتم إدخال الكمية المستلمة فعليًا في خانة Received Quantity، ثم الضغط على Confirm Receipt لتأكيد الاستلام. في حال وجود فرق بين الكمية المرسلة والمستلمة يظهر الفرق (Difference) ويمكن تسجيل ملاحظة (Notes) توضح السبب.",
+            "relatedTerms": ["Sent Quantity", "Received Quantity", "Difference", "Notes", "Confirm Receipt"]
+          }
+        ],
+        "relatedTerms": ["جاري النقل", "Confirm Receipt", "Received Quantity"]
+      },
+      {
+        "id": "internal-received",
+        "order": 4,
+        "title": "تم الاستلام",
+        "screen": "مهمة النقل الداخلي في مرحلة تم الاستلام",
+        "summary": "مرحلة تم الاستلام هي المرحلة النهائية بعد تأكيد استلام الشحنة بنجاح، وبذلك يكتمل مسار النقل الداخلي.",
+        "facts": [
+          "Confirm Receipt يتم أثناء مرحلة جاري النقل وليس بعد الوصول إلى مرحلة تم الاستلام.",
+          "بعد نجاح Confirm Receipt تنتقل العملية من جاري النقل إلى تم الاستلام."
+        ],
+        "relatedTerms": ["تم الاستلام", "اكتمال النقل الداخلي", "Confirm Receipt"]
+      }
+    ],
+    "workflow": [
+      {
+        "order": 1,
+        "stageId": "internal-invoice",
+        "action": "وصول الفاتورة من SAP وإنشاء نقل داخلي عند اختلاف الموقع عن مكان التجميع",
+        "outcome": "إنشاء مهمة نقل داخلي في Odoo من الموقع الحالي إلى مكان التجميع"
+      },
+      {
+        "order": 2,
+        "stageId": "internal-request",
+        "action": "فتح المهمة والضغط على Record Transfer",
+        "sequence": ["Record Transfer", "اختيار Partial Transfer أو Full Remaining Transfer", "تحديد الكمية", "تأكيد Record Transfer"],
+        "outcome": "الانتقال إلى مرحلة جاري النقل"
+      },
+      {
+        "order": 3,
+        "stageId": "internal-transit",
+        "action": "فتح Confirm Receipt وتسجيل الكمية المستلمة",
+        "sequence": ["Confirm Receipt", "إدخال Received Quantity", "تأكيد Confirm Receipt"],
+        "outcome": "الانتقال إلى مرحلة تم الاستلام عند النجاح، أو ظهور Difference مع إمكانية تسجيل Notes عند وجود فرق"
+      },
+      {
+        "order": 4,
+        "stageId": "internal-received",
+        "action": "وصول البضاعة إلى مكان التجميع واستلامها بنجاح",
+        "outcome": "اكتمال مسار النقل الداخلي"
+      }
+    ],
+    "sequences": [
+      {
+        "id": "current-four-stage-internal-transfer-workflow",
+        "title": "المسار الحالي المرئي للنقل الداخلي",
+        "start": "فاتورة من SAP",
+        "end": "تم الاستلام",
+        "steps": [
+          "01 — فاتورة من SAP",
+          "02 — طلب جديد",
+          "03 — جاري النقل",
+          "04 — تم الاستلام"
+        ],
+        "relatedTerms": ["المسار الحالي", "النقل الداخلي", "الفلو", "workflow", "فاتورة من SAP", "طلب جديد", "جاري النقل", "تم الاستلام", "Record Transfer", "Confirm Receipt"]
+      },
+      {
+        "id": "full-internal-transfer-workflow",
+        "title": "تسلسل النقل الداخلي الكامل",
+        "start": "فاتورة من SAP",
+        "end": "تم الاستلام",
+        "steps": [
+          "تصل فاتورة من SAP قد تستدعي نقل البضاعة من موقعها الحالي إلى مكان التجميع.",
+          "يتم إنشاء مهمة نقل داخلي في Odoo وتظهر في مرحلة طلب جديد.",
+          "يتم فتح المهمة والضغط على Record Transfer.",
+          "تظهر نافذة تسجيل النقل ويتم اختيار Partial Transfer أو Full Remaining Transfer وتحديد الكمية.",
+          "يتم الضغط على Record Transfer لتأكيد العملية فتنتقل المهمة إلى جاري النقل.",
+          "عند وصول الشحنة، يتم فتح المهمة والضغط على Confirm Receipt.",
+          "تظهر نافذة Confirm Receipt وبها الكمية المرسلة، ويتم إدخال الكمية المستلمة في Received Quantity.",
+          "إذا وُجد فرق بين الكمية المرسلة والمستلمة يظهر Difference ويمكن تسجيل Notes.",
+          "يتم الضغط على Confirm Receipt لتأكيد الاستلام فتنتقل العملية إلى تم الاستلام.",
+          "تكتمل عملية النقل الداخلي."
+        ],
+        "relatedTerms": ["النقل الداخلي", "تسلسل", "الفلو", "workflow", "Record Transfer", "Confirm Receipt", "Partial Transfer", "Full Remaining Transfer", "Received Quantity", "Difference", "Notes"]
+      }
+    ],
+    "supportedQuestions": [
+      {
+        "id": "current-internal-transfer-workflow-question",
+        "questions": ["شو الفلو؟", "شو مراحل النقل الداخلي؟", "شو تسلسل النقل الداخلي؟", "كيف بيمشي النقل الداخلي؟"],
+        "answer": "المسار الحالي المرئي للنقل الداخلي هو: 01 — فاتورة من SAP → 02 — طلب جديد → 03 — جاري النقل → 04 — تم الاستلام.",
+        "relatedTerms": ["مراحل النقل الداخلي", "تسلسل النقل الداخلي", "الفلو", "المسار الحالي", "فاتورة من SAP", "طلب جديد", "جاري النقل", "تم الاستلام"]
+      },
+      {
+        "id": "internal-request-question",
+        "questions": ["شو بعمل بمرحلة طلب جديد؟", "شو بصير بطلب جديد؟"],
+        "answer": "في مرحلة طلب جديد يتم فتح المهمة والضغط على Record Transfer لبدء تسجيل عملية النقل، ثم تظهر نافذة تسجيل النقل لاختيار Partial Transfer أو Full Remaining Transfer وتحديد الكمية، ثم الضغط على Record Transfer لتأكيد العملية.",
+        "relatedTerms": ["طلب جديد", "Record Transfer", "Partial Transfer", "Full Remaining Transfer", "تحديد الكمية"]
+      },
+      {
+        "id": "partial-vs-full-transfer-question",
+        "questions": ["شو الفرق بين Partial Transfer و Full Remaining Transfer؟", "ما الفرق بين Partial Transfer و Full Remaining Transfer؟"],
+        "answer": "Partial Transfer تعني نقل جزء فقط من الكمية المطلوبة، بينما Full Remaining Transfer تعني نقل كامل الكمية المتبقية دفعة واحدة. يتم اختيار أحدهما داخل نافذة Record Transfer ثم تحديد الكمية والضغط على Record Transfer لتأكيد العملية.",
+        "relatedTerms": ["Partial Transfer", "Full Remaining Transfer", "Record Transfer"]
+      },
+      {
+        "id": "after-record-transfer-question",
+        "questions": ["بعد Record Transfer وين بروح؟", "شو بيصير بعد Record Transfer؟"],
+        "answer": "بعد تسجيل عملية النقل عبر Record Transfer، تنتقل المهمة إلى مرحلة جاري النقل.",
+        "relatedTerms": ["Record Transfer", "جاري النقل"]
+      },
+      {
+        "id": "confirm-receipt-question",
+        "questions": ["كيف بأكد الاستلام؟", "كيف يتم تأكيد الاستلام؟"],
+        "answer": "من داخل مرحلة جاري النقل، يتم فتح مهمة النقل الداخلي والضغط على Confirm Receipt، ثم إدخال الكمية المستلمة فعليًا في خانة Received Quantity والضغط على Confirm Receipt لتأكيد الاستلام.",
+        "relatedTerms": ["Confirm Receipt", "Received Quantity", "جاري النقل"]
+      },
+      {
+        "id": "received-quantity-location-question",
+        "questions": ["وين بحط الكمية المستلمة؟", "أين تدخل الكمية المستلمة؟"],
+        "answer": "الكمية المستلمة فعليًا تُدخل في خانة Received Quantity داخل نافذة Confirm Receipt.",
+        "relatedTerms": ["Received Quantity", "Confirm Receipt"]
+      },
+      {
+        "id": "receipt-difference-question",
+        "questions": ["إذا استلمت أقل من المرسل شو بصير؟", "شو بصير إذا الكمية المستلمة أقل؟"],
+        "answer": "في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق (Difference) ويمكن تسجيل ملاحظة (Notes) توضح سبب الفرق.",
+        "relatedTerms": ["Difference", "Notes", "Sent Quantity", "Received Quantity"]
+      },
+      {
+        "id": "final-stage-question",
+        "questions": ["شو المرحلة الأخيرة؟", "شو آخر مرحلة بالنقل الداخلي؟"],
+        "answer": "المرحلة الأخيرة هي تم الاستلام، وهي المرحلة النهائية بعد تأكيد استلام الشحنة بنجاح عبر Confirm Receipt أثناء مرحلة جاري النقل.",
+        "relatedTerms": ["تم الاستلام", "Confirm Receipt", "جاري النقل"]
+      },
+      {
+        "id": "full-internal-transfer-workflow-question",
+        "questions": ["شو تسلسل النقل الداخلي الكامل؟", "اشرح الفلو كامل للنقل الداخلي", "شو دورة النقل الداخلي؟"],
+        "answer": "تسلسل النقل الداخلي الكامل: فاتورة من SAP قد تستدعي نقل البضاعة إلى مكان التجميع → طلب جديد → Record Transfer باختيار Partial Transfer أو Full Remaining Transfer وتحديد الكمية → جاري النقل → Confirm Receipt بإدخال Received Quantity (مع ظهور Difference وNotes عند وجود فرق) → تم الاستلام.",
+        "relatedTerms": ["النقل الداخلي", "تسلسل", "الفلو", "Record Transfer", "Confirm Receipt"]
+      }
+    ],
+    "relationships": [
+      {
+        "from": "SAP",
+        "relation": "sends invoice to",
+        "to": "Odoo",
+        "description": "تبدأ عملية النقل الداخلي عندما تصل فاتورة من SAP قد تستدعي نقل البضاعة."
+      },
+      {
+        "from": "اختلاف موقع البضاعة عن مكان التجميع",
+        "relation": "triggers",
+        "to": "مهمة النقل الداخلي",
+        "description": "عند اختلاف موقع البضاعة عن الفرع أو المدينة الصادرة لها الفاتورة، يتم إنشاء نقل داخلي في Odoo من الموقع الحالي إلى مكان التجميع."
+      },
+      {
+        "from": "Record Transfer",
+        "relation": "moves task to",
+        "to": "جاري النقل",
+        "description": "بعد تسجيل عملية النقل عبر Record Transfer، تنتقل المهمة من طلب جديد إلى جاري النقل."
+      },
+      {
+        "from": "Confirm Receipt",
+        "relation": "performed within",
+        "to": "جاري النقل",
+        "description": "يتم فتح Confirm Receipt وتسجيل الكمية المستلمة من داخل مرحلة جاري النقل، وليس بعد الوصول إلى تم الاستلام."
+      },
+      {
+        "from": "Confirm Receipt success",
+        "relation": "moves task to",
+        "to": "تم الاستلام",
+        "description": "بعد نجاح Confirm Receipt، تنتقل العملية من جاري النقل إلى تم الاستلام."
+      },
+      {
+        "from": "الفرق بين Sent Quantity و Received Quantity",
+        "relation": "produces",
+        "to": "Difference",
+        "description": "عند وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة (Notes) توضح السبب."
+      }
+    ],
+    "businessRules": [
+      {
+        "id": "BR-IT-001",
+        "title": "نقل داخلي عند اختلاف الموقع",
+        "rule": "إذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.",
+        "relatedTerms": ["نقل داخلي", "مكان التجميع", "موقع البضاعة"]
+      },
+      {
+        "id": "BR-IT-002",
+        "title": "Confirm Receipt أثناء جاري النقل",
+        "rule": "يتم فتح Confirm Receipt وتسجيل الكمية المستلمة من داخل مرحلة جاري النقل، والانتقال إلى مرحلة تم الاستلام يحدث فقط بعد نجاح Confirm Receipt.",
+        "relatedTerms": ["Confirm Receipt", "جاري النقل", "تم الاستلام"]
+      },
+      {
+        "id": "BR-IT-003",
+        "title": "تسجيل الفرق عند الاستلام",
+        "rule": "في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة توضح السبب.",
+        "relatedTerms": ["Difference", "Notes", "Received Quantity"]
+      }
+    ],
+    "glossary": []
   }
 };
 
@@ -1051,7 +1489,7 @@ function buildPageContext(pageId) {
     `TITLE: ${knowledge.title}`,
     `SCOPE: ${knowledge.scope}`,
     "",
-    "CURRENT VISIBLE DELIVERY WORKFLOW (PRIMARY):",
+    `CURRENT VISIBLE WORKFLOW (PRIMARY): ${knowledge.workflowLabel || knowledge.title}`,
     ...knowledge.currentWorkflow.map((stage) =>
       [
         `${String(stage.order).padStart(2, "0")} — ${stage.title}`,

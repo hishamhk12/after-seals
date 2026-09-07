@@ -471,6 +471,18 @@ function isInstallationWorkflowRoute(route = navigationState.route) {
   return route.type === "operation" && route.operationId === "delivery-installation";
 }
 
+function getActivePageAssistantId() {
+  if (navigationState.selectedExperienceId === introductoryTour.id) {
+    return introductoryTour.id;
+  }
+
+  if (navigationState.route.type === "lesson" && navigationState.route.itemId === internalTransferTour.id) {
+    return internalTransferTour.id;
+  }
+
+  return null;
+}
+
 function statusClass(status) {
   if (status === "مكتمل") return "is-complete";
   if (status === "قريبًا") return "is-soon";
@@ -1114,6 +1126,7 @@ function renderWorkflowVisibility() {
   const deliveryInstallationWorkflow = document.querySelector("#deliveryInstallationWorkflow");
   const shouldShowWorkflow = navigationState.selectedExperienceId === introductoryTour.id;
   const shouldShowDeliveryInstallation = navigationState.selectedExperienceId === deliveryInstallationTour.id;
+  const shouldShowInternalTransfer = navigationState.route.type === "lesson" && navigationState.route.itemId === internalTransferTour.id;
 
   workflowContent.hidden = !shouldShowWorkflow;
   deliveryInstallationPlaceholder.hidden = !shouldShowDeliveryInstallation;
@@ -1122,7 +1135,7 @@ function renderWorkflowVisibility() {
   });
 
   if (pageAssistant) {
-    pageAssistant.hidden = !shouldShowWorkflow;
+    pageAssistant.hidden = !(shouldShowWorkflow || shouldShowInternalTransfer);
   }
 
   if (shouldShowWorkflow) {
@@ -1654,7 +1667,7 @@ function initPageAssistant() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pageId: introductoryTour.id,
+          pageId: getActivePageAssistantId() || introductoryTour.id,
           question,
         }),
       });

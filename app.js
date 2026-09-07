@@ -73,6 +73,7 @@ const internalTransferTour = {
 
 const navigationState = {
   route: { type: "home" },
+  activeServiceId: null,
   selectedExperienceId: null,
   currentTourTargetId: "step-invoice",
 };
@@ -213,15 +214,24 @@ const services = [
   },
   {
     id: "installation",
-    title: "خدمة التركيب",
-    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
-    status: "قريبًا",
-  },
-  {
-    id: "measurement",
-    title: "رفع المقاسات",
-    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
-    status: "قريبًا",
+    title: "التركيب ورفع المقاسات",
+    description: "دورات العمل المتاحة للتركيب ورفع المقاسات.",
+    status: "متاح",
+    operations: [
+      {
+        id: "delivery-installation",
+        title: "تركيب مع توصيل",
+        description: "دورة عمل خدمة توصيل مع تركيب.",
+        status: "متاح",
+        experienceId: "delivery-installation",
+      },
+      {
+        id: "measurement",
+        title: "رفع المقاسات",
+        description: "سيتم إضافة محتوى هذه العملية لاحقًا.",
+        status: "قريبًا",
+      },
+    ],
   },
   {
     id: "design",
@@ -403,9 +413,28 @@ function parseRoute() {
   const parts = window.location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   if (!parts.length) return { type: "home" };
 
+  const legacyDeliveryRoutes = {
+    delivery: { type: "service", serviceId: "delivery" },
+    "intro-tour": { type: "lesson", itemId: "customer-delivery" },
+    "customer-delivery": { type: "lesson", itemId: "customer-delivery" },
+    "internal-transfer": { type: "lesson", itemId: "internal-transfer" },
+    "delivery-installation": { type: "operation", operationId: "delivery-installation" },
+    measurement: { type: "operation", operationId: "measurement" },
+  };
+  if (parts.length === 1 && legacyDeliveryRoutes[parts[0]]) {
+    return legacyDeliveryRoutes[parts[0]];
+  }
+
   if (parts[0] === "service") {
+    if (parts[1] === "measurement") {
+      return { type: "operation", operationId: "measurement" };
+    }
     const service = getService(parts[1]);
     return service ? { type: "service", serviceId: service.id } : { type: "home" };
+  }
+
+  if (parts[0] === "operation" && ["delivery-installation", "measurement"].includes(parts[1])) {
+    return { type: "operation", operationId: parts[1] };
   }
 
   if (parts[0] === "chapter") {
@@ -423,6 +452,7 @@ function parseRoute() {
 
 function getActiveServiceId(route = navigationState.route) {
   if (route.type === "service") return route.serviceId;
+  if (route.type === "operation" && ["delivery-installation", "measurement"].includes(route.operationId)) return "installation";
   if (route.type === "chapter") {
     return services.find((service) => service.chapterIds?.includes(route.chapterId))?.id || null;
   }
@@ -435,6 +465,10 @@ function getActiveServiceId(route = navigationState.route) {
 
 function isDeliveryWorkflowRoute(route = navigationState.route) {
   return route.type === "lesson" && route.itemId === "customer-delivery";
+}
+
+function isInstallationWorkflowRoute(route = navigationState.route) {
+  return route.type === "operation" && route.operationId === "delivery-installation";
 }
 
 function statusClass(status) {
@@ -462,6 +496,11 @@ function renderBreadcrumbs() {
     } else {
       crumbs.push(`<a href="${routeHref("service", service.id)}">${service.title}</a>`);
     }
+  }
+
+  if (route.type === "operation") {
+    const operation = service?.operations?.find((candidate) => candidate.id === route.operationId);
+    if (operation) crumbs.push(`<span aria-current="page">${operation.title}</span>`);
   }
 
   const match = route.type === "lesson" ? getItem(route.itemId) : null;
@@ -752,7 +791,7 @@ function renderDeliveryOperationsChapter(chapter) {
 }
 
 function renderServiceCard(service, index) {
-  const isAvailable = service.id === "delivery";
+  const isAvailable = service.status === "متاح";
   return `
     <article class="service-scope-card ${isAvailable ? "is-available" : ""}">
       <span class="service-card-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
@@ -766,7 +805,7 @@ function renderServiceCard(service, index) {
 function renderBookPortal() {
   const portal = document.querySelector("#bookPortal");
   const route = navigationState.route;
-  portal.hidden = isDeliveryWorkflowRoute(route);
+  portal.hidden = isDeliveryWorkflowRoute(route) || isInstallationWorkflowRoute(route);
   if (portal.hidden) {
     portal.innerHTML = "";
     return;
@@ -806,6 +845,32 @@ function renderBookPortal() {
             <h2 id="deliveryChaptersTitle">الأبواب الداخلية</h2>
           </div>
           <div class="chapter-grid">${deliveryChapters.map(renderChapterCard).join("")}</div>
+        </section>`;
+    } else if (service.id === "installation") {
+      portal.innerHTML = `
+        <header class="chapter-header service-header">
+          <p class="chapter-number">نطاق الخدمة</p>
+          <h1>${service.title}</h1>
+          <p>${service.description}</p>
+        </header>
+        <section class="delivery-operations installation-operations" aria-labelledby="installationOperationsTitle">
+          <div class="index-heading">
+            <span>عمليات التركيب ورفع المقاسات</span>
+            <h2 id="installationOperationsTitle">العمليات المتاحة</h2>
+          </div>
+          <nav class="operation-tabs installation-operation-tabs" aria-label="عمليات التركيب ورفع المقاسات">
+            ${service.operations.map((operation, index) => {
+              const isAvailable = operation.status === "متاح";
+              return `
+                <a class="operation-tab ${isAvailable ? "is-ready" : ""}" href="${routeHref("operation", operation.id)}">
+                  <span class="operation-tab-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+                  <span class="status-badge ${isAvailable ? "is-complete" : "is-soon"}">${operation.status}</span>
+                  <strong>${operation.title}</strong>
+                  <small>${operation.description}</small>
+                  <span class="operation-tab-action">${isAvailable ? "فتح دورة العمل" : "فتح العملية"} <span aria-hidden="true">←</span></span>
+                </a>`;
+            }).join("")}
+          </nav>
         </section>`;
     } else {
       portal.innerHTML = `
@@ -849,6 +914,20 @@ function renderBookPortal() {
     return;
   }
 
+  if (route.type === "operation" && route.operationId === "measurement") {
+    portal.innerHTML = `
+      <article class="placeholder-page service-placeholder">
+        <div class="placeholder-icon" aria-hidden="true">02</div>
+        <span class="status-badge is-soon">قريبًا</span>
+        <p class="chapter-number">التركيب ورفع المقاسات</p>
+        <h1>رفع المقاسات</h1>
+        <p>سيتم إضافة محتوى هذه العملية لاحقًا.</p>
+        <a class="secondary-link" href="${routeHref("service", "installation")}">العودة إلى العمليات</a>
+      </article>`;
+    document.title = "رفع المقاسات | دليل خدمات ما بعد البيع";
+    return;
+  }
+
   const match = getItem(route.itemId);
   if (match?.item.id === "internal-transfer") {
     portal.innerHTML = renderInternalTransferWorkflow();
@@ -878,16 +957,18 @@ function renderSidebar() {
   const sidebar = document.querySelector("#bookSidebar");
   const currentMatch = navigationState.route.type === "lesson" ? getItem(navigationState.route.itemId) : null;
   const currentChapterId = navigationState.route.chapterId || currentMatch?.chapter.id;
-  const activeServiceId = getActiveServiceId();
+  const activeServiceId = navigationState.activeServiceId;
   const deliveryService = getService("delivery");
+  const installationService = getService("installation");
   sidebar.innerHTML = `
+    <button class="toc-drawer-close" type="button" aria-label="إغلاق قائمة الخدمات">×</button>
     <div class="toc-header">
       <span>نطاقات خدمات ما بعد البيع</span>
       <a href="${routeHref("home")}">دليل خدمات ما بعد البيع</a>
     </div>
     <nav class="toc-nav service-toc" aria-label="الخدمات والأبواب التدريبية">
       <details class="toc-service" ${activeServiceId === "delivery" ? "open" : ""}>
-        <summary class="${activeServiceId === "delivery" ? "is-current" : ""}">
+        <summary class="${activeServiceId === "delivery" ? "is-current" : ""}" ${activeServiceId === "delivery" ? 'aria-current="true"' : ""}>
           <span>الخدمة 01</span>
           <strong>${deliveryService.title}</strong>
         </summary>
@@ -900,9 +981,23 @@ function renderSidebar() {
             </a>`).join("")}
         </div>
       </details>
-      ${services.filter((service) => service.id !== "delivery").map((service, index) => `
-        <a class="toc-service-link ${activeServiceId === service.id ? "is-current" : ""}" href="${routeHref("service", service.id)}">
-          <span>الخدمة ${String(index + 2).padStart(2, "0")}</span>
+      <details class="toc-service" ${activeServiceId === "installation" ? "open" : ""}>
+        <summary class="${activeServiceId === "installation" ? "is-current" : ""}" ${activeServiceId === "installation" ? 'aria-current="true"' : ""}>
+          <span>الخدمة 02</span>
+          <strong>${installationService.title}</strong>
+        </summary>
+        <div class="toc-service-chapters">
+          <a class="${navigationState.route.type === "service" && activeServiceId === "installation" ? "is-current" : ""}" href="${routeHref("service", "installation")}">نظرة عامة</a>
+          ${installationService.operations.map((operation, index) => `
+            <a class="${navigationState.route.type === "operation" && navigationState.route.operationId === operation.id ? "is-current" : ""}" href="${routeHref("operation", operation.id)}">
+              <span>العملية ${String(index + 1).padStart(2, "0")}</span>
+              <strong>${operation.title}</strong>
+            </a>`).join("")}
+        </div>
+      </details>
+      ${services.filter((service) => !["delivery", "installation"].includes(service.id)).map((service, index) => `
+        <a class="toc-service-link ${activeServiceId === service.id ? "is-current" : ""}" href="${routeHref("service", service.id)}" ${activeServiceId === service.id ? 'aria-current="page"' : ""}>
+          <span>الخدمة ${String(index + 3).padStart(2, "0")}</span>
           <strong>${service.title}</strong>
         </a>`).join("")}
     </nav>`;
@@ -1012,7 +1107,6 @@ function initTourStepObserver(tour = introductoryTour) {
 }
 
 function renderWorkflowVisibility() {
-  const pageHeader = document.querySelector(".page-header");
   const workflowContent = document.querySelector("#workflowContent");
   const workflowOnlyItems = document.querySelectorAll(".workflow-only");
   const pageAssistant = document.querySelector("#pageAssistant");
@@ -1021,8 +1115,6 @@ function renderWorkflowVisibility() {
   const shouldShowWorkflow = navigationState.selectedExperienceId === introductoryTour.id;
   const shouldShowDeliveryInstallation = navigationState.selectedExperienceId === deliveryInstallationTour.id;
 
-  pageHeader.hidden = true;
-  document.querySelector("#caseSelection").hidden = true;
   workflowContent.hidden = !shouldShowWorkflow;
   deliveryInstallationPlaceholder.hidden = !shouldShowDeliveryInstallation;
   workflowOnlyItems.forEach((item) => {
@@ -1050,8 +1142,13 @@ function renderWorkflowVisibility() {
 
 function renderNavigationState() {
   navigationState.route = parseRoute();
+  navigationState.activeServiceId = getActiveServiceId(navigationState.route);
   const routeMatch = navigationState.route.type === "lesson" ? getItem(navigationState.route.itemId) : null;
-  navigationState.selectedExperienceId = isDeliveryWorkflowRoute() ? introductoryTour.id : routeMatch?.item.experienceId || null;
+  navigationState.selectedExperienceId = isDeliveryWorkflowRoute()
+    ? introductoryTour.id
+    : isInstallationWorkflowRoute()
+      ? deliveryInstallationTour.id
+      : routeMatch?.item.experienceId || null;
   renderBreadcrumbs();
   renderBookPortal();
   renderSidebar();
@@ -1067,6 +1164,8 @@ function renderNavigationState() {
 
   if (navigationState.selectedExperienceId === introductoryTour.id) {
     document.title = "التوصيل إلى العميل | دليل خدمات ما بعد البيع";
+  } else if (navigationState.selectedExperienceId === deliveryInstallationTour.id) {
+    document.title = "تركيب مع توصيل | دليل خدمات ما بعد البيع";
   }
 
   closeBookSidebar();
@@ -1086,6 +1185,7 @@ function initBookNavigation() {
   const sidebar = document.querySelector("#bookSidebar");
   const toggle = document.querySelector("#tocToggle");
   const backdrop = document.querySelector("#sidebarBackdrop");
+  const desktopLayout = window.matchMedia("(min-width: 901px)");
   if (!sidebar || !toggle || !backdrop) return;
 
   toggle.addEventListener("click", () => {
@@ -1094,6 +1194,11 @@ function initBookNavigation() {
     backdrop.hidden = !isOpen;
     document.body.classList.toggle("toc-open", isOpen);
   });
+  sidebar.addEventListener("click", (event) => {
+    if (event.target.closest(".toc-drawer-close") || event.target.closest("a")) {
+      closeBookSidebar();
+    }
+  });
   backdrop.addEventListener("click", closeBookSidebar);
   window.addEventListener("hashchange", () => {
     renderNavigationState();
@@ -1101,6 +1206,9 @@ function initBookNavigation() {
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && sidebar.classList.contains("is-open")) closeBookSidebar();
+  });
+  desktopLayout.addEventListener("change", (event) => {
+    if (event.matches) closeBookSidebar();
   });
 }
 
@@ -1128,6 +1236,10 @@ function renderWorkflow() {
 
 function renderHeaderProgress() {
   const container = document.querySelector("#headerProgress");
+  if (!container) {
+    return;
+  }
+
   container.innerHTML = deliveryWorkflow
     .map((stage) => {
       const stateClass = stage.active ? "active" : "locked";

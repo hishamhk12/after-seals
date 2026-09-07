@@ -16,9 +16,9 @@
           <span>بوابة التعلم</span>
           <strong>دليل خدمات ما بعد البيع</strong>
         </div>
-        <button id="tocToggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="bookSidebar">
-          <span aria-hidden="true">☰</span>
-          فهرس الكتاب
+        <button id="tocToggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="bookSidebar" aria-label="فتح قائمة الخدمات">
+          <span class="toc-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="toc-toggle-label">فهرس الكتاب</span>
         </button>
       </header>
 
@@ -30,30 +30,6 @@
         <nav id="breadcrumbs" class="breadcrumbs" aria-label="مسار التنقل"></nav>
 
         <section id="bookPortal" class="book-portal" aria-live="polite"></section>
-
-        <header class="page-header">
-          <div>
-            <p class="eyebrow">Odoo After-Sales Service</p>
-            <h1>بوابة التدريب — خدمات ما بعد البيع</h1>
-            <p class="subtitle">اختر التجربة التدريبية التي تريد مراجعتها.</p>
-            <div id="headerProgress" class="header-progress workflow-only" aria-label="مؤشر تقدم خدمة التوصيل"></div>
-          </div>
-          <div class="header-status workflow-only">
-            <span class="status-dot"></span>
-            المرحلة الحالية: طلب توصيل
-          </div>
-        </header>
-
-        <section id="caseSelection" class="case-selection" aria-labelledby="caseSelectionTitle">
-          <div class="section-title">
-            <span class="icon-tile" aria-hidden="true">01</span>
-            <div>
-              <h2 id="caseSelectionTitle">التجارب التدريبية المتاحة</h2>
-              <p>اختر التجربة التدريبية التي تريد مراجعتها.</p>
-            </div>
-          </div>
-          <div id="caseCards" class="case-cards"></div>
-        </section>
 
         <header id="caseHeader" class="case-header workflow-only" hidden>
           <div>

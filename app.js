@@ -46,10 +46,202 @@ const introductoryTour = {
   ],
 };
 
+const deliveryInstallationTour = {
+  id: "delivery-installation",
+  title: "دورة عمل خدمة توصيل مع تركيب",
+  children: [
+    { id: "invoice", title: "فاتورة من SAP", targetId: "delivery-installation-step-invoice" },
+    { id: "installation-request", title: "طلب تركيب", targetId: "delivery-installation-step-request" },
+    { id: "installation-scheduling", title: "جدولة خدمة التركيب", targetId: "delivery-installation-step-scheduling" },
+    { id: "technician-waiting", title: "في انتظار تعيين الفني", targetId: "delivery-installation-step-technician-waiting" },
+    { id: "technician-assigned", title: "تم تعيين الفني", targetId: "delivery-installation-step-technician-assigned" },
+  ],
+};
+
+const internalTransferTour = {
+  id: "internal-transfer",
+  title: "دورة عمل النقل الداخلي",
+  subtitle: "دورة عمل النقل الداخلي من الفاتورة وحتى استلام البضاعة في مكان التجميع.",
+  children: [
+    { id: "internal-invoice", title: "فاتورة من SAP", targetId: "internal-transfer-step-invoice" },
+    { id: "internal-request", title: "طلب جديد", targetId: "internal-transfer-step-request" },
+    { id: "internal-readiness", title: "التحقق من الجاهزية وحجز الموعد", targetId: "internal-transfer-step-readiness", visible: false },
+    { id: "internal-transit", title: "جاري النقل", targetId: "internal-transfer-step-transit" },
+    { id: "internal-received", title: "تم الاستلام", targetId: "internal-transfer-step-received" },
+  ],
+};
+
 const navigationState = {
+  route: { type: "home" },
   selectedExperienceId: null,
   currentTourTargetId: "step-invoice",
 };
+
+const chapters = [
+  {
+    id: "odoo-entry",
+    number: "الباب الأول",
+    title: "الدخول إلى Odoo",
+    description: "ابدأ بالتعرّف على تسجيل الدخول والتنقل داخل Odoo والوصول إلى خدمات ما بعد البيع.",
+    sectionCount: 4,
+    visible: true,
+    items: [
+      {
+        id: "odoo-login",
+        title: "تسجيل الدخول إلى Odoo",
+        description: "التعرف على طريقة الدخول إلى النظام باستخدام بيانات المستخدم.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+      {
+        id: "odoo-home-apps",
+        title: "الصفحة الرئيسية والتطبيقات",
+        description: "التعرف على التطبيقات المتاحة للمستخدم داخل Odoo.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+      {
+        id: "after-sales-entry",
+        title: "الدخول إلى خدمات ما بعد البيع",
+        description: "الوصول إلى تطبيق Project ثم خدمات ما بعد البيع والخدمات التشغيلية.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+    ],
+  },
+  {
+    id: "delivery-services",
+    number: "الباب الثاني",
+    title: "أنواع عمليات التوصيل",
+    description: "اختر نوع عملية التوصيل للوصول إلى المحتوى التدريبي الخاص بها.",
+    sectionCount: 3,
+    visible: true,
+    items: [
+      {
+        id: "customer-delivery",
+        title: "التوصيل إلى العميل",
+        description: "دورة عمل خدمة التوصيل من وصول الفاتورة من SAP وحتى استلام العميل للخدمة.",
+        status: "مكتمل",
+        visible: true,
+        experienceId: "intro-tour",
+      },
+      {
+        id: "warehouse-pickup",
+        title: "الاستلام من المستودع",
+        description: "سيتم إضافة محتوى هذه العملية لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+      {
+        id: "internal-transfer",
+        title: "النقل الداخلي",
+        description: "دورة عمل النقل الداخلي من الفاتورة وحتى استلام البضاعة في مكان التجميع.",
+        status: "مكتمل",
+        visible: true,
+      },
+    ],
+  },
+  {
+    id: "delivery-relationships",
+    number: "الباب الثالث",
+    title: "الكيسات / السيناريوهات الخاصة بخدمة التوصيل",
+    description: "مساحة مخصصة للكيسات والسيناريوهات الخاصة بخدمة التوصيل، وسيتم استكمال محتواها لاحقًا.",
+    visible: true,
+    items: [
+      {
+        id: "sub-task-cycle",
+        title: "دورة Sub-task",
+        description: "سيتم توثيق دورة Sub-task وعلاقتها بخدمات التوصيل لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+      {
+        id: "internal-transfer-delivery-link",
+        title: "علاقة النقل الداخلي بخدمة التوصيل إلى العميل",
+        description: "سيتم توثيق العلاقة بين الخدمتين لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+      {
+        id: "warehouse-pickup-transfer-link",
+        title: "علاقة استلام العميل من المستودع مع النقل الداخلي",
+        description: "سيتم توثيق العلاقة بين الخدمتين لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+      },
+    ],
+  },
+  {
+    id: "other-after-sales-relationships",
+    number: "الباب الرابع",
+    title: "العلاقة مع خدمات ما بعد البيع الأخرى",
+    description: "هيكل محفوظ للعلاقات المستقبلية مع خدمات ما بعد البيع الأخرى.",
+    visible: false,
+    items: [
+      { id: "delivery-installation", title: "التوصيل + التركيب", status: "قريبًا", visible: false, experienceId: "delivery-installation" },
+      { id: "delivery-measurement", title: "التوصيل + رفع القياسات", status: "قريبًا", visible: false },
+      { id: "delivery-manufacturing", title: "التوصيل + التصنيع", status: "قريبًا", visible: false },
+      { id: "other-relationships", title: "علاقات أخرى", status: "قريبًا", visible: false },
+    ],
+  },
+  {
+    id: "exceptions",
+    number: "الباب الخامس",
+    title: "الحالات الخاصة والاستثناءات",
+    description: "هيكل محفوظ للحالات الخاصة والاستثناءات التي ستوثّق لاحقًا.",
+    visible: false,
+    items: [
+      { id: "reschedule", title: "إعادة جدولة الموعد", status: "قريبًا", visible: false },
+      { id: "cancel-appointment", title: "إلغاء الموعد", status: "قريبًا", visible: false },
+      { id: "product-not-ready", title: "عدم جاهزية المنتج", status: "قريبًا", visible: false },
+      { id: "later-completion", title: "تكملة لاحقًا", status: "قريبًا", visible: false },
+      { id: "appointment-conflict", title: "تعارض المواعيد", status: "قريبًا", visible: false },
+      { id: "no-operational-team", title: "No Eligible Operational Team", status: "قريبًا", visible: false },
+      { id: "linking-issues", title: "مشاكل الربط", status: "قريبًا", visible: false },
+      { id: "returns", title: "المرتجعات", status: "قريبًا", visible: false },
+    ],
+  },
+];
+
+const services = [
+  {
+    id: "delivery",
+    title: "خدمة التوصيل",
+    description: "دليل خدمة التوصيل وأبوابها التدريبية داخل Odoo.",
+    status: "متاح",
+    chapterIds: ["odoo-entry", "delivery-services", "delivery-relationships"],
+  },
+  {
+    id: "installation",
+    title: "خدمة التركيب",
+    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
+    status: "قريبًا",
+  },
+  {
+    id: "measurement",
+    title: "رفع المقاسات",
+    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
+    status: "قريبًا",
+  },
+  {
+    id: "design",
+    title: "خدمة التصميم",
+    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
+    status: "قريبًا",
+  },
+  {
+    id: "manufacturing",
+    title: "خدمة التصنيع",
+    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
+    status: "قريبًا",
+  },
+  {
+    id: "customer-service",
+    title: "خدمة العملاء",
+    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
+    status: "قريبًا",
+  },
+];
 
 let tourStepObserver = null;
 
@@ -186,67 +378,552 @@ const quizQuestions = [
   },
 ];
 
+function getChapter(chapterId) {
+  return chapters.find((chapter) => chapter.id === chapterId);
+}
+
+function getService(serviceId) {
+  return services.find((service) => service.id === serviceId);
+}
+
+function getItem(itemId) {
+  for (const chapter of chapters) {
+    const item = chapter.items.find((candidate) => candidate.id === itemId);
+    if (item) return { chapter, item };
+  }
+  return null;
+}
+
+function routeHref(type, id = "") {
+  if (type === "home") return "#/";
+  return `#/${type}/${id}`;
+}
+
+function parseRoute() {
+  const parts = window.location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  if (!parts.length) return { type: "home" };
+
+  if (parts[0] === "service") {
+    const service = getService(parts[1]);
+    return service ? { type: "service", serviceId: service.id } : { type: "home" };
+  }
+
+  if (parts[0] === "chapter") {
+    const chapter = getChapter(parts[1]);
+    return chapter?.visible ? { type: "chapter", chapterId: chapter.id } : { type: "home" };
+  }
+
+  if (parts[0] === "lesson") {
+    const match = getItem(parts[1]);
+    return match?.chapter.visible && match.item.visible ? { type: "lesson", itemId: match.item.id } : { type: "home" };
+  }
+
+  return { type: "home" };
+}
+
+function getActiveServiceId(route = navigationState.route) {
+  if (route.type === "service") return route.serviceId;
+  if (route.type === "chapter") {
+    return services.find((service) => service.chapterIds?.includes(route.chapterId))?.id || null;
+  }
+  if (route.type === "lesson") {
+    const match = getItem(route.itemId);
+    return services.find((service) => service.chapterIds?.includes(match?.chapter.id))?.id || null;
+  }
+  return null;
+}
+
+function isDeliveryWorkflowRoute(route = navigationState.route) {
+  return route.type === "lesson" && route.itemId === "customer-delivery";
+}
+
+function statusClass(status) {
+  if (status === "مكتمل") return "is-complete";
+  if (status === "قريبًا") return "is-soon";
+  return "is-preparing";
+}
+
 function renderBreadcrumbs() {
   const breadcrumbs = document.querySelector("#breadcrumbs");
+  const route = navigationState.route;
+  const crumbs = [];
 
-  if (!navigationState.selectedExperienceId) {
-    breadcrumbs.innerHTML = "";
+  if (route.type === "home") {
+    breadcrumbs.innerHTML = '<span aria-current="page">الرئيسية</span>';
     return;
   }
 
-  breadcrumbs.innerHTML = [
-    '<button type="button" data-breadcrumb="home">الرئيسية</button>',
-    `<span>${introductoryTour.title}</span>`,
-  ].join('<span class="breadcrumb-separator">/</span>');
+  crumbs.push(`<a href="${routeHref("home")}">الرئيسية</a>`);
+  const serviceId = getActiveServiceId(route);
+  const service = getService(serviceId);
+  if (service) {
+    if (route.type === "service") {
+      crumbs.push(`<span aria-current="page">${service.title}</span>`);
+    } else {
+      crumbs.push(`<a href="${routeHref("service", service.id)}">${service.title}</a>`);
+    }
+  }
+
+  const match = route.type === "lesson" ? getItem(route.itemId) : null;
+  const chapter = route.type === "chapter" ? getChapter(route.chapterId) : match?.chapter;
+  if (chapter) {
+    if (route.type === "chapter") {
+      crumbs.push(`<span aria-current="page">${chapter.number} — ${chapter.title}</span>`);
+    } else {
+      crumbs.push(`<a href="${routeHref("chapter", chapter.id)}">${chapter.number} — ${chapter.title}</a>`);
+    }
+  }
+  if (match) crumbs.push(`<span aria-current="page">${match.item.title}</span>`);
+  breadcrumbs.innerHTML = crumbs.join('<span class="breadcrumb-separator" aria-hidden="true">/</span>');
 }
 
-function bindBreadcrumbs() {
-  document.querySelectorAll("[data-breadcrumb]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (button.dataset.breadcrumb === "home") {
-        navigationState.selectedExperienceId = null;
-      }
-
-      renderNavigationState();
-    });
-  });
+function renderChapterCard(chapter) {
+  const count = chapter.sectionCount || chapter.items.filter((item) => item.visible).length;
+  return `
+    <article class="chapter-card">
+      <div class="chapter-card-number">${chapter.number}</div>
+      <h2>${chapter.title}</h2>
+      <p>${chapter.description}</p>
+      <div class="chapter-card-footer">
+        <span class="lesson-count">${count} ${chapter.sectionCount ? "أقسام" : count === 1 ? "درس" : "دروس وخدمات"}</span>
+        <a class="primary-link" href="${routeHref("chapter", chapter.id)}">فتح الباب <span aria-hidden="true">←</span></a>
+      </div>
+    </article>`;
 }
 
-function renderCaseSelection() {
-  const section = document.querySelector("#caseSelection");
-  const title = document.querySelector("#caseSelectionTitle");
-  const description = section.querySelector(".section-title p");
-  const cards = document.querySelector("#caseCards");
+function renderLessonCard(chapter, item, index) {
+  const action = item.experienceId === introductoryTour.id ? "فتح الدورة" : "فتح الدرس";
+  return `
+    <article class="lesson-card">
+      <div class="lesson-card-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</div>
+      <div class="lesson-card-copy">
+        <span class="status-badge ${statusClass(item.status)}">${item.status}</span>
+        <h2>${item.title}</h2>
+        <p>${item.description || "سيتم إضافة محتوى هذا الدرس لاحقًا."}</p>
+      </div>
+      <a class="lesson-link" href="${routeHref("lesson", item.id)}" aria-label="${action}: ${item.title}">${action} <span aria-hidden="true">←</span></a>
+    </article>`;
+}
 
-  section.hidden = Boolean(navigationState.selectedExperienceId);
+function renderOdooEntryContent(chapter) {
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>دليل المستخدم لبدء دورة عمل خدمة التوصيل داخل نظام Odoo.</p>
+    </header>
 
-  if (section.hidden) {
+    <div class="odoo-entry-guide">
+      <section class="guide-section" aria-labelledby="guideGoalTitle">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">01</span>
+          <h2 id="guideGoalTitle">الهدف من الدليل</h2>
+        </div>
+        <div class="guide-section-body">
+          <p>يهدف هذا الدليل إلى توضيح دورة عمل خدمة التوصيل من خلال نظام <bdi dir="ltr">Odoo</bdi>، بدءًا من تسجيل الدخول، واستعراض فواتير التوصيل، وحجز موعد التوصيل، وربط السائق بالفاتورة، وانتهاءً بتأكيد استلام العميل للشحنة.</p>
+          <p>تعتمد دورة العمل على التكامل بين <bdi dir="ltr">SAP</bdi> و<bdi dir="ltr">Odoo</bdi>، حيث يتم إنشاء وفوترة الفاتورة في <bdi dir="ltr">SAP</bdi>، ثم تظهر الفاتورة في <bdi dir="ltr">Odoo</bdi> ليتم استكمال إجراءات خدمة التوصيل.</p>
+        </div>
+      </section>
+
+      <section class="guide-section" aria-labelledby="guideLoginTitle">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">02</span>
+          <h2 id="guideLoginTitle">تسجيل الدخول إلى نظام Odoo</h2>
+        </div>
+        <div class="guide-section-body">
+          <p>يمكن الدخول إلى نظام <bdi dir="ltr">Odoo</bdi> من خلال:</p>
+          <ul>
+            <li>جهاز كمبيوتر أو <bdi dir="ltr">Laptop</bdi>.</li>
+            <li>جهاز <bdi dir="ltr">Tablet</bdi>.</li>
+            <li>جهاز <bdi dir="ltr">Mobile</bdi>.</li>
+            <li>أي جهاز متصل بالإنترنت.</li>
+          </ul>
+
+          <h3>خطوات الدخول:</h3>
+          <ol class="guide-steps">
+            <li>فتح أي متصفح إنترنت.</li>
+            <li>الدخول إلى رابط نظام <bdi dir="ltr">Odoo</bdi>.</li>
+            <li>إدخال اسم المستخدم <bdi dir="ltr">(Username)</bdi>.</li>
+            <li>إدخال كلمة المرور <bdi dir="ltr">(Password)</bdi>.</li>
+            <li>الضغط على <bdi dir="ltr">Login</bdi> / تسجيل الدخول.</li>
+          </ol>
+
+          <aside class="guide-note">
+            <strong>ملاحظة:</strong>
+            تختلف التطبيقات والوظائف التي تظهر لكل مستخدم حسب الصلاحيات الممنوحة له في النظام.
+          </aside>
+
+          <figure class="odoo-screenshot-frame guide-screenshot">
+            <img src="assest/odoo-entry/login.png" alt="شاشة تسجيل الدخول إلى Odoo وتحديد حقلي اسم المستخدم وكلمة المرور وزر تسجيل الدخول" tabindex="0" role="button" aria-label="اضغط لتكبير صورة شاشة تسجيل الدخول إلى Odoo" title="اضغط لتكبير الصورة" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="guide-section" aria-labelledby="guideAppsTitle">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">03</span>
+          <h2 id="guideAppsTitle">الصفحة الرئيسية والتطبيقات</h2>
+        </div>
+        <div class="guide-section-body">
+          <p>بعد تسجيل الدخول إلى <bdi dir="ltr">Odoo</bdi>، تظهر الصفحة الرئيسية التي تحتوي على التطبيقات المتاحة للمستخدم.</p>
+          <p>تختلف التطبيقات الظاهرة من مستخدم إلى آخر حسب الصلاحيات <bdi dir="ltr">(User Permissions)</bdi> المحددة له.</p>
+          <p>للبدء في دورة عمل التوصيل، يتم الدخول إلى تطبيق:</p>
+          <p class="guide-key-term"><bdi dir="ltr">Project</bdi></p>
+
+          <figure class="odoo-screenshot-frame guide-screenshot guide-screenshot-portrait">
+            <img src="assest/odoo-entry/applications.png" alt="الصفحة الرئيسية في Odoo مع تحديد تطبيق Project" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تطبيقات Odoo" title="اضغط لتكبير الصورة" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="guide-section" aria-labelledby="guideAfterSalesTitle">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">04</span>
+          <h2 id="guideAfterSalesTitle">الدخول إلى خدمات ما بعد البيع</h2>
+        </div>
+        <div class="guide-section-body">
+          <p>بعد الضغط على تطبيق <bdi dir="ltr">Project</bdi>، تظهر للمستخدم الخدمات والمشاريع المرتبطة بصلاحياته.</p>
+
+          <div class="guide-selection-flow" aria-label="تسلسل اختيار خدمة التوصيل">
+            <div>
+              <span>يتم اختيار:</span>
+              <strong>خدمات ما بعد البيع <bdi dir="ltr">– After Sales Services</bdi></strong>
+            </div>
+            <span class="guide-flow-arrow" aria-hidden="true">↓</span>
+            <div>
+              <span>ثم اختيار:</span>
+              <strong>خدمة التوصيل <bdi dir="ltr">– Delivery Service</bdi></strong>
+            </div>
+          </div>
+
+          <p>يظهر لكل مستخدم فقط الخدمات والمعلومات التي تقع ضمن نطاق الصلاحيات الممنوحة له.</p>
+
+          <figure class="odoo-screenshot-frame guide-screenshot">
+            <img src="assest/odoo-entry/delivery-project.png" alt="شاشة المشاريع في Odoo مع تحديد خدمة التوصيل ضمن خدمات ما بعد البيع" tabindex="0" role="button" aria-label="اضغط لتكبير صورة خدمة التوصيل في مشاريع Odoo" title="اضغط لتكبير الصورة" />
+          </figure>
+        </div>
+      </section>
+    </div>`;
+}
+
+function renderWorkflowImagePlaceholder(label) {
+  return `
+    <div class="workflow-image-placeholder" role="img" aria-label="${label}">
+      <span aria-hidden="true">▧</span>
+      <strong>مساحة الصورة</strong>
+      <small>سيتم إضافة صورة هذه المرحلة لاحقًا.</small>
+    </div>`;
+}
+
+function renderInternalTransferWorkflow() {
+  return `
+    <header class="chapter-header internal-transfer-header">
+      <p class="chapter-number">الباب الثاني · أنواع عمليات التوصيل</p>
+      <h1>${internalTransferTour.title}</h1>
+      <p>${internalTransferTour.subtitle}</p>
+    </header>
+
+    <div class="workflow-content internal-transfer-workflow">
+      ${renderWorkflowFlow(internalTransferTour, {
+        activeTargetId: internalTransferTour.children[0].targetId,
+      })}
+
+      <section id="internal-transfer-step-invoice" class="panel invoice-training-section" aria-labelledby="internalTransferInvoiceTitle">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">01</span>
+          <div><h2 id="internalTransferInvoiceTitle">فاتورة من SAP</h2></div>
+        </div>
+        <p class="field-explanation-intro">تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. وإذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.</p>
+        <aside class="internal-transfer-example">
+          <strong>مثال:</strong>
+          إذا كانت الفاتورة صادرة من جدة بينما البضاعة موجودة في الرياض، يتم إنشاء نقل داخلي من الرياض إلى جدة، باعتبار جدة مكان التجميع.
+        </aside>
+        <figure class="odoo-screenshot-frame internal-transfer-screenshot">
+          <img src="assest/النقل الداخلي/1.png" alt="لوحة عمليات النقل الداخلي في Odoo وتعرض مراحل طلب جديد والتحقق من الجاهزية وحجز الموعد وجاري النقل وتم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة النقل الداخلي في Odoo" title="اضغط لتكبير الصورة" />
+        </figure>
+      </section>
+
+      <section id="internal-transfer-step-request" class="panel invoice-training-section" aria-labelledby="internalTransferRequestTitle">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">02</span>
+          <div><h2 id="internalTransferRequestTitle">طلب جديد</h2></div>
+        </div>
+        <div class="internal-transfer-substeps">
+          <article class="internal-transfer-substep">
+            <h3 class="internal-transfer-substep-title">
+              <span aria-hidden="true">أ</span>
+              فتح عملية النقل <bdi dir="ltr">(Record Transfer)</bdi>
+            </h3>
+            <p>بعد إنشاء عملية النقل الداخلي وظهورها في مرحلة "طلب جديد"، يتم فتح المهمة والضغط على زر "Record Transfer" لبدء تسجيل عملية النقل.</p>
+            <figure class="odoo-screenshot-frame internal-transfer-screenshot">
+              <img src="assest/النقل الداخلي/2.png" alt="مهمة النقل الداخلي في Odoo مع تحديد زر Record Transfer" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح عملية النقل الداخلي" title="اضغط لتكبير الصورة" />
+            </figure>
+          </article>
+
+          <article class="internal-transfer-substep">
+            <h3 class="internal-transfer-substep-title">
+              <span aria-hidden="true">ب</span>
+              تسجيل النقل وتحديد الكمية
+            </h3>
+            <p>بعد الضغط على "Record Transfer"، تظهر نافذة تسجيل النقل. يمكن اختيار النقل الجزئي <bdi dir="ltr">Partial Transfer</bdi> أو النقل الكامل <bdi dir="ltr">Full Remaining Transfer</bdi>، ثم تحديد الكمية المراد نقلها والضغط على "Record Transfer" لتأكيد العملية.</p>
+            <figure class="odoo-screenshot-frame internal-transfer-screenshot">
+              <img src="assest/النقل الداخلي/3.png" alt="نافذة Record Transfer في Odoo لاختيار نوع النقل وتحديد الكمية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل النقل وتحديد الكمية" title="اضغط لتكبير الصورة" />
+            </figure>
+          </article>
+        </div>
+        <p class="internal-transfer-transition-note">بعد تسجيل عملية النقل، تنتقل المهمة إلى مرحلة "جاري النقل".</p>
+      </section>
+
+      <section id="internal-transfer-step-readiness" class="panel invoice-training-section" aria-labelledby="internalTransferReadinessTitle" hidden>
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">03</span>
+          <div><h2 id="internalTransferReadinessTitle">التحقق من الجاهزية وحجز الموعد</h2></div>
+        </div>
+        <p class="field-explanation-intro">في هذه المرحلة يتم التأكد من جاهزية البضاعة للنقل الداخلي، ثم تحديد موعد تنفيذ النقل عند الحاجة، حتى تكون العملية جاهزة للانتقال إلى مرحلة التنفيذ الفعلي.</p>
+        ${renderWorkflowImagePlaceholder("مساحة مخصصة لصورة مرحلة التحقق من الجاهزية وحجز الموعد")}
+      </section>
+
+      <section id="internal-transfer-step-transit" class="panel invoice-training-section" aria-labelledby="internalTransferTransitTitle">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">03</span>
+          <div><h2 id="internalTransferTransitTitle">جاري النقل</h2></div>
+        </div>
+        <p class="field-explanation-intro">بعد التأكد من الجاهزية، تنتقل العملية إلى مرحلة "جاري النقل"، حيث يتم تنفيذ عملية نقل البضاعة فعليًا من الموقع الحالي إلى مكان التجميع المحدد.</p>
+        <div class="internal-transfer-substeps">
+          <article class="internal-transfer-substep">
+            <h3 class="internal-transfer-substep-title">
+              <span aria-hidden="true">أ</span>
+              فتح <bdi dir="ltr">Confirm Receipt</bdi>
+            </h3>
+            <p>عند وصول الشحنة إلى موقع الاستلام، ومن داخل مرحلة "جاري النقل"، يتم فتح مهمة النقل الداخلي والضغط على زر "Confirm Receipt" لبدء تسجيل الكمية المستلمة.</p>
+            <figure class="odoo-screenshot-frame internal-transfer-screenshot">
+              <img src="assest/النقل الداخلي/4.png" alt="مهمة النقل الداخلي في مرحلة جاري النقل مع تحديد زر Confirm Receipt" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح Confirm Receipt" title="اضغط لتكبير الصورة" />
+            </figure>
+          </article>
+
+          <article class="internal-transfer-substep">
+            <h3 class="internal-transfer-substep-title">
+              <span aria-hidden="true">ب</span>
+              تسجيل الكمية المستلمة
+            </h3>
+            <p>تظهر نافذة "Confirm Receipt" وبداخلها الكمية المرسلة. يتم إدخال الكمية التي تم استلامها فعليًا في خانة "Received Quantity"، ثم الضغط على "Confirm Receipt" لتأكيد الاستلام.</p>
+            <aside class="internal-transfer-receipt-note">في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة توضح السبب.</aside>
+            <figure class="odoo-screenshot-frame internal-transfer-screenshot">
+              <img src="assest/النقل الداخلي/5.png" alt="نافذة Confirm Receipt لإدخال الكمية المستلمة وتوضيح فرق الكمية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل الكمية المستلمة" title="اضغط لتكبير الصورة" />
+            </figure>
+          </article>
+        </div>
+        <p class="internal-transfer-transition-note">بعد نجاح <bdi dir="ltr">Confirm Receipt</bdi>، تنتقل العملية من مرحلة "جاري النقل" إلى مرحلة "تم الاستلام".</p>
+      </section>
+
+      <section id="internal-transfer-step-received" class="panel invoice-training-section" aria-labelledby="internalTransferReceivedTitle">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">04</span>
+          <div><h2 id="internalTransferReceivedTitle">تم الاستلام</h2></div>
+        </div>
+        <p class="field-explanation-intro">عند وصول البضاعة إلى مكان التجميع المحدد واستلامها بنجاح، تنتقل العملية إلى مرحلة "تم الاستلام"، وبذلك يكتمل مسار النقل الداخلي.</p>
+      </section>
+    </div>`;
+}
+
+function renderDeliveryOperationsChapter(chapter) {
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>${chapter.description}</p>
+    </header>
+    <section class="delivery-operations" aria-labelledby="deliveryOperationsTitle">
+      <div class="index-heading">
+        <span>عمليات خدمة التوصيل</span>
+        <h2 id="deliveryOperationsTitle">اختر نوع العملية</h2>
+      </div>
+      <nav class="operation-tabs" aria-label="أنواع عمليات التوصيل">
+        ${chapter.items.filter((item) => item.visible).map((item, index) => `
+          <a class="operation-tab ${item.status === "مكتمل" ? "is-ready" : ""}" href="${routeHref("lesson", item.id)}">
+            <span class="operation-tab-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+            <span class="status-badge ${statusClass(item.status)}">${item.status}</span>
+            <strong>${item.title}</strong>
+            <small>${item.description}</small>
+            <span class="operation-tab-action">${item.status === "مكتمل" ? "فتح دورة العمل" : "فتح العملية"} <span aria-hidden="true">←</span></span>
+          </a>`).join("")}
+      </nav>
+    </section>`;
+}
+
+function renderServiceCard(service, index) {
+  const isAvailable = service.id === "delivery";
+  return `
+    <article class="service-scope-card ${isAvailable ? "is-available" : ""}">
+      <span class="service-card-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+      <span class="status-badge ${isAvailable ? "is-complete" : "is-soon"}">${service.status}</span>
+      <h2>${service.title}</h2>
+      <p>${service.description}</p>
+      <a href="${routeHref("service", service.id)}">${isAvailable ? "فتح الخدمة" : "عرض الخدمة"} <span aria-hidden="true">←</span></a>
+    </article>`;
+}
+
+function renderBookPortal() {
+  const portal = document.querySelector("#bookPortal");
+  const route = navigationState.route;
+  portal.hidden = isDeliveryWorkflowRoute(route);
+  if (portal.hidden) {
+    portal.innerHTML = "";
     return;
   }
 
-  title.textContent = "التجارب التدريبية المتاحة";
-  description.textContent = "اختر التجربة التدريبية التي تريد مراجعتها.";
-  cards.className = "case-cards";
-  cards.innerHTML = `
-    <button class="case-card" type="button" data-experience-id="${introductoryTour.id}">
-      <span class="case-title">${introductoryTour.title}</span>
-      <span class="case-description">${introductoryTour.subtitle}</span>
-    </button>
-  `;
-  bindExperienceCards();
+  if (route.type === "home") {
+    portal.innerHTML = `
+      <header class="book-hero">
+        <p class="book-kicker">بوابة تدريب خدمات ما بعد البيع</p>
+        <h1>دليل خدمات ما بعد البيع</h1>
+        <p>اختر نطاق الخدمة، ثم انتقل إلى أبوابها وفصولها التدريبية داخل Odoo.</p>
+      </header>
+      <section class="service-index" aria-labelledby="serviceIndexTitle">
+        <div class="index-heading">
+          <span>الخدمات</span>
+          <h2 id="serviceIndexTitle">اختر الخدمة</h2>
+        </div>
+        <div class="service-scope-grid">${services.map(renderServiceCard).join("")}</div>
+      </section>`;
+    document.title = "دليل خدمات ما بعد البيع";
+    return;
+  }
+
+  if (route.type === "service") {
+    const service = getService(route.serviceId);
+    if (service.id === "delivery") {
+      const deliveryChapters = service.chapterIds.map(getChapter).filter(Boolean);
+      portal.innerHTML = `
+        <header class="chapter-header service-header">
+          <p class="chapter-number">نطاق الخدمة</p>
+          <h1>${service.title}</h1>
+          <p>${service.description}</p>
+        </header>
+        <section class="chapter-index" aria-labelledby="deliveryChaptersTitle">
+          <div class="index-heading">
+            <span>فهرس خدمة التوصيل</span>
+            <h2 id="deliveryChaptersTitle">الأبواب الداخلية</h2>
+          </div>
+          <div class="chapter-grid">${deliveryChapters.map(renderChapterCard).join("")}</div>
+        </section>`;
+    } else {
+      portal.innerHTML = `
+        <article class="placeholder-page service-placeholder">
+          <div class="placeholder-icon" aria-hidden="true">${String(services.indexOf(service) + 1).padStart(2, "0")}</div>
+          <span class="status-badge is-soon">${service.status}</span>
+          <p class="chapter-number">نطاق خدمة مستقل</p>
+          <h1>${service.title}</h1>
+          <p>سيتم إضافة محتوى هذه الخدمة لاحقًا.</p>
+        </article>`;
+    }
+    document.title = `${service.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (route.type === "chapter") {
+    const chapter = getChapter(route.chapterId);
+
+    if (chapter.id === "odoo-entry") {
+      portal.innerHTML = renderOdooEntryContent(chapter);
+      document.title = `${chapter.title} | دليل خدمات ما بعد البيع`;
+      return;
+    }
+
+    if (chapter.id === "delivery-services") {
+      portal.innerHTML = renderDeliveryOperationsChapter(chapter);
+      document.title = `${chapter.title} | دليل خدمات ما بعد البيع`;
+      return;
+    }
+
+    portal.innerHTML = `
+      <header class="chapter-header">
+        <p class="chapter-number">${chapter.number}</p>
+        <h1>${chapter.title}</h1>
+        <p>${chapter.description}</p>
+      </header>
+      <section class="lesson-index" aria-label="دروس ${chapter.title}">
+        ${chapter.items.filter((item) => item.visible).map((item, index) => renderLessonCard(chapter, item, index)).join("")}
+      </section>`;
+    document.title = `${chapter.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  const match = getItem(route.itemId);
+  if (match?.item.id === "internal-transfer") {
+    portal.innerHTML = renderInternalTransferWorkflow();
+    document.title = `${internalTransferTour.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.experienceId === introductoryTour.id) {
+    portal.hidden = true;
+    portal.innerHTML = "";
+    return;
+  }
+
+  portal.innerHTML = `
+    <article class="placeholder-page">
+      <div class="placeholder-icon" aria-hidden="true">${match.chapter.number.replace("الباب ", "")}</div>
+      <span class="status-badge ${statusClass(match.item.status)}">${match.item.status}</span>
+      <p class="chapter-number">${match.chapter.number} · ${match.chapter.title}</p>
+      <h1>${match.item.title}</h1>
+      <p>${match.item.description || "سيتم إضافة محتوى هذا الدرس لاحقًا."}</p>
+      <a class="secondary-link" href="${routeHref("chapter", match.chapter.id)}">العودة إلى فهرس الباب</a>
+    </article>`;
+  document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
 }
 
-function renderWorkflowFlow(caseNode) {
-  const flowNodes = caseNode.children;
+function renderSidebar() {
+  const sidebar = document.querySelector("#bookSidebar");
+  const currentMatch = navigationState.route.type === "lesson" ? getItem(navigationState.route.itemId) : null;
+  const currentChapterId = navigationState.route.chapterId || currentMatch?.chapter.id;
+  const activeServiceId = getActiveServiceId();
+  const deliveryService = getService("delivery");
+  sidebar.innerHTML = `
+    <div class="toc-header">
+      <span>نطاقات خدمات ما بعد البيع</span>
+      <a href="${routeHref("home")}">دليل خدمات ما بعد البيع</a>
+    </div>
+    <nav class="toc-nav service-toc" aria-label="الخدمات والأبواب التدريبية">
+      <details class="toc-service" ${activeServiceId === "delivery" ? "open" : ""}>
+        <summary class="${activeServiceId === "delivery" ? "is-current" : ""}">
+          <span>الخدمة 01</span>
+          <strong>${deliveryService.title}</strong>
+        </summary>
+        <div class="toc-service-chapters">
+          <a class="${navigationState.route.type === "service" && activeServiceId === "delivery" ? "is-current" : ""}" href="${routeHref("service", "delivery")}">نظرة عامة</a>
+          ${deliveryService.chapterIds.map((chapterId) => getChapter(chapterId)).filter(Boolean).map((chapter) => `
+            <a class="${currentChapterId === chapter.id ? "is-current" : ""}" href="${routeHref("chapter", chapter.id)}">
+              <span>${chapter.number}</span>
+              <strong>${chapter.title}</strong>
+            </a>`).join("")}
+        </div>
+      </details>
+      ${services.filter((service) => service.id !== "delivery").map((service, index) => `
+        <a class="toc-service-link ${activeServiceId === service.id ? "is-current" : ""}" href="${routeHref("service", service.id)}">
+          <span>الخدمة ${String(index + 2).padStart(2, "0")}</span>
+          <strong>${service.title}</strong>
+        </a>`).join("")}
+    </nav>`;
+}
+
+function renderWorkflowFlow(caseNode, options = {}) {
+  const flowNodes = caseNode.children.filter((flowNode) => flowNode.visible !== false);
+  const activeTargetId = options.activeTargetId || navigationState.currentTourTargetId;
+  const interactive = options.interactive !== false;
 
   return `
     <div class="workflow-flow" aria-label="جولة تعريفية">
       ${flowNodes
         .map((flowNode, index) => {
-          const isActive = navigationState.currentTourTargetId === flowNode.targetId;
+          const isActive = activeTargetId === flowNode.targetId;
+          const interactionAttributes = interactive
+            ? `data-stage-target="${flowNode.targetId}"`
+            : 'aria-disabled="true"';
 
           return `
-            <button class="workflow-flow-node ${isActive ? "active" : ""}" type="button" data-stage-target="${flowNode.targetId}" ${isActive ? 'aria-current="step"' : ""}>
+            <button class="workflow-flow-node ${isActive ? "active" : ""}" type="button" ${interactionAttributes} ${isActive ? 'aria-current="step"' : ""}>
               <span class="workflow-flow-index">${String(index + 1).padStart(2, "0")}</span>
               <span>${flowNode.title}</span>
             </button>
@@ -301,12 +978,13 @@ function setActiveTourStep(targetId) {
   });
 }
 
-function initTourStepObserver() {
+function initTourStepObserver(tour = introductoryTour) {
   if (tourStepObserver) {
     tourStepObserver.disconnect();
   }
 
-  const sections = introductoryTour.children
+  const sections = tour.children
+    .filter((step) => step.visible !== false)
     .map((step) => document.querySelector(`#${step.targetId}`))
     .filter(Boolean);
 
@@ -333,32 +1011,20 @@ function initTourStepObserver() {
   sections.forEach((section) => tourStepObserver.observe(section));
 }
 
-function bindExperienceCards() {
-  document.querySelectorAll("[data-experience-id]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (button.dataset.experienceId !== introductoryTour.id) {
-        return;
-      }
-
-      navigationState.selectedExperienceId = introductoryTour.id;
-      renderNavigationState();
-      requestAnimationFrame(() => {
-        document.querySelector("#caseHeader")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    });
-  });
-}
-
 function renderWorkflowVisibility() {
   const pageHeader = document.querySelector(".page-header");
   const workflowContent = document.querySelector("#workflowContent");
   const workflowOnlyItems = document.querySelectorAll(".workflow-only");
   const pageAssistant = document.querySelector("#pageAssistant");
-  const shouldShowHome = !navigationState.selectedExperienceId;
+  const deliveryInstallationPlaceholder = document.querySelector("#deliveryInstallationPlaceholder");
+  const deliveryInstallationWorkflow = document.querySelector("#deliveryInstallationWorkflow");
   const shouldShowWorkflow = navigationState.selectedExperienceId === introductoryTour.id;
+  const shouldShowDeliveryInstallation = navigationState.selectedExperienceId === deliveryInstallationTour.id;
 
-  pageHeader.hidden = !shouldShowHome;
+  pageHeader.hidden = true;
+  document.querySelector("#caseSelection").hidden = true;
   workflowContent.hidden = !shouldShowWorkflow;
+  deliveryInstallationPlaceholder.hidden = !shouldShowDeliveryInstallation;
   workflowOnlyItems.forEach((item) => {
     item.hidden = true;
   });
@@ -373,14 +1039,69 @@ function renderWorkflowVisibility() {
     bindLearningMap();
     initTourStepObserver();
   }
+
+  if (shouldShowDeliveryInstallation) {
+    deliveryInstallationWorkflow.innerHTML = renderWorkflowFlow(deliveryInstallationTour, {
+      activeTargetId: deliveryInstallationTour.children[4].targetId,
+      interactive: false,
+    });
+  }
 }
 
 function renderNavigationState() {
+  navigationState.route = parseRoute();
+  const routeMatch = navigationState.route.type === "lesson" ? getItem(navigationState.route.itemId) : null;
+  navigationState.selectedExperienceId = isDeliveryWorkflowRoute() ? introductoryTour.id : routeMatch?.item.experienceId || null;
   renderBreadcrumbs();
-  renderCaseSelection();
+  renderBookPortal();
+  renderSidebar();
   renderCaseHeader();
   renderWorkflowVisibility();
-  bindBreadcrumbs();
+
+  if (navigationState.route.type === "lesson" && navigationState.route.itemId === "internal-transfer") {
+    bindLearningMap();
+    initTourStepObserver(internalTransferTour);
+  } else if (navigationState.selectedExperienceId !== introductoryTour.id && tourStepObserver) {
+    tourStepObserver.disconnect();
+  }
+
+  if (navigationState.selectedExperienceId === introductoryTour.id) {
+    document.title = "التوصيل إلى العميل | دليل خدمات ما بعد البيع";
+  }
+
+  closeBookSidebar();
+}
+
+function closeBookSidebar() {
+  const sidebar = document.querySelector("#bookSidebar");
+  const toggle = document.querySelector("#tocToggle");
+  const backdrop = document.querySelector("#sidebarBackdrop");
+  sidebar?.classList.remove("is-open");
+  toggle?.setAttribute("aria-expanded", "false");
+  if (backdrop) backdrop.hidden = true;
+  document.body.classList.remove("toc-open");
+}
+
+function initBookNavigation() {
+  const sidebar = document.querySelector("#bookSidebar");
+  const toggle = document.querySelector("#tocToggle");
+  const backdrop = document.querySelector("#sidebarBackdrop");
+  if (!sidebar || !toggle || !backdrop) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = sidebar.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    backdrop.hidden = !isOpen;
+    document.body.classList.toggle("toc-open", isOpen);
+  });
+  backdrop.addEventListener("click", closeBookSidebar);
+  window.addEventListener("hashchange", () => {
+    renderNavigationState();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && sidebar.classList.contains("is-open")) closeBookSidebar();
+  });
 }
 
 function renderWorkflow() {
@@ -856,6 +1577,7 @@ function init() {
   renderTaskFields();
   renderBusinessRules();
   renderQuiz();
+  initBookNavigation();
   renderNavigationState();
   bindTaskFieldInfo();
   bindQuiz();

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>دورة عمل خدمة التوصيل</title>
+    <title>دليل خدمات ما بعد البيع</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -13,13 +13,23 @@
           <img src="assest/شعار الشركة.svg" alt="" />
         </div>
         <div class="nav-heading">
-          <span>بوابة التدريب</span>
-          <strong>خدمات ما بعد البيع</strong>
+          <span>بوابة التعلم</span>
+          <strong>دليل خدمات ما بعد البيع</strong>
         </div>
+        <button id="tocToggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="bookSidebar">
+          <span aria-hidden="true">☰</span>
+          فهرس الكتاب
+        </button>
       </header>
+
+      <div class="book-layout">
+        <aside id="bookSidebar" class="book-sidebar" aria-label="فهرس دليل خدمات ما بعد البيع"></aside>
+        <button id="sidebarBackdrop" class="sidebar-backdrop" type="button" aria-label="إغلاق فهرس الكتاب" hidden></button>
 
       <main class="main-content">
         <nav id="breadcrumbs" class="breadcrumbs" aria-label="مسار التنقل"></nav>
+
+        <section id="bookPortal" class="book-portal" aria-live="polite"></section>
 
         <header class="page-header">
           <div>
@@ -52,6 +62,188 @@
             <p id="caseSubtitle" class="subtitle"></p>
           </div>
         </header>
+
+        <div id="deliveryInstallationPlaceholder" class="delivery-installation-page" hidden>
+          <header class="case-header" aria-labelledby="deliveryInstallationTitle">
+            <div>
+              <h1 id="deliveryInstallationTitle">دورة عمل خدمة توصيل مع تركيب</h1>
+              <div id="deliveryInstallationWorkflow"></div>
+            </div>
+          </header>
+
+          <section
+            id="delivery-installation-step-request"
+            class="panel invoice-training-section delivery-installation-request-section"
+            aria-labelledby="deliveryInstallationRequestTitle"
+          >
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">02</span>
+              <div>
+                <h2 id="deliveryInstallationRequestTitle">طلب تركيب</h2>
+              </div>
+            </div>
+
+            <div class="installation-primary-step">
+              <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>وصول مهمة التركيب</span></h3>
+              <p class="field-explanation-intro">تبدأ دورة العمل بوصول الفاتورة التي تحتوي على خدمة التوصيل والتركيب من SAP إلى Odoo، حيث تظهر في مرحلة "طلب تركيب" لبدء تنفيذ الخدمة.</p>
+              <figure class="odoo-screenshot-frame">
+                <img
+                  src="assest/installation/1.png"
+                  alt="شاشة Odoo تعرض خدمة التوصيل والتركيب في مرحلة طلب تركيب"
+                />
+              </figure>
+            </div>
+
+            <div class="installation-image-grid">
+              <article class="installation-image-card">
+                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>تحديد فترة الحجز المسموحة</span></h3>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/2.png"
+                    alt="حقول موعد التركيب والفترة المسموح للعميل بالحجز ضمنها في Odoo"
+                  />
+                </figure>
+                <p class="field-explanation-intro">يتم تحديد موعد التركيب من قبل المشرف، وتحديد الفترة المسموح للعميل بالحجز ضمنها.</p>
+              </article>
+
+              <article class="installation-image-card">
+                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>تجهيز سؤال موعد التوصيل قبل التركيب</span></h3>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/3.png"
+                    alt="سؤال في Odoo لمعرفة موعد التوصيل قبل التركيب بكم ساعة"
+                  />
+                </figure>
+                <p class="field-explanation-intro">يتم تجهيز سؤال لمعرفة موعد التوصيل قبل التركيب بكم ساعة.</p>
+              </article>
+            </div>
+
+          </section>
+
+          <section
+            id="delivery-installation-step-scheduling"
+            class="panel invoice-training-section delivery-installation-scheduling-section"
+            aria-labelledby="deliveryInstallationSchedulingTitle"
+          >
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">03</span>
+              <div>
+                <h2 id="deliveryInstallationSchedulingTitle">جدولة خدمة التركيب</h2>
+              </div>
+            </div>
+
+            <div class="installation-scheduling-grid" aria-label="رحلة حجز موعد التركيب">
+              <div class="installation-scheduling-row">
+                <article class="installation-booking-link-step installation-scheduling-card">
+                  <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>رابط حجز الموعد</span></h3>
+                  <figure class="odoo-screenshot-frame">
+                    <img
+                      src="assest/installation/4.5.png"
+                      alt="رابط حجز موعد التركيب داخل مهمة التركيب في Odoo"
+                    />
+                  </figure>
+                  <p class="field-explanation-intro">يظهر رابط حجز موعد التركيب داخل مهمة التركيب، ويمكن إرسال الرابط إلى العميل ليقوم بالحجز، أو يمكن لخدمة العملاء فتح الرابط واستكمال عملية الحجز نيابةً عن العميل.</p>
+                </article>
+
+                <span class="installation-row-arrow" aria-hidden="true"></span>
+
+                <article class="installation-booking-journey-step installation-scheduling-card">
+                  <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>سؤال جاهزية الموقع</span></h3>
+                  <figure class="odoo-screenshot-frame">
+                    <img
+                      src="assest/installation/4.png"
+                      alt="سؤال جاهزية موقع التركيب قبل اختيار الموعد"
+                    />
+                  </figure>
+                  <aside class="installation-readiness-callout" aria-labelledby="installationReadinessTitle">
+                    <h3 id="installationReadinessTitle">هل الموقع جاهز للتركيب؟</h3>
+                    <p>يتم سؤال العميل عما إذا كان الموقع جاهزًا للتركيب. في حال كانت الإجابة "نعم"، يتم الانتقال إلى اختيار موعد التركيب.</p>
+                  </aside>
+                </article>
+              </div>
+
+              <span class="installation-journey-arrow" aria-hidden="true">↓</span>
+
+              <div class="installation-scheduling-row">
+                <article class="installation-booking-journey-step installation-scheduling-card">
+                  <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>اختيار التاريخ والوقت</span></h3>
+                  <figure class="odoo-screenshot-frame">
+                    <img
+                      src="assest/installation/5.png"
+                      alt="شاشة اختيار التاريخ والوقت لموعد التركيب"
+                    />
+                  </figure>
+                  <p class="field-explanation-intro">يختار العميل التاريخ والوقت المناسبين لموعد التركيب ضمن الفترة المسموح بالحجز فيها والتي تم تحديدها مسبقًا من قبل المشرف.</p>
+                  <p class="installation-booking-window">تُحدَّد المواعيد المتاحة بناءً على نافذة الحجز المحددة مسبقًا: <bdi dir="ltr">Appointment From → Appointment To</bdi></p>
+                </article>
+
+                <span class="installation-row-arrow" aria-hidden="true"></span>
+
+                <article class="installation-booking-journey-step installation-scheduling-card">
+                  <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">د</span><span>بيانات العميل وموقع التنفيذ</span></h3>
+                  <figure class="odoo-screenshot-frame">
+                    <img
+                      src="assest/installation/6.png"
+                      alt="شاشة مراجعة بيانات العميل وتحديد موقع تنفيذ خدمة التركيب على الخريطة"
+                    />
+                  </figure>
+                  <p class="field-explanation-intro">بعد اختيار الموعد، يقوم العميل بمراجعة بياناته وتحديد موقع تنفيذ خدمة التركيب على الخريطة، ثم يؤكد بيانات الموعد.</p>
+                </article>
+              </div>
+
+              <span class="installation-journey-arrow" aria-hidden="true">↓</span>
+
+              <article class="installation-booking-journey-step installation-scheduling-card installation-scheduling-final-step">
+                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">هـ</span><span>تأكيد موعد التركيب</span></h3>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/7.png"
+                    alt="شاشة تأكيد حجز موعد التركيب للعميل"
+                  />
+                </figure>
+                <p class="field-explanation-intro">بعد تأكيد البيانات والموعد، يتم تثبيت حجز موعد التركيب وتظهر شاشة تأكيد الموعد للعميل.</p>
+              </article>
+            </div>
+
+          </section>
+
+          <section
+            id="delivery-installation-step-technician-assignment"
+            class="panel invoice-training-section delivery-installation-technician-section"
+            aria-labelledby="deliveryInstallationTechnicianTitle"
+          >
+            <div class="section-title technician-assignment-title">
+              <div>
+                <h2 id="deliveryInstallationTechnicianTitle">تعيين الفني</h2>
+              </div>
+            </div>
+
+            <div class="technician-assignment-flow">
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>في انتظار تعيين الفني</span></h3>
+                <p class="field-explanation-intro">بعد حجز موعد التركيب تنتقل المهمة إلى مرحلة "في انتظار تعيين الفني"، وتبقى في هذه المرحلة حتى يتم تحديد الفني المسؤول عن تنفيذ خدمة التركيب.</p>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <figure class="odoo-screenshot-frame">
+                <img
+                  src="assest/installation/8.png"
+                  alt="مرحلتا انتظار تعيين الفني وتم تعيين الفني مع حقل Assign والفني المحدد في Odoo"
+                />
+              </figure>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>تم تعيين الفني</span></h3>
+                <p class="field-explanation-intro">يتم اختيار الفني المسؤول عن تنفيذ الخدمة من حقل Assign، وبعد تعيين الفني تنتقل المهمة إلى مرحلة "تم تعيين الفني".</p>
+              </article>
+            </div>
+
+            <p class="delivery-installation-placeholder-text">سيتم استكمال بقية دورة العمل لاحقًا.</p>
+          </section>
+        </div>
 
         <div id="workflowContent" class="workflow-content" hidden>
 
@@ -315,6 +507,7 @@
 
         </div>
       </main>
+      </div>
     </div>
 
     <div id="imageLightbox" class="image-lightbox" role="dialog" aria-modal="true" aria-label="عرض الصورة المكبرة" hidden>

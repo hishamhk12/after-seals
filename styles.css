@@ -685,25 +685,22 @@ p {
 
 .workflow-flow {
   position: relative;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
   margin-inline: auto;
   display: flex;
+  flex-wrap: wrap;
   direction: rtl;
   align-items: stretch;
-  gap: var(--spacing-12);
+  justify-content: center;
+  gap: var(--spacing-16) var(--spacing-12);
   margin-top: var(--spacing-12);
   margin-bottom: var(--spacing-32);
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.workflow-flow::-webkit-scrollbar {
-  display: none;
+  overflow-x: hidden;
 }
 
 .workflow-flow-arrow {
@@ -734,6 +731,7 @@ p {
   font-weight: var(--font-weight-medium);
   line-height: 1.3;
   text-align: center;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -1140,6 +1138,26 @@ body.lightbox-open {
 .lightbox-close:focus-visible {
   outline: 2px solid var(--color-atlassian-blue);
   outline-offset: 2px;
+}
+
+.workflow-flow-node--openable {
+  cursor: pointer;
+}
+
+.workflow-flow-node-hint {
+  color: var(--color-atlassian-blue);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+}
+
+.workflow-flow-node[aria-disabled="true"] {
+  cursor: default;
+}
+
+.workflow-flow-node[aria-disabled="true"]:hover,
+.workflow-flow-node[aria-disabled="true"]:focus-visible {
+  border-color: var(--color-fog-white);
+  outline: none;
 }
 
 .page-assistant {
@@ -2323,7 +2341,6 @@ tbody tr:last-child td {
 
 .book-kicker,
 .chapter-number,
-.chapter-card-number,
 .index-heading > span {
   margin-bottom: var(--spacing-8);
   color: var(--color-atlassian-blue);
@@ -2376,7 +2393,11 @@ tbody tr:last-child td {
   gap: var(--spacing-20);
 }
 
-.service-scope-card {
+/* Unified card design system: every navigation/content card in the portal
+   (top-level services, chapters/doors, lessons/operations, relationship entries)
+   shares this single ".entry-card" visual language, regardless of which grid
+   or list it lives in. Only the wrapping grid/list container may vary. */
+.entry-card {
   min-height: 270px;
   display: flex;
   flex-direction: column;
@@ -2385,45 +2406,60 @@ tbody tr:last-child td {
   border: 1px solid var(--color-fog-white);
   border-radius: var(--radius-cards);
   background: var(--color-pure-white);
+  color: var(--color-midnight-navy);
+  text-decoration: none;
   box-shadow: var(--shadow-subtle);
 }
 
-.service-scope-card.is-available {
+.entry-card.is-ready {
   border-color: #b8d4fb;
-  background: linear-gradient(180deg, var(--surface-tinted-surface), var(--color-pure-white) 46%);
+  background: linear-gradient(180deg, var(--surface-tinted-surface), var(--color-pure-white) 48%);
 }
 
-.service-card-index {
+.entry-card:hover,
+.entry-card:focus-visible {
+  border-color: var(--color-atlassian-blue);
+  outline: 2px solid var(--color-atlassian-blue);
+  outline-offset: 2px;
+}
+
+.entry-card-index {
   margin-bottom: var(--spacing-16);
   color: var(--color-atlassian-blue);
   font-size: var(--text-caption);
   font-weight: var(--font-weight-bold);
 }
 
-.service-scope-card .status-badge {
+.entry-card .status-badge {
   margin-bottom: var(--spacing-12);
 }
 
-.service-scope-card h2 {
+.entry-card-title {
   margin-bottom: var(--spacing-8);
-  font-size: 26px;
+  color: var(--color-midnight-navy);
+  font-family: var(--font-charlie-display);
+  font-size: var(--text-heading-sm);
+  line-height: var(--leading-heading-sm);
 }
 
-.service-scope-card p {
+.entry-card-description {
   flex: 1;
-  margin-bottom: var(--spacing-20);
+  margin-bottom: var(--spacing-8);
+  color: var(--color-muted-indigo);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
-.service-scope-card a {
+.entry-card-meta {
+  margin-bottom: var(--spacing-8);
+  color: var(--color-muted-indigo);
+  font-size: var(--text-caption);
+}
+
+.entry-card-action {
+  margin-top: var(--spacing-12);
   color: var(--color-atlassian-blue);
   font-weight: var(--font-weight-medium);
-  text-decoration: none;
-}
-
-.service-scope-card a:hover,
-.service-scope-card a:focus-visible {
-  text-decoration: underline;
-  outline: none;
 }
 
 .service-placeholder {
@@ -2443,67 +2479,6 @@ tbody tr:last-child td {
 .installation-operation-tabs {
   width: min(100%, 860px);
   grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.operation-tab {
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: var(--spacing-24);
-  border: 1px solid var(--color-fog-white);
-  border-radius: var(--radius-cards);
-  background: var(--color-pure-white);
-  color: var(--color-midnight-navy);
-  text-decoration: none;
-  box-shadow: var(--shadow-subtle);
-}
-
-.operation-tab.is-ready {
-  border-color: #b8d4fb;
-  background: linear-gradient(180deg, var(--surface-tinted-surface), var(--color-pure-white) 48%);
-}
-
-.operation-tab:hover,
-.operation-tab:focus-visible {
-  border-color: var(--color-atlassian-blue);
-  outline: 2px solid var(--color-atlassian-blue);
-  outline-offset: 2px;
-}
-
-.operation-tab-index {
-  margin-bottom: var(--spacing-16);
-  color: var(--color-atlassian-blue);
-  font-size: var(--text-caption);
-  font-weight: var(--font-weight-bold);
-}
-
-.operation-tab .status-badge {
-  margin-bottom: var(--spacing-12);
-}
-
-.operation-tab > strong {
-  margin-bottom: var(--spacing-8);
-  font-family: var(--font-charlie-display);
-  font-size: var(--text-heading-sm);
-  line-height: var(--leading-heading-sm);
-}
-
-.operation-tab small {
-  flex: 1;
-  color: var(--color-muted-indigo);
-  font-size: 15px;
-  line-height: 1.7;
-}
-
-.operation-tab-action {
-  margin-top: var(--spacing-20);
-  color: var(--color-atlassian-blue);
-  font-weight: var(--font-weight-medium);
-}
-
-.internal-transfer-header {
-  margin-bottom: var(--spacing-32);
 }
 
 .internal-transfer-workflow > .workflow-flow {
@@ -2528,6 +2503,65 @@ tbody tr:last-child td {
 .internal-transfer-screenshot {
   width: min(100%, 880px);
   margin: 0 auto;
+}
+
+.internal-transfer-delivery-link-image-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: var(--spacing-24);
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.internal-transfer-delivery-link-pair-note {
+  margin: var(--spacing-16) 0 0;
+  padding: var(--spacing-16) var(--spacing-20);
+  border-radius: var(--radius-inputs);
+  background: var(--surface-tinted-surface);
+  color: var(--color-midnight-navy);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.8;
+}
+
+/* Shared screenshot sizing standard for the Internal Transfer <-> Delivery relationship
+   section, matching the Customer Delivery workflow's screenshot footprint (~880px, centered).
+   A fixed frame height + object-fit: contain keeps every screenshot in this section visually
+   balanced regardless of each source image's native resolution, without stretching/distorting.
+   Selectors are qualified with .workflow-content so they outrank the later, more generic
+   ".workflow-content .odoo-screenshot-frame(...)" rules used by the Delivery workflow screens. */
+.workflow-content .odoo-screenshot-frame.internal-transfer-delivery-link-screenshot,
+.workflow-content .internal-transfer-delivery-link-image-pair .odoo-screenshot-frame {
+  width: 100%;
+  max-width: 880px;
+  height: 320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+}
+
+.workflow-content .odoo-screenshot-frame.internal-transfer-delivery-link-screenshot img,
+.workflow-content .internal-transfer-delivery-link-image-pair .odoo-screenshot-frame img {
+  width: 90%;
+  height: 90%;
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+@media (max-width: 720px) {
+  .internal-transfer-delivery-link-image-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-content .odoo-screenshot-frame.internal-transfer-delivery-link-screenshot,
+  .workflow-content .internal-transfer-delivery-link-image-pair .odoo-screenshot-frame {
+    height: 240px;
+  }
 }
 
 .internal-transfer-substeps {
@@ -2632,72 +2666,23 @@ tbody tr:last-child td {
   font-size: var(--text-caption);
 }
 
-.chapter-card {
-  min-height: 330px;
-  display: flex;
-  flex-direction: column;
-  padding: var(--spacing-24);
-  border: 1px solid var(--color-fog-white);
-  border-radius: var(--radius-cards);
-  background: var(--color-pure-white);
-  box-shadow: var(--shadow-subtle);
-}
-
-.chapter-card h2 {
-  font-size: 28px;
-}
-
-.chapter-card p {
-  flex: 1;
-  margin-bottom: var(--spacing-24);
-}
-
-.chapter-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-12);
-  padding-top: var(--spacing-16);
-  border-top: 1px solid var(--color-fog-white);
-}
-
-.lesson-count {
-  color: var(--color-muted-indigo);
-  font-size: var(--text-caption);
-}
-
-.primary-link,
-.secondary-link,
-.lesson-link {
+.secondary-link {
   color: var(--color-atlassian-blue);
   font-weight: var(--font-weight-medium);
   text-decoration: none;
 }
 
-.primary-link:hover,
-.secondary-link:hover,
-.lesson-link:hover {
+.secondary-link:hover {
   text-decoration: underline;
 }
 
 .lesson-index {
   display: grid;
-  gap: var(--spacing-16);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-20);
   margin-top: var(--spacing-32);
 }
 
-.lesson-card {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--spacing-20);
-  padding: var(--spacing-24);
-  border: 1px solid var(--color-fog-white);
-  border-radius: var(--radius-cards);
-  background: var(--color-pure-white);
-}
-
-.lesson-card-index,
 .placeholder-icon {
   width: 52px;
   height: 52px;
@@ -2707,15 +2692,6 @@ tbody tr:last-child td {
   background: var(--surface-tinted-surface);
   color: var(--color-atlassian-blue);
   font-weight: var(--font-weight-bold);
-}
-
-.lesson-card-copy h2 {
-  margin: var(--spacing-8) 0 var(--spacing-4);
-  font-size: var(--text-heading-sm);
-}
-
-.lesson-card-copy p {
-  margin-bottom: 0;
 }
 
 .status-badge {
@@ -3005,16 +2981,12 @@ tbody tr:last-child td {
     grid-template-columns: 1fr;
   }
 
-  .operation-tab {
+  .lesson-index {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-card {
     min-height: 220px;
-  }
-
-  .chapter-card {
-    min-height: 0;
-  }
-
-  .lesson-card {
-    grid-template-columns: 48px minmax(0, 1fr);
   }
 
   .guide-section {
@@ -3030,10 +3002,6 @@ tbody tr:last-child td {
 
   .guide-section-heading h2 {
     margin-top: 0;
-  }
-
-  .lesson-link {
-    grid-column: 2;
   }
 }
 
@@ -3087,15 +3055,6 @@ tbody tr:last-child td {
     grid-template-columns: 1fr;
   }
 
-  .service-scope-card {
-    min-height: 220px;
-  }
-
-  .lesson-card {
-    grid-template-columns: 1fr;
-    align-items: start;
-  }
-
   .guide-section {
     padding: var(--spacing-24);
   }
@@ -3109,15 +3068,6 @@ tbody tr:last-child td {
   }
 
   .guide-selection-flow {
-    flex-direction: column;
-  }
-
-  .lesson-link {
-    grid-column: 1;
-  }
-
-  .chapter-card-footer {
-    align-items: flex-start;
     flex-direction: column;
   }
 }

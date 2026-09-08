@@ -590,8 +590,6 @@ function renderOdooEntryContent(chapter) {
         <div class="guide-section-body">
           <p>يهدف هذا الدليل إلى توضيح دورات عمل خدمات مابعد البيع من خلال نظام خدمات مابعد البيع، بدءًا من تسجيل الدخول واستعراض فواتير العميل التي تحتوي على خدمات.</p>
           <p>تعتمد دورة العمل على التكامل بين <bdi dir="ltr">SAP</bdi> ونظام خدمات مابعد البيع، حيث يتم إنشاء وفوترة الفاتورة في <bdi dir="ltr">SAP</bdi>، ثم تظهر الفاتورة في نظام خدمات مابعد البيع ليتم استكمال إجراءات الخدمات التالية: خدمة التوصيل، خدمة رفع المقاسات، خدمة التركيب، خدمة التصميم، وخدمة التصنيع.</p>
-          <p>يمكن الدخول إلى نظام خدمات مابعد البيع من خلال الرابط التالي:</p>
-          <p><a href="https://baytalebaa-stage-37367158.dev.odoo.com/"><bdi dir="ltr">https://baytalebaa-stage-37367158.dev.odoo.com/</bdi></a></p>
         </div>
       </section>
 
@@ -602,6 +600,8 @@ function renderOdooEntryContent(chapter) {
         </div>
         <div class="guide-section-body">
           <h3>خطوات الدخول:</h3>
+          <p>يمكن الدخول إلى نظام خدمات مابعد البيع من خلال الرابط التالي:</p>
+          <p><a href="https://baytalebaa-stage-37367158.dev.odoo.com/"><bdi dir="ltr">https://baytalebaa-stage-37367158.dev.odoo.com/</bdi></a></p>
           <ol class="guide-steps">
             <li>فتح أي متصفح إنترنت.</li>
             <li>الدخول إلى رابط نظام خدمات مابعد البيع.</li>
@@ -670,11 +670,12 @@ function renderInternalTransferWorkflow() {
     <div class="workflow-content internal-transfer-workflow">
       ${renderWorkflowFlow(internalTransferTour, {
         activeTargetId: internalTransferTour.children[0].targetId,
+        numberStart: 0,
       })}
 
       <section id="internal-transfer-step-invoice" class="panel invoice-training-section" aria-labelledby="internalTransferInvoiceTitle">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">01</span>
+          <span class="icon-tile" aria-hidden="true">00</span>
           <div><h2 id="internalTransferInvoiceTitle">فاتورة من SAP</h2></div>
         </div>
         <p class="field-explanation-intro">تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. وإذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل نظام خدمات مابعد البيع لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.</p>
@@ -689,7 +690,7 @@ function renderInternalTransferWorkflow() {
 
       <section id="internal-transfer-step-request" class="panel invoice-training-section" aria-labelledby="internalTransferRequestTitle">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">02</span>
+          <span class="icon-tile" aria-hidden="true">01</span>
           <div><h2 id="internalTransferRequestTitle">طلب جديد</h2></div>
         </div>
         <div class="internal-transfer-substeps">
@@ -720,7 +721,7 @@ function renderInternalTransferWorkflow() {
 
       <section id="internal-transfer-step-readiness" class="panel invoice-training-section" aria-labelledby="internalTransferReadinessTitle" hidden>
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">03</span>
+          <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="internalTransferReadinessTitle">التحقق من الجاهزية وحجز الموعد</h2></div>
         </div>
         <p class="field-explanation-intro">في هذه المرحلة يتم التأكد من جاهزية البضاعة للنقل الداخلي، ثم تحديد موعد تنفيذ النقل عند الحاجة، حتى تكون العملية جاهزة للانتقال إلى مرحلة التنفيذ الفعلي.</p>
@@ -729,7 +730,7 @@ function renderInternalTransferWorkflow() {
 
       <section id="internal-transfer-step-transit" class="panel invoice-training-section" aria-labelledby="internalTransferTransitTitle">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">03</span>
+          <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="internalTransferTransitTitle">جاري النقل</h2></div>
         </div>
         <p class="field-explanation-intro">بعد التأكد من الجاهزية، تنتقل العملية إلى مرحلة "جاري النقل"، حيث يتم تنفيذ عملية نقل البضاعة فعليًا من الموقع الحالي إلى مكان التجميع المحدد.</p>
@@ -762,7 +763,7 @@ function renderInternalTransferWorkflow() {
 
       <section id="internal-transfer-step-received" class="panel invoice-training-section" aria-labelledby="internalTransferReceivedTitle">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">04</span>
+          <span class="icon-tile" aria-hidden="true">03</span>
           <div><h2 id="internalTransferReceivedTitle">تم الاستلام</h2></div>
         </div>
         <p class="field-explanation-intro">عند وصول البضاعة إلى مكان التجميع المحدد واستلامها بنجاح، تنتقل العملية إلى مرحلة "تم الاستلام"، وبذلك يكتمل مسار النقل الداخلي.</p>
@@ -774,21 +775,21 @@ function renderRelationshipFlowDiagram() {
   return `
     <div class="workflow-flow relationship-flow" aria-label="علاقة خدمة النقل الداخلي بخدمة التوصيل">
       <div class="workflow-flow-node" aria-disabled="true">
-        <span class="workflow-flow-index">01</span>
+        <span class="workflow-flow-index">00</span>
         <span>فاتورة من SAP</span>
       </div>
       <span class="workflow-flow-arrow" aria-hidden="true">←</span>
-      <a class="workflow-flow-node workflow-flow-node--openable" href="${routeHref("lesson", "internal-transfer")}">
-        <span class="workflow-flow-index">02</span>
+      <button class="workflow-flow-node workflow-flow-node--openable" type="button" data-workflow-overlay="internal-transfer">
+        <span class="workflow-flow-index">01</span>
         <span>تنفيذ خدمة النقل الداخلي</span>
         <span class="workflow-flow-node-hint" aria-hidden="true">عرض دورة العمل ↗</span>
-      </a>
+      </button>
       <span class="workflow-flow-arrow" aria-hidden="true">←</span>
-      <a class="workflow-flow-node workflow-flow-node--openable" href="${routeHref("lesson", "customer-delivery")}">
-        <span class="workflow-flow-index">03</span>
+      <button class="workflow-flow-node workflow-flow-node--openable" type="button" data-workflow-overlay="customer-delivery">
+        <span class="workflow-flow-index">02</span>
         <span>تنفيذ خدمة التوصيل للعميل</span>
         <span class="workflow-flow-node-hint" aria-hidden="true">عرض دورة العمل ↗</span>
-      </a>
+      </button>
     </div>`;
 }
 
@@ -801,7 +802,7 @@ function renderInternalTransferDeliveryLinkContent() {
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep1Title">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">01</span>
+          <span class="icon-tile" aria-hidden="true">00</span>
           <div><h2 id="internalTransferDeliveryLinkStep1Title">فاتورة من SAP</h2></div>
         </div>
         <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل وخدمة نقل داخلي. يظهر لكل خدمة طلبها داخل نظام خدمات مابعد البيع، لكن تنفيذ خدمة التوصيل يعتمد على اكتمال النقل الداخلي أولًا إذا كانت البضاعة موجودة في موقع أو مستودع مختلف.</p>
@@ -818,7 +819,7 @@ function renderInternalTransferDeliveryLinkContent() {
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep2Title">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">02</span>
+          <span class="icon-tile" aria-hidden="true">01</span>
           <div><h2 id="internalTransferDeliveryLinkStep2Title">حالة Blocked by Dependency</h2></div>
         </div>
         <p class="field-explanation-intro">طالما أن خدمة النقل الداخلي لم تكتمل بعد، تبقى خدمة التوصيل غير جاهزة للتنفيذ وتظهر بحالة "Blocked by Dependency". وهذا يعني أن خدمة التوصيل موجودة، لكنها لا تستطيع المتابعة لأن البضاعة لم تصل بعد إلى الموقع المطلوب.</p>
@@ -829,7 +830,7 @@ function renderInternalTransferDeliveryLinkContent() {
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep3Title">
         <div class="section-title">
-          <span class="icon-tile" aria-hidden="true">03</span>
+          <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="internalTransferDeliveryLinkStep3Title">حالة Dependency Ready</h2></div>
         </div>
         <p class="field-explanation-intro">بعد اكتمال خدمة النقل الداخلي ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، يتم فك الاعتماد وتتحول خدمة التوصيل إلى حالة "Dependency Ready"، وبذلك تصبح جاهزة لمتابعة دورة التوصيل للعميل.</p>
@@ -1197,6 +1198,7 @@ function renderWorkflowVisibility() {
     deliveryInstallationWorkflow.innerHTML = renderWorkflowFlow(deliveryInstallationTour, {
       activeTargetId: deliveryInstallationTour.children[4].targetId,
       interactive: false,
+      numberStart: 0,
     });
   }
 }
@@ -1505,6 +1507,119 @@ function initImageLightbox() {
   });
 }
 
+function initWorkflowOverlay() {
+  const overlay = document.querySelector("#workflowOverlay");
+  const content = overlay?.querySelector("#workflowOverlayContent");
+  const title = overlay?.querySelector("#workflowOverlayTitle");
+  const closeButton = overlay?.querySelector(".workflow-overlay-close");
+  const appShell = document.querySelector(".app-shell");
+  const pageAssistant = document.querySelector("#pageAssistant");
+
+  if (!overlay || !content || !title || !closeButton || !appShell) {
+    return;
+  }
+
+  let lastFocusedElement = null;
+  let deliveryWorkflowRestoreMarker = null;
+  let activeDeliveryWorkflow = null;
+  let pageScrollY = 0;
+
+  function restoreDeliveryWorkflow() {
+    if (!activeDeliveryWorkflow || !deliveryWorkflowRestoreMarker?.parentNode) {
+      return;
+    }
+
+    activeDeliveryWorkflow.hidden = true;
+    deliveryWorkflowRestoreMarker.replaceWith(activeDeliveryWorkflow);
+    activeDeliveryWorkflow = null;
+    deliveryWorkflowRestoreMarker = null;
+  }
+
+  function closeWorkflowOverlay() {
+    if (overlay.hidden) {
+      return;
+    }
+
+    restoreDeliveryWorkflow();
+    content.replaceChildren();
+    overlay.hidden = true;
+    document.body.classList.remove("workflow-overlay-open");
+    appShell.inert = false;
+
+    if (pageAssistant) {
+      pageAssistant.inert = false;
+    }
+
+    tourStepObserver?.disconnect();
+    window.scrollTo({ top: pageScrollY, behavior: "auto" });
+    lastFocusedElement?.focus?.({ preventScroll: true });
+  }
+
+  function openWorkflowOverlay(workflowId) {
+    lastFocusedElement = document.activeElement;
+    pageScrollY = window.scrollY;
+    content.replaceChildren();
+
+    if (workflowId === "internal-transfer") {
+      title.textContent = internalTransferTour.title;
+      content.innerHTML = renderInternalTransferWorkflow();
+    } else if (workflowId === "customer-delivery") {
+      const workflowContent = document.querySelector("#workflowContent");
+
+      if (!workflowContent) {
+        return;
+      }
+
+      title.textContent = introductoryTour.title;
+      deliveryWorkflowRestoreMarker = document.createComment("delivery-workflow-restore");
+      workflowContent.parentNode.insertBefore(deliveryWorkflowRestoreMarker, workflowContent);
+      workflowContent.querySelector(".workflow-flow")?.remove();
+      workflowContent.insertAdjacentHTML("afterbegin", renderWorkflowFlow(introductoryTour, { numberStart: 0 }));
+      workflowContent.hidden = false;
+      activeDeliveryWorkflow = workflowContent;
+      content.append(workflowContent);
+    } else {
+      return;
+    }
+
+    overlay.hidden = false;
+    document.body.classList.add("workflow-overlay-open");
+    appShell.inert = true;
+
+    if (pageAssistant) {
+      pageAssistant.inert = true;
+    }
+
+    bindLearningMap();
+    initTourStepObserver(workflowId === "internal-transfer" ? internalTransferTour : introductoryTour);
+    closeButton.focus({ preventScroll: true });
+  }
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest?.("[data-workflow-overlay]");
+
+    if (!trigger) {
+      return;
+    }
+
+    event.preventDefault();
+    openWorkflowOverlay(trigger.dataset.workflowOverlay);
+  });
+
+  closeButton.addEventListener("click", closeWorkflowOverlay);
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeWorkflowOverlay();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !overlay.hidden && !event.target.closest?.("#imageLightbox")) {
+      closeWorkflowOverlay();
+    }
+  });
+}
+
 function initPageAssistant() {
   const assistant = document.querySelector("#pageAssistant");
   const toggle = document.querySelector("#assistantToggle");
@@ -1754,6 +1869,7 @@ function init() {
   bindTaskFieldInfo();
   bindQuiz();
   initImageLightbox();
+  initWorkflowOverlay();
   initPageAssistant();
 }
 

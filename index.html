@@ -45,7 +45,7 @@
             aria-labelledby="deliveryInstallationRequestTitle"
           >
             <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">02</span>
+              <span class="icon-tile" aria-hidden="true">01</span>
               <div>
                 <h2 id="deliveryInstallationRequestTitle">طلب تركيب</h2>
               </div>
@@ -94,7 +94,7 @@
             aria-labelledby="deliveryInstallationSchedulingTitle"
           >
             <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">03</span>
+              <span class="icon-tile" aria-hidden="true">02</span>
               <div>
                 <h2 id="deliveryInstallationSchedulingTitle">جدولة خدمة التركيب</h2>
               </div>
@@ -215,7 +215,7 @@
 
         <div id="workflowContent" class="workflow-content" hidden>
 
-          <!-- STEP 01 — وصول الفاتورة من SAP -->
+          <!-- SOURCE 00 — وصول الفاتورة من SAP -->
           <section id="step-invoice" class="panel invoice-training-section" aria-labelledby="invoiceTitle">
             <div class="section-title">
               <span class="icon-tile" aria-hidden="true">00</span>
@@ -501,6 +501,16 @@
       <button class="lightbox-close" type="button" aria-label="إغلاق الصورة المكبرة">×</button>
       <div class="lightbox-stage">
         <img alt="" />
+      </div>
+    </div>
+
+    <div id="workflowOverlay" class="workflow-overlay" role="dialog" aria-modal="true" aria-labelledby="workflowOverlayTitle" hidden>
+      <div class="workflow-overlay-panel">
+        <header class="workflow-overlay-header">
+          <h2 id="workflowOverlayTitle"></h2>
+          <button class="workflow-overlay-close" type="button">× إغلاق</button>
+        </header>
+        <div id="workflowOverlayContent" class="workflow-overlay-content" dir="rtl"></div>
       </div>
     </div>
 

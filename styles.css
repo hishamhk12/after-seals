@@ -1089,6 +1089,105 @@ body.lightbox-open {
   overflow: hidden;
 }
 
+body.workflow-overlay-open {
+  overflow: hidden;
+}
+
+.workflow-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: var(--spacing-24);
+  background: rgba(16, 18, 20, 0.72);
+}
+
+.workflow-overlay-panel {
+  width: min(1200px, 100%);
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-fog-white);
+  border-radius: var(--radius-cards);
+  background: var(--color-pure-white);
+  box-shadow: var(--shadow-subtle);
+  direction: rtl;
+}
+
+.workflow-overlay-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  padding: var(--spacing-16) var(--spacing-24);
+  border-bottom: 1px solid var(--color-fog-white);
+  background: var(--color-pure-white);
+}
+
+.workflow-overlay-header h2 {
+  margin: 0;
+  font-size: var(--text-heading-sm);
+}
+
+.workflow-overlay-close {
+  flex: 0 0 auto;
+  padding: 8px var(--spacing-16);
+  border: 1px solid var(--color-fog-white);
+  border-radius: var(--radius-buttons);
+  background: var(--color-pure-white);
+  color: var(--color-midnight-navy);
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.workflow-overlay-close:hover,
+.workflow-overlay-close:focus-visible {
+  border-color: var(--color-atlassian-blue);
+  outline: 2px solid var(--color-atlassian-blue);
+  outline-offset: 2px;
+}
+
+.workflow-overlay-content {
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--spacing-24);
+}
+
+.workflow-overlay-content > .workflow-content {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .workflow-overlay {
+    padding: var(--spacing-8);
+  }
+
+  .workflow-overlay-panel {
+    width: 100%;
+    max-height: calc(100vh - 16px);
+  }
+
+  .workflow-overlay-header {
+    align-items: flex-start;
+    padding: var(--spacing-12) var(--spacing-16);
+  }
+
+  .workflow-overlay-header h2 {
+    font-size: var(--text-subheading);
+  }
+
+  .workflow-overlay-content {
+    overflow-x: hidden;
+    padding: var(--spacing-16);
+  }
+}
+
 .image-lightbox {
   position: fixed;
   inset: 0;

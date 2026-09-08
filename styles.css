@@ -2413,7 +2413,6 @@ tbody tr:last-child td {
 
 .entry-card.is-ready {
   border-color: #b8d4fb;
-  background: linear-gradient(180deg, var(--surface-tinted-surface), var(--color-pure-white) 48%);
 }
 
 .entry-card:hover,
@@ -3392,6 +3391,51 @@ tbody tr:last-child td {
   border-radius: 0;
 }
 
+#step-invoice .delivery-invoice-image-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-24);
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  direction: rtl;
+}
+
+#step-invoice .delivery-invoice-sequence-arrow {
+  display: grid;
+  place-items: center;
+  color: var(--color-atlassian-blue);
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+#step-invoice .delivery-invoice-image-pair .odoo-screenshot-frame {
+  width: 100%;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+}
+
+#step-invoice .delivery-invoice-image-pair .odoo-screenshot-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 720px) {
+  #step-invoice .delivery-invoice-image-pair {
+    grid-template-columns: 1fr;
+  }
+
+  #step-invoice .delivery-invoice-image-pair .odoo-screenshot-frame {
+    height: 240px;
+  }
+}
+
 .delivery-installation-scheduling-section .installation-scheduling-card .odoo-screenshot-frame {
   display: flex;
   aspect-ratio: 16 / 9;
@@ -3420,7 +3464,7 @@ tbody tr:last-child td {
   margin: 0 0 20px;
 }
 
-#step-invoice > .odoo-screenshot-frame {
+#step-invoice > .delivery-invoice-image-pair {
   order: 3;
 }
 
@@ -3521,6 +3565,12 @@ tbody tr:last-child td {
 
 #step-service-receipt .driver-portal-sequence {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#step-service-receipt .service-receipt-final-image {
+  width: 65%;
+  max-width: 580px;
+  margin: var(--spacing-24) auto 0;
 }
 
 .workflow-content .driver-portal-step .field-explanation {

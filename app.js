@@ -40,7 +40,7 @@ const introductoryTour = {
     { id: "delivery-task-preparation", title: "طلب توصيل", targetId: "step-task-details" },
     { id: "delivery-scheduling", title: "جدولة التوصيل", targetId: "step-delivery-scheduling" },
     { id: "driver-linking", title: "ربط الخدمة بالسائق", targetId: "step-driver-linking" },
-    { id: "driver-task-form", title: "ملئ النموذج", targetId: "step-driver-task-form" },
+    { id: "driver-task-form", title: "ملئ النموذج (سند التحميل)", targetId: "step-driver-task-form" },
     { id: "driver-portal-execution", title: "جاري التوصيل", targetId: "step-driver-portal-execution" },
     { id: "service-receipt", title: "استلام الخدمة", targetId: "step-service-receipt" },
   ],
@@ -83,13 +83,13 @@ const chapters = [
     id: "odoo-entry",
     number: "مدخل عام",
     title: "الدخول إلى النظام",
-    description: "ابدأ بالتعرّف على تسجيل الدخول والتنقل داخل Odoo والوصول إلى خدمات ما بعد البيع.",
+    description: "ابدأ بالتعرّف على تسجيل الدخول والتنقل داخل نظام خدمات مابعد البيع والوصول إلى خدمات ما بعد البيع.",
     sectionCount: 4,
     visible: true,
     items: [
       {
         id: "odoo-login",
-        title: "تسجيل الدخول إلى Odoo",
+        title: "تسجيل الدخول إلى نظام خدمات مابعد البيع",
         description: "التعرف على طريقة الدخول إلى النظام باستخدام بيانات المستخدم.",
         status: "قيد الإعداد",
         visible: true,
@@ -97,7 +97,7 @@ const chapters = [
       {
         id: "odoo-home-apps",
         title: "الصفحة الرئيسية والتطبيقات",
-        description: "التعرف على التطبيقات المتاحة للمستخدم داخل Odoo.",
+        description: "التعرف على التطبيقات المتاحة للمستخدم داخل نظام خدمات مابعد البيع.",
         status: "قيد الإعداد",
         visible: true,
       },
@@ -145,7 +145,7 @@ const chapters = [
   {
     id: "delivery-relationships",
     number: "الباب الثاني",
-    title: "الكيسات / السيناريوهات الخاصة بخدمة التوصيل",
+    title: "علاقات خدمات التوصيل",
     description: "مساحة مخصصة للكيسات والسيناريوهات الخاصة بخدمة التوصيل، وسيتم استكمال محتواها لاحقًا.",
     visible: true,
     items: [
@@ -181,14 +181,14 @@ const chapters = [
     items: [
       {
         id: "full-cancellation",
-        title: "إلغاء كامل",
+        title: "إلغاء كامل للفاتورة",
         description: "سيتم إضافة محتوى هذا القسم لاحقًا.",
         status: "قيد الإعداد",
         visible: true,
       },
       {
         id: "partial-return",
-        title: "مرتجع جزئي",
+        title: "مرتجع جزئي للفاتورة",
         description: "سيتم إضافة محتوى هذا القسم لاحقًا.",
         status: "قيد الإعداد",
         visible: true,
@@ -231,7 +231,7 @@ const services = [
   {
     id: "delivery",
     title: "خدمة التوصيل",
-    description: "دليل خدمة التوصيل وأبوابها التدريبية داخل Odoo.",
+    description: "دليل خدمة التوصيل وأبوابها التدريبية داخل نظام خدمات مابعد البيع.",
     status: "متاح",
     chapterIds: ["delivery-services", "delivery-relationships", "delivery-returns"],
   },
@@ -578,7 +578,7 @@ function renderOdooEntryContent(chapter) {
     <header class="chapter-header">
       <p class="chapter-number">${chapter.number}</p>
       <h1>${chapter.title}</h1>
-      <p>دليل المستخدم لبدء دورة عمل خدمة التوصيل داخل نظام Odoo.</p>
+      <p>دليل المستخدم لبدء دورة عمل خدمة التوصيل داخل نظام خدمات مابعد البيع.</p>
     </header>
 
     <div class="odoo-entry-guide">
@@ -588,29 +588,23 @@ function renderOdooEntryContent(chapter) {
           <h2 id="guideGoalTitle">الهدف من الدليل</h2>
         </div>
         <div class="guide-section-body">
-          <p>يهدف هذا الدليل إلى توضيح دورة عمل خدمة التوصيل من خلال نظام <bdi dir="ltr">Odoo</bdi>، بدءًا من تسجيل الدخول، واستعراض فواتير التوصيل، وحجز موعد التوصيل، وربط السائق بالفاتورة، وانتهاءً بتأكيد استلام العميل للشحنة.</p>
-          <p>تعتمد دورة العمل على التكامل بين <bdi dir="ltr">SAP</bdi> و<bdi dir="ltr">Odoo</bdi>، حيث يتم إنشاء وفوترة الفاتورة في <bdi dir="ltr">SAP</bdi>، ثم تظهر الفاتورة في <bdi dir="ltr">Odoo</bdi> ليتم استكمال إجراءات خدمة التوصيل.</p>
+          <p>يهدف هذا الدليل إلى توضيح دورات عمل خدمات مابعد البيع من خلال نظام خدمات مابعد البيع، بدءًا من تسجيل الدخول واستعراض فواتير العميل التي تحتوي على خدمات.</p>
+          <p>تعتمد دورة العمل على التكامل بين <bdi dir="ltr">SAP</bdi> ونظام خدمات مابعد البيع، حيث يتم إنشاء وفوترة الفاتورة في <bdi dir="ltr">SAP</bdi>، ثم تظهر الفاتورة في نظام خدمات مابعد البيع ليتم استكمال إجراءات الخدمات التالية: خدمة التوصيل، خدمة رفع المقاسات، خدمة التركيب، خدمة التصميم، وخدمة التصنيع.</p>
+          <p>يمكن الدخول إلى نظام خدمات مابعد البيع من خلال الرابط التالي:</p>
+          <p><a href="https://baytalebaa-stage-37367158.dev.odoo.com/"><bdi dir="ltr">https://baytalebaa-stage-37367158.dev.odoo.com/</bdi></a></p>
         </div>
       </section>
 
       <section class="guide-section" aria-labelledby="guideLoginTitle">
         <div class="guide-section-heading">
           <span class="guide-section-number" aria-hidden="true">02</span>
-          <h2 id="guideLoginTitle">تسجيل الدخول إلى نظام Odoo</h2>
+          <h2 id="guideLoginTitle">تسجيل الدخول إلى نظام خدمات مابعد البيع</h2>
         </div>
         <div class="guide-section-body">
-          <p>يمكن الدخول إلى نظام <bdi dir="ltr">Odoo</bdi> من خلال:</p>
-          <ul>
-            <li>جهاز كمبيوتر أو <bdi dir="ltr">Laptop</bdi>.</li>
-            <li>جهاز <bdi dir="ltr">Tablet</bdi>.</li>
-            <li>جهاز <bdi dir="ltr">Mobile</bdi>.</li>
-            <li>أي جهاز متصل بالإنترنت.</li>
-          </ul>
-
           <h3>خطوات الدخول:</h3>
           <ol class="guide-steps">
             <li>فتح أي متصفح إنترنت.</li>
-            <li>الدخول إلى رابط نظام <bdi dir="ltr">Odoo</bdi>.</li>
+            <li>الدخول إلى رابط نظام خدمات مابعد البيع.</li>
             <li>إدخال اسم المستخدم <bdi dir="ltr">(Username)</bdi>.</li>
             <li>إدخال كلمة المرور <bdi dir="ltr">(Password)</bdi>.</li>
             <li>الضغط على <bdi dir="ltr">Login</bdi> / تسجيل الدخول.</li>
@@ -622,7 +616,7 @@ function renderOdooEntryContent(chapter) {
           </aside>
 
           <figure class="odoo-screenshot-frame guide-screenshot">
-            <img src="assest/odoo-entry/login.png" alt="شاشة تسجيل الدخول إلى Odoo وتحديد حقلي اسم المستخدم وكلمة المرور وزر تسجيل الدخول" tabindex="0" role="button" aria-label="اضغط لتكبير صورة شاشة تسجيل الدخول إلى Odoo" title="اضغط لتكبير الصورة" />
+            <img src="assest/odoo-entry/login.png" alt="شاشة تسجيل الدخول إلى نظام خدمات مابعد البيع وتحديد حقلي اسم المستخدم وكلمة المرور وزر تسجيل الدخول" tabindex="0" role="button" aria-label="اضغط لتكبير صورة شاشة تسجيل الدخول إلى نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
           </figure>
         </div>
       </section>
@@ -633,13 +627,13 @@ function renderOdooEntryContent(chapter) {
           <h2 id="guideAppsTitle">الصفحة الرئيسية والتطبيقات</h2>
         </div>
         <div class="guide-section-body">
-          <p>بعد تسجيل الدخول إلى <bdi dir="ltr">Odoo</bdi>، تظهر الصفحة الرئيسية التي تحتوي على التطبيقات المتاحة للمستخدم.</p>
+          <p>بعد تسجيل الدخول إلى نظام خدمات مابعد البيع، تظهر الصفحة الرئيسية التي تحتوي على التطبيقات المتاحة للمستخدم.</p>
           <p>تختلف التطبيقات الظاهرة من مستخدم إلى آخر حسب الصلاحيات <bdi dir="ltr">(User Permissions)</bdi> المحددة له.</p>
           <p>للبدء في دورة عمل التوصيل، يتم الدخول إلى تطبيق:</p>
           <p class="guide-key-term"><bdi dir="ltr">Project</bdi></p>
 
           <figure class="odoo-screenshot-frame guide-screenshot guide-screenshot-portrait">
-            <img src="assest/odoo-entry/applications.png" alt="الصفحة الرئيسية في Odoo مع تحديد تطبيق Project" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تطبيقات Odoo" title="اضغط لتكبير الصورة" />
+            <img src="assest/odoo-entry/applications.png" alt="الصفحة الرئيسية في نظام خدمات مابعد البيع مع تحديد تطبيق Project" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تطبيقات نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
           </figure>
         </div>
       </section>
@@ -652,22 +646,10 @@ function renderOdooEntryContent(chapter) {
         <div class="guide-section-body">
           <p>بعد الضغط على تطبيق <bdi dir="ltr">Project</bdi>، تظهر للمستخدم الخدمات والمشاريع المرتبطة بصلاحياته.</p>
 
-          <div class="guide-selection-flow" aria-label="تسلسل اختيار خدمة التوصيل">
-            <div>
-              <span>يتم اختيار:</span>
-              <strong>خدمات ما بعد البيع <bdi dir="ltr">– After Sales Services</bdi></strong>
-            </div>
-            <span class="guide-flow-arrow" aria-hidden="true">↓</span>
-            <div>
-              <span>ثم اختيار:</span>
-              <strong>خدمة التوصيل <bdi dir="ltr">– Delivery Service</bdi></strong>
-            </div>
-          </div>
-
           <p>يظهر لكل مستخدم فقط الخدمات والمعلومات التي تقع ضمن نطاق الصلاحيات الممنوحة له.</p>
 
           <figure class="odoo-screenshot-frame guide-screenshot">
-            <img src="assest/odoo-entry/delivery-project.png" alt="شاشة المشاريع في Odoo مع تحديد خدمة التوصيل ضمن خدمات ما بعد البيع" tabindex="0" role="button" aria-label="اضغط لتكبير صورة خدمة التوصيل في مشاريع Odoo" title="اضغط لتكبير الصورة" />
+            <img src="assest/odoo-entry/delivery-project.png" alt="شاشة المشاريع في نظام خدمات مابعد البيع مع تحديد خدمة التوصيل ضمن خدمات ما بعد البيع" tabindex="0" role="button" aria-label="اضغط لتكبير صورة خدمة التوصيل في مشاريع نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
           </figure>
         </div>
       </section>
@@ -695,13 +677,13 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">01</span>
           <div><h2 id="internalTransferInvoiceTitle">فاتورة من SAP</h2></div>
         </div>
-        <p class="field-explanation-intro">تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. وإذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.</p>
+        <p class="field-explanation-intro">تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. وإذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل نظام خدمات مابعد البيع لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.</p>
         <aside class="internal-transfer-example">
           <strong>مثال:</strong>
           إذا كانت الفاتورة صادرة من جدة بينما البضاعة موجودة في الرياض، يتم إنشاء نقل داخلي من الرياض إلى جدة، باعتبار جدة مكان التجميع.
         </aside>
         <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-          <img src="assest/النقل الداخلي/1.png" alt="لوحة عمليات النقل الداخلي في Odoo وتعرض مراحل طلب جديد والتحقق من الجاهزية وحجز الموعد وجاري النقل وتم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة النقل الداخلي في Odoo" title="اضغط لتكبير الصورة" />
+          <img src="assest/النقل الداخلي/1.png" alt="لوحة عمليات النقل الداخلي في نظام خدمات مابعد البيع وتعرض مراحل طلب جديد والتحقق من الجاهزية وحجز الموعد وجاري النقل وتم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة النقل الداخلي في نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
 
@@ -718,7 +700,7 @@ function renderInternalTransferWorkflow() {
             </h3>
             <p>بعد إنشاء عملية النقل الداخلي وظهورها في مرحلة "طلب جديد"، يتم فتح المهمة والضغط على زر "Record Transfer" لبدء تسجيل عملية النقل.</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-              <img src="assest/النقل الداخلي/2.png" alt="مهمة النقل الداخلي في Odoo مع تحديد زر Record Transfer" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح عملية النقل الداخلي" title="اضغط لتكبير الصورة" />
+              <img src="assest/النقل الداخلي/2.png" alt="مهمة النقل الداخلي في نظام خدمات مابعد البيع مع تحديد زر Record Transfer" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح عملية النقل الداخلي" title="اضغط لتكبير الصورة" />
             </figure>
           </article>
 
@@ -729,7 +711,7 @@ function renderInternalTransferWorkflow() {
             </h3>
             <p>بعد الضغط على "Record Transfer"، تظهر نافذة تسجيل النقل. يمكن اختيار النقل الجزئي <bdi dir="ltr">Partial Transfer</bdi> أو النقل الكامل <bdi dir="ltr">Full Remaining Transfer</bdi>، ثم تحديد الكمية المراد نقلها والضغط على "Record Transfer" لتأكيد العملية.</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-              <img src="assest/النقل الداخلي/3.png" alt="نافذة Record Transfer في Odoo لاختيار نوع النقل وتحديد الكمية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل النقل وتحديد الكمية" title="اضغط لتكبير الصورة" />
+              <img src="assest/النقل الداخلي/3.png" alt="نافذة Record Transfer في نظام خدمات مابعد البيع لاختيار نوع النقل وتحديد الكمية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل النقل وتحديد الكمية" title="اضغط لتكبير الصورة" />
             </figure>
           </article>
         </div>
@@ -822,13 +804,13 @@ function renderInternalTransferDeliveryLinkContent() {
           <span class="icon-tile" aria-hidden="true">01</span>
           <div><h2 id="internalTransferDeliveryLinkStep1Title">فاتورة من SAP</h2></div>
         </div>
-        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل وخدمة نقل داخلي. يظهر لكل خدمة طلبها داخل Odoo، لكن تنفيذ خدمة التوصيل يعتمد على اكتمال النقل الداخلي أولًا إذا كانت البضاعة موجودة في موقع أو مستودع مختلف.</p>
+        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل وخدمة نقل داخلي. يظهر لكل خدمة طلبها داخل نظام خدمات مابعد البيع، لكن تنفيذ خدمة التوصيل يعتمد على اكتمال النقل الداخلي أولًا إذا كانت البضاعة موجودة في موقع أو مستودع مختلف.</p>
         <div class="internal-transfer-delivery-link-image-pair">
           <figure class="odoo-screenshot-frame">
-            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.png" alt="مهام الفاتورة في Odoo تعرض خدمة النقل الداخلي وخدمة التوصيل معًا على نفس الفاتورة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مهمتي النقل الداخلي والتوصيل على نفس الفاتورة" title="اضغط لتكبير الصورة" />
+            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.png" alt="مهام الفاتورة في نظام خدمات مابعد البيع تعرض خدمة النقل الداخلي وخدمة التوصيل معًا على نفس الفاتورة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مهمتي النقل الداخلي والتوصيل على نفس الفاتورة" title="اضغط لتكبير الصورة" />
           </figure>
           <figure class="odoo-screenshot-frame">
-            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.5.png" alt="لوحة مهام خدمة التوصيل في Odoo تعرض مراحل مختلفة مع بطاقات بحالة Blocked by Dependency وحالة Dependency Ready" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة مهام التوصيل بحالات الاعتماد المختلفة" title="اضغط لتكبير الصورة" />
+            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.5.png" alt="لوحة مهام خدمة التوصيل في نظام خدمات مابعد البيع تعرض مراحل مختلفة مع بطاقات بحالة Blocked by Dependency وحالة Dependency Ready" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة مهام التوصيل بحالات الاعتماد المختلفة" title="اضغط لتكبير الصورة" />
           </figure>
         </div>
         <p class="internal-transfer-delivery-link-pair-note">توضح الصورتان أن خدمة النقل الداخلي وخدمة التوصيل قد تظهران ضمن نفس الفاتورة، وأن حالة خدمة التوصيل تختلف بحسب اكتمال النقل الداخلي، فقد تكون <bdi dir="ltr">Blocked by Dependency</bdi> أو تصبح <bdi dir="ltr">Dependency Ready</bdi>.</p>
@@ -841,7 +823,7 @@ function renderInternalTransferDeliveryLinkContent() {
         </div>
         <p class="field-explanation-intro">طالما أن خدمة النقل الداخلي لم تكتمل بعد، تبقى خدمة التوصيل غير جاهزة للتنفيذ وتظهر بحالة "Blocked by Dependency". وهذا يعني أن خدمة التوصيل موجودة، لكنها لا تستطيع المتابعة لأن البضاعة لم تصل بعد إلى الموقع المطلوب.</p>
         <figure class="odoo-screenshot-frame internal-transfer-delivery-link-screenshot">
-          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/4.png" alt="بطاقة خدمة التوصيل في Odoo تظهر بحالة Blocked by Dependency" tabindex="0" role="button" aria-label="اضغط لتكبير صورة حالة Blocked by Dependency" title="اضغط لتكبير الصورة" />
+          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/4.png" alt="بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بحالة Blocked by Dependency" tabindex="0" role="button" aria-label="اضغط لتكبير صورة حالة Blocked by Dependency" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
 
@@ -852,7 +834,7 @@ function renderInternalTransferDeliveryLinkContent() {
         </div>
         <p class="field-explanation-intro">بعد اكتمال خدمة النقل الداخلي ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، يتم فك الاعتماد وتتحول خدمة التوصيل إلى حالة "Dependency Ready"، وبذلك تصبح جاهزة لمتابعة دورة التوصيل للعميل.</p>
         <figure class="odoo-screenshot-frame internal-transfer-delivery-link-screenshot">
-          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/3.png" alt="بطاقة خدمة التوصيل في Odoo تظهر بحالة Dependency Ready" tabindex="0" role="button" aria-label="اضغط لتكبير صورة حالة Dependency Ready" title="اضغط لتكبير الصورة" />
+          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/3.png" alt="بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بحالة Dependency Ready" tabindex="0" role="button" aria-label="اضغط لتكبير صورة حالة Dependency Ready" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
 
@@ -914,7 +896,7 @@ function renderBookPortal() {
       <header class="book-hero">
         <p class="book-kicker">بوابة تدريب خدمات ما بعد البيع</p>
         <h1>دليل خدمات ما بعد البيع</h1>
-        <p>اختر نطاق الخدمة، ثم انتقل إلى أبوابها وفصولها التدريبية داخل Odoo.</p>
+        <p>اختر نطاق الخدمة، ثم انتقل إلى أبوابها وفصولها التدريبية داخل نظام خدمات مابعد البيع.</p>
       </header>
       <section class="service-index" aria-labelledby="serviceIndexTitle">
         <div class="index-heading">
@@ -1101,6 +1083,7 @@ function renderWorkflowFlow(caseNode, options = {}) {
   const flowNodes = caseNode.children.filter((flowNode) => flowNode.visible !== false);
   const activeTargetId = options.activeTargetId || navigationState.currentTourTargetId;
   const interactive = options.interactive !== false;
+  const numberStart = options.numberStart ?? 1;
 
   return `
     <div class="workflow-flow" aria-label="جولة تعريفية">
@@ -1113,7 +1096,7 @@ function renderWorkflowFlow(caseNode, options = {}) {
 
           return `
             <button class="workflow-flow-node ${isActive ? "active" : ""}" type="button" ${interactionAttributes} ${isActive ? 'aria-current="step"' : ""}>
-              <span class="workflow-flow-index">${String(index + 1).padStart(2, "0")}</span>
+              <span class="workflow-flow-index">${String(index + numberStart).padStart(2, "0")}</span>
               <span>${flowNode.title}</span>
             </button>
             ${index < flowNodes.length - 1 ? '<span class="workflow-flow-arrow" aria-hidden="true">←</span>' : ""}
@@ -1205,7 +1188,7 @@ function renderWorkflowVisibility() {
 
   if (shouldShowWorkflow) {
     workflowContent.querySelector(".workflow-flow")?.remove();
-    workflowContent.insertAdjacentHTML("afterbegin", renderWorkflowFlow(introductoryTour));
+    workflowContent.insertAdjacentHTML("afterbegin", renderWorkflowFlow(introductoryTour, { numberStart: 0 }));
     bindLearningMap();
     initTourStepObserver();
   }

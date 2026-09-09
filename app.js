@@ -53,8 +53,9 @@ const deliveryInstallationTour = {
     { id: "invoice", title: "فاتورة من SAP", targetId: "delivery-installation-step-invoice" },
     { id: "installation-request", title: "طلب تركيب", targetId: "delivery-installation-step-request" },
     { id: "installation-scheduling", title: "جدولة خدمة التركيب", targetId: "delivery-installation-step-scheduling" },
-    { id: "technician-waiting", title: "في انتظار تعيين الفني", targetId: "delivery-installation-step-technician-waiting" },
-    { id: "technician-assigned", title: "تم تعيين الفني", targetId: "delivery-installation-step-technician-assigned" },
+    { id: "technician-waiting", title: "في انتظار تعيين الفني", targetId: "delivery-installation-step-technician-assignment" },
+    { id: "customer-delivery", title: "تنفيذ خدمة التوصيل للعميل", targetId: "delivery-installation-step-customer-delivery", overlayId: "customer-delivery" },
+    { id: "installation-form", title: "ملئ النموذج", targetId: "delivery-installation-step-form" },
   ],
 };
 
@@ -1091,14 +1092,19 @@ function renderWorkflowFlow(caseNode, options = {}) {
       ${flowNodes
         .map((flowNode, index) => {
           const isActive = activeTargetId === flowNode.targetId;
-          const interactionAttributes = interactive
-            ? `data-stage-target="${flowNode.targetId}"`
-            : 'aria-disabled="true"';
+          const opensWorkflowOverlay = interactive && Boolean(flowNode.overlayId);
+          const interactionAttributes = !interactive
+            ? 'aria-disabled="true"'
+            : opensWorkflowOverlay
+              ? `data-workflow-overlay="${flowNode.overlayId}" data-workflow-target="${flowNode.targetId}"`
+              : `data-stage-target="${flowNode.targetId}"`;
+          const openableClass = opensWorkflowOverlay ? "workflow-flow-node--openable" : "";
 
           return `
-            <button class="workflow-flow-node ${isActive ? "active" : ""}" type="button" ${interactionAttributes} ${isActive ? 'aria-current="step"' : ""}>
+            <button class="workflow-flow-node ${openableClass} ${isActive ? "active" : ""}" type="button" ${interactionAttributes} ${isActive ? 'aria-current="step"' : ""}>
               <span class="workflow-flow-index">${String(index + numberStart).padStart(2, "0")}</span>
               <span>${flowNode.title}</span>
+              ${opensWorkflowOverlay ? '<span class="workflow-flow-node-hint" aria-hidden="true">عرض دورة العمل ↗</span>' : ""}
             </button>
             ${index < flowNodes.length - 1 ? '<span class="workflow-flow-arrow" aria-hidden="true">←</span>' : ""}
           `;
@@ -1108,8 +1114,8 @@ function renderWorkflowFlow(caseNode, options = {}) {
   `;
 }
 
-function bindLearningMap() {
-  document.querySelectorAll("[data-stage-target]").forEach((button) => {
+function bindLearningMap(container = document) {
+  container.querySelectorAll("[data-stage-target]").forEach((button) => {
     button.addEventListener("click", () => {
       const targetId = button.dataset.stageTarget;
       setActiveTourStep(targetId);
@@ -1122,8 +1128,9 @@ function bindLearningMap() {
 
 function setActiveTourStep(targetId) {
   navigationState.currentTourTargetId = targetId;
-  document.querySelectorAll("[data-stage-target]").forEach((button) => {
-    const isActive = button.dataset.stageTarget === targetId;
+  document.querySelectorAll("[data-stage-target], [data-workflow-target]").forEach((button) => {
+    const buttonTargetId = button.dataset.stageTarget || button.dataset.workflowTarget;
+    const isActive = buttonTargetId === targetId;
     button.classList.toggle("active", isActive);
 
     if (isActive) {
@@ -1190,16 +1197,16 @@ function renderWorkflowVisibility() {
   if (shouldShowWorkflow) {
     workflowContent.querySelector(".workflow-flow")?.remove();
     workflowContent.insertAdjacentHTML("afterbegin", renderWorkflowFlow(introductoryTour, { numberStart: 0 }));
-    bindLearningMap();
+    bindLearningMap(workflowContent);
     initTourStepObserver();
   }
 
   if (shouldShowDeliveryInstallation) {
     deliveryInstallationWorkflow.innerHTML = renderWorkflowFlow(deliveryInstallationTour, {
-      activeTargetId: deliveryInstallationTour.children[4].targetId,
-      interactive: false,
+      activeTargetId: deliveryInstallationTour.children[5].targetId,
       numberStart: 0,
     });
+    bindLearningMap(deliveryInstallationWorkflow);
   }
 }
 
@@ -1218,7 +1225,7 @@ function renderNavigationState() {
   renderWorkflowVisibility();
 
   if (navigationState.route.type === "lesson" && navigationState.route.itemId === "internal-transfer") {
-    bindLearningMap();
+    bindLearningMap(document.querySelector("#bookPortal"));
     initTourStepObserver(internalTransferTour);
   } else if (navigationState.selectedExperienceId !== introductoryTour.id && tourStepObserver) {
     tourStepObserver.disconnect();
@@ -1590,7 +1597,7 @@ function initWorkflowOverlay() {
       pageAssistant.inert = true;
     }
 
-    bindLearningMap();
+    bindLearningMap(content);
     initTourStepObserver(workflowId === "internal-transfer" ? internalTransferTour : introductoryTour);
     closeButton.focus({ preventScroll: true });
   }
@@ -1603,6 +1610,9 @@ function initWorkflowOverlay() {
     }
 
     event.preventDefault();
+    if (trigger.dataset.workflowTarget) {
+      setActiveTourStep(trigger.dataset.workflowTarget);
+    }
     openWorkflowOverlay(trigger.dataset.workflowOverlay);
   });
 

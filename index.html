@@ -40,6 +40,19 @@
           </header>
 
           <section
+            id="delivery-installation-step-invoice"
+            class="panel invoice-training-section delivery-installation-technician-section"
+            aria-labelledby="deliveryInstallationInvoiceTitle"
+          >
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">00</span>
+              <div>
+                <h2 id="deliveryInstallationInvoiceTitle">فاتورة من SAP</h2>
+              </div>
+            </div>
+          </section>
+
+          <section
             id="delivery-installation-step-request"
             class="panel invoice-training-section delivery-installation-request-section"
             aria-labelledby="deliveryInstallationRequestTitle"
@@ -134,14 +147,14 @@
 
               <div class="installation-scheduling-row">
                 <article class="installation-booking-journey-step installation-scheduling-card">
-                  <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>اختيار التاريخ والوقت</span></h3>
+                  <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>اختيار موعد التركيب</span></h3>
                   <figure class="odoo-screenshot-frame">
                     <img
                       src="assest/installation/5.png"
                       alt="شاشة اختيار التاريخ والوقت لموعد التركيب"
                     />
                   </figure>
-                  <p class="field-explanation-intro">يختار العميل التاريخ والوقت المناسبين لموعد التركيب ضمن الفترة المسموح بالحجز فيها والتي تم تحديدها مسبقًا من قبل المشرف.</p>
+                  <p class="field-explanation-intro">يختار العميل موعد التركيب المناسب ضمن الفترة المسموحة.</p>
                   <p class="installation-booking-window">تُحدَّد المواعيد المتاحة بناءً على نافذة الحجز المحددة مسبقًا: <bdi dir="ltr">Appointment From → Appointment To</bdi></p>
                 </article>
 
@@ -180,36 +193,60 @@
             class="panel invoice-training-section delivery-installation-technician-section"
             aria-labelledby="deliveryInstallationTechnicianTitle"
           >
-            <div class="section-title technician-assignment-title">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">03</span>
               <div>
-                <h2 id="deliveryInstallationTechnicianTitle">تعيين الفني</h2>
+                <h2 id="deliveryInstallationTechnicianTitle">في انتظار تعيين الفني</h2>
               </div>
             </div>
 
             <div class="technician-assignment-flow">
-              <article class="technician-assignment-step">
-                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>في انتظار تعيين الفني</span></h3>
-                <p class="field-explanation-intro">بعد حجز موعد التركيب تنتقل المهمة إلى مرحلة "في انتظار تعيين الفني"، وتبقى في هذه المرحلة حتى يتم تحديد الفني المسؤول عن تنفيذ خدمة التركيب.</p>
-              </article>
-
-              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+              <p class="field-explanation-intro">بعد حجز موعد التركيب تنتقل المهمة إلى مرحلة "في انتظار تعيين الفني"، وتبقى في هذه المرحلة حتى يتم تحديد الفني المسؤول عن تنفيذ خدمة التركيب.</p>
 
               <figure class="odoo-screenshot-frame">
                 <img
                   src="assest/installation/8.png"
-                  alt="مرحلتا انتظار تعيين الفني وتم تعيين الفني مع حقل Assign والفني المحدد في نظام خدمات مابعد البيع"
+                  alt="مرحلة في انتظار تعيين الفني في نظام خدمات مابعد البيع"
                 />
               </figure>
+            </div>
+          </section>
 
-              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
-
-              <article class="technician-assignment-step">
-                <h3 class="installation-substep-heading"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>تم تعيين الفني</span></h3>
-                <p class="field-explanation-intro">يتم اختيار الفني المسؤول عن تنفيذ الخدمة من حقل Assign، وبعد تعيين الفني تنتقل المهمة إلى مرحلة "تم تعيين الفني".</p>
-              </article>
+          <section
+            id="delivery-installation-step-customer-delivery"
+            class="panel invoice-training-section delivery-installation-technician-section"
+            aria-labelledby="deliveryInstallationCustomerDeliveryTitle"
+          >
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">04</span>
+              <div>
+                <h2 id="deliveryInstallationCustomerDeliveryTitle">تنفيذ خدمة التوصيل للعميل</h2>
+              </div>
             </div>
 
-            <p class="delivery-installation-placeholder-text">سيتم استكمال بقية دورة العمل لاحقًا.</p>
+            <div class="technician-assignment-flow">
+              <p class="field-explanation-intro">بما أن موعد التوصيل تم تحديده مسبقًا ليكون قبل موعد التركيب بـ 48 ساعة، يتم تحديد موعد التوصيل تلقائيًا. لذلك عند الانتقال إلى خدمة التوصيل لا تبدأ دورة العمل من الصفر، وإنما تنتقل المهمة مباشرة إلى مرحلة "ربط الخدمة بالسائق".</p>
+
+              <figure class="odoo-screenshot-frame">
+                <img
+                  src="assest/installation/9.png"
+                  alt="مهمة التوصيل في مرحلة ربط الخدمة بالسائق ضمن دورة التوصيل مع التركيب"
+                />
+              </figure>
+            </div>
+          </section>
+
+          <section
+            id="delivery-installation-step-form"
+            class="panel invoice-training-section delivery-installation-technician-section"
+            aria-labelledby="deliveryInstallationFormTitle"
+          >
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">05</span>
+              <div>
+                <h2 id="deliveryInstallationFormTitle">ملئ النموذج</h2>
+              </div>
+            </div>
           </section>
         </div>
 

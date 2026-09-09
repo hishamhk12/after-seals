@@ -79,6 +79,8 @@ const navigationState = {
   currentTourTargetId: "step-invoice",
 };
 
+const sidebarManuallyExpandedBranches = new Set();
+
 const chapters = [
   {
     id: "odoo-entry",
@@ -682,7 +684,7 @@ function renderInternalTransferWorkflow() {
         <p class="field-explanation-intro">تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. وإذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل نظام خدمات مابعد البيع لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.</p>
         <aside class="internal-transfer-example">
           <strong>مثال:</strong>
-          إذا كانت الفاتورة صادرة من جدة بينما البضاعة موجودة في الرياض، يتم إنشاء نقل داخلي من الرياض إلى جدة، باعتبار جدة مكان التجميع.
+          إذا كانت الفاتورة صادرة من جدة ونقطة التجميع هي J521، بينما البضاعة أو جزء منها موجود في مدينة الرياض، يقوم النظام بإنشاء خدمة نقل داخلي من مستودع الرياض R574 إلى مستودع جدة J521.
         </aside>
         <figure class="odoo-screenshot-frame internal-transfer-screenshot">
           <img src="assest/النقل الداخلي/1.png" alt="لوحة عمليات النقل الداخلي في نظام خدمات مابعد البيع وتعرض مراحل طلب جديد والتحقق من الجاهزية وحجز الموعد وجاري النقل وتم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة النقل الداخلي في نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
@@ -694,13 +696,17 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">01</span>
           <div><h2 id="internalTransferRequestTitle">طلب جديد</h2></div>
         </div>
+        <p class="field-explanation-intro">عند دخول موظف المستودع إلى نظام خدمات مابعد البيع، تظهر له خدمة التحويلات الداخلية ضمن خدمات ما بعد البيع، والتي تحتوي على الفواتير التي تتضمن منتجات تحتاج إلى النقل من المستودع الحالي إلى مستودع التجميع.</p>
+        <figure class="odoo-screenshot-frame internal-transfer-screenshot internal-transfer-request-intro-screenshot">
+          <img src="assest/النقل الداخلي/7.png" alt="خدمة التحويلات الداخلية تعرض طلب نقل من مستودع الرياض R574 إلى مستودع جدة J521" tabindex="0" role="button" aria-label="اضغط لتكبير صورة طلب النقل الداخلي" title="اضغط لتكبير الصورة" />
+        </figure>
         <div class="internal-transfer-substeps">
           <article class="internal-transfer-substep">
             <h3 class="internal-transfer-substep-title">
               <span aria-hidden="true">أ</span>
-              فتح عملية النقل <bdi dir="ltr">(Record Transfer)</bdi>
+              بدء عملية النقل <bdi dir="ltr">(Record Transfer)</bdi>
             </h3>
-            <p>بعد إنشاء عملية النقل الداخلي وظهورها في مرحلة "طلب جديد"، يتم فتح المهمة والضغط على زر "Record Transfer" لبدء تسجيل عملية النقل.</p>
+            <p>عند الضغط على الفاتورة الموجودة في مرحلة طلب جديد، يتم فتح مهمة النقل الداخلي، ثم الضغط على زر Record Transfer لتحديد وتسجيل الكمية التي سيتم إرسالها من المستودع الحالي إلى نقطة التجميع.</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
               <img src="assest/النقل الداخلي/2.png" alt="مهمة النقل الداخلي في نظام خدمات مابعد البيع مع تحديد زر Record Transfer" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح عملية النقل الداخلي" title="اضغط لتكبير الصورة" />
             </figure>
@@ -734,14 +740,14 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="internalTransferTransitTitle">جاري النقل</h2></div>
         </div>
-        <p class="field-explanation-intro">بعد التأكد من الجاهزية، تنتقل العملية إلى مرحلة "جاري النقل"، حيث يتم تنفيذ عملية نقل البضاعة فعليًا من الموقع الحالي إلى مكان التجميع المحدد.</p>
+        <p class="field-explanation-intro">في هذه المرحلة تكون البضاعة قيد النقل من المستودع الحالي إلى نقطة التجميع، وعند وصولها يتم استكمال إجراءات تأكيد الاستلام وتسجيل الكمية المستلمة.</p>
         <div class="internal-transfer-substeps">
           <article class="internal-transfer-substep">
             <h3 class="internal-transfer-substep-title">
               <span aria-hidden="true">أ</span>
-              فتح <bdi dir="ltr">Confirm Receipt</bdi>
+              تأكيد الكمية المستلمة
             </h3>
-            <p>عند وصول الشحنة إلى موقع الاستلام، ومن داخل مرحلة "جاري النقل"، يتم فتح مهمة النقل الداخلي والضغط على زر "Confirm Receipt" لبدء تسجيل الكمية المستلمة.</p>
+            <p>عند وصول البضاعة إلى نقطة التجميع، يتم فتح مهمة النقل الداخلي والضغط على زر Confirm Receipt لبدء تأكيد الكمية المستلمة.</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
               <img src="assest/النقل الداخلي/4.png" alt="مهمة النقل الداخلي في مرحلة جاري النقل مع تحديد زر Confirm Receipt" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح Confirm Receipt" title="اضغط لتكبير الصورة" />
             </figure>
@@ -752,7 +758,7 @@ function renderInternalTransferWorkflow() {
               <span aria-hidden="true">ب</span>
               تسجيل الكمية المستلمة
             </h3>
-            <p>تظهر نافذة "Confirm Receipt" وبداخلها الكمية المرسلة. يتم إدخال الكمية التي تم استلامها فعليًا في خانة "Received Quantity"، ثم الضغط على "Confirm Receipt" لتأكيد الاستلام.</p>
+            <p>يقوم الموظف بتأكيد استلام كامل الكمية أو جزء منها حسب الاستلام الفعلي، ثم يضغط على زر تأكيد الاستلام.</p>
             <aside class="internal-transfer-receipt-note">في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة توضح السبب.</aside>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
               <img src="assest/النقل الداخلي/5.png" alt="نافذة Confirm Receipt لإدخال الكمية المستلمة وتوضيح فرق الكمية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل الكمية المستلمة" title="اضغط لتكبير الصورة" />
@@ -767,7 +773,7 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">03</span>
           <div><h2 id="internalTransferReceivedTitle">تم الاستلام</h2></div>
         </div>
-        <p class="field-explanation-intro">عند وصول البضاعة إلى مكان التجميع المحدد واستلامها بنجاح، تنتقل العملية إلى مرحلة "تم الاستلام"، وبذلك يكتمل مسار النقل الداخلي.</p>
+        <p class="field-explanation-intro">بعد تأكيد استلام البضاعة في نقطة التجميع، تنتقل المهمة إلى مرحلة تم الاستلام، وبذلك يكتمل مسار خدمة النقل الداخلي.</p>
       </section>
     </div>`;
 }
@@ -799,14 +805,14 @@ function renderInternalTransferDeliveryLinkContent() {
     <div class="workflow-content internal-transfer-workflow">
       ${renderRelationshipFlowDiagram()}
 
-      <p class="field-explanation-intro internal-transfer-delivery-link-summary">تعتمد خدمة التوصيل للعميل على توفر البضاعة في مكان التجميع أو الموقع المطلوب للتوصيل. فإذا كانت البضاعة موجودة في مدينة أو مستودع مختلف، لا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ خدمة النقل الداخلي لنقل البضاعة إلى الموقع المطلوب.</p>
+      <p class="field-explanation-intro internal-transfer-delivery-link-summary">تعتمد خدمة التوصيل للعميل على توفر البضاعة في نقطة التجميع. فإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن نقطة التجميع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ خدمة النقل الداخلي لنقل البضاعة إلى نقطة التجميع.</p>
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep1Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">00</span>
           <div><h2 id="internalTransferDeliveryLinkStep1Title">فاتورة من SAP</h2></div>
         </div>
-        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل وخدمة نقل داخلي. يظهر لكل خدمة طلبها داخل نظام خدمات مابعد البيع، لكن تنفيذ خدمة التوصيل يعتمد على اكتمال النقل الداخلي أولًا إذا كانت البضاعة موجودة في موقع أو مستودع مختلف.</p>
+        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل وخدمة نقل داخلي، ويظهر لكل خدمة طلبها داخل نظام خدمات مابعد البيع. وإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن نقطة التجميع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ خدمة النقل الداخلي لنقل البضاعة إلى نقطة التجميع.</p>
         <div class="internal-transfer-delivery-link-image-pair">
           <figure class="odoo-screenshot-frame">
             <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.png" alt="مهام الفاتورة في نظام خدمات مابعد البيع تعرض خدمة النقل الداخلي وخدمة التوصيل معًا على نفس الفاتورة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مهمتي النقل الداخلي والتوصيل على نفس الفاتورة" title="اضغط لتكبير الصورة" />
@@ -1027,13 +1033,143 @@ function renderBookPortal() {
   document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
 }
 
+function buildSidebarTree() {
+  const generalEntry = {
+    key: "general-entry",
+    meta: "عام",
+    title: "الدخول إلى نظام خدمات مابعد البيع",
+    href: routeHref("chapter", "odoo-entry"),
+  };
+
+  const serviceNodes = services.map((service, serviceIndex) => {
+    const chapterNodes = (service.chapterIds || [])
+      .map((chapterId) => getChapter(chapterId))
+      .filter((chapter) => chapter?.visible !== false)
+      .map((chapter) => ({
+        key: `chapter:${chapter.id}`,
+        meta: chapter.number,
+        title: chapter.title,
+        href: routeHref("chapter", chapter.id),
+        children: chapter.items
+          .filter((item) => item.visible !== false)
+          .map((item) => ({
+            key: `item:${item.id}`,
+            title: item.title,
+            href: routeHref("lesson", item.id),
+          })),
+      }));
+    const operationNodes = (service.operations || [])
+      .filter((operation) => operation.visible !== false)
+      .map((operation, operationIndex) => ({
+        key: `operation:${operation.id}`,
+        meta: `العملية ${String(operationIndex + 1).padStart(2, "0")}`,
+        title: operation.title,
+        href: routeHref("operation", operation.id),
+      }));
+    const contentNodes = [...chapterNodes, ...operationNodes];
+
+    return {
+      key: `service:${service.id}`,
+      meta: `الخدمة ${String(serviceIndex + 1).padStart(2, "0")}`,
+      title: service.title,
+      href: routeHref("service", service.id),
+      children: contentNodes.length
+        ? [
+            {
+              key: `overview:${service.id}`,
+              title: "نظرة عامة",
+              href: routeHref("service", service.id),
+            },
+            ...contentNodes,
+          ]
+        : [],
+    };
+  });
+
+  return [generalEntry, ...serviceNodes];
+}
+
+function getCurrentSidebarNodeKey() {
+  const route = navigationState.route;
+
+  if (route.type === "chapter" && route.chapterId === "odoo-entry") return "general-entry";
+  if (route.type === "service") {
+    const service = getService(route.serviceId);
+    const hasChildren = Boolean(service?.chapterIds?.length || service?.operations?.length);
+    return `${hasChildren ? "overview" : "service"}:${route.serviceId}`;
+  }
+  if (route.type === "chapter") return `chapter:${route.chapterId}`;
+  if (route.type === "lesson") return `item:${route.itemId}`;
+  if (route.type === "operation") return `operation:${route.operationId}`;
+
+  return null;
+}
+
+function getActiveSidebarBranchKeys() {
+  const activeKeys = new Set();
+  const route = navigationState.route;
+  const activeService = getService(navigationState.activeServiceId);
+
+  if (activeService?.chapterIds?.length || activeService?.operations?.length) {
+    activeKeys.add(`service:${activeService.id}`);
+  }
+
+  const currentMatch = route.type === "lesson" ? getItem(route.itemId) : null;
+  const currentChapter = route.type === "chapter" ? getChapter(route.chapterId) : currentMatch?.chapter;
+  if (currentChapter?.id !== "odoo-entry" && currentChapter?.items.some((item) => item.visible !== false)) {
+    activeKeys.add(`chapter:${currentChapter.id}`);
+  }
+
+  return activeKeys;
+}
+
+function sidebarBranchId(key) {
+  return `toc-tree-${key.replace(/[^a-z0-9-]/gi, "-")}`;
+}
+
+function renderSidebarNodeCopy(node) {
+  return `${node.meta ? `<span>${node.meta}</span>` : ""}<strong>${node.title}</strong>`;
+}
+
+function renderSidebarTreeNode(node, currentKey, activeBranchKeys, depth = 0) {
+  const hasChildren = Boolean(node.children?.length);
+  const isCurrent = currentKey === node.key;
+  const isActiveBranch = activeBranchKeys.has(node.key);
+  const currentClass = isCurrent ? "is-current" : "";
+  const currentAttribute = isCurrent ? 'aria-current="page"' : "";
+
+  if (!hasChildren) {
+    return `
+      <a class="toc-tree-link toc-tree-link--depth-${depth} ${currentClass}" data-tree-key="${node.key}" href="${node.href}" ${currentAttribute}>
+        ${renderSidebarNodeCopy(node)}
+      </a>`;
+  }
+
+  const isExpanded = isActiveBranch || sidebarManuallyExpandedBranches.has(node.key);
+  const childrenId = sidebarBranchId(node.key);
+
+  return `
+    <div class="toc-tree-branch toc-tree-branch--depth-${depth} ${isExpanded ? "is-open" : ""}" data-tree-key="${node.key}">
+      <div class="toc-tree-row toc-tree-row--depth-${depth} ${isActiveBranch ? "is-active-branch" : ""}">
+        <a class="toc-tree-label ${currentClass}" href="${node.href}" ${currentAttribute}>
+          ${renderSidebarNodeCopy(node)}
+        </a>
+        <button class="toc-tree-toggle" type="button" data-sidebar-tree-toggle="${node.key}" aria-expanded="${isExpanded}" aria-controls="${childrenId}" aria-label="توسيع أو طي ${node.title}">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div id="${childrenId}" class="toc-tree-children toc-tree-children--depth-${depth + 1}" ${isExpanded ? "" : "hidden"}>
+        ${node.children.map((child) => renderSidebarTreeNode(child, currentKey, activeBranchKeys, depth + 1)).join("")}
+      </div>
+    </div>`;
+}
+
 function renderSidebar() {
   const sidebar = document.querySelector("#bookSidebar");
-  const currentMatch = navigationState.route.type === "lesson" ? getItem(navigationState.route.itemId) : null;
-  const currentChapterId = navigationState.route.chapterId || currentMatch?.chapter.id;
-  const activeServiceId = navigationState.activeServiceId;
-  const deliveryService = getService("delivery");
-  const installationService = getService("installation");
+  const currentKey = getCurrentSidebarNodeKey();
+  const activeBranchKeys = getActiveSidebarBranchKeys();
+  const sidebarTree = buildSidebarTree();
+
   sidebar.innerHTML = `
     <button class="toc-drawer-close" type="button" aria-label="إغلاق قائمة الخدمات">×</button>
     <div class="toc-header">
@@ -1041,43 +1177,7 @@ function renderSidebar() {
       <a href="${routeHref("home")}">دليل خدمات ما بعد البيع</a>
     </div>
     <nav class="toc-nav service-toc" aria-label="الخدمات والأبواب التدريبية">
-      <a class="toc-service-link ${navigationState.route.type === "chapter" && navigationState.route.chapterId === "odoo-entry" ? "is-current" : ""}" href="${routeHref("chapter", "odoo-entry")}" ${navigationState.route.type === "chapter" && navigationState.route.chapterId === "odoo-entry" ? 'aria-current="page"' : ""}>
-        <span>عام</span>
-        <strong>${getChapter("odoo-entry").title}</strong>
-      </a>
-      <details class="toc-service" ${activeServiceId === "delivery" ? "open" : ""}>
-        <summary class="${activeServiceId === "delivery" ? "is-current" : ""}" ${activeServiceId === "delivery" ? 'aria-current="true"' : ""}>
-          <span>الخدمة 01</span>
-          <strong>${deliveryService.title}</strong>
-        </summary>
-        <div class="toc-service-chapters">
-          <a class="${navigationState.route.type === "service" && activeServiceId === "delivery" ? "is-current" : ""}" href="${routeHref("service", "delivery")}">نظرة عامة</a>
-          ${deliveryService.chapterIds.map((chapterId) => getChapter(chapterId)).filter(Boolean).map((chapter) => `
-            <a class="${currentChapterId === chapter.id ? "is-current" : ""}" href="${routeHref("chapter", chapter.id)}">
-              <span>${chapter.number}</span>
-              <strong>${chapter.title}</strong>
-            </a>`).join("")}
-        </div>
-      </details>
-      <details class="toc-service" ${activeServiceId === "installation" ? "open" : ""}>
-        <summary class="${activeServiceId === "installation" ? "is-current" : ""}" ${activeServiceId === "installation" ? 'aria-current="true"' : ""}>
-          <span>الخدمة 02</span>
-          <strong>${installationService.title}</strong>
-        </summary>
-        <div class="toc-service-chapters">
-          <a class="${navigationState.route.type === "service" && activeServiceId === "installation" ? "is-current" : ""}" href="${routeHref("service", "installation")}">نظرة عامة</a>
-          ${installationService.operations.map((operation, index) => `
-            <a class="${navigationState.route.type === "operation" && navigationState.route.operationId === operation.id ? "is-current" : ""}" href="${routeHref("operation", operation.id)}">
-              <span>العملية ${String(index + 1).padStart(2, "0")}</span>
-              <strong>${operation.title}</strong>
-            </a>`).join("")}
-        </div>
-      </details>
-      ${services.filter((service) => !["delivery", "installation"].includes(service.id)).map((service, index) => `
-        <a class="toc-service-link ${activeServiceId === service.id ? "is-current" : ""}" href="${routeHref("service", service.id)}" ${activeServiceId === service.id ? 'aria-current="page"' : ""}>
-          <span>الخدمة ${String(index + 3).padStart(2, "0")}</span>
-          <strong>${service.title}</strong>
-        </a>`).join("")}
+      ${sidebarTree.map((node) => renderSidebarTreeNode(node, currentKey, activeBranchKeys)).join("")}
     </nav>`;
 }
 
@@ -1264,6 +1364,26 @@ function initBookNavigation() {
     document.body.classList.toggle("toc-open", isOpen);
   });
   sidebar.addEventListener("click", (event) => {
+    const treeToggle = event.target.closest("[data-sidebar-tree-toggle]");
+    if (treeToggle) {
+      const branchKey = treeToggle.dataset.sidebarTreeToggle;
+      const children = document.getElementById(treeToggle.getAttribute("aria-controls"));
+      const branch = treeToggle.closest(".toc-tree-branch");
+      const isExpanded = treeToggle.getAttribute("aria-expanded") === "true";
+      const willExpand = !isExpanded;
+
+      treeToggle.setAttribute("aria-expanded", String(willExpand));
+      branch?.classList.toggle("is-open", willExpand);
+      if (children) children.hidden = !willExpand;
+
+      if (willExpand) {
+        sidebarManuallyExpandedBranches.add(branchKey);
+      } else {
+        sidebarManuallyExpandedBranches.delete(branchKey);
+      }
+      return;
+    }
+
     if (event.target.closest(".toc-drawer-close") || event.target.closest("a")) {
       closeBookSidebar();
     }

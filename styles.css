@@ -2530,6 +2530,48 @@ tbody tr:last-child td {
   margin-bottom: var(--spacing-32);
 }
 
+/* Force the Partial Delivery top workflow cards to the exact same footprint as the
+   Customer Delivery workflow cards (82px tall), regardless of title length. Longer
+   titles are clamped to 2 lines with an ellipsis instead of growing the card. */
+.sub-task-cycle-workflow .workflow-flow-node {
+  height: 82px;
+  align-content: start;
+  overflow: hidden;
+}
+
+.sub-task-cycle-workflow .workflow-flow-node > span:not(.workflow-flow-index):not(.workflow-flow-node-hint) {
+  height: 34px; /* exactly 2 lines at the card's 13px/1.3 line-height, so grid auto-sizing can't collapse it to 1 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Card 03's title ("تنفيذ دورة التوصيل للكمية المتبقية") plus its "عرض دورة العمل"
+   hint line don't fit cleanly in the shared 116x82 footprint - "التوصيل" was
+   wrapping/truncating mid-word. It's the one card allowed to be wider and size to
+   its own content instead of the fixed match used by cards 00/01/02/04. */
+.sub-task-cycle-workflow .workflow-flow-node.workflow-flow-node--openable {
+  flex-basis: 168px;
+  height: auto;
+  min-height: 82px;
+  overflow: visible;
+}
+
+.sub-task-cycle-workflow .workflow-flow-node.workflow-flow-node--openable > span:not(.workflow-flow-index):not(.workflow-flow-node-hint) {
+  height: auto;
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.sub-task-cycle-workflow .workflow-flow-node-hint {
+  font-size: 10px;
+  line-height: 1.1;
+}
+
 .internal-transfer-example {
   margin: 0 0 var(--spacing-24);
   padding: var(--spacing-16) var(--spacing-20);
@@ -2671,6 +2713,17 @@ tbody tr:last-child td {
 }
 
 .internal-transfer-receipt-note {
+  padding: var(--spacing-16) var(--spacing-20);
+  border-inline-start: 3px solid var(--color-atlassian-blue);
+  border-radius: var(--radius-inputs);
+  background: var(--surface-tinted-surface);
+  color: var(--color-carbon-edge);
+  font-size: var(--text-body);
+  line-height: 1.8;
+}
+
+.sub-task-cycle-note {
+  margin: var(--spacing-16) auto 0;
   padding: var(--spacing-16) var(--spacing-20);
   border-inline-start: 3px solid var(--color-atlassian-blue);
   border-radius: var(--radius-inputs);
@@ -3440,6 +3493,23 @@ tbody tr:last-child td {
   display: block;
   object-fit: contain;
   border-radius: 0;
+}
+
+/* Step 04's source screenshot is a small UI fragment (~285x116px). Cap the frame at
+   ~65% of the shared 880px screenshot footprint (medium size) instead of the full
+   width, while the image itself fills that frame so it reads as an enlarged,
+   readable screenshot rather than a small one floating in empty space. */
+.workflow-content .odoo-screenshot-frame.sub-task-cycle-completion-screenshot {
+  width: 100%;
+  max-width: 580px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.workflow-content .odoo-screenshot-frame.sub-task-cycle-completion-screenshot img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 #step-invoice .delivery-invoice-image-pair {

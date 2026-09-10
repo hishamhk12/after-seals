@@ -72,6 +72,18 @@ const internalTransferTour = {
   ],
 };
 
+const subTaskCycleTour = {
+  id: "sub-task-cycle",
+  title: "دورة التوصيل الجزئي للعميل",
+  children: [
+    { id: "sub-task-invoice", title: "فاتورة من SAP", targetId: "sub-task-cycle-step-1" },
+    { id: "sub-task-main-invoice", title: "الفاتورة الرئيسية", targetId: "sub-task-cycle-step-1" },
+    { id: "sub-task-create", title: "إنشاء مهمة فرعية", targetId: "sub-task-cycle-step-2" },
+    { id: "sub-task-execute-delivery", title: "تنفيذ دورة التوصيل للكمية المتبقية", targetId: "sub-task-cycle-step-3", overlayId: "customer-delivery" },
+    { id: "sub-task-completion", title: "اكتمال خدمة التوصيل الجزئي", targetId: "sub-task-cycle-step-4" },
+  ],
+};
+
 const navigationState = {
   route: { type: "home" },
   activeServiceId: null,
@@ -715,9 +727,9 @@ function renderInternalTransferWorkflow() {
           <article class="internal-transfer-substep">
             <h3 class="internal-transfer-substep-title">
               <span aria-hidden="true">ب</span>
-              تسجيل النقل وتحديد الكمية
+              تحديد الكمية المراد نقلها
             </h3>
-            <p>بعد الضغط على "Record Transfer"، تظهر نافذة تسجيل النقل. يمكن اختيار النقل الجزئي <bdi dir="ltr">Partial Transfer</bdi> أو النقل الكامل <bdi dir="ltr">Full Remaining Transfer</bdi>، ثم تحديد الكمية المراد نقلها والضغط على "Record Transfer" لتأكيد العملية.</p>
+            <p>بعد الضغط على زر <bdi dir="ltr">Record Transfer</bdi>، تظهر نافذة تسجيل النقل، حيث يحدد الموظف ما إذا كان النقل جزئيًا (<bdi dir="ltr">Partial Transfer</bdi>) أو لكامل الكمية المتبقية (<bdi dir="ltr">Full Remaining Transfer</bdi>)، ثم يحدد الكمية المراد نقلها ويضغط على <bdi dir="ltr">Record Transfer</bdi> لتأكيد عملية النقل.</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
               <img src="assest/النقل الداخلي/3.png" alt="نافذة Record Transfer في نظام خدمات مابعد البيع لاختيار نوع النقل وتحديد الكمية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل النقل وتحديد الكمية" title="اضغط لتكبير الصورة" />
             </figure>
@@ -765,7 +777,7 @@ function renderInternalTransferWorkflow() {
             </figure>
           </article>
         </div>
-        <p class="internal-transfer-transition-note">بعد نجاح <bdi dir="ltr">Confirm Receipt</bdi>، تنتقل العملية من مرحلة "جاري النقل" إلى مرحلة "تم الاستلام".</p>
+        <p class="internal-transfer-transition-note">بعد نجاح عملية تأكيد الاستلام (<bdi dir="ltr">Confirm Receipt</bdi>)، تنتقل المهمة تلقائيًا من مرحلة جاري النقل إلى مرحلة تم الاستلام.</p>
       </section>
 
       <section id="internal-transfer-step-received" class="panel invoice-training-section" aria-labelledby="internalTransferReceivedTitle">
@@ -774,6 +786,9 @@ function renderInternalTransferWorkflow() {
           <div><h2 id="internalTransferReceivedTitle">تم الاستلام</h2></div>
         </div>
         <p class="field-explanation-intro">بعد تأكيد استلام البضاعة في نقطة التجميع، تنتقل المهمة إلى مرحلة تم الاستلام، وبذلك يكتمل مسار خدمة النقل الداخلي.</p>
+        <figure class="odoo-screenshot-frame internal-transfer-screenshot">
+          <img src="assest/النقل الداخلي/8.png" alt="لوحة عمليات النقل الداخلي في نظام خدمات مابعد البيع مع تمييز مهمة النقل الداخلي في عمود تم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مرحلة تم الاستلام" title="اضغط لتكبير الصورة" />
+        </figure>
       </section>
     </div>`;
 }
@@ -850,6 +865,62 @@ function renderInternalTransferDeliveryLinkContent() {
         <strong>الخلاصة:</strong>
         إذا كانت البضاعة غير موجودة في موقع التوصيل المطلوب، يتم تنفيذ النقل الداخلي أولًا. تبقى خدمة التوصيل <bdi dir="ltr">Blocked by Dependency</bdi> حتى اكتمال النقل الداخلي، وبعدها تصبح <bdi dir="ltr">Dependency Ready</bdi> ويمكن متابعة تنفيذ التوصيل للعميل.
       </aside>
+    </div>`;
+}
+
+function renderSubTaskCycleFlowDiagram() {
+  return renderWorkflowFlow(subTaskCycleTour, { numberStart: 0, activeTargetId: navigationState.currentTourTargetId });
+}
+
+function renderSubTaskCycleContent() {
+  return `
+    <div class="workflow-content sub-task-cycle-workflow">
+      ${renderSubTaskCycleFlowDiagram()}
+
+      <section id="sub-task-cycle-step-1" class="panel invoice-training-section" aria-labelledby="subTaskCycleStep1Title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">01</span>
+          <div><h2 id="subTaskCycleStep1Title">الفاتورة الرئيسية</h2></div>
+        </div>
+        <p class="field-explanation-intro">تظهر الفاتورة الرئيسية ضمن مراحل خدمة التوصيل، مثل مرحلة طلب توصيل الظاهرة في الصورة. ومن داخل الفاتورة الرئيسية يمكن إنشاء مهمة فرعية عند الحاجة إلى استكمال توصيل جزء من الكمية.</p>
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/subtask/2.png" alt="الفاتورة الرئيسية في مرحلة طلب توصيل مع إظهار تبويب Sub-tasks لإنشاء مهمة فرعية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة الفاتورة الرئيسية" title="اضغط لتكبير الصورة" />
+        </figure>
+        <aside class="sub-task-cycle-note">ملاحظة: يمكن إنشاء مهمة فرعية (Sub Task) من الفاتورة الرئيسية في أي مرحلة من مراحل خدمة التوصيل، حسب الحاجة إلى استكمال جزء من عملية التوصيل.</aside>
+      </section>
+
+      <section id="sub-task-cycle-step-2" class="panel invoice-training-section" aria-labelledby="subTaskCycleStep2Title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">02</span>
+          <div><h2 id="subTaskCycleStep2Title">إنشاء مهمة فرعية</h2></div>
+        </div>
+        <p class="field-explanation-intro">عند الضغط على الفاتورة الرئيسية، يمكن إنشاء توصيل جزئي (Sub Task) لاستكمال الجزء المتبقي من خدمة التوصيل، وذلك من خلال إضافة عنوان للمهمة وتعيين مشرف التوصيل الجزئي. بعد إنشاء المهمة الفرعية، يظهر ارتباط الـSub Task بالفاتورة الرئيسية في الجزء العلوي من المهمة.</p>
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/subtask/2 - Copy.png" alt="إنشاء مهمة فرعية من تبويب Sub-tasks داخل الفاتورة الرئيسية مع تحديد عنوان المهمة وتعيين المشرف" tabindex="0" role="button" aria-label="اضغط لتكبير صورة إنشاء مهمة فرعية" title="اضغط لتكبير الصورة" />
+        </figure>
+      </section>
+
+      <section id="sub-task-cycle-step-3" class="panel invoice-training-section" aria-labelledby="subTaskCycleStep3Title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">03</span>
+          <div><h2 id="subTaskCycleStep3Title">تنفيذ دورة التوصيل للكمية المتبقية</h2></div>
+        </div>
+        <p class="field-explanation-intro">بعد إنشاء مهمة التوصيل الجزئي، تظهر المهمة الفرعية مرتبطة بالفاتورة الرئيسية، ويصبح لها مسار خدمة توصيل مستقل لتنفيذ الكمية المتبقية. يتم استكمال دورة التوصيل من خلال نفس مراحل خدمة التوصيل المعتمدة حتى إتمام استلام الخدمة.</p>
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/subtask/3.png" alt="المهمة الفرعية بعد إنشائها مع ظهور ارتباط Parent Task بالفاتورة الرئيسية" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ارتباط المهمة الفرعية بالفاتورة الرئيسية" title="اضغط لتكبير الصورة" />
+        </figure>
+      </section>
+
+      <section id="sub-task-cycle-step-4" class="panel invoice-training-section" aria-labelledby="subTaskCycleStep4Title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">04</span>
+          <div><h2 id="subTaskCycleStep4Title">اكتمال خدمة التوصيل الجزئي</h2></div>
+        </div>
+        <p class="field-explanation-intro">بعد إتمام دورة التوصيل للمهمة الفرعية، تظهر الفاتورة الرئيسية موضحة اكتمال مهمة التوصيل الجزئي المرتبطة بها. ويظهر مؤشر المهام الفرعية بحالة 1/1، ما يدل على اكتمال المهمة الفرعية المرتبطة بالفاتورة الرئيسية.</p>
+        <figure class="odoo-screenshot-frame sub-task-cycle-completion-screenshot">
+          <img src="assest/subtask/4.png" alt="الفاتورة الرئيسية بعد اكتمال المهمة الفرعية مع ظهور مؤشر المهام الفرعية بحالة 1/1" tabindex="0" role="button" aria-label="اضغط لتكبير صورة اكتمال المهمة الفرعية" title="اضغط لتكبير الصورة" />
+        </figure>
+      </section>
     </div>`;
 }
 
@@ -1011,6 +1082,12 @@ function renderBookPortal() {
 
   if (match?.item.id === "internal-transfer-delivery-link") {
     portal.innerHTML = renderInternalTransferDeliveryLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "sub-task-cycle") {
+    portal.innerHTML = renderSubTaskCycleContent();
     document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
     return;
   }
@@ -1327,6 +1404,9 @@ function renderNavigationState() {
   if (navigationState.route.type === "lesson" && navigationState.route.itemId === "internal-transfer") {
     bindLearningMap(document.querySelector("#bookPortal"));
     initTourStepObserver(internalTransferTour);
+  } else if (navigationState.route.type === "lesson" && navigationState.route.itemId === "sub-task-cycle") {
+    bindLearningMap(document.querySelector("#bookPortal"));
+    tourStepObserver?.disconnect();
   } else if (navigationState.selectedExperienceId !== introductoryTour.id && tourStepObserver) {
     tourStepObserver.disconnect();
   }

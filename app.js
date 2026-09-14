@@ -99,6 +99,15 @@ const subTaskCycleTour = {
   ],
 };
 
+const partialReturnTour = {
+  id: "partial-return",
+  title: "مرتجع جزئي للفاتورة",
+  children: [
+    { id: "partial-return-arrival", title: "وصول مرتجع من SAP" },
+    { id: "partial-return-review", title: "التحقق من محتوى المرتجع" },
+  ],
+};
+
 const navigationState = {
   route: { type: "home" },
   activeServiceId: null,
@@ -212,16 +221,101 @@ const chapters = [
       {
         id: "full-cancellation",
         title: "إلغاء كامل للفاتورة",
-        description: "سيتم إضافة محتوى هذا القسم لاحقًا.",
-        status: "قيد الإعداد",
+        description: "عند وصول فاتورة إلغاء من SAP إلى نظام خدمات مابعد البيع، يتم إلغاء خدمة التوصيل المرتبطة بالفاتورة ما لم تكن الخدمة قد تم تسليمها أو إكمالها مسبقًا.",
+        status: "مكتمل",
         visible: true,
+        placeholderOnly: true,
       },
       {
         id: "partial-return",
         title: "مرتجع جزئي للفاتورة",
-        description: "سيتم إضافة محتوى هذا القسم لاحقًا.",
+        description: "إذا كان مرتجع SAP يحتوي على خدمة التوصيل، يتم إلغاء خدمة التوصيل تلقائيًا داخل نظام خدمات مابعد البيع.",
+        status: "مكتمل",
+        visible: true,
+        partialReturnService: "delivery",
+      },
+    ],
+  },
+  {
+    id: "installation-services",
+    number: "الباب الأول",
+    title: "أنواع خدمات التركيب",
+    description: "سيتم توثيق هذه الدورة لاحقًا.",
+    visible: true,
+    items: [
+      {
+        id: "installation-full",
+        title: "تركيب كامل",
+        description: "سيتم توثيق هذه الدورة لاحقًا.",
         status: "قيد الإعداد",
         visible: true,
+        placeholderOnly: true,
+      },
+      {
+        id: "installation-partial",
+        title: "تركيب جزئي",
+        description: "سيتم توثيق هذه الدورة لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+        placeholderOnly: true,
+      },
+    ],
+  },
+  {
+    id: "installation-relationships",
+    number: "الباب الثاني",
+    title: "علاقات خدمة التركيب",
+    description: "سيتم توثيق هذه الدورة لاحقًا.",
+    visible: true,
+    items: [
+      {
+        id: "installation-with-delivery",
+        title: "تركيب مع توصيل",
+        description: "سيتم توثيق هذه الدورة لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+        placeholderOnly: true,
+      },
+      {
+        id: "installation-with-internal-transfer",
+        title: "تركيب مع التحويلات الداخلية",
+        description: "سيتم توثيق هذه الدورة لاحقًا.",
+        status: "قيد الإعداد",
+        visible: true,
+        placeholderOnly: true,
+      },
+      {
+        id: "installation-with-manufacturing",
+        title: "تركيب مع تصنيع",
+        description: "لا يمكن البدء بخدمة التركيب قبل اكتمال خدمة التصنيع.",
+        status: "قيد الإعداد",
+        visible: true,
+        placeholderOnly: true,
+      },
+    ],
+  },
+  {
+    id: "installation-returns-cancellations",
+    number: "الباب الثالث",
+    title: "المرتجعات والإلغاءات",
+    description: "سيتم توثيق هذه الدورة لاحقًا.",
+    visible: true,
+    items: [
+      {
+        id: "installation-full-cancellation",
+        title: "إلغاء كامل للفاتورة",
+        description: "عند وصول فاتورة إلغاء من SAP إلى نظام خدمات مابعد البيع، يتم إلغاء خدمة التركيب المرتبطة بالفاتورة ما لم تكن الخدمة قد تم تسليمها أو إكمالها مسبقًا.",
+        status: "مكتمل",
+        visible: true,
+        placeholderOnly: true,
+      },
+      {
+        id: "installation-partial-return",
+        title: "مرتجع جزئي للفاتورة",
+        description: "إذا كان مرتجع SAP يحتوي على خدمة التركيب، يتم إلغاء خدمة التركيب تلقائيًا داخل نظام خدمات مابعد البيع.",
+        status: "مكتمل",
+        visible: true,
+        partialReturnService: "installation",
       },
     ],
   },
@@ -270,6 +364,7 @@ const services = [
     title: "خدمة التركيب",
     description: "دورات العمل المتاحة لخدمة التركيب.",
     status: "متاح",
+    chapterIds: ["installation-services", "installation-relationships", "installation-returns-cancellations"],
     operations: [
       {
         id: "delivery-installation",
@@ -277,6 +372,7 @@ const services = [
         description: "دورة عمل خدمة توصيل مع تركيب.",
         status: "متاح",
         experienceId: "delivery-installation",
+        visible: false,
       },
     ],
   },
@@ -518,7 +614,8 @@ function isDeliveryWorkflowRoute(route = navigationState.route) {
 }
 
 function isInstallationWorkflowRoute(route = navigationState.route) {
-  return route.type === "operation" && route.operationId === "delivery-installation";
+  return (route.type === "service" && route.serviceId === "installation")
+    || (route.type === "operation" && route.operationId === "delivery-installation");
 }
 
 function getActivePageAssistantId() {
@@ -601,6 +698,86 @@ function renderLessonCard(chapter, item, index) {
       <span class="entry-card-description">${item.description || "سيتم إضافة محتوى هذا الدرس لاحقًا."}</span>
       <span class="entry-card-action">${action} <span aria-hidden="true">←</span></span>
     </a>`;
+}
+
+function renderMinimalPlaceholderPage(title, description) {
+  return `
+    <article class="placeholder-page">
+      <h1>${title}</h1>
+      <p>${description}</p>
+    </article>`;
+}
+
+function renderPartialReturnFlow() {
+  return `
+    <div class="partial-return-branch-flow" aria-label="مسار قرار المرتجع الجزئي">
+      ${renderWorkflowFlow(partialReturnTour, { interactive: false, numberStart: 0 })}
+      <svg class="partial-return-flow-fork" viewBox="0 0 720 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <defs>
+          <marker id="partialReturnArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L8 4 L0 8 Z"></path>
+          </marker>
+        </defs>
+        <path d="M294 0 V28" marker-end="url(#partialReturnArrow)"></path>
+        <path d="M294 34 H174 V76" marker-end="url(#partialReturnArrow)"></path>
+        <path d="M294 34 H546 V76" marker-end="url(#partialReturnArrow)"></path>
+      </svg>
+      <span class="partial-return-flow-mobile-split" aria-hidden="true">↓</span>
+      <div class="partial-return-flow-branches">
+        <div class="partial-return-flow-branch">
+          <div class="workflow-flow-node partial-return-flow-box partial-return-flow-box--condition">
+            <span>إذا كان المرتجع يحتوي على الخدمة</span>
+          </div>
+          <span class="partial-return-flow-transition" aria-hidden="true">↓</span>
+          <div class="workflow-flow-node partial-return-flow-box partial-return-flow-box--result">
+            <span>إلغاء الخدمة تلقائيًا</span>
+          </div>
+        </div>
+        <div class="partial-return-flow-branch">
+          <div class="workflow-flow-node partial-return-flow-box partial-return-flow-box--condition">
+            <span>إذا كان المرتجع يحتوي على أصناف فقط</span>
+          </div>
+          <span class="partial-return-flow-transition" aria-hidden="true">↓</span>
+          <div class="workflow-flow-node partial-return-flow-box">
+            <span>قرار الشخص المسؤول</span>
+          </div>
+          <span class="partial-return-flow-transition" aria-hidden="true">↓</span>
+          <div class="workflow-flow-node partial-return-flow-box partial-return-flow-box--result">
+            <span>إلغاء الخدمة أو استمرار الخدمة</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderPartialReturnContent(serviceId) {
+  const rules = serviceId === "installation"
+    ? [
+        "إذا كان مرتجع SAP يحتوي على خدمة التركيب، يتم إلغاء خدمة التركيب تلقائيًا داخل نظام خدمات مابعد البيع.",
+        "إذا كان المرتجع يحتوي على أصناف فقط دون خدمة التركيب، فلا يتم إلغاء خدمة التركيب تلقائيًا، ويكون قرار إلغاء الخدمة أو استمرارها لدى الشخص المسؤول.",
+      ]
+    : [
+        "إذا كان مرتجع SAP يحتوي على خدمة التوصيل، يتم إلغاء خدمة التوصيل تلقائيًا داخل نظام خدمات مابعد البيع.",
+        "إذا كان المرتجع يحتوي على أصناف فقط دون خدمة التوصيل، فلا يتم إلغاء خدمة التوصيل تلقائيًا، ويكون قرار إلغاء الخدمة أو استمرارها لدى الشخص المسؤول.",
+      ];
+
+  return `
+    <div class="workflow-content partial-return-workflow">
+      <header class="case-header" aria-labelledby="partialReturnTitle">
+        <div>
+          <h1 id="partialReturnTitle">مرتجع جزئي للفاتورة</h1>
+          ${renderPartialReturnFlow()}
+        </div>
+      </header>
+      ${rules.map((rule, index) => `
+        <section class="panel invoice-training-section" aria-labelledby="partialReturnRule${index + 1}">
+          <div class="section-title">
+            <span class="icon-tile" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+            <div><h2 id="partialReturnRule${index + 1}">الحالة ${String(index + 1).padStart(2, "0")}</h2></div>
+          </div>
+          <p class="field-explanation-intro">${rule}</p>
+        </section>`).join("")}
+    </div>`;
 }
 
 function renderOdooEntryContent(chapter) {
@@ -1249,6 +1426,12 @@ function renderBookPortal() {
       return;
     }
 
+    if (chapter.placeholderOnly) {
+      portal.innerHTML = renderMinimalPlaceholderPage(`${chapter.number} — ${chapter.title}`, chapter.description);
+      document.title = `${chapter.title} | دليل خدمات ما بعد البيع`;
+      return;
+    }
+
     portal.innerHTML = `
       <header class="chapter-header">
         <p class="chapter-number">${chapter.number}</p>
@@ -1284,6 +1467,18 @@ function renderBookPortal() {
   if (match?.item.experienceId === introductoryTour.id) {
     portal.hidden = true;
     portal.innerHTML = "";
+    return;
+  }
+
+  if (match?.item.partialReturnService) {
+    portal.innerHTML = renderPartialReturnContent(match.item.partialReturnService);
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.placeholderOnly) {
+    portal.innerHTML = renderMinimalPlaceholderPage(match.item.title, match.item.description);
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
     return;
   }
 
@@ -1366,6 +1561,7 @@ function getCurrentSidebarNodeKey() {
   }
   if (route.type === "chapter") return `chapter:${route.chapterId}`;
   if (route.type === "lesson") return `item:${route.itemId}`;
+  if (route.type === "operation" && route.operationId === "delivery-installation") return "overview:installation";
   if (route.type === "operation") return `operation:${route.operationId}`;
 
   return null;

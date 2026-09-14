@@ -788,6 +788,139 @@ p {
   flex-basis: 16px;
 }
 
+.partial-return-branch-flow {
+  width: min(100%, 720px);
+  margin-inline: auto;
+}
+
+.partial-return-branch-flow > .workflow-flow {
+  margin-bottom: 0;
+}
+
+.partial-return-flow-fork {
+  width: 100%;
+  height: 80px;
+  display: block;
+  overflow: visible;
+}
+
+.partial-return-flow-fork > path {
+  fill: none;
+  stroke: var(--color-atlassian-blue);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.partial-return-flow-fork marker path {
+  fill: var(--color-atlassian-blue);
+}
+
+.partial-return-flow-mobile-split {
+  display: none;
+}
+
+.partial-return-flow-transition {
+  display: block;
+  color: var(--color-atlassian-blue);
+  font-size: 24px;
+  line-height: 1;
+  text-align: center;
+}
+
+.partial-return-flow-branches {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--spacing-24);
+  margin: 0 auto var(--spacing-32);
+  direction: rtl;
+}
+
+.partial-return-flow-branch {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-12);
+}
+
+#bookPortal .partial-return-workflow > .case-header .partial-return-flow-branch .workflow-flow-node {
+  width: min(100%, 260px);
+  max-width: 260px;
+  flex: none;
+  padding-inline: var(--spacing-12);
+}
+
+.partial-return-flow-box {
+  height: 82px;
+  cursor: default;
+}
+
+.partial-return-flow-box--condition {
+  background: var(--surface-soft-surface);
+}
+
+.partial-return-flow-box--result {
+  border-color: #c7d8f4;
+  background: var(--surface-tinted-surface);
+}
+
+.partial-return-flow-box:hover,
+.partial-return-flow-box:focus-visible {
+  border-color: var(--color-fog-white);
+  outline: none;
+}
+
+.partial-return-flow-box--result:hover,
+.partial-return-flow-box--result:focus-visible {
+  border-color: #c7d8f4;
+}
+
+@media (min-width: 721px) {
+  .partial-return-flow-branch {
+    grid-template-rows: 82px 24px 82px 24px 82px;
+  }
+}
+
+@media (max-width: 720px) {
+  #bookPortal .partial-return-workflow > .case-header .workflow-flow {
+    flex-wrap: nowrap;
+    column-gap: var(--spacing-12);
+  }
+
+  #bookPortal .partial-return-workflow > .case-header .workflow-flow-node {
+    flex: 0 0 116px;
+    max-width: 116px;
+    padding-inline: var(--spacing-12);
+  }
+
+  #bookPortal .partial-return-workflow > .case-header .workflow-flow-arrow {
+    flex-basis: 20px;
+  }
+
+  .partial-return-flow-fork {
+    display: none;
+  }
+
+  .partial-return-flow-mobile-split {
+    display: block;
+    margin-block: var(--spacing-16);
+    color: var(--color-atlassian-blue);
+    font-size: 24px;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .partial-return-flow-branches {
+    grid-template-columns: 1fr;
+  }
+
+  #bookPortal .partial-return-workflow > .case-header .partial-return-flow-branch .workflow-flow-node {
+    width: min(100%, 260px);
+    max-width: 260px;
+    flex: none;
+  }
+}
+
 .section-title {
   max-width: 860px;
   display: grid;

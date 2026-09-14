@@ -2587,6 +2587,23 @@ tbody tr:last-child td {
   color: var(--color-midnight-navy);
 }
 
+.internal-transfer-example--with-result {
+  margin-bottom: var(--spacing-8);
+}
+
+.internal-transfer-result-note {
+  margin: 0 0 var(--spacing-24);
+  padding: var(--spacing-12) var(--spacing-16);
+  border: 1px solid #e6a4a4;
+  border-radius: var(--radius-inputs);
+  background: var(--color-pure-white);
+  color: var(--color-carbon-edge);
+  direction: rtl;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  text-align: right;
+}
+
 .internal-transfer-screenshot {
   width: min(100%, 880px);
   margin: 0 auto;
@@ -2615,6 +2632,73 @@ tbody tr:last-child td {
   color: var(--color-midnight-navy);
   font-weight: var(--font-weight-medium);
   line-height: 1.8;
+}
+
+.dependency-status-definitions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-12);
+  margin: 0 0 var(--spacing-24);
+  direction: rtl;
+}
+
+.dependency-status-definition {
+  padding: var(--spacing-16);
+  border: 1px solid;
+  border-radius: var(--radius-inputs);
+  color: var(--color-carbon-edge);
+  text-align: right;
+}
+
+.dependency-status-definition--blocked {
+  border-color: #e6a4a4;
+  background: #fff4f4;
+}
+
+.dependency-status-definition--ready {
+  border-color: #9bc9a9;
+  background: #f1faf3;
+}
+
+.dependency-status-definition h2 {
+  margin: 0;
+  color: var(--color-midnight-navy);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.dependency-status-technical-label,
+.internal-transfer-status-system-label {
+  display: block;
+  margin-top: var(--spacing-4);
+  color: var(--color-muted-indigo);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-caption);
+}
+
+.dependency-status-definition p {
+  margin: var(--spacing-12) 0 0;
+  line-height: 1.7;
+}
+
+.internal-transfer-dependency-note {
+  margin: 0 0 var(--spacing-24);
+  padding: var(--spacing-12) var(--spacing-16);
+  border: 1px solid #edcf86;
+  border-inline-start: 3px solid var(--color-taxicab-yellow);
+  border-radius: var(--radius-inputs);
+  background: #fff8e6;
+  color: var(--color-carbon-edge);
+  direction: rtl;
+  font-size: var(--text-body);
+  line-height: 1.8;
+  text-align: right;
+}
+
+.internal-transfer-dependency-note strong {
+  color: var(--color-midnight-navy);
+  font-weight: var(--font-weight-bold);
 }
 
 /* Shared screenshot sizing standard for the Internal Transfer <-> Delivery relationship
@@ -2646,6 +2730,10 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 720px) {
+  .dependency-status-definitions {
+    grid-template-columns: 1fr;
+  }
+
   .internal-transfer-delivery-link-image-pair {
     grid-template-columns: 1fr;
   }
@@ -3493,6 +3581,11 @@ tbody tr:last-child td {
   display: block;
   object-fit: contain;
   border-radius: 0;
+}
+
+.workflow-content .measurement-booking-screenshot {
+  max-width: 480px;
+  margin-inline: auto;
 }
 
 /* Step 04's source screenshot is a small UI fragment (~285x116px). Cap the frame at

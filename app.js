@@ -56,13 +56,28 @@ const deliveryInstallationTour = {
     { id: "technician-waiting", title: "في انتظار تعيين الفني", targetId: "delivery-installation-step-technician-assignment" },
     { id: "customer-delivery", title: "تنفيذ خدمة التوصيل للعميل", targetId: "delivery-installation-step-customer-delivery", overlayId: "customer-delivery" },
     { id: "installation-form", title: "ملئ النموذج", targetId: "delivery-installation-step-form" },
+    { id: "installation-completed", title: "تم التركيب", targetId: "delivery-installation-step-completed" },
+  ],
+};
+
+const measurementTour = {
+  id: "measurement",
+  title: "دورة عمل خدمة رفع المقاسات",
+  children: [
+    { id: "measurement-invoice", title: "فاتورة من SAP", targetId: "measurement-step-invoice" },
+    { id: "measurement-request", title: "طلب رفع مقاسات", targetId: "measurement-step-request", interactive: true },
+    { id: "measurement-readiness", title: "التحقق من الجاهزية وحجز الموعد", targetId: "measurement-step-readiness", interactive: true },
+    { id: "measurement-technician-assigned", title: "تم تعيين الفني", targetId: "measurement-step-technician-assigned", interactive: true },
+    { id: "measurement-form", title: "ملئ النموذج", targetId: "measurement-step-form", interactive: true },
+    { id: "measurement-upload", title: "رفع القياسات", targetId: "measurement-step-upload", interactive: true },
+    { id: "measurement-completed", title: "تمت الخدمة", targetId: "measurement-step-completed", interactive: true },
   ],
 };
 
 const internalTransferTour = {
   id: "internal-transfer",
-  title: "دورة عمل النقل الداخلي",
-  subtitle: "دورة عمل النقل الداخلي من الفاتورة وحتى استلام البضاعة في مكان التجميع.",
+  title: "دورة عمل التحويلات الداخلية",
+  subtitle: "دورة عمل التحويلات الداخلية من الفاتورة وحتى استلام البضاعة في مكان التجميع.",
   children: [
     { id: "internal-invoice", title: "فاتورة من SAP", targetId: "internal-transfer-step-invoice" },
     { id: "internal-request", title: "طلب جديد", targetId: "internal-transfer-step-request" },
@@ -79,7 +94,7 @@ const subTaskCycleTour = {
     { id: "sub-task-invoice", title: "فاتورة من SAP", targetId: "sub-task-cycle-step-1" },
     { id: "sub-task-main-invoice", title: "الفاتورة الرئيسية", targetId: "sub-task-cycle-step-1" },
     { id: "sub-task-create", title: "إنشاء مهمة فرعية", targetId: "sub-task-cycle-step-2" },
-    { id: "sub-task-execute-delivery", title: "تنفيذ دورة التوصيل للكمية المتبقية", targetId: "sub-task-cycle-step-3", overlayId: "customer-delivery" },
+    { id: "sub-task-execute-delivery", title: "تنفيذ خطوات المهمة الفرعية", targetId: "sub-task-cycle-step-3", overlayId: "customer-delivery" },
     { id: "sub-task-completion", title: "اكتمال خدمة التوصيل الجزئي", targetId: "sub-task-cycle-step-4" },
   ],
 };
@@ -150,8 +165,8 @@ const chapters = [
       },
       {
         id: "internal-transfer",
-        title: "خدمة النقل الداخلي",
-        description: "دورة عمل النقل الداخلي من الفاتورة وحتى استلام البضاعة في مكان التجميع.",
+        title: "التحويلات الداخلية",
+        description: "دورة عمل التحويلات الداخلية من الفاتورة وحتى استلام البضاعة في مكان التجميع.",
         status: "مكتمل",
         visible: true,
       },
@@ -173,14 +188,14 @@ const chapters = [
       },
       {
         id: "internal-transfer-delivery-link",
-        title: "علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل",
-        description: "توضيح آلية الاعتماد بين خدمة النقل الداخلي وخدمة التوصيل للعميل عبر حالة Blocked by Dependency.",
+        title: "علاقة التحويلات الداخلية بخدمة التوصيل للعميل",
+        description: "توضيح آلية الاعتماد بين التحويلات الداخلية وخدمة التوصيل للعميل عبر حالة Blocked by Dependency.",
         status: "مكتمل",
         visible: true,
       },
       {
         id: "warehouse-pickup-transfer-link",
-        title: "علاقة خدمة النقل الداخلي باستلام العميل البضاعة من المستودع",
+        title: "علاقة التحويلات الداخلية باستلام العميل البضاعة من المستودع",
         description: "سيتم توثيق العلاقة بين الخدمتين لاحقًا.",
         status: "قيد الإعداد",
         visible: true,
@@ -693,13 +708,13 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">00</span>
           <div><h2 id="internalTransferInvoiceTitle">فاتورة من SAP</h2></div>
         </div>
-        <p class="field-explanation-intro">تبدأ عملية النقل الداخلي بوصول فاتورة من SAP. وإذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء نقل داخلي داخل نظام خدمات مابعد البيع لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.</p>
-        <aside class="internal-transfer-example">
-          <strong>مثال:</strong>
-          إذا كانت الفاتورة صادرة من جدة ونقطة التجميع هي J521، بينما البضاعة أو جزء منها موجود في مدينة الرياض، يقوم النظام بإنشاء خدمة نقل داخلي من مستودع الرياض R574 إلى مستودع جدة J521.
+        <p class="field-explanation-intro">تبدأ عملية التحويلات الداخلية بوصول فاتورة من SAP. وإذا كانت الفاتورة تحتوي على منتجات موجودة في مستودعات مختلفة عن مستودع التجمع، يتم إنشاء التحويلات الداخلية داخل نظام خدمات مابعد البيع لنقل البضاعة من موقعها الحالي إلى مستودع التجمع.</p>
+        <aside class="internal-transfer-example internal-transfer-example--with-result">
+          <strong>مثال:</strong> إذا كانت الفاتورة صادرة من جدة ومستودع التجمع هو (J521)، بينما البضاعة أو جزء منها موجود في مدينة الرياض (R574)، يقوم النظام بإنشاء التحويلات الداخلية من مستودع الرياض (R574) إلى مستودع جدة (J521).
         </aside>
+        <p class="internal-transfer-result-note"><strong>ملاحظة:</strong> تظهر التحويلات الداخلية في مرحلة طلب جديد.</p>
         <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-          <img src="assest/النقل الداخلي/1.png" alt="لوحة عمليات النقل الداخلي في نظام خدمات مابعد البيع وتعرض مراحل طلب جديد والتحقق من الجاهزية وحجز الموعد وجاري النقل وتم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة النقل الداخلي في نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
+          <img src="assest/النقل الداخلي/1.png" alt="لوحة عمليات التحويلات الداخلية في نظام خدمات مابعد البيع وتعرض مراحل طلب جديد والتحقق من الجاهزية وحجز الموعد وجاري النقل وتم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة التحويلات الداخلية في نظام خدمات مابعد البيع" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
 
@@ -708,9 +723,9 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">01</span>
           <div><h2 id="internalTransferRequestTitle">طلب جديد</h2></div>
         </div>
-        <p class="field-explanation-intro">عند دخول موظف المستودع إلى نظام خدمات مابعد البيع، تظهر له خدمة التحويلات الداخلية ضمن خدمات ما بعد البيع، والتي تحتوي على الفواتير التي تتضمن منتجات تحتاج إلى النقل من المستودع الحالي إلى مستودع التجميع.</p>
+        <p class="field-explanation-intro">يمكن استعراض كافة طلبات التحويلات الداخلية من خلال مرحلة طلب جديد، والتي تعرض المعلومات التالية: رقم الفاتورة، كود المستودع الذي يحتوي على البضاعة، وكود مستودع الوجهة (مستودع التجمع).</p>
         <figure class="odoo-screenshot-frame internal-transfer-screenshot internal-transfer-request-intro-screenshot">
-          <img src="assest/النقل الداخلي/7.png" alt="خدمة التحويلات الداخلية تعرض طلب نقل من مستودع الرياض R574 إلى مستودع جدة J521" tabindex="0" role="button" aria-label="اضغط لتكبير صورة طلب النقل الداخلي" title="اضغط لتكبير الصورة" />
+          <img src="assest/النقل الداخلي/7.png" alt="التحويلات الداخلية تعرض طلب نقل من مستودع الرياض R574 إلى مستودع جدة J521" tabindex="0" role="button" aria-label="اضغط لتكبير صورة طلب التحويلات الداخلية" title="اضغط لتكبير الصورة" />
         </figure>
         <div class="internal-transfer-substeps">
           <article class="internal-transfer-substep">
@@ -718,9 +733,9 @@ function renderInternalTransferWorkflow() {
               <span aria-hidden="true">أ</span>
               بدء عملية النقل <bdi dir="ltr">(Record Transfer)</bdi>
             </h3>
-            <p>عند الضغط على الفاتورة الموجودة في مرحلة طلب جديد، يتم فتح مهمة النقل الداخلي، ثم الضغط على زر Record Transfer لتحديد وتسجيل الكمية التي سيتم إرسالها من المستودع الحالي إلى نقطة التجميع.</p>
+            <p>وفق الصلاحيات المتاحة لموظف المستودع الذي يحتوي على المنتج (مثال: R574)، يمكنه الضغط على Record Transfer لتحديد الأصناف والكميات التي سيتم إرسالها إلى مستودع التجمع (مثال: R521).</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-              <img src="assest/النقل الداخلي/2.png" alt="مهمة النقل الداخلي في نظام خدمات مابعد البيع مع تحديد زر Record Transfer" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح عملية النقل الداخلي" title="اضغط لتكبير الصورة" />
+              <img src="assest/النقل الداخلي/2.png" alt="مهمة التحويلات الداخلية في نظام خدمات مابعد البيع مع تحديد زر Record Transfer" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح عملية التحويلات الداخلية" title="اضغط لتكبير الصورة" />
             </figure>
           </article>
 
@@ -743,7 +758,7 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="internalTransferReadinessTitle">التحقق من الجاهزية وحجز الموعد</h2></div>
         </div>
-        <p class="field-explanation-intro">في هذه المرحلة يتم التأكد من جاهزية البضاعة للنقل الداخلي، ثم تحديد موعد تنفيذ النقل عند الحاجة، حتى تكون العملية جاهزة للانتقال إلى مرحلة التنفيذ الفعلي.</p>
+        <p class="field-explanation-intro">في هذه المرحلة يتم التأكد من جاهزية البضاعة للتحويلات الداخلية، ثم تحديد موعد تنفيذ النقل عند الحاجة، حتى تكون العملية جاهزة للانتقال إلى مرحلة التنفيذ الفعلي.</p>
         ${renderWorkflowImagePlaceholder("مساحة مخصصة لصورة مرحلة التحقق من الجاهزية وحجز الموعد")}
       </section>
 
@@ -752,16 +767,16 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="internalTransferTransitTitle">جاري النقل</h2></div>
         </div>
-        <p class="field-explanation-intro">في هذه المرحلة تكون البضاعة قيد النقل من المستودع الحالي إلى نقطة التجميع، وعند وصولها يتم استكمال إجراءات تأكيد الاستلام وتسجيل الكمية المستلمة.</p>
+        <p class="field-explanation-intro">في هذه المرحلة تكون البضاعة قيد النقل من المستودع الحالي إلى مستودع التجمع، وعند وصولها يتم استكمال إجراءات تأكيد الاستلام وتسجيل الكمية المستلمة.</p>
         <div class="internal-transfer-substeps">
           <article class="internal-transfer-substep">
             <h3 class="internal-transfer-substep-title">
               <span aria-hidden="true">أ</span>
               تأكيد الكمية المستلمة
             </h3>
-            <p>عند وصول البضاعة إلى نقطة التجميع، يتم فتح مهمة النقل الداخلي والضغط على زر Confirm Receipt لبدء تأكيد الكمية المستلمة.</p>
+            <p>عند وصول البضاعة إلى مستودع التجمع، يتم فتح مهمة التحويلات الداخلية والضغط على زر Confirm Receipt لبدء تأكيد الكمية المستلمة.</p>
             <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-              <img src="assest/النقل الداخلي/4.png" alt="مهمة النقل الداخلي في مرحلة جاري النقل مع تحديد زر Confirm Receipt" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح Confirm Receipt" title="اضغط لتكبير الصورة" />
+              <img src="assest/النقل الداخلي/4.png" alt="مهمة التحويلات الداخلية في مرحلة جاري النقل مع تحديد زر Confirm Receipt" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح Confirm Receipt" title="اضغط لتكبير الصورة" />
             </figure>
           </article>
 
@@ -785,9 +800,9 @@ function renderInternalTransferWorkflow() {
           <span class="icon-tile" aria-hidden="true">03</span>
           <div><h2 id="internalTransferReceivedTitle">تم الاستلام</h2></div>
         </div>
-        <p class="field-explanation-intro">بعد تأكيد استلام البضاعة في نقطة التجميع، تنتقل المهمة إلى مرحلة تم الاستلام، وبذلك يكتمل مسار خدمة النقل الداخلي.</p>
+        <p class="field-explanation-intro">بعد تأكيد استلام البضاعة في مستودع التجمع، تنتقل المهمة إلى مرحلة تم الاستلام، وبذلك يكتمل مسار التحويلات الداخلية.</p>
         <figure class="odoo-screenshot-frame internal-transfer-screenshot">
-          <img src="assest/النقل الداخلي/8.png" alt="لوحة عمليات النقل الداخلي في نظام خدمات مابعد البيع مع تمييز مهمة النقل الداخلي في عمود تم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مرحلة تم الاستلام" title="اضغط لتكبير الصورة" />
+          <img src="assest/النقل الداخلي/8.png" alt="لوحة عمليات التحويلات الداخلية في نظام خدمات مابعد البيع مع تمييز مهمة التحويلات الداخلية في عمود تم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مرحلة تم الاستلام" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
     </div>`;
@@ -795,7 +810,7 @@ function renderInternalTransferWorkflow() {
 
 function renderRelationshipFlowDiagram() {
   return `
-    <div class="workflow-flow relationship-flow" aria-label="علاقة خدمة النقل الداخلي بخدمة التوصيل">
+    <div class="workflow-flow relationship-flow" aria-label="علاقة التحويلات الداخلية بخدمة التوصيل">
       <div class="workflow-flow-node" aria-disabled="true">
         <span class="workflow-flow-index">00</span>
         <span>فاتورة من SAP</span>
@@ -803,7 +818,7 @@ function renderRelationshipFlowDiagram() {
       <span class="workflow-flow-arrow" aria-hidden="true">←</span>
       <button class="workflow-flow-node workflow-flow-node--openable" type="button" data-workflow-overlay="internal-transfer">
         <span class="workflow-flow-index">01</span>
-        <span>تنفيذ خدمة النقل الداخلي</span>
+        <span>تنفيذ التحويلات الداخلية</span>
         <span class="workflow-flow-node-hint" aria-hidden="true">عرض دورة العمل ↗</span>
       </button>
       <span class="workflow-flow-arrow" aria-hidden="true">←</span>
@@ -820,50 +835,70 @@ function renderInternalTransferDeliveryLinkContent() {
     <div class="workflow-content internal-transfer-workflow">
       ${renderRelationshipFlowDiagram()}
 
-      <p class="field-explanation-intro internal-transfer-delivery-link-summary">تعتمد خدمة التوصيل للعميل على توفر البضاعة في نقطة التجميع. فإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن نقطة التجميع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ خدمة النقل الداخلي لنقل البضاعة إلى نقطة التجميع.</p>
+      <p class="field-explanation-intro internal-transfer-delivery-link-summary">تعتمد خدمة التوصيل للعميل على توفر البضاعة في مستودع التجمع. فإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن مستودع التجمع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ التحويلات الداخلية لنقل البضاعة إلى مستودع التجمع.</p>
+
+      <div class="dependency-status-definitions" aria-label="تعريف حالات اعتماد خدمة التوصيل">
+        <article class="dependency-status-definition dependency-status-definition--blocked">
+          <h2>الحالة الحمراء — محظور بسبب الاعتماد</h2>
+          <bdi class="dependency-status-technical-label" dir="ltr">(Blocked by Dependency)</bdi>
+          <p>تعني أن خدمة التوصيل موجودة، ولكن لا يمكن البدء بها لأن التحويلات الداخلية لم تكتمل بعد.</p>
+        </article>
+        <article class="dependency-status-definition dependency-status-definition--ready">
+          <h2>الحالة الخضراء — جاهز بعد اكتمال الاعتماد</h2>
+          <bdi class="dependency-status-technical-label" dir="ltr">(Dependency Ready)</bdi>
+          <p>تعني أن التحويلات الداخلية اكتملت، وأصبحت خدمة التوصيل جاهزة للمتابعة.</p>
+        </article>
+      </div>
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep1Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">00</span>
           <div><h2 id="internalTransferDeliveryLinkStep1Title">فاتورة من SAP</h2></div>
         </div>
-        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل وخدمة نقل داخلي، ويظهر لكل خدمة طلبها داخل نظام خدمات مابعد البيع. وإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن نقطة التجميع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ خدمة النقل الداخلي لنقل البضاعة إلى نقطة التجميع.</p>
+        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة توصيل والتحويلات الداخلية، ويظهر لكل خدمة طلبها داخل نظام خدمات مابعد البيع. وإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن مستودع التجمع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ التحويلات الداخلية لنقل البضاعة إلى مستودع التجمع.</p>
         <div class="internal-transfer-delivery-link-image-pair">
           <figure class="odoo-screenshot-frame">
-            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.png" alt="مهام الفاتورة في نظام خدمات مابعد البيع تعرض خدمة النقل الداخلي وخدمة التوصيل معًا على نفس الفاتورة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مهمتي النقل الداخلي والتوصيل على نفس الفاتورة" title="اضغط لتكبير الصورة" />
+            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.png" alt="مهام الفاتورة في نظام خدمات مابعد البيع تعرض التحويلات الداخلية وخدمة التوصيل معًا على نفس الفاتورة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مهمتي التحويلات الداخلية والتوصيل على نفس الفاتورة" title="اضغط لتكبير الصورة" />
           </figure>
           <figure class="odoo-screenshot-frame">
-            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.5.png" alt="لوحة مهام خدمة التوصيل في نظام خدمات مابعد البيع تعرض مراحل مختلفة مع بطاقات بحالة Blocked by Dependency وحالة Dependency Ready" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة مهام التوصيل بحالات الاعتماد المختلفة" title="اضغط لتكبير الصورة" />
+            <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/1.5.png" alt="لوحة مهام خدمة التوصيل في نظام خدمات مابعد البيع تعرض الحالة الحمراء محظور بسبب الاعتماد (Blocked by Dependency) والحالة الخضراء جاهز بعد اكتمال الاعتماد (Dependency Ready)" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة مهام التوصيل بالحالتين الحمراء والخضراء للاعتماد" title="اضغط لتكبير الصورة" />
           </figure>
         </div>
-        <p class="internal-transfer-delivery-link-pair-note">توضح الصورتان أن خدمة النقل الداخلي وخدمة التوصيل قد تظهران ضمن نفس الفاتورة، وأن حالة خدمة التوصيل تختلف بحسب اكتمال النقل الداخلي، فقد تكون <bdi dir="ltr">Blocked by Dependency</bdi> أو تصبح <bdi dir="ltr">Dependency Ready</bdi>.</p>
+        <p class="internal-transfer-delivery-link-pair-note">توضح الصورتان أن التحويلات الداخلية وخدمة التوصيل قد تظهران ضمن نفس الفاتورة، وأن حالة خدمة التوصيل تختلف بحسب اكتمال التحويلات الداخلية. قد تظهر خدمة التوصيل بالحالة الحمراء (محظور بسبب الاعتماد)، ثم تتحول إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد) بعد اكتمال التحويلات الداخلية.</p>
       </section>
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep2Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">01</span>
-          <div><h2 id="internalTransferDeliveryLinkStep2Title">حالة Blocked by Dependency</h2></div>
+          <div>
+            <h2 id="internalTransferDeliveryLinkStep2Title">الحالة الحمراء — محظور بسبب الاعتماد</h2>
+            <bdi class="internal-transfer-status-system-label" dir="ltr">(Blocked by Dependency)</bdi>
+          </div>
         </div>
-        <p class="field-explanation-intro">طالما أن خدمة النقل الداخلي لم تكتمل بعد، تبقى خدمة التوصيل غير جاهزة للتنفيذ وتظهر بحالة "Blocked by Dependency". وهذا يعني أن خدمة التوصيل موجودة، لكنها لا تستطيع المتابعة لأن البضاعة لم تصل بعد إلى الموقع المطلوب.</p>
+        <p class="field-explanation-intro">طالما أن التحويلات الداخلية لم تكتمل بعد، تبقى خدمة التوصيل غير جاهزة للتنفيذ وتظهر بالحالة الحمراء (محظور بسبب الاعتماد). وهذا يعني أن خدمة التوصيل موجودة، لكنها لا تستطيع المتابعة لأن البضاعة لم تصل بعد إلى الموقع المطلوب.</p>
+        <aside class="internal-transfer-dependency-note"><strong>ملاحظة:</strong> عند ظهور خدمة التوصيل بالحالة الحمراء، يمكن معرفة الخدمة المرتبطة بها من خلال الـ Tag الظاهر أسفل اسم العميل. إذا ظهر اسم مدينة، فهذا يعني أن خدمة التوصيل مرتبطة بالتحويلات الداخلية. وإذا ظهر تصنيع ورش، فهذا يعني أنها مرتبطة بخدمة التصنيع. أما إذا ظهر صحية أو تركيب، فهذا يعني أنها مرتبطة بخدمة التركيب.</aside>
         <figure class="odoo-screenshot-frame internal-transfer-delivery-link-screenshot">
-          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/4.png" alt="بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بحالة Blocked by Dependency" tabindex="0" role="button" aria-label="اضغط لتكبير صورة حالة Blocked by Dependency" title="اضغط لتكبير الصورة" />
+          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/4.png" alt="بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بالحالة الحمراء محظور بسبب الاعتماد (Blocked by Dependency)" tabindex="0" role="button" aria-label="اضغط لتكبير صورة الحالة الحمراء محظور بسبب الاعتماد" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
 
       <section class="panel invoice-training-section" aria-labelledby="internalTransferDeliveryLinkStep3Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">02</span>
-          <div><h2 id="internalTransferDeliveryLinkStep3Title">حالة Dependency Ready</h2></div>
+          <div>
+            <h2 id="internalTransferDeliveryLinkStep3Title">الحالة الخضراء — جاهز بعد اكتمال الاعتماد</h2>
+            <bdi class="internal-transfer-status-system-label" dir="ltr">(Dependency Ready)</bdi>
+          </div>
         </div>
-        <p class="field-explanation-intro">بعد اكتمال خدمة النقل الداخلي ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، يتم فك الاعتماد وتتحول خدمة التوصيل إلى حالة "Dependency Ready"، وبذلك تصبح جاهزة لمتابعة دورة التوصيل للعميل.</p>
+        <p class="field-explanation-intro">بعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، يتم فك الاعتماد وتتحول خدمة التوصيل إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد)، وبذلك تصبح جاهزة لمتابعة دورة التوصيل للعميل.</p>
         <figure class="odoo-screenshot-frame internal-transfer-delivery-link-screenshot">
-          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/3.png" alt="بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بحالة Dependency Ready" tabindex="0" role="button" aria-label="اضغط لتكبير صورة حالة Dependency Ready" title="اضغط لتكبير الصورة" />
+          <img src="assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل/3.png" alt="بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بالحالة الخضراء جاهز بعد اكتمال الاعتماد (Dependency Ready)" tabindex="0" role="button" aria-label="اضغط لتكبير صورة الحالة الخضراء جاهز بعد اكتمال الاعتماد" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
 
       <aside class="internal-transfer-example">
         <strong>الخلاصة:</strong>
-        إذا كانت البضاعة غير موجودة في موقع التوصيل المطلوب، يتم تنفيذ النقل الداخلي أولًا. تبقى خدمة التوصيل <bdi dir="ltr">Blocked by Dependency</bdi> حتى اكتمال النقل الداخلي، وبعدها تصبح <bdi dir="ltr">Dependency Ready</bdi> ويمكن متابعة تنفيذ التوصيل للعميل.
+        إذا كانت البضاعة غير موجودة في موقع التوصيل المطلوب، يتم تنفيذ التحويلات الداخلية أولًا. تبقى خدمة التوصيل في الحالة الحمراء (محظور بسبب الاعتماد) حتى اكتمال التحويلات الداخلية، وبعدها تتحول إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد) ويمكن متابعة تنفيذ التوصيل للعميل.
       </aside>
     </div>`;
 }
@@ -894,7 +929,7 @@ function renderSubTaskCycleContent() {
           <span class="icon-tile" aria-hidden="true">02</span>
           <div><h2 id="subTaskCycleStep2Title">إنشاء مهمة فرعية</h2></div>
         </div>
-        <p class="field-explanation-intro">عند الضغط على الفاتورة الرئيسية، يمكن إنشاء توصيل جزئي (Sub Task) لاستكمال الجزء المتبقي من خدمة التوصيل، وذلك من خلال إضافة عنوان للمهمة وتعيين مشرف التوصيل الجزئي. بعد إنشاء المهمة الفرعية، يظهر ارتباط الـSub Task بالفاتورة الرئيسية في الجزء العلوي من المهمة.</p>
+        <p class="field-explanation-intro">عند الضغط على الفاتورة الرئيسية، ننتقل إلى التبويبة السفلية الخاصة بإنشاء مهمة فرعية داخل المهمة الرئيسية. بعد ذلك يتم إدخال عنوان المهمة الفرعية، واختيار المسؤول عن تنفيذها، ثم الضغط على زر View لاستعراض مراحل المهمة الفرعية والبدء بتنفيذها.</p>
         <figure class="odoo-screenshot-frame">
           <img src="assest/subtask/2 - Copy.png" alt="إنشاء مهمة فرعية من تبويب Sub-tasks داخل الفاتورة الرئيسية مع تحديد عنوان المهمة وتعيين المشرف" tabindex="0" role="button" aria-label="اضغط لتكبير صورة إنشاء مهمة فرعية" title="اضغط لتكبير الصورة" />
         </figure>
@@ -903,7 +938,7 @@ function renderSubTaskCycleContent() {
       <section id="sub-task-cycle-step-3" class="panel invoice-training-section" aria-labelledby="subTaskCycleStep3Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">03</span>
-          <div><h2 id="subTaskCycleStep3Title">تنفيذ دورة التوصيل للكمية المتبقية</h2></div>
+          <div><h2 id="subTaskCycleStep3Title">تنفيذ خطوات المهمة الفرعية</h2></div>
         </div>
         <p class="field-explanation-intro">بعد إنشاء مهمة التوصيل الجزئي، تظهر المهمة الفرعية مرتبطة بالفاتورة الرئيسية، ويصبح لها مسار خدمة توصيل مستقل لتنفيذ الكمية المتبقية. يتم استكمال دورة التوصيل من خلال نفس مراحل خدمة التوصيل المعتمدة حتى إتمام استلام الخدمة.</p>
         <figure class="odoo-screenshot-frame">
@@ -1031,6 +1066,160 @@ function renderBookPortal() {
             }).join("")}
           </nav>
         </section>`;
+    } else if (service.id === "measurement") {
+      portal.innerHTML = `
+        <div class="workflow-content">
+          <header class="case-header" aria-labelledby="measurementWorkflowTitle">
+            <div>
+              <h1 id="measurementWorkflowTitle">${measurementTour.title}</h1>
+              ${renderWorkflowFlow(measurementTour, { interactive: false, numberStart: 0 })}
+            </div>
+          </header>
+
+          <section id="measurement-step-request" class="panel invoice-training-section" aria-labelledby="measurementRequestTitle">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">01</span>
+              <div><h2 id="measurementRequestTitle">طلب رفع مقاسات</h2></div>
+            </div>
+            <p class="field-explanation-intro">تبدأ دورة العمل بوصول الفاتورة التي تحتوي على خدمة رفع المقاسات من SAP إلى نظام خدمات مابعد البيع، حيث تظهر في مرحلة "طلب رفع مقاسات" لبدء تنفيذ الخدمة.</p>
+            <figure class="odoo-screenshot-frame">
+              <img src="assest/رفع مقاسات/1.png" alt="طلب رفع المقاسات المنشأ من فاتورة SAP ويظهر في مرحلة طلب رفع مقاسات" tabindex="0" role="button" aria-label="اضغط لتكبير صورة طلب رفع المقاسات" title="اضغط لتكبير الصورة" />
+            </figure>
+          </section>
+
+          <section id="measurement-step-readiness" class="panel invoice-training-section" aria-labelledby="measurementReadinessTitle">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">02</span>
+              <div><h2 id="measurementReadinessTitle">التحقق من الجاهزية وحجز الموعد</h2></div>
+            </div>
+            <div class="technician-assignment-flow" aria-label="خطوات حجز موعد خدمة رفع المقاسات">
+              <p class="field-explanation-intro">تظهر الفاتورة في مرحلة طلب رفع مقاسات، ويتم نقلها إلى مرحلة التحقق من الجاهزية وحجز الموعد إما بشكل يدوي باستخدام السحب والإفلات (Drag & Drop)، أو يقوم النظام بنقلها تلقائيًا في حال لم يتم نقلها يدويًا. عند انتقال المهمة إلى هذه المرحلة، يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط لحجز موعد خدمة رفع المقاسات.</p>
+              <figure class="odoo-screenshot-frame">
+                <img src="assest/رفع مقاسات/2.png" alt="مهمة رفع المقاسات في مرحلة التحقق من الجاهزية وحجز الموعد مع معلومات حجز الموعد عبر واتساب" tabindex="0" role="button" aria-label="اضغط لتكبير صورة التحقق من الجاهزية وحجز موعد رفع المقاسات" title="اضغط لتكبير الصورة" />
+              </figure>
+
+              <p class="field-explanation-intro">بعد وصول الرابط للعميل (خدمة العملاء)، يقوم العميل بالخطوات التالية:</p>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="أ — تأكيد جاهزية الموقع"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>— تأكيد جاهزية الموقع</span></h3>
+                <p class="field-explanation-intro">يؤكد العميل جاهزية الموقع لخدمة رفع المقاسات، ويرفق صورة للموقع عند الحاجة، مع إمكانية إضافة ملاحظات قبل المتابعة.</p>
+                <figure class="odoo-screenshot-frame measurement-booking-screenshot">
+                  <img src="assest/رفع مقاسات/3.png" alt="تأكيد جاهزية الموقع وإرفاق صورة وإضافة ملاحظات لخدمة رفع المقاسات" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تأكيد جاهزية الموقع" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="ب — اختيار موعد رفع المقاسات"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>— اختيار موعد رفع المقاسات</span></h3>
+                <p class="field-explanation-intro">يختار العميل التاريخ المناسب لتنفيذ خدمة رفع المقاسات من المواعيد المتاحة.</p>
+                <figure class="odoo-screenshot-frame measurement-booking-screenshot">
+                  <img src="assest/رفع مقاسات/4.png" alt="اختيار التاريخ المناسب لموعد رفع المقاسات" tabindex="0" role="button" aria-label="اضغط لتكبير صورة اختيار موعد رفع المقاسات" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="ج — بيانات العميل وموقع تنفيذ الخدمة"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>— بيانات العميل وموقع تنفيذ الخدمة</span></h3>
+                <p class="field-explanation-intro">يراجع العميل بيانات التواصل، ويحدد موقع تنفيذ خدمة رفع المقاسات على الخريطة قبل تأكيد الموعد.</p>
+                <figure class="odoo-screenshot-frame measurement-booking-screenshot">
+                  <img src="assest/رفع مقاسات/5.png" alt="مراجعة بيانات العميل وتحديد موقع تنفيذ خدمة رفع المقاسات على الخريطة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة بيانات العميل وموقع تنفيذ الخدمة" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="د — تأكيد الموعد"><span class="installation-substep-badge" aria-hidden="true">د</span><span>— تأكيد الموعد</span></h3>
+                <p class="field-explanation-intro">بعد تأكيد البيانات والموقع والموعد، يتم تثبيت الحجز وتظهر للعميل رسالة تؤكد جدولة موعد خدمة رفع المقاسات.</p>
+                <figure class="odoo-screenshot-frame measurement-booking-screenshot">
+                  <img src="assest/رفع مقاسات/6.png" alt="رسالة تأكيد جدولة موعد خدمة رفع المقاسات بعد تثبيت الحجز" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تأكيد موعد رفع المقاسات" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+            </div>
+          </section>
+
+          <section id="measurement-step-technician-assigned" class="panel invoice-training-section" aria-labelledby="measurementTechnicianAssignedTitle">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">03</span>
+              <div><h2 id="measurementTechnicianAssignedTitle">تم تعيين الفني</h2></div>
+            </div>
+            <p class="field-explanation-intro">بعد تأكيد موعد خدمة رفع المقاسات، تنتقل المهمة إلى مرحلة تم تعيين الفني، حيث يقوم الموظف المختص بتحديد الفني المسؤول عن تنفيذ الخدمة من خلال حقل Assign.</p>
+            <figure class="odoo-screenshot-frame">
+              <img src="assest/رفع مقاسات/7.png" alt="مهمة رفع المقاسات في مرحلة تم تعيين الفني مع حقل Assign لتحديد الفني المسؤول" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مرحلة تم تعيين الفني" title="اضغط لتكبير الصورة" />
+            </figure>
+          </section>
+
+          <section id="measurement-step-form" class="panel invoice-training-section" aria-labelledby="measurementFormTitle">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">04</span>
+              <div><h2 id="measurementFormTitle">ملئ النموذج</h2></div>
+            </div>
+
+            <div class="technician-assignment-flow" aria-label="خطوات اختيار وفتح نموذج رفع المقاسات">
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="أ — اختيار نوع نموذج رفع المقاسات"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>— اختيار نوع نموذج رفع المقاسات</span></h3>
+                <p class="field-explanation-intro">عند انتقال المهمة إلى مرحلة ملئ النموذج، يقوم الموظف أو الفني باختيار نوع نموذج رفع المقاسات المناسب من تبويب Task Forms داخل المهمة.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img src="assest/رفع مقاسات/8.png" alt="اختيار نوع نموذج رفع المقاسات من تبويب Task Forms داخل المهمة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة اختيار نوع نموذج رفع المقاسات" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="ب — فتح نموذج رفع المقاسات"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>— فتح نموذج رفع المقاسات</span></h3>
+                <p class="field-explanation-intro">بعد اختيار نوع نموذج رفع المقاسات، يظهر النموذج المرتبط بالمهمة في الجزء العلوي، ويتم الضغط عليه لفتح النموذج والبدء بتعبئة بيانات رفع المقاسات.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img src="assest/رفع مقاسات/9.png" alt="نموذج رفع المقاسات المرتبط بالمهمة ظاهر في الجزء العلوي لفتحه وتعبئة بياناته" tabindex="0" role="button" aria-label="اضغط لتكبير صورة فتح نموذج رفع المقاسات" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="ج — بدء رفع المقاسات"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>— بدء رفع المقاسات</span></h3>
+                <p class="field-explanation-intro">بعد فتح نموذج رفع المقاسات، يراجع الفني بيانات العميل ومعلومات الزيارة، ثم يضغط على زر بدء رفع المقاسات (Start Measurement) لبدء تنفيذ الخدمة في موقع العميل.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img src="assest/رفع مقاسات/10.png" alt="بدء رفع المقاسات بعد مراجعة بيانات العميل ومعلومات الزيارة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة بدء رفع المقاسات" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article id="measurement-step-upload" class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="د — تسجيل الغرف والمقاسات"><span class="installation-substep-badge" aria-hidden="true">د</span><span>— تسجيل الغرف والمقاسات</span></h3>
+                <p class="field-explanation-intro">أثناء تنفيذ الخدمة، يقوم الفني بإضافة الغرف التي تم رفع مقاساتها وتسجيل المقاسات الخاصة بكل غرفة داخل النموذج، مع إمكانية إرفاق الصور والملاحظات اللازمة.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img src="assest/رفع مقاسات/12.png" alt="تسجيل الغرف والمقاسات وإرفاق الصور والملاحظات داخل نموذج رفع المقاسات" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تسجيل الغرف والمقاسات" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="هـ — اعتماد العميل واستلام الخدمة"><span class="installation-substep-badge" aria-hidden="true">هـ</span><span>— اعتماد العميل واستلام الخدمة</span></h3>
+                <p class="field-explanation-intro">بعد الانتهاء من رفع المقاسات وتسجيل البيانات المطلوبة، يتم توثيق استلام العميل للخدمة واعتمادها من خلال توقيع العميل أو إرسال رمز التحقق (OTP) حسب الإجراء المعتمد.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img src="assest/رفع مقاسات/11.png" alt="اعتماد العميل واستلام خدمة رفع المقاسات بالتوقيع أو رمز التحقق OTP" tabindex="0" role="button" aria-label="اضغط لتكبير صورة اعتماد العميل واستلام الخدمة" title="اضغط لتكبير الصورة" />
+                </figure>
+              </article>
+            </div>
+          </section>
+
+          <section id="measurement-step-completed" class="panel invoice-training-section" aria-labelledby="measurementCompletedTitle">
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">06</span>
+              <div><h2 id="measurementCompletedTitle">تمت الخدمة</h2></div>
+            </div>
+            <p class="field-explanation-intro">بعد الانتهاء من رفع المقاسات وتوثيق استلام العميل للخدمة، تنتقل المهمة إلى مرحلة تمت الخدمة، وبذلك تكتمل دورة خدمة رفع المقاسات.</p>
+            <figure class="odoo-screenshot-frame">
+              <img src="assest/رفع مقاسات/13.png" alt="اكتمال دورة خدمة رفع المقاسات وانتقال المهمة إلى مرحلة تمت الخدمة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مرحلة تمت الخدمة" title="اضغط لتكبير الصورة" />
+            </figure>
+          </section>
+        </div>`;
+      bindLearningMap(portal);
     } else {
       portal.innerHTML = `
         <article class="placeholder-page service-placeholder">
@@ -1269,8 +1458,9 @@ function renderWorkflowFlow(caseNode, options = {}) {
       ${flowNodes
         .map((flowNode, index) => {
           const isActive = activeTargetId === flowNode.targetId;
-          const opensWorkflowOverlay = interactive && Boolean(flowNode.overlayId);
-          const interactionAttributes = !interactive
+          const isInteractive = interactive || flowNode.interactive === true;
+          const opensWorkflowOverlay = isInteractive && Boolean(flowNode.overlayId);
+          const interactionAttributes = !isInteractive
             ? 'aria-disabled="true"'
             : opensWorkflowOverlay
               ? `data-workflow-overlay="${flowNode.overlayId}" data-workflow-target="${flowNode.targetId}"`

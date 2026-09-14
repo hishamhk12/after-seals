@@ -1,0 +1,38 @@
+@page {size:A4; margin:15mm 16mm 18mm;}
+ * {box-sizing:border-box;}
+ html {direction:rtl; font-family:Tahoma,Arial,sans-serif; font-size:11pt; color:#23323b;}
+ body {margin:0; width:178mm; line-height:1.65; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+ .export-section + .export-section {margin-top:8mm; break-before:auto;}
+ .export-title {font-size:22pt; line-height:1.5; margin:0 0 4mm; color:#183e4a; padding-bottom:3mm; border-bottom:2px solid #207a83; break-after:avoid;}
+ .section-title,.guide-section-heading {display:flex; align-items:flex-start; gap:3mm; margin:0 0 3mm; break-inside:avoid; break-after:auto;}
+ h1,h2,h3,h4 {line-height:1.6; color:#183e4a; break-after:auto;}
+ /* Keep only the heading and following prose together, never a whole stage or its image. */
+ :is(h1,h2,h3,h4,.section-title):has(+ p),.guide-section-heading:has(+ .guide-section-body) {break-after:avoid;}
+ .export-section,.source-content,.panel,.guide-section,article,.internal-transfer-substep {break-inside:auto; page-break-inside:auto;}
+ h1 {font-size:16pt;} h2 {font-size:16pt; margin:0;} h3 {font-size:12.5pt; margin:3mm 0 2mm;}
+ p {margin:2mm 0 3mm; orphans:2; widows:2; break-inside:auto;}
+ ol,ul {margin:2mm 0 3mm; padding-right:7mm;} li {orphans:2; widows:2; break-inside:auto;}
+ a {color:#146a7d; text-decoration:none;} bdi[dir=ltr] {direction:ltr;unicode-bidi:isolate;}
+ .icon-tile,.guide-section-number {display:inline-flex; flex-shrink:0; align-items:center; justify-content:center; width:10mm; height:10mm; border-radius:2mm; color:#146675; background:#e9f1f2; font-size:12pt; font-weight:bold;}
+ .workflow-flow {display:grid; grid-template-columns:repeat(3,1fr); gap:3mm 5mm; margin:0 0 4mm; break-inside:auto;}
+ .workflow-flow-node {font:inherit; font-size:10.5pt; text-align:right; line-height:1.5; border:1px solid #b8d1d5; border-radius:2mm; background:#f1f6f7; color:#183e4a; padding:3mm; display:flex; align-items:center; gap:2mm; break-inside:avoid;}
+ .workflow-flow-index {font-weight:bold; color:#207a83; font-size:12pt;}
+ .workflow-flow > .workflow-flow-arrow {display:none;}
+ .workflow-flow-node {position:relative;}
+ .workflow-flow-node:not(:nth-of-type(3n)):not(:last-of-type)::after {content:'←'; position:absolute; left:-4.5mm; color:#207a83; font-size:11pt;}
+ .panel + .panel {break-before:auto;}
+ .guide-section {margin:0 0 4mm; break-inside:auto;}
+ .chapter-header {margin:0 0 5mm;}
+ .chapter-header h1 {margin:0;}
+ .chapter-number {font-size:10pt; color:#617780;}
+ figure {margin:3mm 0 4mm; padding:2mm; border:1px solid #d8e1e5; border-radius:2mm; text-align:center; break-inside:avoid;}
+ img {display:block; margin:0 auto; width:100%; height:auto; max-height:208mm; object-fit:contain;}
+ aside,[class*='-note'],[class*='-callout'] {padding:3mm 4mm; border-right:3px solid #65a2aa; background:#f1f6f7; margin:2mm 0 3mm; orphans:2; widows:2; break-inside:auto;}
+ aside p {margin:0;}
+ article {margin-bottom:3mm; break-inside:auto;}
+ .internal-transfer-substep {break-inside:auto;}
+ .internal-transfer-substep-title > span {color:#207a83; margin-left:2mm;}
+ .delivery-invoice-image-pair > span {display:block; text-align:center; margin:0; line-height:1;}
+ .workflow-flow-arrow {color:#207a83;}
+ .driver-task-flow,.driver-receipt-flow {margin:3mm 0;}
+ .export-section .panel {margin:5mm 0 0; padding:0; border:0; box-shadow:none;}

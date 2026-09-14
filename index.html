@@ -32,25 +32,12 @@
         <section id="bookPortal" class="book-portal" aria-live="polite"></section>
 
         <div id="deliveryInstallationPlaceholder" class="delivery-installation-page" hidden>
-          <header class="case-header" aria-labelledby="deliveryInstallationTitle">
+          <header id="delivery-installation-step-invoice" class="case-header" aria-labelledby="deliveryInstallationTitle">
             <div>
               <h1 id="deliveryInstallationTitle">دورة عمل خدمة توصيل مع تركيب</h1>
               <div id="deliveryInstallationWorkflow"></div>
             </div>
           </header>
-
-          <section
-            id="delivery-installation-step-invoice"
-            class="panel invoice-training-section delivery-installation-technician-section"
-            aria-labelledby="deliveryInstallationInvoiceTitle"
-          >
-            <div class="section-title">
-              <span class="icon-tile" aria-hidden="true">00</span>
-              <div>
-                <h2 id="deliveryInstallationInvoiceTitle">فاتورة من SAP</h2>
-              </div>
-            </div>
-          </section>
 
           <section
             id="delivery-installation-step-request"
@@ -246,6 +233,82 @@
               <div>
                 <h2 id="deliveryInstallationFormTitle">ملئ النموذج</h2>
               </div>
+            </div>
+
+            <div class="technician-assignment-flow" aria-label="خطوات ملئ نموذج التركيب في موقع العميل">
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="أ — الوصول إلى مرحلة ملئ النموذج"><span class="installation-substep-badge" aria-hidden="true">أ</span><span>— الوصول إلى مرحلة ملئ النموذج</span></h3>
+                <p class="field-explanation-intro">بعد اكتمال خدمة التوصيل ووصول البضاعة إلى العميل، يصل الفني إلى موقع العميل لبدء تنفيذ خدمة التركيب، وتظهر المهمة في مرحلة ملئ النموذج.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/8.png"
+                    alt="مهمة التركيب في مرحلة ملئ النموذج بعد وصول الفني إلى موقع العميل"
+                  />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="ب — فتح نموذج التركيب"><span class="installation-substep-badge" aria-hidden="true">ب</span><span>— فتح نموذج التركيب</span></h3>
+                <p class="field-explanation-intro">أثناء وجود الفني في موقع العميل، يفتح نموذج التركيب المرتبط بالمهمة من خلال نموذج التركيب الظاهر داخل المهمة.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/10.png"
+                    alt="فتح نموذج التركيب المرتبط بالمهمة في موقع العميل"
+                  />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="ج — بدء تنفيذ التركيب"><span class="installation-substep-badge" aria-hidden="true">ج</span><span>— بدء تنفيذ التركيب</span></h3>
+                <p class="field-explanation-intro">بعد فتح نموذج التركيب وأثناء وجود الفني في موقع العميل، يضغط على زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب والانتقال إلى خطوات تعبئة النموذج وتوثيق التنفيذ.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/11.png"
+                    alt="زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب في موقع العميل"
+                  />
+                </figure>
+              </article>
+
+              <span class="technician-assignment-transition" aria-hidden="true">↓</span>
+
+              <article class="technician-assignment-step">
+                <h3 class="installation-substep-heading" aria-label="د — إنهاء خدمة التركيب واستلام العميل"><span class="installation-substep-badge" aria-hidden="true">د</span><span>— إنهاء خدمة التركيب واستلام العميل</span></h3>
+                <p class="field-explanation-intro">بعد الانتهاء من تنفيذ أعمال التركيب وتعبئة البيانات المطلوبة، يقوم الفني بالضغط على زر إنهاء التركيب (Finish Installation) لإنهاء خدمة التركيب. بعد ذلك يتم توثيق استلام العميل للخدمة من خلال توقيعه على النموذج.</p>
+                <figure class="odoo-screenshot-frame">
+                  <img
+                    src="assest/installation/12.png"
+                    alt="إنهاء خدمة التركيب وتوثيق استلام العميل من خلال توقيعه على النموذج"
+                  />
+                </figure>
+              </article>
+
+            </div>
+          </section>
+
+          <section
+            id="delivery-installation-step-completed"
+            class="panel invoice-training-section delivery-installation-technician-section"
+            aria-labelledby="deliveryInstallationCompletedTitle"
+          >
+            <div class="section-title">
+              <span class="icon-tile" aria-hidden="true">06</span>
+              <div>
+                <h2 id="deliveryInstallationCompletedTitle">تم التركيب</h2>
+              </div>
+            </div>
+
+            <div class="technician-assignment-flow">
+              <p class="field-explanation-intro">بعد إنهاء أعمال التركيب وتوثيق استلام العميل للخدمة، تنتقل المهمة إلى مرحلة تم التركيب، وبذلك تكتمل دورة خدمة التركيب.</p>
+              <figure class="odoo-screenshot-frame">
+                <img
+                  src="assest/installation/14.png"
+                  alt="اكتمال دورة خدمة التركيب وانتقال المهمة إلى مرحلة تم التركيب"
+                />
+              </figure>
             </div>
           </section>
         </div>

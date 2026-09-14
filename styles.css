@@ -768,6 +768,26 @@ p {
   color: var(--color-pure-white);
 }
 
+/* Keep the seven-stage Installation and Measurement diagrams on one desktop row. */
+.delivery-installation-page > .case-header .workflow-flow,
+#bookPortal .workflow-content > .case-header .workflow-flow {
+  flex-wrap: nowrap;
+  column-gap: var(--spacing-8);
+}
+
+.delivery-installation-page > .case-header .workflow-flow-node,
+#bookPortal .workflow-content > .case-header .workflow-flow-node {
+  min-width: 0;
+  flex: 1 1 116px;
+  max-width: 116px;
+  padding-inline: var(--spacing-8);
+}
+
+.delivery-installation-page > .case-header .workflow-flow-arrow,
+#bookPortal .workflow-content > .case-header .workflow-flow-arrow {
+  flex-basis: 16px;
+}
+
 .section-title {
   max-width: 860px;
   display: grid;

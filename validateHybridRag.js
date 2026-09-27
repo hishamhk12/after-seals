@@ -27,7 +27,9 @@ const cases = [
   {
     question: "شو يعني تكملة لاحقًا؟",
     expectedSourceType: "global",
-    expectedTerms: ["Partial", "تكملة لاحقًا"],
+    // The proposed installation flow that named "تكملة لاحقًا" is superseded by the current website
+    // workflow; the remaining requirement item describes it as partial execution with completion later.
+    expectedTerms: ["partial", "completion later"],
   },
   {
     question: "شو وضع ZCF2؟",

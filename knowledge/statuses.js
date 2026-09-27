@@ -6,6 +6,8 @@ const VALID_STATUSES = [
   "open",
   "unconfirmed",
   "historical_test",
+  // Kept for the record but excluded from retrieval: replaced by a current approved workflow.
+  "superseded",
 ];
 
 const VALID_TYPES = [
@@ -34,6 +36,8 @@ const VALID_SERVICES = [
   "design",
   "internal_transfer",
   "maintenance",
+  "warehouse_pickup",
+  "customer_service",
 ];
 
 module.exports = {

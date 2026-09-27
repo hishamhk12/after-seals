@@ -1,10 +1,21 @@
 const { loadEnvFile } = require("./embeddingService");
-const { ERROR_ANSWER, FALLBACK_ANSWER, answerFromRetrievedContext } = require("./llmService");
-const { buildHybridRetrievedContext, retrieveHybridChunks } = require("./hybridRetrievalService");
+const { ERROR_ANSWER, FALLBACK_ANSWER, GLOBAL_FALLBACK_ANSWER, answerFromRetrievedContext } = require("./llmService");
+const { buildHybridRetrievedContext, retrieveGlobalAssistantChunks, retrieveHybridChunks } = require("./hybridRetrievalService");
+const {
+  buildAutomationSummaryContext,
+  buildResponsibilityContext,
+  buildServiceCatalogContext,
+  buildStageReferenceContext,
+  detectAutomationIntent,
+  detectCatalogIntent,
+  detectResponsibilityIntent,
+} = require("./derivedKnowledgeContext");
 const { pageKnowledge, findSupportedAnswer } = require("./pageKnowledge");
 const { understandQuery } = require("./queryUnderstanding");
 
 const MAX_QUESTION_LENGTH = 500;
+// pageId used by the site-wide assistant (home and overview pages): answers across all services.
+const GLOBAL_ASSISTANT_ID = "after-sales-global";
 const INVALID_QUESTION_ANSWER = "يرجى كتابة سؤال واضح لا يتجاوز 500 حرف.";
 
 async function handleAskPayload(body, logger = console) {
@@ -13,16 +24,22 @@ async function handleAskPayload(body, logger = console) {
   const pageId = typeof body?.pageId === "string" ? body.pageId.trim() : "";
   const question = typeof body?.question === "string" ? body.question.trim() : "";
 
+  const isGlobal = pageId === GLOBAL_ASSISTANT_ID;
+
   logger.log?.(
-    `Ask payload: pageId=${pageId || "(missing)"}, questionLength=${question.length}, supportedPage=${Boolean(pageKnowledge[pageId])}`,
+    `Ask payload: pageId=${pageId || "(missing)"}, questionLength=${question.length}, scope=${isGlobal ? "global" : "page"}, supportedPage=${isGlobal || Boolean(pageKnowledge[pageId])}`,
   );
 
-  if (!pageKnowledge[pageId]) {
+  if (!isGlobal && !pageKnowledge[pageId]) {
     return jsonResult(400, { answer: FALLBACK_ANSWER });
   }
 
   if (!question || question.length > MAX_QUESTION_LENGTH) {
     return jsonResult(400, { answer: INVALID_QUESTION_ANSWER });
+  }
+
+  if (isGlobal) {
+    return handleGlobalQuestion(question, logger);
   }
 
   const queryUnderstanding = understandQuery(question);
@@ -69,6 +86,8 @@ async function handleAskPayload(body, logger = console) {
       question,
       retrievedContext: [
         buildCurrentWorkflowContext(pageId, queryUnderstanding),
+        buildStageReferenceContext(pageId, question),
+        detectResponsibilityIntent(question) || detectAutomationIntent(question) ? buildResponsibilityContext(pageId) : "",
         buildHybridRetrievedContext(retrieval.chunks),
       ]
         .filter(Boolean)
@@ -77,6 +96,50 @@ async function handleAskPayload(body, logger = console) {
     });
 
     return jsonResult(200, { answer: answer || FALLBACK_ANSWER });
+  } catch (error) {
+    logger.error?.(`Gemini API failure: ${error.message}`);
+    return jsonResult(502, { answer: ERROR_ANSWER });
+  }
+}
+
+async function handleGlobalQuestion(question, logger) {
+  if (!process.env.ai) {
+    logger.error?.("Gemini key loaded: false");
+    return jsonResult(503, { answer: ERROR_ANSWER });
+  }
+
+  const queryUnderstanding = understandQuery(question);
+
+  try {
+    const retrieval = await retrieveGlobalAssistantChunks({ question, queryUnderstanding });
+    logger.log?.(
+      [
+        `Global RAG retrieval: retrievalMode=${retrieval.retrievalMode}`,
+        `mentionedServices=${retrieval.mentionedServices.join(",") || "none"}`,
+        `retrieved=${retrieval.chunks.map((chunk) => `${chunk.sourceType}:${chunk.id}:${chunk.score}`).join(", ") || "none"}`,
+        `topScore=${retrieval.topScore}`,
+        `thresholdTriggered=${retrieval.thresholdTriggered}`,
+      ].join("; "),
+    );
+
+    const derived = [
+      detectCatalogIntent(question) ? buildServiceCatalogContext() : "",
+      detectAutomationIntent(question) ? buildAutomationSummaryContext() : "",
+    ].filter(Boolean);
+
+    if ((retrieval.thresholdTriggered || retrieval.chunks.length === 0) && derived.length === 0) {
+      logger.log?.("Retrieval path: unsupported_fallback; pageId=after-sales-global");
+      return jsonResult(200, { answer: GLOBAL_FALLBACK_ANSWER });
+    }
+
+    const answer = await answerFromRetrievedContext({
+      question,
+      retrievedContext: [...derived, buildHybridRetrievedContext(retrieval.chunks)].filter(Boolean).join("\n\n"),
+      queryUnderstanding: retrieval.understanding,
+      fallbackAnswer: GLOBAL_FALLBACK_ANSWER,
+    });
+
+    return jsonResult(200, { answer: answer || GLOBAL_FALLBACK_ANSWER });
   } catch (error) {
     logger.error?.(`Gemini API failure: ${error.message}`);
     return jsonResult(502, { answer: ERROR_ANSWER });
@@ -197,6 +260,8 @@ function jsonResult(statusCode, payload) {
 module.exports = {
   ERROR_ANSWER,
   FALLBACK_ANSWER,
+  GLOBAL_ASSISTANT_ID,
+  GLOBAL_FALLBACK_ANSWER,
   MAX_QUESTION_LENGTH,
   handleAskPayload,
 };

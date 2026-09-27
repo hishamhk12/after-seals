@@ -1,3 +1,9 @@
+const {
+  buildLegacyChunkMetadata,
+  buildStructuredChunks,
+  structuredPageKnowledge,
+} = require("./knowledge/pages/structuredPageKnowledge");
+
 const pageKnowledge = {
   "intro-tour": {
     "id": "intro-tour",
@@ -222,6 +228,7 @@ const pageKnowledge = {
         "title": "فاتورة من SAP",
         "summary": "تبدأ دورة خدمة التوصيل بوصول فاتورة من SAP تحتوي على خدمة التوصيل إلى نظام خدمات مابعد البيع.",
         "details": [
+          "نص الصفحة الحالي: تبدأ دورة العمل بوصول الفاتورة التي تحتوي على خدمة التوصيل من SAP إلى نظام خدمات مابعد البيع، حيث تظهر في مرحلة \"طلب توصيل\" لبدء تنفيذ الخدمة.",
           "فاتورة SAP هي مصدر وبداية دورة العمل، وليست مرحلة تنفيذ خدمة.",
           "تربط تفاصيل Invoice وSource Invoice الفاتورة بمهمة التوصيل."
         ],
@@ -233,6 +240,7 @@ const pageKnowledge = {
         "title": "طلب توصيل",
         "summary": "تظهر الفاتورة في مرحلة طلب التوصيل، ويتم نقلها بشكل يدوي إلى مرحلة جدولة التوصيل، إما عن طريق تغيير المرحلة مباشرة أو باستخدام السحب والإفلات (Drag & Drop).",
         "details": [
+          "نص الصفحة الحالي: تظهر الفاتورة في مرحلة طلب التوصيل، ويتم نقلها إلى مرحلة جدولة التوصيل إما بشكل يدوي عن طريق باستخدام السحب والإفلات (Drag & Drop)، أو يقوم النظام بنقلها تلقائيًا في حال لم يتم نقلها يدويًا.",
           "يمكن للنظام أيضًا نقل المهمة تلقائيًا من طلب توصيل إلى جدولة التوصيل حيثما ينطبق ذلك.",
           "طرق الانتقال المدعومة هي تغيير المرحلة يدويًا، أو السحب والإفلات (Drag & Drop)، أو الانتقال التلقائي من النظام."
         ],
@@ -244,6 +252,7 @@ const pageKnowledge = {
         "title": "جدولة التوصيل",
         "summary": "يتم نقل المهمة من مرحلة طلب توصيل إلى مرحلة جدولة التوصيل، إما عن طريق السحب والإفلات أو بشكل تلقائي من النظام. بعد انتقال المهمة، يتم إرسال رسالة إلى العميل تحتوي على رابط لتحديد موعد التوصيل والتسليم.",
         "details": [
+          "نص الصفحة الحالي: عند انتقال المهمة إلى مرحلة جدولة التوصيل، يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط حجز موعد التوصيل. يفتح العميل الرابط، ثم يحدد موعد التوصيل وموقع تسليم البضاعة ويؤكد الحجز.",
           "بعد وصول الرابط للعميل (خدمة العملاء)، يقوم العميل باختيار موعد التوصيل بناءً على الطاقة الاستيعابية المحددة مسبقًا لكل صالة.",
           "يراجع العميل بياناته ويحدد موقع تسليم البضاعة قبل تأكيد الموعد.",
           "بعد تأكيد البيانات والموعد، يتم تثبيت الحجز وتظهر للعميل رسالة تأكيد الموعد."
@@ -256,6 +265,7 @@ const pageKnowledge = {
         "title": "ربط الخدمة بالسائق",
         "summary": "بعد تأكيد موعد التوصيل، يعيّن الموظف المسؤول السائق المسؤول عن تنفيذ خدمة التوصيل.",
         "details": [
+          "نص الصفحة الحالي: بعد انتهاء العميل من جدولة موعد التوصيل، يقوم النظام تلقائيًا بنقل المهمة إلى مرحلة ربط الخدمة بالسائق، حيث يتعين على مسؤول التحميل تحديد السائق الذي سيقوم بتنفيذ خدمة التوصيل.",
           "يراجع الموظف المسؤول بيانات الحجز، ويختار السائق، ويربطه بالخدمة أو الفاتورة، ثم يحفظ البيانات.",
           "Assign أو تعيين السائق يحدد السائق المنفذ فعليًا لخدمة التوصيل.",
           "Assignees يحدد المشرف أو المتابع، وليس السائق المنفذ، لذلك يبقى منفصلًا عن Assign."
@@ -268,6 +278,7 @@ const pageKnowledge = {
         "title": "ملئ النموذج (سند التحميل)",
         "summary": "بعد تحديد السائق، تنتقل المهمة بشكل تلقائي إلى مرحلة ملئ النموذج (سند التحميل)، حيث يقوم الموظف المعني بملئ كافة بيانات أمر التحميل.",
         "details": [
+          "نص الصفحة الحالي: بعد تحديد السائق، تنتقل المهمة بشكل تلقائي إلى مرحلة ملئ النموذج (سند التحميل)، حيث يقوم الموظف المعني بملئ كافة بيانات أمر التحميل.",
           "تظهر النماذج المرتبطة بالمهمة ضمن Task Forms.",
           "الموظف المعني هو من يملئ بيانات أمر التحميل؛ لا تُنسب هذه الخطوة إلى السائق دون توثيق إضافي."
         ],
@@ -279,6 +290,7 @@ const pageKnowledge = {
         "title": "جاري التوصيل",
         "summary": "بعد الانتهاء من ملئ بيانات سند التحميل وحفظها، تنتقل المهمة إلى مرحلة جاري التوصيل، ويتم إرسال رسالة واتساب إلى السائق لبدء الرحلة.",
         "details": [
+          "نص الصفحة الحالي: بعد الانتهاء من ملئ بيانات سند التحميل وحفظها، تنتقل المهمة إلى مرحلة جاري التوصيل، ويتم إرسال رسالة واتساب إلى السائق لبدء الرحلة. مهام السائق: بدء المهمة ← توثيق التوصيل ← إنهاء المهمة. يبدأ السائق تنفيذ مهمة التوصيل من خلال بوابة السائق بالضغط على Start لبدء الرحلة، وبعد الانتهاء من عملية التوصيل يرفع صورة لتوثيق إتمام التوصيل، ثم يختار إنهاء المهمة.",
           "يبدأ السائق تنفيذ مهمة التوصيل من خلال بوابة السائق بالضغط على Start لبدء الرحلة.",
           "بعد الانتهاء من عملية التوصيل، يقوم السائق برفع صورة لتوثيق إتمام التوصيل، ثم يستخدم End Task."
         ],
@@ -290,6 +302,7 @@ const pageKnowledge = {
         "title": "استلام الخدمة",
         "summary": "بعد End Task يرسل النظام رمز OTP إلى العميل، وبعد تأكيد OTP تصبح المهمة Completed ويُسجل استلام الخدمة واكتمالها.",
         "details": [
+          "نص الصفحة الحالي: تأكيد العميل ← اكتمال التوصيل: بعد إنهاء المهمة يتم إرسال رمز OTP إلى العميل للتأكد من استلام الخدمة. بعد إدخال رمز OTP بنجاح تصبح المهمة Completed ويتم تأكيد اكتمال خدمة التوصيل.",
           "تسلسل الاستلام هو End Task → إرسال OTP إلى العميل → تأكيد OTP → Completed / استلام الخدمة."
         ],
         "relatedTerms": ["استلام الخدمة", "End Task", "OTP", "OTP confirmation", "Completed", "تم التوصيل", "تأكيد الاستلام"]
@@ -1009,463 +1022,15 @@ const pageKnowledge = {
           "بوابة السائق",
           "رابط بوابة المهمة"
         ]
-      },
-      {
-        "term": "شو بصير",
-        "definition": "صيغة سؤال عامية تعني: ماذا يحدث.",
-        "relatedTerms": [
-          "ماذا يحدث",
-          "ما الذي يحدث"
-        ]
-      },
-      {
-        "term": "لحد",
-        "definition": "صيغة عامية تعني: حتى.",
-        "relatedTerms": [
-          "حتى",
-          "إلى أن"
-        ]
       }
+      // Dialect phrases ("شو بصير", "لحد") are normalised by queryUnderstanding.js; as retrievable
+      // chunks they matched unrelated "شو ..." questions above the answer threshold.
     ]
-  },
-  "internal-transfer": {
-    "id": "internal-transfer",
-    "title": "دورة عمل التحويلات الداخلية",
-    "scope": "هذه الصفحة تعرض دورة عمل التحويلات الداخلية لنقل البضاعة بين المواقع داخل Odoo، بدءًا من وصول فاتورة من SAP قد تستدعي نقل البضاعة من موقعها الحالي إلى مكان التجميع، مرورًا بتسجيل النقل وتحديد الكمية عبر Record Transfer، وحتى تأكيد استلام الكمية عبر Confirm Receipt. هذه الصفحة منفصلة تمامًا عن دورة عمل خدمة التوصيل إلى العميل ولا تشترك معها في نفس المسار أو المصطلحات التنفيذية.",
-    "workflowLabel": "المسار الحالي المرئي للتحويلات الداخلية",
-    "entities": {
-      "invoice": {
-        "name": "الفاتورة",
-        "description": "الفاتورة القادمة من SAP، والتي قد تستدعي إنشاء التحويلات الداخلية عندما تكون صادرة لفرع أو مدينة مختلفة عن موقع البضاعة الحالي.",
-        "relatedTerms": [
-          "فاتورة",
-          "Invoice",
-          "فاتورة من SAP"
-        ]
-      },
-      "transferTask": {
-        "name": "مهمة التحويلات الداخلية",
-        "description": "المهمة التي تُنشأ داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب، وتنتقل بين مراحل طلب جديد وجاري النقل وتم الاستلام.",
-        "relatedTerms": [
-          "التحويلات الداخلية",
-          "مهمة التحويلات الداخلية",
-          "Internal Transfer"
-        ]
-      },
-      "sourceLocation": {
-        "name": "موقع البضاعة الحالي",
-        "description": "الموقع الذي توجد فيه البضاعة قبل تنفيذ التحويلات الداخلية، مثل الرياض في المثال الموضح على الصفحة.",
-        "examples": ["الرياض"],
-        "relatedTerms": [
-          "موقع البضاعة",
-          "الموقع الحالي"
-        ]
-      },
-      "destinationLocation": {
-        "name": "مكان التجميع",
-        "description": "المكان الذي يجب أن تصل إليه البضاعة بعد التحويلات الداخلية، وهو الفرع أو المدينة الصادرة لها الفاتورة، مثل جدة في المثال الموضح على الصفحة.",
-        "examples": ["جدة"],
-        "relatedTerms": [
-          "مكان التجميع",
-          "الوجهة"
-        ]
-      },
-      "sap": {
-        "name": "SAP",
-        "description": "مصدر الفاتورة التي تبدأ منها دورة التحويلات الداخلية عند اختلاف موقع البضاعة عن مكان التجميع المطلوب.",
-        "relatedTerms": [
-          "SAP",
-          "مصدر الفاتورة"
-        ]
-      }
-    },
-    "fields": {
-      "Record Transfer": {
-        "meaning": "زر يُستخدم مرتين ضمن مرحلة طلب جديد: أولًا لفتح نافذة تسجيل عملية التحويلات الداخلية، وثانيًا لتأكيد الكمية المحددة داخل تلك النافذة وإتمام تسجيل النقل.",
-        "relatedTerms": [
-          "Record Transfer",
-          "طلب جديد",
-          "تسجيل النقل"
-        ]
-      },
-      "Partial Transfer": {
-        "meaning": "خيار داخل نافذة تسجيل النقل (Record Transfer) لنقل جزء فقط من الكمية المطلوبة.",
-        "relatedTerms": [
-          "Partial Transfer",
-          "نقل جزئي",
-          "Record Transfer"
-        ]
-      },
-      "Full Remaining Transfer": {
-        "meaning": "خيار داخل نافذة تسجيل النقل (Record Transfer) لنقل كامل الكمية المتبقية دفعة واحدة.",
-        "relatedTerms": [
-          "Full Remaining Transfer",
-          "نقل الكمية المتبقية بالكامل",
-          "Record Transfer"
-        ]
-      },
-      "Required Qty": {
-        "meaning": "الكمية الإجمالية المطلوب نقلها ضمن عملية التحويلات الداخلية، وتظهر داخل نافذة تسجيل النقل عند الضغط على Record Transfer.",
-        "relatedTerms": [
-          "Required Qty",
-          "تحديد الكمية",
-          "Record Transfer"
-        ]
-      },
-      "Remaining": {
-        "meaning": "الكمية المتبقية التي لم تُنقل بعد من إجمالي الكمية المطلوبة، وتظهر داخل نافذة تسجيل النقل.",
-        "relatedTerms": [
-          "Remaining",
-          "Required Qty",
-          "Record Transfer"
-        ]
-      },
-      "Quantity Now": {
-        "meaning": "الكمية التي يتم تحديدها لتُنقل في عملية التسجيل الحالية عند استخدام Record Transfer.",
-        "relatedTerms": [
-          "Quantity Now",
-          "تحديد الكمية",
-          "Record Transfer"
-        ]
-      },
-      "Confirm Receipt": {
-        "meaning": "زر يُستخدم مرتين ضمن مرحلة جاري النقل: أولًا لفتح نافذة تسجيل الكمية المستلمة، وثانيًا لتأكيد الكمية المستلمة داخل تلك النافذة.",
-        "relatedTerms": [
-          "Confirm Receipt",
-          "جاري النقل",
-          "تسجيل الكمية المستلمة"
-        ]
-      },
-      "Sent Quantity": {
-        "meaning": "الكمية المرسلة كما تظهر داخل نافذة Confirm Receipt عند تسجيل الاستلام.",
-        "relatedTerms": [
-          "Sent Quantity",
-          "الكمية المرسلة",
-          "Confirm Receipt"
-        ]
-      },
-      "Received Quantity": {
-        "meaning": "الخانة التي يتم فيها إدخال الكمية التي تم استلامها فعليًا داخل نافذة Confirm Receipt.",
-        "relatedTerms": [
-          "Received Quantity",
-          "الكمية المستلمة",
-          "Confirm Receipt"
-        ]
-      },
-      "Difference": {
-        "meaning": "الفرق الذي يظهر تلقائيًا داخل نافذة Confirm Receipt في حال اختلاف الكمية المرسلة عن الكمية المستلمة.",
-        "relatedTerms": [
-          "Difference",
-          "الفرق",
-          "Sent Quantity",
-          "Received Quantity"
-        ]
-      },
-      "Notes": {
-        "meaning": "حقل ملاحظة داخل نافذة Confirm Receipt يمكن استخدامه لتوضيح سبب الفرق بين الكمية المرسلة والمستلمة.",
-        "relatedTerms": [
-          "Notes",
-          "ملاحظة",
-          "Difference",
-          "Confirm Receipt"
-        ]
-      }
-    },
-    "currentWorkflow": [
-      {
-        "id": "internal-current-invoice",
-        "order": 1,
-        "title": "فاتورة من SAP",
-        "summary": "تبدأ عملية التحويلات الداخلية بوصول فاتورة من SAP. إذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء التحويلات الداخلية داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.",
-        "details": [
-          "مثال: إذا كانت الفاتورة صادرة من جدة بينما البضاعة موجودة في الرياض، يتم إنشاء التحويلات الداخلية من الرياض إلى جدة، باعتبار جدة مكان التجميع."
-        ],
-        "relatedTerms": ["فاتورة من SAP", "SAP", "Odoo", "التحويلات الداخلية", "مكان التجميع", "موقع البضاعة"]
-      },
-      {
-        "id": "internal-current-request",
-        "order": 2,
-        "title": "طلب جديد",
-        "summary": "بعد إنشاء عملية التحويلات الداخلية وظهورها في مرحلة طلب جديد، يتم فتح المهمة والضغط على زر Record Transfer لبدء تسجيل عملية النقل.",
-        "details": [
-          "بعد الضغط على Record Transfer تظهر نافذة تسجيل النقل، ويمكن اختيار Partial Transfer أو Full Remaining Transfer، ثم تحديد الكمية المراد نقلها والضغط على Record Transfer لتأكيد العملية.",
-          "بعد تسجيل عملية النقل، تنتقل المهمة إلى مرحلة جاري النقل."
-        ],
-        "relatedTerms": ["طلب جديد", "Record Transfer", "Partial Transfer", "Full Remaining Transfer", "Required Qty", "Remaining", "Quantity Now", "تسجيل النقل", "تحديد الكمية"]
-      },
-      {
-        "id": "internal-current-transit",
-        "order": 3,
-        "title": "جاري النقل",
-        "summary": "عند وصول الشحنة إلى موقع الاستلام، ومن داخل مرحلة جاري النقل، يتم فتح مهمة التحويلات الداخلية والضغط على زر Confirm Receipt لبدء تسجيل الكمية المستلمة.",
-        "details": [
-          "تظهر نافذة Confirm Receipt وبداخلها الكمية المرسلة (Sent Quantity). يتم إدخال الكمية التي تم استلامها فعليًا في خانة Received Quantity، ثم الضغط على Confirm Receipt لتأكيد الاستلام.",
-          "في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق (Difference) ويمكن تسجيل ملاحظة (Notes) توضح السبب.",
-          "بعد نجاح Confirm Receipt، تنتقل العملية من مرحلة جاري النقل إلى مرحلة تم الاستلام."
-        ],
-        "relatedTerms": ["جاري النقل", "Confirm Receipt", "Sent Quantity", "Received Quantity", "Difference", "Notes"]
-      },
-      {
-        "id": "internal-current-received",
-        "order": 4,
-        "title": "تم الاستلام",
-        "summary": "مرحلة تم الاستلام هي المرحلة النهائية بعد تأكيد استلام الشحنة بنجاح، وبذلك يكتمل مسار التحويلات الداخلية.",
-        "details": [
-          "Confirm Receipt يحدث أثناء مرحلة جاري النقل، والتأكيد الناجح له هو ما ينقل العملية إلى مرحلة تم الاستلام."
-        ],
-        "relatedTerms": ["تم الاستلام", "اكتمال التحويلات الداخلية", "Confirm Receipt"]
-      }
-    ],
-    "stages": [
-      {
-        "id": "internal-invoice",
-        "order": 1,
-        "title": "وصول الفاتورة من SAP وإنشاء التحويلات الداخلية",
-        "screen": "فاتورة من SAP وربطها بمكان التجميع",
-        "summary": "تبدأ عملية التحويلات الداخلية بوصول فاتورة من SAP قد تستدعي نقل البضاعة من موقعها الحالي إلى مكان التجميع.",
-        "facts": [
-          "تبدأ عملية التحويلات الداخلية بوصول فاتورة من SAP.",
-          "إذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء التحويلات الداخلية داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.",
-          "مثال: فاتورة صادرة من جدة والبضاعة موجودة في الرياض تُنشئ نقلًا داخليًا من الرياض إلى جدة، باعتبار جدة مكان التجميع."
-        ],
-        "relatedTerms": ["فاتورة من SAP", "SAP", "Odoo", "التحويلات الداخلية", "مكان التجميع"]
-      },
-      {
-        "id": "internal-request",
-        "order": 2,
-        "title": "طلب جديد",
-        "screen": "مهمة التحويلات الداخلية في مرحلة طلب جديد",
-        "summary": "في مرحلة طلب جديد يتم تسجيل عملية التحويلات الداخلية وتحديد الكمية المطلوب نقلها عبر Record Transfer.",
-        "subSteps": [
-          {
-            "id": "record-transfer-open",
-            "title": "فتح عملية النقل (Record Transfer)",
-            "summary": "بعد إنشاء عملية التحويلات الداخلية وظهورها في مرحلة طلب جديد، يتم فتح المهمة والضغط على زر Record Transfer لبدء تسجيل عملية النقل.",
-            "relatedTerms": ["Record Transfer", "طلب جديد"]
-          },
-          {
-            "id": "record-transfer-quantity",
-            "title": "تسجيل النقل وتحديد الكمية",
-            "summary": "بعد الضغط على Record Transfer تظهر نافذة تسجيل النقل، ويمكن اختيار Partial Transfer أو Full Remaining Transfer، ثم تحديد الكمية المراد نقلها (Required Qty وRemaining وQuantity Now) والضغط على Record Transfer لتأكيد العملية. بعدها تنتقل المهمة إلى مرحلة جاري النقل.",
-            "relatedTerms": ["Partial Transfer", "Full Remaining Transfer", "Required Qty", "Remaining", "Quantity Now", "Record Transfer"]
-          }
-        ],
-        "relatedTerms": ["طلب جديد", "Record Transfer", "Partial Transfer", "Full Remaining Transfer"]
-      },
-      {
-        "id": "internal-transit",
-        "order": 3,
-        "title": "جاري النقل",
-        "screen": "مهمة التحويلات الداخلية في مرحلة جاري النقل",
-        "summary": "في مرحلة جاري النقل يتم تأكيد استلام الكمية عند وصول الشحنة إلى موقع الاستلام عبر Confirm Receipt.",
-        "subSteps": [
-          {
-            "id": "confirm-receipt-open",
-            "title": "فتح Confirm Receipt",
-            "summary": "عند وصول الشحنة إلى موقع الاستلام، ومن داخل مرحلة جاري النقل، يتم فتح مهمة التحويلات الداخلية والضغط على زر Confirm Receipt لبدء تسجيل الكمية المستلمة.",
-            "relatedTerms": ["Confirm Receipt", "جاري النقل"]
-          },
-          {
-            "id": "confirm-receipt-quantity",
-            "title": "تسجيل الكمية المستلمة",
-            "summary": "تظهر نافذة Confirm Receipt وبداخلها الكمية المرسلة (Sent Quantity). يتم إدخال الكمية المستلمة فعليًا في خانة Received Quantity، ثم الضغط على Confirm Receipt لتأكيد الاستلام. في حال وجود فرق بين الكمية المرسلة والمستلمة يظهر الفرق (Difference) ويمكن تسجيل ملاحظة (Notes) توضح السبب.",
-            "relatedTerms": ["Sent Quantity", "Received Quantity", "Difference", "Notes", "Confirm Receipt"]
-          }
-        ],
-        "relatedTerms": ["جاري النقل", "Confirm Receipt", "Received Quantity"]
-      },
-      {
-        "id": "internal-received",
-        "order": 4,
-        "title": "تم الاستلام",
-        "screen": "مهمة التحويلات الداخلية في مرحلة تم الاستلام",
-        "summary": "مرحلة تم الاستلام هي المرحلة النهائية بعد تأكيد استلام الشحنة بنجاح، وبذلك يكتمل مسار التحويلات الداخلية.",
-        "facts": [
-          "Confirm Receipt يتم أثناء مرحلة جاري النقل وليس بعد الوصول إلى مرحلة تم الاستلام.",
-          "بعد نجاح Confirm Receipt تنتقل العملية من جاري النقل إلى تم الاستلام."
-        ],
-        "relatedTerms": ["تم الاستلام", "اكتمال التحويلات الداخلية", "Confirm Receipt"]
-      }
-    ],
-    "workflow": [
-      {
-        "order": 1,
-        "stageId": "internal-invoice",
-        "action": "وصول الفاتورة من SAP وإنشاء التحويلات الداخلية عند اختلاف الموقع عن مكان التجميع",
-        "outcome": "إنشاء مهمة التحويلات الداخلية في Odoo من الموقع الحالي إلى مكان التجميع"
-      },
-      {
-        "order": 2,
-        "stageId": "internal-request",
-        "action": "فتح المهمة والضغط على Record Transfer",
-        "sequence": ["Record Transfer", "اختيار Partial Transfer أو Full Remaining Transfer", "تحديد الكمية", "تأكيد Record Transfer"],
-        "outcome": "الانتقال إلى مرحلة جاري النقل"
-      },
-      {
-        "order": 3,
-        "stageId": "internal-transit",
-        "action": "فتح Confirm Receipt وتسجيل الكمية المستلمة",
-        "sequence": ["Confirm Receipt", "إدخال Received Quantity", "تأكيد Confirm Receipt"],
-        "outcome": "الانتقال إلى مرحلة تم الاستلام عند النجاح، أو ظهور Difference مع إمكانية تسجيل Notes عند وجود فرق"
-      },
-      {
-        "order": 4,
-        "stageId": "internal-received",
-        "action": "وصول البضاعة إلى مكان التجميع واستلامها بنجاح",
-        "outcome": "اكتمال مسار التحويلات الداخلية"
-      }
-    ],
-    "sequences": [
-      {
-        "id": "current-four-stage-internal-transfer-workflow",
-        "title": "المسار الحالي المرئي للتحويلات الداخلية",
-        "start": "فاتورة من SAP",
-        "end": "تم الاستلام",
-        "steps": [
-          "01 — فاتورة من SAP",
-          "02 — طلب جديد",
-          "03 — جاري النقل",
-          "04 — تم الاستلام"
-        ],
-        "relatedTerms": ["المسار الحالي", "التحويلات الداخلية", "الفلو", "workflow", "فاتورة من SAP", "طلب جديد", "جاري النقل", "تم الاستلام", "Record Transfer", "Confirm Receipt"]
-      },
-      {
-        "id": "full-internal-transfer-workflow",
-        "title": "تسلسل التحويلات الداخلية الكامل",
-        "start": "فاتورة من SAP",
-        "end": "تم الاستلام",
-        "steps": [
-          "تصل فاتورة من SAP قد تستدعي نقل البضاعة من موقعها الحالي إلى مكان التجميع.",
-          "يتم إنشاء مهمة التحويلات الداخلية في Odoo وتظهر في مرحلة طلب جديد.",
-          "يتم فتح المهمة والضغط على Record Transfer.",
-          "تظهر نافذة تسجيل النقل ويتم اختيار Partial Transfer أو Full Remaining Transfer وتحديد الكمية.",
-          "يتم الضغط على Record Transfer لتأكيد العملية فتنتقل المهمة إلى جاري النقل.",
-          "عند وصول الشحنة، يتم فتح المهمة والضغط على Confirm Receipt.",
-          "تظهر نافذة Confirm Receipt وبها الكمية المرسلة، ويتم إدخال الكمية المستلمة في Received Quantity.",
-          "إذا وُجد فرق بين الكمية المرسلة والمستلمة يظهر Difference ويمكن تسجيل Notes.",
-          "يتم الضغط على Confirm Receipt لتأكيد الاستلام فتنتقل العملية إلى تم الاستلام.",
-          "تكتمل عملية التحويلات الداخلية."
-        ],
-        "relatedTerms": ["التحويلات الداخلية", "تسلسل", "الفلو", "workflow", "Record Transfer", "Confirm Receipt", "Partial Transfer", "Full Remaining Transfer", "Received Quantity", "Difference", "Notes"]
-      }
-    ],
-    "supportedQuestions": [
-      {
-        "id": "current-internal-transfer-workflow-question",
-        "questions": ["شو الفلو؟", "شو مراحل التحويلات الداخلية؟", "شو تسلسل التحويلات الداخلية؟", "كيف بتمشي التحويلات الداخلية؟"],
-        "answer": "المسار الحالي المرئي للتحويلات الداخلية هو: 01 — فاتورة من SAP → 02 — طلب جديد → 03 — جاري النقل → 04 — تم الاستلام.",
-        "relatedTerms": ["مراحل التحويلات الداخلية", "تسلسل التحويلات الداخلية", "الفلو", "المسار الحالي", "فاتورة من SAP", "طلب جديد", "جاري النقل", "تم الاستلام"]
-      },
-      {
-        "id": "internal-request-question",
-        "questions": ["شو بعمل بمرحلة طلب جديد؟", "شو بصير بطلب جديد؟"],
-        "answer": "في مرحلة طلب جديد يتم فتح المهمة والضغط على Record Transfer لبدء تسجيل عملية النقل، ثم تظهر نافذة تسجيل النقل لاختيار Partial Transfer أو Full Remaining Transfer وتحديد الكمية، ثم الضغط على Record Transfer لتأكيد العملية.",
-        "relatedTerms": ["طلب جديد", "Record Transfer", "Partial Transfer", "Full Remaining Transfer", "تحديد الكمية"]
-      },
-      {
-        "id": "partial-vs-full-transfer-question",
-        "questions": ["شو الفرق بين Partial Transfer و Full Remaining Transfer؟", "ما الفرق بين Partial Transfer و Full Remaining Transfer؟"],
-        "answer": "Partial Transfer تعني نقل جزء فقط من الكمية المطلوبة، بينما Full Remaining Transfer تعني نقل كامل الكمية المتبقية دفعة واحدة. يتم اختيار أحدهما داخل نافذة Record Transfer ثم تحديد الكمية والضغط على Record Transfer لتأكيد العملية.",
-        "relatedTerms": ["Partial Transfer", "Full Remaining Transfer", "Record Transfer"]
-      },
-      {
-        "id": "after-record-transfer-question",
-        "questions": ["بعد Record Transfer وين بروح؟", "شو بيصير بعد Record Transfer؟"],
-        "answer": "بعد تسجيل عملية النقل عبر Record Transfer، تنتقل المهمة إلى مرحلة جاري النقل.",
-        "relatedTerms": ["Record Transfer", "جاري النقل"]
-      },
-      {
-        "id": "confirm-receipt-question",
-        "questions": ["كيف بأكد الاستلام؟", "كيف يتم تأكيد الاستلام؟"],
-        "answer": "من داخل مرحلة جاري النقل، يتم فتح مهمة التحويلات الداخلية والضغط على Confirm Receipt، ثم إدخال الكمية المستلمة فعليًا في خانة Received Quantity والضغط على Confirm Receipt لتأكيد الاستلام.",
-        "relatedTerms": ["Confirm Receipt", "Received Quantity", "جاري النقل"]
-      },
-      {
-        "id": "received-quantity-location-question",
-        "questions": ["وين بحط الكمية المستلمة؟", "أين تدخل الكمية المستلمة؟"],
-        "answer": "الكمية المستلمة فعليًا تُدخل في خانة Received Quantity داخل نافذة Confirm Receipt.",
-        "relatedTerms": ["Received Quantity", "Confirm Receipt"]
-      },
-      {
-        "id": "receipt-difference-question",
-        "questions": ["إذا استلمت أقل من المرسل شو بصير؟", "شو بصير إذا الكمية المستلمة أقل؟"],
-        "answer": "في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق (Difference) ويمكن تسجيل ملاحظة (Notes) توضح سبب الفرق.",
-        "relatedTerms": ["Difference", "Notes", "Sent Quantity", "Received Quantity"]
-      },
-      {
-        "id": "final-stage-question",
-        "questions": ["شو المرحلة الأخيرة؟", "شو آخر مرحلة بالتحويلات الداخلية؟"],
-        "answer": "المرحلة الأخيرة هي تم الاستلام، وهي المرحلة النهائية بعد تأكيد استلام الشحنة بنجاح عبر Confirm Receipt أثناء مرحلة جاري النقل.",
-        "relatedTerms": ["تم الاستلام", "Confirm Receipt", "جاري النقل"]
-      },
-      {
-        "id": "full-internal-transfer-workflow-question",
-        "questions": ["شو تسلسل التحويلات الداخلية الكامل؟", "اشرح الفلو كامل للتحويلات الداخلية", "شو دورة التحويلات الداخلية؟"],
-        "answer": "تسلسل التحويلات الداخلية الكامل: فاتورة من SAP قد تستدعي نقل البضاعة إلى مكان التجميع → طلب جديد → Record Transfer باختيار Partial Transfer أو Full Remaining Transfer وتحديد الكمية → جاري النقل → Confirm Receipt بإدخال Received Quantity (مع ظهور Difference وNotes عند وجود فرق) → تم الاستلام.",
-        "relatedTerms": ["التحويلات الداخلية", "تسلسل", "الفلو", "Record Transfer", "Confirm Receipt"]
-      }
-    ],
-    "relationships": [
-      {
-        "from": "SAP",
-        "relation": "sends invoice to",
-        "to": "Odoo",
-        "description": "تبدأ عملية التحويلات الداخلية عندما تصل فاتورة من SAP قد تستدعي نقل البضاعة."
-      },
-      {
-        "from": "اختلاف موقع البضاعة عن مكان التجميع",
-        "relation": "triggers",
-        "to": "مهمة التحويلات الداخلية",
-        "description": "عند اختلاف موقع البضاعة عن الفرع أو المدينة الصادرة لها الفاتورة، يتم إنشاء التحويلات الداخلية في Odoo من الموقع الحالي إلى مكان التجميع."
-      },
-      {
-        "from": "Record Transfer",
-        "relation": "moves task to",
-        "to": "جاري النقل",
-        "description": "بعد تسجيل عملية النقل عبر Record Transfer، تنتقل المهمة من طلب جديد إلى جاري النقل."
-      },
-      {
-        "from": "Confirm Receipt",
-        "relation": "performed within",
-        "to": "جاري النقل",
-        "description": "يتم فتح Confirm Receipt وتسجيل الكمية المستلمة من داخل مرحلة جاري النقل، وليس بعد الوصول إلى تم الاستلام."
-      },
-      {
-        "from": "Confirm Receipt success",
-        "relation": "moves task to",
-        "to": "تم الاستلام",
-        "description": "بعد نجاح Confirm Receipt، تنتقل العملية من جاري النقل إلى تم الاستلام."
-      },
-      {
-        "from": "الفرق بين Sent Quantity و Received Quantity",
-        "relation": "produces",
-        "to": "Difference",
-        "description": "عند وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة (Notes) توضح السبب."
-      }
-    ],
-    "businessRules": [
-      {
-        "id": "BR-IT-001",
-        "title": "التحويلات الداخلية عند اختلاف الموقع",
-        "rule": "إذا كانت الفاتورة صادرة لفرع أو مدينة معينة بينما البضاعة موجودة في موقع مختلف، يتم إنشاء التحويلات الداخلية داخل Odoo لنقل البضاعة من موقعها الحالي إلى مكان التجميع المطلوب.",
-        "relatedTerms": ["التحويلات الداخلية", "مكان التجميع", "موقع البضاعة"]
-      },
-      {
-        "id": "BR-IT-002",
-        "title": "Confirm Receipt أثناء جاري النقل",
-        "rule": "يتم فتح Confirm Receipt وتسجيل الكمية المستلمة من داخل مرحلة جاري النقل، والانتقال إلى مرحلة تم الاستلام يحدث فقط بعد نجاح Confirm Receipt.",
-        "relatedTerms": ["Confirm Receipt", "جاري النقل", "تم الاستلام"]
-      },
-      {
-        "id": "BR-IT-003",
-        "title": "تسجيل الفرق عند الاستلام",
-        "rule": "في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة توضح السبب.",
-        "relatedTerms": ["Difference", "Notes", "Received Quantity"]
-      }
-    ],
-    "glossary": []
   }
 };
+
+// Completed service pages defined as structured workflow data (knowledge/pages/*).
+Object.assign(pageKnowledge, structuredPageKnowledge);
 
 function buildPageContext(pageId) {
   const knowledge = pageKnowledge[pageId];
@@ -1489,7 +1054,7 @@ function buildPageContext(pageId) {
       ].join("\n"),
     ),
     "",
-    "The current seven-stage workflow above is primary. The stages, fields, and workflow below are retained as detailed field knowledge, legacy page wording, and supporting knowledge.",
+    "The current workflow above is primary. The stages, fields, and workflow below are retained as detailed field knowledge, legacy page wording, and supporting knowledge.",
     "",
     "DIRECTLY SUPPORTED QUESTIONS:",
     ...knowledge.supportedQuestions.map((item) =>
@@ -1568,9 +1133,15 @@ function buildKnowledgeChunks(pageId) {
     return [];
   }
 
+  if (knowledge.kind === "structured") {
+    return buildStructuredChunks(pageId, knowledge);
+  }
+
   const chunks = [];
   const addChunk = ({ id, type, title, text, relatedTerms = [], stageId = null }) => {
-    chunks.push({ id, pageId, type, title, text, relatedTerms, stageId });
+    const chunk = { id, pageId, type, title, text, relatedTerms, stageId };
+    chunk.metadata = buildLegacyChunkMetadata(pageId, knowledge, chunk);
+    chunks.push(chunk);
   };
 
   addChunk({
@@ -1587,7 +1158,7 @@ function buildKnowledgeChunks(pageId) {
       type: "current-workflow",
       title: `${String(stage.order).padStart(2, "0")} — ${stage.title}`,
       text: [
-        "المسار الحالي المرئي لخدمة التوصيل (المعرفة الأساسية الحالية).",
+        `${knowledge.workflowLabel || "المسار الحالي المرئي"} (المعرفة الأساسية الحالية).`,
         `${String(stage.order).padStart(2, "0")} — ${stage.title}`,
         stage.summary,
         ...stage.details,

@@ -1,0 +1,4468 @@
+{
+  "timestamp": "2026-09-27T12:49:07.329Z",
+  "metrics": {
+    "total": 111,
+    "passCount": 111,
+    "failCount": 0,
+    "accuracy": 100,
+    "byCategory": {
+      "A": {
+        "total": 15,
+        "passCount": 15,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "B": {
+        "total": 29,
+        "passCount": 29,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "G": {
+        "total": 23,
+        "passCount": 23,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "C": {
+        "total": 15,
+        "passCount": 15,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "D": {
+        "total": 14,
+        "passCount": 14,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "F": {
+        "total": 10,
+        "passCount": 10,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "E": {
+        "total": 5,
+        "passCount": 5,
+        "failCount": 0,
+        "accuracy": 100
+      }
+    },
+    "byPage": {
+      "intro-tour": {
+        "total": 7,
+        "passCount": 7,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "internal-transfer": {
+        "total": 6,
+        "passCount": 6,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "warehouse-pickup": {
+        "total": 7,
+        "passCount": 7,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "internal-transfer-delivery-link": {
+        "total": 7,
+        "passCount": 7,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "delivery-returns": {
+        "total": 6,
+        "passCount": 6,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "measurement": {
+        "total": 7,
+        "passCount": 7,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "design": {
+        "total": 8,
+        "passCount": 8,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "manufacturing": {
+        "total": 8,
+        "passCount": 8,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "installation": {
+        "total": 7,
+        "passCount": 7,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "installation-returns": {
+        "total": 5,
+        "passCount": 5,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "complaints": {
+        "total": 8,
+        "passCount": 8,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "maintenance": {
+        "total": 8,
+        "passCount": 8,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "customer-service": {
+        "total": 4,
+        "passCount": 4,
+        "failCount": 0,
+        "accuracy": 100
+      },
+      "after-sales-global": {
+        "total": 23,
+        "passCount": 23,
+        "failCount": 0,
+        "accuracy": 100
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "intro-tour-A-sequence",
+      "pageId": "intro-tour",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مراحل خدمة التوصيل هي:\n\n- 00 — فاتورة من SAP\n- 01 — طلب توصيل\n- 02 — جدولة التوصيل\n- 03 — ربط الخدمة بالسائق\n- 04 — ملئ النموذج (سند التحميل)\n- 05 — جاري التوصيل\n- 06 — استلام الخدمة",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:current-seven-stage-delivery-workflow"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:mapping-delivery-pdf-detail-vs-primary-workflow-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intro-tour-B-stage-number",
+      "pageId": "intro-tour",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في مرحلة **02 — جدولة التوصيل** لخدمة التوصيل، يحدث الآتي:\n\n1. **انتقال المهمة:** يتم نقل المهمة من مرحلة \"01 — طلب توصيل\" إلى مرحلة \"02 — جدولة التوصيل\" إما يدويًا (عبر السحب والإفلات Drag & Drop أو تغيير المرحلة) أو تلقائيًا بواسطة النظام.\n2. **إرسال رابط الحجز:** يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط لتحديد وحجز موعد التوصيل.\n3. **اختيار الموعد:** يفتح العميل الرابط ويختار موعد التوصيل بناءً على الطاقة الاستيعابية المحددة مسبقًا لكل صالة.\n4. **تحديد الموقع ومراجعة البيانات:** يراجع العميل بياناته ويحدد موقع تسليم البضاعة قبل تأكيد الموعد.\n5. **تثبيت الحجز:** بعد تأكيد البيانات والموعد من قِبل العميل، يتم تثبيت الحجز وتظهر له رسالة تأكيد الموعد.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:task-details"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:linked-tasks"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-delivery-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-delivery-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-request-auto-schedule-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intro-tour-B-next",
+      "pageId": "intro-tour",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة طلب توصيل؟",
+      "answer": "المرحلة التالية مباشرة بعد مرحلة **01 — طلب توصيل** هي **02 — جدولة التوصيل**.\n\nيتم نقل المهمة إلى مرحلة جدولة التوصيل بإحدى الطرق التالية:\n- يدويًا عن طريق تغيير المرحلة مباشرة.\n- يدويًا باستخدام السحب والإفلات (Drag & Drop).\n- تلقائيًا بواسطة النظام في حال لم يتم نقلها يدويًا حيثما ينطبق ذلك.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:current-seven-stage-delivery-workflow"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-delivery-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-request-auto-schedule-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:mapping-delivery-pdf-detail-vs-primary-workflow-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intro-tour-G-sla",
+      "pageId": "intro-tour",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-service-receipt-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow:service-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-delivery-workflow-question"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:mapping-delivery-pdf-detail-vs-primary-workflow-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-A-sequence",
+      "pageId": "internal-transfer",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "المسار الحالي المرئي للتحويلات الداخلية هو: 00 — فاتورة من SAP → 01 — طلب جديد → 02 — جاري النقل → 03 — تم الاستلام.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-B-stage-number",
+      "pageId": "internal-transfer",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في المرحلة **02 — جاري النقل** في دورة عمل التحويلات الداخلية يحدث الآتي:\n\n1. تكون البضاعة قيد النقل من المستودع الحالي إلى مستودع التجمع، وعند وصولها يتم استكمال إجراءات تأكيد الاستلام وتسجيل الكمية المستلمة.\n2. **تأكيد الكمية المستلمة:** عند وصول البضاعة إلى مستودع التجمع، يتم فتح مهمة التحويلات الداخلية والضغط على زر **Confirm Receipt** لبدء تأكيد الكمية المستلمة.\n3. **تسجيل الكمية المستلمة:** يقوم الموظف بتأكيد استلام كامل الكمية أو جزء منها حسب الاستلام الفعلي، ثم يضغط على زر تأكيد الاستلام.\n4. **معالجة الفروقات:** في حال وجود فرق بين الكمية المرسلة والمستلمة، يظهر الفرق ويمكن تسجيل ملاحظة توضح السبب.\n5. **الانتقال للمرحلة التالية:** بعد نجاح عملية تأكيد الاستلام (**Confirm Receipt**)، تنتقل المهمة تلقائيًا من مرحلة جاري النقل إلى مرحلة **03 — تم الاستلام**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-transit"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:workflow-sequence:current"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-educational-site-scope-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-B-next",
+      "pageId": "internal-transfer",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة طلب جديد؟",
+      "answer": "المرحلة التالية مباشرة بعد مرحلة **01 — طلب جديد** هي مرحلة **02 — جاري النقل**.\n\nبعد أن يقوم موظف المستودع بتسجيل عملية النقل بالضغط على زر **Record Transfer** وتحديد ما إذا كان النقل جزئيًا (**Partial Transfer**) أو لكامل الكمية المتبقية (**Full Remaining Transfer**) وتأكيد العملية:\n1. تنتقل المهمة إلى مرحلة **02 — جاري النقل**، وتكون البضاعة خلالها قيد النقل من المستودع الحالي إلى مستودع التجمع.\n2. عند وصول البضاعة إلى مستودع التجمع، يتم فتح المهمة والضغط على زر **Confirm Receipt** لبدء تأكيد الكمية المستلمة (كامل الكمية أو جزء منها) وتسجيل أي ملاحظات في حال وجود فرق بين الكمية المرسلة والمستلمة.\n3. بعد نجاح عملية تأكيد الاستلام، تنتقل المهمة تلقائيًا إلى مرحلة **03 — تم الاستلام**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-transit"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:relationship-service-end-to-end-map-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-G-sla",
+      "pageId": "internal-transfer",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-transit"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:relationship-service-end-to-end-map-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:requirement:mapping-product-service-requirement-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-pickup-A-sequence",
+      "pageId": "warehouse-pickup",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار خدمة استلام العميل البضاعة من المستودع هو: 00 — فاتورة من SAP → 01 — إرسال رسالة إلى العميل → 02 — تأكيد استلام العميل.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-pickup-B-stage-number",
+      "pageId": "warehouse-pickup",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في المرحلة **02 — تأكيد استلام العميل** (ضمن مسار خدمة استلام العميل البضاعة من المستودع):\n\nبعد استلام العميل للبضاعة، يتم تأكيد الاستلام داخل النظام وتكتمل دورة الخدمة.\n\n- **التنفيذ والمسؤولية:** آلي من خلال النظام.\n- **موقعها في المسار:** هي المرحلة الأخيرة، وتأتي بعد مرحلة «01 — إرسال رسالة إلى العميل».",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-educational-site-scope-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-pickup-B-next",
+      "pageId": "warehouse-pickup",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة إرسال رسالة إلى العميل؟",
+      "answer": "المرحلة التالية هي **02 — تأكيد استلام العميل**؛ حيث يتم بعد استلام العميل للبضاعة تأكيد الاستلام داخل النظام وتكتمل دورة الخدمة (التنفيذ: آلي من خلال النظام)، وهي المرحلة الأخيرة في المسار.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:known-error:known-error-operational-team-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-pickup-C-responsibility",
+      "pageId": "warehouse-pickup",
+      "category": "C",
+      "question": "من المسؤول عن مرحلة تأكيد استلام العميل؟",
+      "answer": "التنفيذ والمسؤولية في مرحلة **02 — تأكيد استلام العميل** يتم بشكل **آلي من خلال النظام**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-pickup-D-automation",
+      "pageId": "warehouse-pickup",
+      "category": "D",
+      "question": "هل مرحلة إرسال رسالة إلى العميل آلية أم يدوية؟",
+      "answer": "مرحلة «01 — إرسال رسالة إلى العميل» آلية (آلي من خلال النظام)؛ حيث يقوم النظام تلقائيًا بإرسال رسالة إلى العميل لإبلاغه بجاهزية البضاعة للاستلام من المستودع.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:known-error:known-error-operational-team-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-pickup-G-sla",
+      "pageId": "warehouse-pickup",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:requirement:mapping-product-service-requirement-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-delivery-link-A-sequence",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار علاقة التحويلات الداخلية بخدمة التوصيل للعميل هو: 00 — فاتورة من SAP → 01 — تنفيذ التحويلات الداخلية → 02 — تنفيذ خدمة التوصيل للعميل.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-delivery-link-B-stage-number",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في المرحلة **02 — تنفيذ خدمة التوصيل للعميل**:\n\nبعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، يتم فك الاعتماد وتتحول خدمة التوصيل إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد)، وبذلك تصبح جاهزة لمتابعة دورة التوصيل للعميل. وتعد هذه المرحلة هي المرحلة الأخيرة في المسار.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-internal-transfer"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-request-auto-schedule-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-delivery-link-B-next",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة تنفيذ التحويلات الداخلية؟",
+      "answer": "المرحلة التالية بعد مرحلة \"01 — تنفيذ التحويلات الداخلية\" هي: **02 — تنفيذ خدمة التوصيل للعميل**.\n\nبعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، يتم فك الاعتماد وتتحول خدمة التوصيل من الحالة الحمراء (محظور بسبب الاعتماد) إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد)، وبذلك تصبح جاهزة لمتابعة دورة التوصيل للعميل.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-internal-transfer"
+        },
+        {
+          "sourceType": "related",
+          "id": "internal-transfer:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-customer-delivery"
+        },
+        {
+          "sourceType": "related",
+          "id": "internal-transfer:page:overview"
+        },
+        {
+          "sourceType": "related",
+          "id": "internal-transfer:current-workflow:internal-transfer-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-invoice"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-delivery-link-G-sla",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:mapping-delivery-pdf-detail-vs-primary-workflow-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "delivery-returns-A-sequence",
+      "pageId": "delivery-returns",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار المرتجع الجزئي لفاتورة خدمة التوصيل هو: 00 — وصول مرتجع من SAP → 01 — التحقق من محتوى المرتجع.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "delivery-returns-B-stage-number",
+      "pageId": "delivery-returns",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 01؟",
+      "answer": "في المرحلة **01 — التحقق من محتوى المرتجع** (ضمن مسار المرتجع الجزئي لفاتورة خدمة التوصيل)، يتم التحقق من محتوى المرتجع وفق الآتي:\n\n- **إذا كان المرتجع يحتوي على الخدمة:** يتم إلغاء الخدمة تلقائيًا داخل نظام خدمات مابعد البيع.\n- **إذا كان المرتجع يحتوي على أصناف فقط (دون خدمة التوصيل):** يكون القرار لدى الشخص المسؤول إما بإلغاء الخدمة أو استمرارها.\n\nوهذه هي المرحلة الأخيرة في المسار.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-arrival"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-request-auto-schedule-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-02"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "delivery-returns-G-sla",
+      "pageId": "delivery-returns",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-arrival"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:mapping-delivery-pdf-detail-vs-primary-workflow-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-A-sequence",
+      "pageId": "measurement",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار خدمة رفع المقاسات هو: 00 — فاتورة من SAP → 01 — طلب رفع مقاسات → 02 — التحقق من الجاهزية وحجز الموعد → 03 — تم تعيين الفني → 04 — ملئ النموذج → 05 — رفع القياسات → 06 — تمت الخدمة.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-B-stage-number",
+      "pageId": "measurement",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في مرحلة **02 — التحقق من الجاهزية وحجز الموعد** ضمن مسار خدمة رفع المقاسات، يحدث ما يلي:\n\n1. **الانتقال للمرحلة:** تظهر الفاتورة في مرحلة \"طلب رفع مقاسات\"، وتُنقل إلى هذه المرحلة إما يدويًا باستخدام السحب والإفلات (Drag & Drop)، أو تلقائيًا عبر النظام إذا لم تُنقل يدويًا.\n2. **إرسال الرابط:** يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط لحجز موعد خدمة رفع المقاسات.\n3. **خطوات العميل عبر الرابط:**\n   - **تأكيد جاهزية الموقع:** يؤكد العميل جاهزية الموقع لخدمة رفع المقاسات، ويرفق صورة للموقع عند الحاجة، مع إمكانية إضافة ملاحظات.\n   - **اختيار موعد رفع المقاسات:** يختار التاريخ المناسب لتنفيذ الخدمة من بين المواعيد المتاحة.\n   - **بيانات العميل وموقع التنفيذ:** يراجع بيانات التواصل ويحدد موقع تنفيذ الخدمة على الخريطة قبل تأكيد الموعد.\n   - **تأكيد الموعد:** بعد التأكيد، يتم تثبيت الحجز وتظهر للعميل رسالة تؤكد جدولة موعد خدمة رفع المقاسات.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-readiness"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-technician-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-B-next",
+      "pageId": "measurement",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة طلب رفع مقاسات؟",
+      "answer": "المرحلة التالية مباشرة هي **02 — التحقق من الجاهزية وحجز الموعد**.\n\nويحدث فيها ما يلي:\n1. **نقل المهمة:** يتم نقل الفاتورة إلى هذه المرحلة إما يدويًا باستخدام السحب والإفلات (Drag & Drop)، أو يقوم النظام بنقلها تلقائيًا في حال لم تُنقل يدويًا.\n2. **إرسال رابط الحجز:** يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط لحجز موعد خدمة رفع المقاسات.\n3. **خطوات العميل عبر الرابط:**\n   - **تأكيد جاهزية الموقع:** يؤكد العميل جاهزية الموقع، ويرفق صورة للموقع عند الحاجة، مع إمكانية إضافة ملاحظات.\n   - **اختيار موعد رفع المقاسات:** يختار التاريخ المناسب من المواعيد المتاحة.\n   - **بيانات العميل وموقع تنفيذ الخدمة:** يراجع بيانات التواصل ويحدد موقع تنفيذ الخدمة على الخريطة.\n   - **تأكيد الموعد:** يتم تثبيت الحجز وتظهر رسالة تؤكد جدولة الموعد، وتنتقل المهمة بعد ذلك إلى مرحلة **03 — تم تعيين الفني**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-readiness"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-measurement-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-G-sla",
+      "pageId": "measurement",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-readiness"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-A-sequence",
+      "pageId": "design",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار خدمة التصميم هو: 00 — فاتورة من SAP → 01 — طلب تصميم → 02 — مُسندة لمصمم → 03 — جاري العمل على التصميم → 04 — موافقات داخلية → 05 — بانتظار موافقة العميل → 06 — مكتمل ومعتمد.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-B-stage-number",
+      "pageId": "design",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في خدمة التصميم، تُسمى المرحلة **02 — مُسندة لمصمم**، ويحدث فيها الآتي:\n\n- يتم إسناد طلب التصميم إلى المصمم المسؤول عن تنفيذ الخدمة، ليصبح الطلب جاهزًا للبدء في إعداد التصميم.\n- **التنفيذ والمسؤولية:** يدوي / إدارة التصميم.\n- **المرحلة السابقة:** 01 — طلب تصميم.\n- **المرحلة التالية:** 03 — جاري العمل على التصميم.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-B-next",
+      "pageId": "design",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة طلب تصميم؟",
+      "answer": "المرحلة التالية بعد مرحلة «01 — طلب تصميم» هي مرحلة **«02 — مُسندة لمصمم»**.\n\nفي هذه المرحلة، يتم إسناد طلب التصميم إلى المصمم المسؤول عن تنفيذ الخدمة ليصبح الطلب جاهزًا للبدء في إعداد التصميم (التنفيذ: يدوي / إدارة التصميم).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-C-responsibility",
+      "pageId": "design",
+      "category": "C",
+      "question": "من المسؤول عن مرحلة مكتمل ومعتمد؟",
+      "answer": "المسؤول عن مرحلة **06 — مكتمل ومعتمد** في مسار خدمة التصميم هو **إدارة التصميم** (التنفيذ: يدوي).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-approved"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-internal-approvals"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-sales-office-mapping-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-D-automation",
+      "pageId": "design",
+      "category": "D",
+      "question": "هل مرحلة طلب تصميم آلية أم يدوية؟",
+      "answer": "مرحلة «01 — طلب تصميم» هي مرحلة يدوية، والتنفيذ والمسؤولية فيها: يدوي / إدارة التصميم.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-G-sla",
+      "pageId": "design",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:relationship-service-end-to-end-map-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-A-sequence",
+      "pageId": "manufacturing",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار خدمة التصنيع هو: 00 — فاتورة من SAP → 01 — طلب خدمة تصنيع → 02 — إرسال إلى ورشة التصنيع → 03 — جاري التصنيع → 04 — تم الانتهاء من الخدمة.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-B-stage-number",
+      "pageId": "manufacturing",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في المرحلة **02 — إرسال إلى ورشة التصنيع** من مسار خدمة التصنيع:\n\nيتم تحويل طلب التصنيع إلى ورشة التصنيع المختصة، لتبدأ الجهة المسؤولة باستلام الطلب وتجهيزه للتنفيذ حسب المواصفات المطلوبة.\n\n- **التنفيذ والمسؤولية:** يدوي / إدارة التصنيع.\n- **المرحلة السابقة:** 01 — طلب خدمة تصنيع.\n- **المرحلة التالية:** 03 — جاري التصنيع.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-B-next",
+      "pageId": "manufacturing",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة طلب خدمة تصنيع؟",
+      "answer": "المرحلة التالية هي **02 — إرسال إلى ورشة التصنيع** (التنفيذ: يدوي / إدارة التصنيع)، حيث يتم في هذه المرحلة تحويل طلب التصنيع إلى ورشة التصنيع المختصة، لتبدأ الجهة المسؤولة باستلام الطلب وتجهيزه للتنفيذ حسب المواصفات المطلوبة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-manufacturing-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-C-responsibility",
+      "pageId": "manufacturing",
+      "category": "C",
+      "question": "من المسؤول عن مرحلة تم الانتهاء من الخدمة؟",
+      "answer": "المسؤول عن مرحلة 04 — تم الانتهاء من الخدمة في مسار خدمة التصنيع هو: يدوي / إدارة التصنيع.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-D-automation",
+      "pageId": "manufacturing",
+      "category": "D",
+      "question": "هل مرحلة طلب خدمة تصنيع آلية أم يدوية؟",
+      "answer": "مرحلة **01 — طلب خدمة تصنيع** هي مرحلة **آلية (آلي من خلال النظام)**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-manufacturing-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-G-sla",
+      "pageId": "manufacturing",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-A-sequence",
+      "pageId": "installation",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار خدمة التركيب (توصيل مع تركيب) هو: 00 — فاتورة من SAP → 01 — طلب تركيب → 02 — جدولة خدمة التركيب → 03 — في انتظار تعيين الفني → 04 — تنفيذ خدمة التوصيل للعميل → 05 — ملئ النموذج → 06 — تم التركيب.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-B-stage-number",
+      "pageId": "installation",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في **المرحلة 02 — جدولة خدمة التركيب**، تحدث الإجراءات التالية:\n\n1. **إرسال رابط الحجز:** عند انتقال المهمة إلى هذه المرحلة، يقوم النظام تلقائيًا بإرسال رابط حجز موعد التركيب إلى العميل لاستكمال الحجز، كما يمكن لخدمة العملاء فتح الرابط واستكمال الحجز نيابةً عن العميل عند الحاجة.\n2. **سؤال جاهزية الموقع:** يتم سؤال العميل عما إذا كان الموقع جاهزًا للتركيب (هل الموقع جاهز للتركيب؟)، وفي حال كانت الإجابة \"نعم\"، يتم الانتقال إلى اختيار موعد التركيب.\n3. **اختيار موعد التركيب:** يختار العميل الموعد المناسب ضمن الفترة المسموحة، وتُحدَّد المواعيد المتاحة بناءً على نافذة الحجز المحددة مسبقًا: `Appointment From` ← `Appointment To`.\n4. **بيانات العميل وموقع التنفيذ:** يراجع العميل بياناته ويحدد موقع تنفيذ خدمة التركيب على الخريطة ثم يؤكد بيانات الموعد.\n5. **تأكيد موعد التركيب:** بعد التأكيد، يتم تثبيت الحجز وتظهر شاشة تأكيد الموعد للعميل.\n\n- **المرحلة السابقة:** 01 — طلب تركيب  \n- **المرحلة التالية:** 03 — في انتظار تعيين الفني",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-technician-waiting"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-completed"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:uat-scenario:uat-scenario-multiple-services-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-B-next",
+      "pageId": "installation",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة طلب تركيب؟",
+      "answer": "المرحلة التالية هي **02 — جدولة خدمة التركيب**، وتتم فيها الخطوات التالية:\n\n1. **إرسال رابط الحجز**: يقوم النظام تلقائيًا بإرسال رابط حجز موعد التركيب إلى العميل لاستكمال الحجز، كما يمكن لخدمة العملاء فتح الرابط واستكمال الحجز نيابةً عنه عند الحاجة.\n2. **سؤال جاهزية الموقع**: يُسأل العميل عما إذا كان الموقع جاهزًا للتركيب؛ وفي حال كانت الإجابة \"نعم\"، ينتقل إلى اختيار الموعد.\n3. **اختيار موعد التركيب**: يختار العميل الموعد المناسب ضمن الفترة المسموحة، وتُحدَّد المواعيد المتاحة بناءً على نافذة الحجز المحددة مسبقًا: Appointment From → Appointment To.\n4. **بيانات العميل وموقع التنفيذ**: يراجع العميل بياناته ويحدد موقع تنفيذ خدمة التركيب على الخريطة، ثم يؤكد بيانات الموعد.\n5. **تأكيد موعد التركيب**: يُثبَّت حجز الموعد وتظهر شاشة تأكيد الموعد للعميل، لتنتقل المهمة بعدها إلى مرحلة \"03 — في انتظار تعيين الفني\".",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-G-sla",
+      "pageId": "installation",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:relationship:delivery-before-installation"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-returns-A-sequence",
+      "pageId": "installation-returns",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار المرتجع الجزئي لفاتورة خدمة التركيب هو: 00 — وصول مرتجع من SAP → 01 — التحقق من محتوى المرتجع.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-returns-B-stage-number",
+      "pageId": "installation-returns",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 01؟",
+      "answer": "في المرحلة **01 — التحقق من محتوى المرتجع** (ضمن مسار المرتجع الجزئي لفاتورة خدمة التركيب)، يتم التحقق من محتوى المرتجع وفق الآتي:\n\n- **إذا كان المرتجع يحتوي على الخدمة:** يتم إلغاء الخدمة تلقائيًا.\n- **إذا كان المرتجع يحتوي على أصناف فقط:** يكون القرار لدى الشخص المسؤول إما بإلغاء الخدمة أو استمرار الخدمة.\n\nتعد هذه المرحلة هي المرحلة الأخيرة في المسار، والمرحلة السابقة لها هي **00 — وصول مرتجع من SAP**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-arrival"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-returns-G-sla",
+      "pageId": "installation-returns",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation-returns:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-arrival"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-A-sequence",
+      "pageId": "complaints",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار الشكاوى / الاستفسارات هو: 00 — شكوى/استفسار العميل → 01 — تحديد النوع → 02 — ارسال إلى الجهة المختصة → 03 — متابعة → 04 — حل أو تصعيد.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-B-stage-number",
+      "pageId": "complaints",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في المرحلة **02 — ارسال إلى الجهة المختصة** ضمن مسار الشكاوى / الاستفسارات:\n\nبعد تحديد نوع الحالة، يتم تحويل الشكوى إلى الجهة المختصة بالمعالجة، وتشترك خدمة العملاء والجهة المختصة في تنفيذ هذه المرحلة.\n\n- **التنفيذ والمسؤولية:** يدوي / خدمة العملاء / الجهة المختصة\n- **المرحلة السابقة:** 01 — تحديد النوع\n- **المرحلة التالية:** 03 — متابعة",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-educational-site-scope-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-B-next",
+      "pageId": "complaints",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة تحديد النوع؟",
+      "answer": "المرحلة التالية بعد مرحلة \"01 — تحديد النوع\" هي المرحلة \"02 — ارسال إلى الجهة المختصة\".\n\nفي هذه المرحلة، يتم تحويل الشكوى إلى الجهة المختصة بالمعالجة، وتشترك خدمة العملاء والجهة المختصة في تنفيذها (التنفيذ: يدوي / خدمة العملاء / الجهة المختصة).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-educational-site-scope-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-C-responsibility",
+      "pageId": "complaints",
+      "category": "C",
+      "question": "من المسؤول عن مرحلة حل أو تصعيد؟",
+      "answer": "المسؤول عن مرحلة **04 — حل أو تصعيد** هو **خدمة العملاء** (التنفيذ: **يدوي**).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-12"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-D-automation",
+      "pageId": "complaints",
+      "category": "D",
+      "question": "هل مرحلة تحديد النوع آلية أم يدوية؟",
+      "answer": "مرحلة «01 — تحديد النوع» هي مرحلة يدوية، وتُنفذ من قبل خدمة العملاء.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-educational-site-scope-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-G-sla",
+      "pageId": "complaints",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:requirement:mapping-product-service-requirement-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-A-sequence",
+      "pageId": "maintenance",
+      "category": "A",
+      "question": "ما هي مراحل هذه الخدمة؟",
+      "answer": "مسار خدمة الصيانة هو: 00 — طلب صيانة جديد → 01 — جدولة موعد → 02 — تعيين فني → 03 — التقرير المبدئي → 04 — القرار النهائي / الموافقات → 05 — تحديد موعد الصيانة → 06 — جاري الصيانة / تسليم الخدمة.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-B-stage-number",
+      "pageId": "maintenance",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 02؟",
+      "answer": "في المرحلة **02 — تعيين فني** ضمن مسار خدمة الصيانة:\n\nبعد جدولة الموعد، يكون طلب الصيانة بانتظار تعيين الفني المسؤول عن تنفيذ الزيارة، ويتم التعيين يدوياً من قبل الجهة المختصة. \n\n- **المرحلة السابقة:** 01 — جدولة موعد  \n- **المرحلة التالية:** 03 — التقرير المبدئي",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-initial-report"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-educational-site-scope-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-B-next",
+      "pageId": "maintenance",
+      "category": "B",
+      "question": "ماذا يحدث بعد مرحلة جدولة موعد؟",
+      "answer": "المرحلة التالية بعد مرحلة «01 — جدولة موعد» هي مرحلة **02 — تعيين فني**.\n\nفي هذه المرحلة، يكون طلب الصيانة بانتظار تعيين الفني المسؤول عن تنفيذ الزيارة، ويتم التعيين من قبل الجهة المختصة (التنفيذ: يدوي / الجهة المختصة).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-new-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-C-responsibility",
+      "pageId": "maintenance",
+      "category": "C",
+      "question": "من المسؤول عن مرحلة جاري الصيانة / تسليم الخدمة؟",
+      "answer": "المسؤول عن مرحلة 06 — جاري الصيانة / تسليم الخدمة هو **الفني** (التنفيذ: يدوي / الفني).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-maintenance-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:relationship-service-end-to-end-map-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-D-automation",
+      "pageId": "maintenance",
+      "category": "D",
+      "question": "هل مرحلة جدولة موعد آلية أم يدوية؟",
+      "answer": "مرحلة **01 — جدولة موعد** هي مرحلة **يدوية**، ويتم تنفيذها من قبل **خدمة العملاء**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-new-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-05"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-G-sla",
+      "pageId": "maintenance",
+      "category": "G",
+      "question": "ما هي مدة SLA المحددة لإنجاز هذه الخدمة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:relationship-service-end-to-end-map-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intro-tour-C-driver",
+      "pageId": "intro-tour",
+      "category": "C",
+      "question": "من يحدد السائق في مرحلة ربط الخدمة بالسائق؟",
+      "answer": "يتعين على **مسؤول التحميل** (أو الموظف المسؤول / الشخص المسؤول عن التوصيل) تحديد السائق الذي سيقوم بتنفيذ خدمة التوصيل، حيث يراجع بيانات الحجز، ويختار السائق، ويربطه بالخدمة أو الفاتورة عبر حقل Assign ثم يحفظ البيانات.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:driver-assignment-to-completion"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-driver-linking"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:driver-assignment-to-completion-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-driver-linking-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow:driver-linking"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-driver-assignment-steps-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-shipment-handoff-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intro-tour-D-booking-link",
+      "pageId": "intro-tour",
+      "category": "D",
+      "question": "هل إرسال رابط حجز موعد التوصيل يتم تلقائيًا؟",
+      "answer": "نعم، يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط حجز موعد التوصيل عند انتقال المهمة إلى مرحلة جدولة التوصيل. كما يمكن لخدمة العملاء حجز الموعد نيابة عن العميل عند الحاجة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-delivery-scheduling-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-delivery-scheduling"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-whatsapp-booking-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:delivery-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:appointment-booking"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:business-rule-delivery-daily-capacity-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-C-record",
+      "pageId": "internal-transfer",
+      "category": "C",
+      "question": "من يضغط على Record Transfer؟",
+      "answer": "يضغط على زر Record Transfer موظف المستودع الذي يحتوي على المنتج (وفق الصلاحيات المتاحة له)، وذلك لتحديد الأصناف والكميات المراد إرسالها إلى مستودع التجمع وتأكيد عملية النقل.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-transit"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-received"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:uat-observation:uat-internal-transfer-locked-fields-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-internal-transfer-readiness-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "internal-transfer-D-received",
+      "pageId": "internal-transfer",
+      "category": "D",
+      "question": "هل الانتقال من جاري النقل إلى تم الاستلام يتم تلقائيًا؟",
+      "answer": "نعم، تنتقل المهمة تلقائيًا من مرحلة \"جاري النقل\" إلى مرحلة \"تم الاستلام\" بعد نجاح عملية تأكيد الاستلام (Confirm Receipt).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-transit"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:current-workflow:internal-transfer-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-internal-transfer-readiness-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "link-B-green",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "B",
+      "question": "متى تتحول خدمة التوصيل إلى الحالة الخضراء؟",
+      "answer": "تتحول خدمة التوصيل إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد / Dependency Ready) بعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب؛ حيث يتم فك الاعتماد لتصبح الخدمة جاهزة لمتابعة دورة تنفيذ التوصيل للعميل.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:status-meaning"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:workflow-question:current-delivery-workflow-question"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:stage:task-details"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "link-B-tag",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "B",
+      "question": "كيف أعرف الخدمة المرتبطة بخدمة التوصيل وهي بالحالة الحمراء؟",
+      "answer": "يمكن معرفة الخدمة المرتبطة بخدمة التوصيل عند ظهورها بالحالة الحمراء من خلال الـ Tag الظاهر أسفل اسم العميل وفق التالي:\n\n- **اسم مدينة**: يعني أن خدمة التوصيل مرتبطة بالتحويلات الداخلية.\n- **تصنيع ورش**: يعني أنها مرتبطة بخدمة التصنيع.\n- **صحية** أو **تركيب**: يعني أنها مرتبطة بخدمة التركيب.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:status-meaning"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-internal-transfer"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:stage:linked-tasks"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:stage:task-details"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "link-G-owner",
+      "pageId": "internal-transfer-delivery-link",
+      "category": "G",
+      "question": "من الموظف المسؤول عن فك الاعتماد يدويًا؟",
+      "answer": "يتم فك الاعتماد بعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مكان التجميع أو الموقع المطلوب، لتتحول خدمة التوصيل إلى الحالة الخضراء (جاهز بعد اكتمال الاعتماد). أما الموظف المسؤول عن ذلك أو ما إذا كان التنفيذ يتم يدويًا، فهذا التفصيل غير موثق ضمن مسار العمل الحالي.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:status-meaning"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-internal-transfer"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-shipment-handoff-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-request-auto-schedule-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-C-technician",
+      "pageId": "measurement",
+      "category": "C",
+      "question": "من يحدد الفني المسؤول عن خدمة رفع المقاسات؟",
+      "answer": "يقوم الموظف المختص بتحديد الفني المسؤول عن تنفيذ الخدمة من خلال حقل Assign في مرحلة «03 — تم تعيين الفني».",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-technician-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-readiness"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-form"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-measurement-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-D-link",
+      "pageId": "measurement",
+      "category": "D",
+      "question": "هل إرسال رابط حجز الموعد في رفع المقاسات يتم تلقائيًا؟",
+      "answer": "نعم، يتم إرسال رابط حجز الموعد تلقائيًا؛ فعند انتقال المهمة إلى مرحلة «02 — التحقق من الجاهزية وحجز الموعد»، يقوم النظام تلقائيًا بإرسال رسالة واتساب إلى العميل تحتوي على رابط لحجز موعد خدمة رفع المقاسات.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-readiness"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-technician-assigned"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-measurement-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-design-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-C-window",
+      "pageId": "installation",
+      "category": "C",
+      "question": "من يحدد فترة الحجز المسموحة للتركيب؟",
+      "answer": "يتم تحديد الفترة المسموح للعميل بالحجز ضمنها من قبل **المشرف** في مرحلة «01 — طلب تركيب».",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:requirement-installation-technician-schedule-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:relationship:delivery-before-installation"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-technician-waiting"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-05"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-D-link",
+      "pageId": "installation",
+      "category": "D",
+      "question": "هل يرسل النظام رابط حجز موعد التركيب تلقائيًا؟",
+      "answer": "نعم، عند انتقال المهمة إلى مرحلة جدولة خدمة التركيب، يقوم النظام تلقائيًا بإرسال رابط حجز موعد التركيب إلى العميل ليقوم باستكمال عملية الحجز، كما يمكن لخدمة العملاء فتح الرابط واستكمال عملية الحجز نيابةً عن العميل عند الحاجة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:relationship:delivery-before-installation"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:requirement-installation-technician-schedule-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-05"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-09"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "delivery-returns-D-auto",
+      "pageId": "delivery-returns",
+      "category": "D",
+      "question": "هل يتم إلغاء خدمة التوصيل تلقائيًا إذا كان المرتجع يحتوي على الخدمة؟",
+      "answer": "نعم، إذا كان مرتجع SAP يحتوي على خدمة التوصيل، يتم إلغاء خدمة التوصيل تلقائيًا داخل نظام خدمات مابعد البيع.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-delivery-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "delivery-returns-C-items",
+      "pageId": "delivery-returns",
+      "category": "C",
+      "question": "من يقرر إلغاء خدمة التوصيل إذا كان المرتجع يحتوي على أصناف فقط؟",
+      "answer": "يكون قرار إلغاء خدمة التوصيل أو استمرارها لدى الشخص المسؤول، حيث لا يتم إلغاء الخدمة تلقائيًا إذا كان المرتجع يحتوي على أصناف فقط دون خدمة التوصيل.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-delivery-001"
+        },
+        {
+          "sourceType": "related",
+          "id": "intro-tour:business-rule:BR-INTRO-003"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "delivery-returns-B-full",
+      "pageId": "delivery-returns",
+      "category": "B",
+      "question": "ماذا يحدث عند وصول فاتورة إلغاء من SAP؟",
+      "answer": "عند وصول فاتورة إلغاء من SAP إلى نظام خدمات مابعد البيع، يتم إلغاء خدمة التوصيل المرتبطة بالفاتورة ما لم تكن الخدمة قد تم تسليمها أو إكمالها مسبقًا.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-arrival"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-review"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:system-overview:integration-sap-odoo-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-returns-D-auto",
+      "pageId": "installation-returns",
+      "category": "D",
+      "question": "هل يتم إلغاء خدمة التركيب تلقائيًا إذا كان المرتجع يحتوي على الخدمة؟",
+      "answer": "نعم، إذا كان مرتجع SAP يحتوي على خدمة التركيب، يتم إلغاء خدمة التركيب تلقائيًا داخل نظام خدمات مابعد البيع.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-review"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "related",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "related",
+          "id": "installation:relationship:delivery-before-installation"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-returns-C-items",
+      "pageId": "installation-returns",
+      "category": "C",
+      "question": "من يقرر إلغاء خدمة التركيب إذا كان المرتجع يحتوي على أصناف فقط؟",
+      "answer": "يكون قرار إلغاء خدمة التركيب أو استمرارها لدى الشخص المسؤول (حيث لا يتم إلغاء خدمة التركيب تلقائيًا إذا كان المرتجع يحتوي على أصناف فقط).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-review"
+        },
+        {
+          "sourceType": "related",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:full-cancellation"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "related",
+          "id": "installation:relationship:delivery-before-installation"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "customer-service-A-sources",
+      "pageId": "customer-service",
+      "category": "A",
+      "question": "كيف تصل الحالات إلى خدمة العملاء؟",
+      "answer": "تصل الحالات إلى خدمة العملاء من ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة: 01 — من الإدارات الداخلية (أمثلة: عميل رفض التوقيع، عميل غير راضٍ عن التركيب، صعوبة تواصل)؛ 02 — من العميل مباشرة (أمثلة: استفسار، شكوى)؛ 03 — من النظام (أمثلة: حالة عالقة، عميل لم يحجز موعد، تأخر في إجراء مطلوب). وجميع القنوات الثلاثة تصب في جهة واحدة لإدارة الحالة ومتابعتها حتى الإغلاق.",
+      "path": "exact_structured",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "customer-service-B-system",
+      "pageId": "customer-service",
+      "category": "B",
+      "question": "ما أمثلة الحالات التي تصل من النظام؟",
+      "answer": "أمثلة الحالات التي تظهر من خلال النظام:\n- حالة عالقة.\n- عميل لم يحجز موعد.\n- تأخر في إجراء مطلوب.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-system"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-internal-departments"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:ai-use-case:whatsapp-event-action-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-12"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "customer-service-C-signature",
+      "pageId": "customer-service",
+      "category": "C",
+      "question": "حالة عميل رفض التوقيع تصل من أي مصدر؟",
+      "answer": "تصل حالة «عميل رفض التوقيع» من مصدر: **01 — من الإدارات الداخلية**، وذلك عندما يظهر موقف مع العميل يحتاج إلى متابعة من خدمة العملاء.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-internal-departments"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-system"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:customer-experience:customer-rating-questions-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "customer-service-G-channel",
+      "pageId": "customer-service",
+      "category": "G",
+      "question": "ما رقم هاتف خدمة العملاء؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "related",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-internal-departments"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-system"
+        },
+        {
+          "sourceType": "related",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "related",
+          "id": "complaints:workflow-sequence:current"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-F-technician",
+      "pageId": "maintenance",
+      "category": "F",
+      "question": "من يقوم بتعيين الفني؟",
+      "answer": "يتم تعيين الفني من قبل **الجهة المختصة** (التنفيذ: يدوي / الجهة المختصة).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-05"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-initial-report"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-06"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "measurement-F-technician",
+      "pageId": "measurement",
+      "category": "F",
+      "question": "من يقوم بتعيين الفني؟",
+      "answer": "يقوم الموظف المختص بتحديد الفني المسؤول عن تنفيذ الخدمة من خلال حقل Assign.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-technician-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-readiness"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-upload"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-11"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-F-invoice",
+      "pageId": "design",
+      "category": "F",
+      "question": "ماذا يحدث في مرحلة فاتورة من SAP؟",
+      "answer": "في مرحلة **00 — فاتورة من SAP** ضمن خدمة التصميم:\n\n- تبدأ دورة خدمة التصميم بوصول فاتورة من SAP تحتوي على خدمة التصميم إلى نظام خدمات ما بعد البيع.\n- يتم إنشاء طلب التصميم وبدء متابعة الخدمة.\n- **التنفيذ والمسؤولية:** يدوي / إدارة التصميم.\n- تُعد هذه المرحلة الأولى في المسار، والمرحلة التالية لها هي **01 — طلب تصميم**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:system-overview:integration-sap-odoo-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:integration-zcf2-open-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-sap-invoice-content-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-F-last",
+      "pageId": "complaints",
+      "category": "F",
+      "question": "ما هي المرحلة الأخيرة؟",
+      "answer": "المرحلة الأخيرة في مسار الشكاوى / الاستفسارات هي:\n**04 — حل أو تصعيد**",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:customer-experience:customer-rating-questions-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-F-last",
+      "pageId": "manufacturing",
+      "category": "F",
+      "question": "ما هي المرحلة الأخيرة؟",
+      "answer": "المرحلة الأخيرة في مسار خدمة التصنيع هي: **04 — تم الانتهاء من الخدمة**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:customer-experience:customer-rating-questions-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "warehouse-F-message",
+      "pageId": "warehouse-pickup",
+      "category": "F",
+      "question": "هل يتم إرسال رسالة للعميل؟",
+      "answer": "نعم، في المرحلة «01 — إرسال رسالة إلى العميل» ضمن مسار خدمة استلام العميل البضاعة من المستودع، يقوم النظام تلقائيًا بإرسال رسالة إلى العميل لإبلاغه بجاهزية البضاعة للاستلام من المستودع (التنفيذ: آلي من خلال النظام).",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:known-error:known-error-operational-team-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:customer-experience:customer-rating-questions-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "installation-F-form",
+      "pageId": "installation",
+      "category": "F",
+      "question": "ماذا يحدث في مرحلة ملئ النموذج؟",
+      "answer": "في مرحلة **05 — ملئ النموذج** من مسار خدمة التركيب (توصيل مع تركيب)، يتم تنفيذ الآتي:\n\n1. **وصول الفني**: بعد اكتمال خدمة التوصيل ووصول البضاعة إلى العميل، يصل الفني إلى موقع العميل لبدء تنفيذ خدمة التركيب، وتظهر المهمة في مرحلة ملئ النموذج.\n2. **فتح نموذج التركيب**: أثناء وجود الفني في موقع العميل، يفتح نموذج التركيب المرتبط بالمهمة من خلال نموذج التركيب الظاهر داخل المهمة.\n3. **بدء تنفيذ التركيب**: بعد فتح نموذج التركيب وأثناء وجود الفني في موقع العميل، يضغط على زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب والانتقال إلى خطوات تعبئة النموذج وتوثيق التنفيذ.\n4. **إنهاء خدمة التركيب واستلام العميل**: بعد الانتهاء من تنفيذ أعمال التركيب وتعبئة البيانات المطلوبة، يضغط الفني على زر إنهاء التركيب (Finish Installation) لإنهاء خدمة التركيب، ثم يتم توثيق استلام العميل للخدمة من خلال توقيعه على النموذج.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-customer-delivery"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:open-question:open-service-specific-stages-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "intro-tour-F-form",
+      "pageId": "intro-tour",
+      "category": "F",
+      "question": "ماذا يحدث في مرحلة ملئ النموذج؟",
+      "answer": "في مرحلة «04 — ملئ النموذج (سند التحميل)»:\n\n- تنتقل المهمة بشكل تلقائي إلى هذه المرحلة بعد تحديد السائق.\n- يقوم الموظف المعني بملئ كافة بيانات أمر التحميل.\n- تظهر النماذج المرتبطة بالمهمة (نموذج سند التحميل) ضمن تبويب **Task Forms**.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-form-filling"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-form-filling-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:driver-assignment-task-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:task-forms"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-shipment-handoff-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-delivery-execution-elements-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "design-G-whatsapp",
+      "pageId": "design",
+      "category": "G",
+      "question": "هل يتم إرسال إشعار واتساب للعميل عند اعتماد التصميم؟",
+      "answer": "بعد اعتماد العميل للتصميم، تنتقل المهمة إلى مرحلة «06 — مكتمل ومعتمد» (التنفيذ والمسؤولية: يدوي / إدارة التصميم) وبذلك تكتمل دورة خدمة التصميم. أما بخصوص إرسال إشعار عبر واتساب للعميل عند الاعتماد، فهذا الإجراء غير موثق في مسار العمل الحالي.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-approved"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-internal-approvals"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:ai-use-case:whatsapp-event-action-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "maintenance-G-otp",
+      "pageId": "maintenance",
+      "category": "G",
+      "question": "هل يتم إرسال رمز OTP للعميل في خدمة الصيانة؟",
+      "answer": "المعلومة غير متوفرة ضمن هذه الصفحة.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:integration-end-to-end-flow-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:requirement:mapping-product-service-requirement-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "complaints-G-admin-technical",
+      "pageId": "complaints",
+      "category": "G",
+      "question": "هل يتم تصنيف الشكوى إلى إدارية أو فنية؟",
+      "answer": "تقوم خدمة العملاء في المرحلة «01 — تحديد النوع» بتحديد نوع الحالة وتصنيفها بعد توثيقها تمهيدًا لتحويلها إلى الجهة المختصة بمعالجتها، أما تفاصيل تصنيف الشكوى إلى (إدارية أو فنية) فغير موثقة في مسار العمل الحالي.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "related",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "related",
+          "id": "customer-service:page:overview"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "manufacturing-G-duration",
+      "pageId": "manufacturing",
+      "category": "G",
+      "question": "كم يوم تستغرق مرحلة جاري التصنيع؟",
+      "answer": "في مرحلة **03 — جاري التصنيع** يتم تنفيذ أعمال التصنيع ومتابعة سير العمل وفق المواصفات المعتمدة (بتنفيذ يدوي من قبل إدارة التصنيع)، أما مدة أو عدد الأيام التي تستغرقها هذه المرحلة فهو غير موثق في مسار العمل الحالي.",
+      "path": "semantic",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-manufacturing-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-manufacturing-high-level-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-A-maintenance",
+      "pageId": "after-sales-global",
+      "category": "A",
+      "question": "ما هي مراحل خدمة الصيانة؟",
+      "answer": "مراحل مسار خدمة الصيانة بالترتيب (7 مراحل):\n\n00 — طلب صيانة جديد\n01 — جدولة موعد\n02 — تعيين فني\n03 — التقرير المبدئي\n04 — القرار النهائي / الموافقات\n05 — تحديد موعد الصيانة\n06 — جاري الصيانة / تسليم الخدمة",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-new-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-initial-report"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-final-decision"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-A-services",
+      "pageId": "after-sales-global",
+      "category": "A",
+      "question": "ما هي الخدمات الموجودة؟",
+      "answer": "الخدمات الموثقة في مسارات خدمات ما بعد البيع هي:\n\n- خدمة التوصيل\n- التحويلات الداخلية\n- خدمة استلام العميل البضاعة من المستودع\n- خدمة رفع المقاسات\n- خدمة التصميم\n- خدمة التصنيع\n- خدمة التركيب\n- خدمة العملاء (الشكاوى / الاستفسارات)\n- خدمة الصيانة (مسار منفصل داخل خدمة العملاء)",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:system-overview:overview-after-sales-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-maintenance-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-delivery-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-measurement-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-01"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-core-after-sales-chain-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:integration:integration-delivery-sap-to-odoo-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-B-design-03",
+      "pageId": "after-sales-global",
+      "category": "B",
+      "question": "ماذا يحدث في المرحلة 03 من خدمة التصميم؟",
+      "answer": "في المرحلة **03 — جاري العمل على التصميم** من خدمة التصميم، بعد إسناد الطلب إلى المصمم، تنتقل المهمة إلى هذه المرحلة حيث يبدأ المصمم بإعداد التصميم ومتابعة متطلبات العميل والمواصفات المطلوبة.\n\n- **التنفيذ والمسؤولية:** يدوي / إدارة التصميم\n- **المرحلة السابقة:** 02 — مُسندة لمصمم\n- **المرحلة التالية:** 04 — موافقات داخلية",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-internal-approvals"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-approved"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-B-sources",
+      "pageId": "after-sales-global",
+      "category": "B",
+      "question": "كيف تصل الحالات إلى خدمة العملاء؟",
+      "answer": "تصل الحالات إلى خدمة العملاء من ثلاثة مصادر تصب في جهة واحدة لإدارة الحالة ومتابعتها حتى الإغلاق:\n\n1. **01 — من الإدارات الداخلية:** تصل الحالة من إحدى الإدارات الداخلية عندما يظهر موقف مع العميل يحتاج إلى متابعة من خدمة العملاء (أمثلة: عميل رفض التوقيع، عميل غير راضٍ عن التركيب، صعوبة تواصل).\n2. **02 — من العميل مباشرة:** يتواصل العميل مباشرة مع خدمة العملاء لتقديم استفسار أو شكوى (أمثلة: استفسار، شكوى).\n3. **03 — من النظام:** تظهر الحالة من خلال النظام عند وجود طلب يحتاج إلى متابعة من خدمة العملاء (أمثلة: حالة عالقة، عميل لم يحجز موعد، تأخر في إجراء مطلوب).",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-system"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-internal-departments"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-B-installation-return",
+      "pageId": "after-sales-global",
+      "category": "B",
+      "question": "ماذا يحدث إذا وصل مرتجع جزئي يحتوي على خدمة التركيب؟",
+      "answer": "إذا كان مرتجع SAP يحتوي على خدمة التركيب، يتم إلغاء خدمة التركيب تلقائيًا داخل نظام خدمات مابعد البيع.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-02"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:note:partial-return-case-01"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-arrival"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:current-workflow:delivery-returns-return-arrival"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:current-workflow:installation-returns-return-review"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-C-maintenance-decision",
+      "pageId": "after-sales-global",
+      "category": "C",
+      "question": "من المسؤول عن القرار النهائي في خدمة الصيانة؟",
+      "answer": "المسؤول عن مرحلة «04 — القرار النهائي / الموافقات» في خدمة الصيانة هي **الإدارة** (التنفيذ: يدوي / الإدارة).",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-final-decision"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-initial-report"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-new-request"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-maintenance-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-C-design",
+      "pageId": "after-sales-global",
+      "category": "C",
+      "question": "من المسؤول عن مراحل خدمة التصميم؟",
+      "answer": "المسؤول عن تنفيذ جميع مراحل مسار خدمة التصميم (من المرحلة 00 حتى 06) هو **إدارة التصميم**، وجميع المراحل تُنفّذ بشكل **يدوي / إدارة التصميم**.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-approved"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-internal-approvals"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-C-complaint-forward",
+      "pageId": "after-sales-global",
+      "category": "C",
+      "question": "من يقوم بإرسال الشكوى إلى الجهة المختصة؟",
+      "answer": "تشترك **خدمة العملاء** و**الجهة المختصة** في تنفيذ مرحلة \"02 — ارسال إلى الجهة المختصة\" (التنفيذ والمسؤولية: يدوي / خدمة العملاء / الجهة المختصة).",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-internal-departments"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-D-all",
+      "pageId": "after-sales-global",
+      "category": "D",
+      "question": "أي خدمات فيها مراحل آلية وأيها يدوية؟",
+      "answer": "تصنيف المراحل (آلية / يدوية) بحسب الخدمات الموثقة:\n\n* **خدمات تحتوي على مراحل آلية فقط:**\n  * **خدمة استلام العميل البضاعة من المستودع:**\n    * مراحل آلية: «00 — فاتورة من SAP»، «01 — إرسال رسالة إلى العميل»، «02 — تأكيد استلام العميل».\n    * مراحل يدوية: لا يوجد.\n\n* **خدمات تجمع بين مراحل آلية ومراحل يدوية:**\n  * **خدمة التصنيع:**\n    * مراحل آلية: «00 — فاتورة من SAP»، «01 — طلب خدمة تصنيع».\n    * مراحل يدوية: «02 — إرسال إلى ورشة التصنيع»، «03 — جاري التصنيع»، «04 — تم الانتهاء من الخدمة».\n\n* **خدمات تحتوي على مراحل يدوية فقط:**\n  * **خدمة التصميم:**\n    * مراحل آلية: لا يوجد.\n    * مراحل يدوية: «00 — فاتورة من SAP»، «01 — طلب تصميم»، «02 — مُسندة لمصمم»، «03 — جاري العمل على التصميم»، «04 — موافقات داخلية»، «05 — بانتظار موافقة العميل»، «06 — مكتمل ومعتمد».\n  * **خدمة الصيانة:**\n    * مراحل آلية: لا يوجد.\n    * مراحل يدوية: «00 — طلب صيانة جديد»، «01 — جدولة موعد»، «02 — تعيين فني»، «03 — التقرير المبدئي»، «04 — القرار النهائي / الموافقات»، «05 — تحديد موعد الصيانة»، «06 — جاري الصيانة / تسليم الخدمة».\n  * **خدمة العملاء (الشكاوى / الاستفسارات):**\n    * مراحل آلية: لا يوجد.\n    * مراحل يدوية: «00 — شكوى/استفسار العميل»، «01 — تحديد النوع»، «02 — ارسال إلى الجهة المختصة»، «03 — متابعة»، «04 — حل أو تصعيد».\n\n* **خدمات لا تعرض تصنيفًا منفصلًا (آلي/يدوي) لكل مرحلة:**\n  * **خدمة التوصيل** (دورة العمل، والمرتجعات والإلغاءات)\n  * **التحويلات الداخلية** (دورة العمل، وعلاقتها بخدمة التوصيل)\n  * **خدمة رفع المقاسات**\n  * **خدمة التركيب** (دورة العمل، والمرتجعات والإلغاءات)\n  *(التصنيف المنفصل كـ آلي/يدوي غير معروض بشكل صريح في صفحات هذه الخدمات، والمعتمد هو ما يذكره شرح كل مرحلة تفصيليًا)*.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-sequence:full-delivery-workflow"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation-returns:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:workflow-sequence:current"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-D-workshop",
+      "pageId": "after-sales-global",
+      "category": "D",
+      "question": "هل مرحلة إرسال إلى ورشة التصنيع آلية أم يدوية؟",
+      "answer": "مرحلة «02 — إرسال إلى ورشة التصنيع» في خدمة التصنيع هي مرحلة **يدوية**، وتتولى تنفيذها **إدارة التصنيع**.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-manufacturing-001"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:workflow:workflow-manufacturing-high-level-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:task-details"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-D-maintenance",
+      "pageId": "after-sales-global",
+      "category": "D",
+      "question": "هل خدمة الصيانة فيها مراحل آلية؟",
+      "answer": "لا، لا توجد مراحل آلية في مسار خدمة الصيانة؛ فالمسار يتكون من سبع مراحل يدوية بالكامل (من المرحلة 00 إلى المرحلة 06):\n\n00 — طلب صيانة جديد\n01 — جدولة موعد\n02 — تعيين فني\n03 — التقرير المبدئي\n04 — القرار النهائي / الموافقات\n05 — تحديد موعد الصيانة\n06 — جاري الصيانة / تسليم الخدمة",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-new-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:full-delivery-workflow-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-final-decision"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-initial-report"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-E-transfer-delivery",
+      "pageId": "after-sales-global",
+      "category": "E",
+      "question": "ما العلاقة بين التحويلات الداخلية والتوصيل؟",
+      "answer": "تعتمد خدمة التوصيل للعميل على توفر البضاعة في مستودع التجمع؛ فإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولاً تنفيذ التحويلات الداخلية لنقل البضاعة إلى مستودع التجمع.\n\nوتتضح هذه العلاقة من خلال حالات الاعتماد التالية:\n- **الحالة الحمراء — محظور بسبب الاعتماد (Blocked by Dependency):** تظل خدمة التوصيل في هذه الحالة وغير جاهزة للتنفيذ طالما أن التحويلات الداخلية لم تكتمل بعد والبضاعة لم تصل إلى الموقع المطلوب.\n- **الحالة الخضراء — جاهز بعد اكتمال الاعتماد (Dependency Ready):** بعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مستودع التجمع، يتم فك الاعتماد وتتحول خدمة التوصيل إلى هذه الحالة لتصبح جاهزة لمتابعة دورة التوصيل للعميل.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-internal-transfer-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:status-meaning"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-internal-transfer"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:current-workflow:internal-transfer-delivery-link-customer-delivery"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-E-complaint-installation",
+      "pageId": "after-sales-global",
+      "category": "E",
+      "question": "إذا العميل عنده شكوى فنية بعد التركيب، أي مسار يتعلق بالحالة؟",
+      "answer": "تتعلق الحالة بـ **مسار الشكاوى / الاستفسارات** ضمن خدمة العملاء، وتمر بالخطوات التالية:\n\n1. **00 — شكوى/استفسار العميل:** استقبال الشكوى وتوثيق تفاصيلها.\n2. **01 — تحديد النوع:** تحديد نوع الحالة وتصنيفها تمهيدًا لتحويلها إلى الجهة المختصة.\n3. **02 — ارسال إلى الجهة المختصة.**\n4. **03 — متابعة:** متابعة الحالة حتى اكتمال الإجراء المطلوب.\n5. **04 — حل أو تصعيد:** الوصول إلى حل للشكوى أو تصعيدها عند الحاجة.\n\nأما تصنيف \"شكوى فنية بعد التركيب\" بشكل مخصص أو قائمة التصنيفات الفرعية، فهي غير موثقة بالتفصيل ضمن مسارات خدمات ما بعد البيع الحالية.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-technician-waiting"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-E-delivery-vs-pickup",
+      "pageId": "after-sales-global",
+      "category": "E",
+      "question": "ما الفرق بين خدمة التوصيل واستلام العميل البضاعة من المستودع؟",
+      "answer": "الفرق بين الخدمتين بناءً على دورات العمل الموثقة:\n\n* **خدمة التوصيل (Delivery):**\n  * إحدى خدمات ما بعد البيع الأساسية، حيث يُنشئ النظام مهمة توصيل (Delivery Task) لنقل وتسليم البضاعة إلى موقع العميل.\n  * تعتمد على توفر البضاعة في مستودع التجمع (وتتطلب تحويلات داخلية إذا كانت البضاعة في مستودع آخر).\n  * تتضمن إرسال رابط حجز موعد ليحدد العميل موعد وموقع التسليم، وتمر بمراحل تشمل ربط الخدمة بالسائق وتنفيذ التوصيل.\n\n* **خدمة استلام العميل البضاعة من المستودع (Warehouse Pickup):**\n  * مسار مخصص لاستلام العميل للبضاعة مباشرة من المستودع بدلاً من توصيلها إليه.\n  * تتكون دورة عملها من 3 مراحل فقط، وجميعها تُنفذ بشكل آلي من خلال النظام:\n    1. **00 — فاتورة من SAP**\n    2. **01 — إرسال رسالة إلى العميل**\n    3. **02 — تأكيد استلام العميل** (تكتمل الدورة بتأكيد الاستلام داخل النظام بعد أخذ العميل للبضاعة).",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-delivery-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "delivery-returns:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-receipt"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:relationship:delivery-before-installation"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:delivery-scheduling"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-E-delivery-installation",
+      "pageId": "after-sales-global",
+      "category": "E",
+      "question": "كيف ترتبط خدمة التوصيل بخدمة التركيب؟",
+      "answer": "في دورة توصيل مع تركيب، ترتبط خدمة التوصيل بخدمة التركيب كالتالي:\n\n- يتم تحديد موعد التوصيل تلقائيًا ليكون قبل موعد التركيب بـ 48 ساعة.\n- عند الانتقال إلى خدمة التوصيل، لا تبدأ مهمة التوصيل من الصفر، وإنما تنتقل مباشرة إلى مرحلة \"ربط الخدمة بالسائق\".\n- بعد اكتمال خدمة التوصيل ووصول البضاعة إلى العميل، يبدأ الفني تنفيذ خدمة التركيب في مرحلة ملئ النموذج.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:relationship:delivery-before-installation"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:mapping:relationship-service-dependencies-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:business-rule:BR-INTRO-003"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:delivery-no-booking-window-question"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-delivery-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:page:overview"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-E-maintenance-cs",
+      "pageId": "after-sales-global",
+      "category": "E",
+      "question": "ما علاقة الصيانة بخدمة العملاء؟",
+      "answer": "تعد خدمة الصيانة مساراً مستقلاً ضمن قسم خدمة العملاء يتكون من 7 مراحل يدوية (من 00 إلى 06)، وتتولى خدمة العملاء تنفيذ المراحل التالية داخل المسار:\n\n- **00 — طلب صيانة جديد:** إنشاء طلب الصيانة الجديد داخل نظام خدمات ما بعد البيع لبدء تتبع الطلب.\n- **01 — جدولة موعد:** تحديد موعد زيارة الصيانة بعد إنشاء الطلب.\n- **05 — تحديد موعد الصيانة:** تحديد موعد تنفيذ أعمال الصيانة بعد جاهزية الحالة وصدور القرار النهائي/الموافقات.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-maintenance-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-new-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-appointment"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-system"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-F-form",
+      "pageId": "after-sales-global",
+      "category": "F",
+      "question": "ماذا يحدث في مرحلة ملئ النموذج؟",
+      "answer": "تختلف الإجراءات في مرحلة ملئ النموذج بحسب نوع الخدمة:\n\n**1. خدمة التوصيل (المرحلة 04 — ملئ النموذج (سند التحميل)):**\n* بعد تحديد السائق، تنتقل المهمة تلقائيًا إلى هذه المرحلة.\n* تظهر النماذج المرتبطة بالمهمة ضمن تبويب **Task Forms** (نموذج سند التحميل).\n* يقوم الموظف المعني بملئ كافة بيانات أمر التحميل.\n\n**2. خدمة رفع المقاسات (المرحلة 04 — ملئ النموذج):**\n* يقوم الموظف أو الفني باختيار نوع نموذج رفع المقاسات المناسب من تبويب **Task Forms** داخل المهمة.\n* يتم الضغط على النموذج المرتبط بالمهمة في الجزء العلوي لفتحه والبدء بتعبئة بيانات رفع المقاسات.\n* يراجع الفني بيانات العميل ومعلومات الزيارة، ثم يضغط على زر بدء رفع المقاسات (**Start Measurement**) لبدء تنفيذ الخدمة في موقع العميل.\n\n**3. خدمة توصيل مع تركيب (المرحلة 05 — ملئ النموذج):**\n* بعد اكتمال التوصيل ووصول البضاعة، يصل الفني إلى موقع العميل وتظهر المهمة في هذه المرحلة.\n* يفتح الفني نموذج التركيب المرتبط بالمهمة من خلال النموذج الظاهر داخل المهمة أثناء وجوده في الموقع.\n* يضغط الفني على زر بدء التركيب (**Start Installation**) لبدء التنفيذ والانتقال لتعبئة النموذج وتوثيق التنفيذ.\n* بعد إنهاء الأعمال وتعبئة البيانات، يضغط الفني على زر إنهاء التركيب (**Finish Installation**)، ثم يتم توثيق استلام العميل للخدمة من خلال توقيعه على النموذج.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:current-workflow:current-form-filling"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:current-form-filling-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:stage"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:driver-assignment-task-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:task-forms"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow:driver-assignment-task-form"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:linked-tasks"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:stage:task-details"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-F-technician",
+      "pageId": "after-sales-global",
+      "category": "F",
+      "question": "من يقوم بتعيين الفني؟",
+      "answer": "تختلف الجهة المسؤولة عن تعيين الفني بحسب نوع الخدمة:\n\n- **خدمة الصيانة**: يتم التعيين يدويًا من قبل **الجهة المختصة** في المرحلة \"02 — تعيين فني\".\n- **خدمة رفع المقاسات**: يقوم **الموظف المختص** بتحديد الفني المسؤول عن تنفيذ الخدمة عبر حقل `Assign` في المرحلة \"03 — تم تعيين الفني\".\n- **خدمة التركيب**: في المرحلة \"03 — في انتظار تعيين الفني\" يتم الانتظار حتى تحديد الفني المسؤول، ولكن لم تُوثَّق الجهة المسؤولة عن التعيين صراحةً ضمن المسار الحالي.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-technician"
+        },
+        {
+          "sourceType": "page",
+          "id": "measurement:current-workflow:measurement-technician-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-technician-waiting"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:business-rule:BR-05"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:workflow-sequence:current"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "maintenance:current-workflow:maintenance-scheduling"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:field:assignees"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-scheduling"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-G-sla",
+      "pageId": "after-sales-global",
+      "category": "G",
+      "question": "كم مدة SLA لخدمة التصميم؟",
+      "answer": "المعلومة غير موثقة ضمن مسارات خدمات ما بعد البيع الحالية.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "design:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-design-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-assigned"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-customer-approval"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-invoice"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-internal-approvals"
+        },
+        {
+          "sourceType": "page",
+          "id": "design:current-workflow:design-approved"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-G-price",
+      "pageId": "after-sales-global",
+      "category": "G",
+      "question": "كم سعر خدمة التركيب؟",
+      "answer": "المعلومة غير موثقة ضمن مسارات خدمات ما بعد البيع الحالية.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "installation:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:relationship:delivery-before-installation"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-customer-delivery"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:dependency-tag"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-installation-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:workflow-question:delivery-no-booking-window-question"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "intro-tour:business-rule:BR-INTRO-003"
+        },
+        {
+          "sourceType": "page",
+          "id": "installation:current-workflow:installation-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "internal-transfer-delivery-link:note:summary"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-G-admin-technical",
+      "pageId": "after-sales-global",
+      "category": "G",
+      "question": "هل يتم تصنيف الشكاوى إلى إدارية وفنية؟",
+      "answer": "في مسار الشكاوى / الاستفسارات، تتضمن المرحلة «01 — تحديد النوع» قيام خدمة العملاء بتحديد نوع الحالة وتصنيفها تمهيدًا لتحويلها إلى الجهة المختصة بمعالجتها، إلا أن تفاصيل تصنيف الشكاوى إلى «إدارية وفنية» تحديدًا غير موثقة ضمن المسار الحالي.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "complaints:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-type"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-received"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:page:overview"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-resolution"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-customer-direct"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-forward"
+        },
+        {
+          "sourceType": "page",
+          "id": "complaints:current-workflow:complaints-follow-up"
+        },
+        {
+          "sourceType": "page",
+          "id": "customer-service:section:source-internal-departments"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-G-japan",
+      "pageId": "after-sales-global",
+      "category": "G",
+      "question": "شو عاصمة اليابان؟",
+      "answer": "المعلومة غير موثقة ضمن مسارات خدمات ما بعد البيع الحالية.",
+      "path": "unsupported_fallback",
+      "retrieved": [],
+      "pass": true,
+      "failures": []
+    },
+    {
+      "id": "global-G-manufacturing-whatsapp",
+      "pageId": "after-sales-global",
+      "category": "G",
+      "question": "هل ترسل خدمة التصنيع رسالة واتساب للعميل؟",
+      "answer": "يتكون مسار خدمة التصنيع من 5 مراحل هي:\n1. 00 — فاتورة من SAP (آلي من خلال النظام)\n2. 01 — طلب خدمة تصنيع (آلي من خلال النظام)\n3. 02 — إرسال إلى ورشة التصنيع (يدوي / إدارة التصنيع)\n4. 03 — جاري التصنيع (يدوي / إدارة التصنيع)\n5. 04 — تم الانتهاء من الخدمة (يدوي / إدارة التصنيع)\n\nأما إرسال رسالة واتساب للعميل فهو غير موثق ضمن مسار خدمة التصنيع الحالي.",
+      "path": "global",
+      "retrieved": [
+        {
+          "sourceType": "page",
+          "id": "manufacturing:page:overview"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:service:service-manufacturing-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:workflow-sequence:current"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-workshop"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-request"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-invoice"
+        },
+        {
+          "sourceType": "global",
+          "id": "global:global-after-sales:known-error:known-error-operational-team-001"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-completed"
+        },
+        {
+          "sourceType": "page",
+          "id": "manufacturing:current-workflow:manufacturing-in-progress"
+        },
+        {
+          "sourceType": "page",
+          "id": "warehouse-pickup:current-workflow:warehouse-pickup-customer-message"
+        }
+      ],
+      "pass": true,
+      "failures": []
+    }
+  ]
+}

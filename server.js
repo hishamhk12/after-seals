@@ -101,8 +101,12 @@ function serveStatic(request, response) {
       return;
     }
 
+    const extension = path.extname(filePath).toLowerCase();
     response.writeHead(200, {
-      "Content-Type": mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream",
+      "Content-Type": mimeTypes[extension] || "application/octet-stream",
+      // Revalidate code on every load so a browser never keeps running an outdated app.js
+      // (e.g. one that still sends every unknown page to the Delivery assistant).
+      ...([".html", ".js", ".css"].includes(extension) ? { "Cache-Control": "no-cache" } : {}),
     });
 
     if (request.method === "HEAD") {

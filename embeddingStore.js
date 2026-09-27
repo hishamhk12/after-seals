@@ -50,6 +50,9 @@ function createEmbeddingRecord(chunk, embedding) {
     text: chunk.text,
     relatedTerms: Array.isArray(chunk.relatedTerms) ? chunk.relatedTerms : [],
     stageId: chunk.stageId || null,
+    // Structured metadata (service, stage_number, responsibility, ...). Not part of the content
+    // hash: it is refreshed from the current chunk on every build and joined at retrieval time.
+    metadata: chunk.metadata || null,
     contentHash: buildContentHash(chunk),
     embedding,
   };

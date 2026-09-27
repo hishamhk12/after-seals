@@ -7,12 +7,16 @@ const { calculateNluRecordBoost, understandQuery } = require("./queryUnderstandi
 
 const DEFAULT_PAGE_TOP_K = 5;
 const DEFAULT_GLOBAL_TOP_K = 5;
+const DEFAULT_RELATED_TOP_K = 3;
 const DEFAULT_MERGED_TOP_K = 7;
+const DEFAULT_GLOBAL_ASSISTANT_TOP_K = 10;
+const DEFAULT_PER_SERVICE_TOP_K = 3;
 const DEFAULT_MIN_SCORE = 0.72;
 const DEFAULT_LEXICAL_FALLBACK_MIN_SCORE = 0.08;
 const DEFAULT_PAGE_PRIORITY_BOOST = 0.045;
 const DEFAULT_SERVICE_BOOST = 0.035;
 const DEFAULT_GLOBAL_INTENT_BOOST = 0.09;
+const DEFAULT_OFF_SERVICE_PENALTY = 0.05;
 
 const DEFAULT_EMBEDDING_DIMENSION = 768;
 
@@ -20,11 +24,17 @@ const RETRIEVAL_MODE_SEMANTIC = "semantic";
 const RETRIEVAL_MODE_LEXICAL_FALLBACK = "lexical_fallback";
 const RETRIEVAL_MODE_PAGE_STORE_MISSING_FALLBACK = "page_store_missing_fallback";
 
+// Page-aware retrieval for the assistant opened on a specific page:
+//   1. the page's own knowledge (priority boost),
+//   2. directly related pages, only when the question names their service,
+//   3. global After-Sales knowledge, restricted to service-agnostic items and items tagged with the
+//      page's own / related / explicitly mentioned services.
 async function retrieveHybridChunks({
   pageId,
   question,
   pageTopK = DEFAULT_PAGE_TOP_K,
   globalTopK = DEFAULT_GLOBAL_TOP_K,
+  relatedTopK = DEFAULT_RELATED_TOP_K,
   mergedTopK = DEFAULT_MERGED_TOP_K,
   minScore = DEFAULT_MIN_SCORE,
   lexicalFallbackMinScore = readNumberEnv("HYBRID_LEXICAL_FALLBACK_MIN_SCORE", DEFAULT_LEXICAL_FALLBACK_MIN_SCORE),
@@ -35,61 +45,21 @@ async function retrieveHybridChunks({
 } = {}) {
   const understanding = queryUnderstanding || understandQuery(question);
   const retrievalQuery = understanding.retrievalQuery || question;
+  const knowledge = pageKnowledge[pageId];
 
   // Document vectors are always read from the existing on-disk stores below —
   // Gemini is only ever called (and only may fail) for the query embedding further down.
-  const pageStore = loadEmbeddingStore(pageId);
-  const pageChunks = buildKnowledgeChunks(pageId);
-  const currentWorkflow = pageKnowledge[pageId]?.currentWorkflow || [];
+  const page = loadPageSource(pageId, { allowMissing: true });
+  const currentWorkflow = knowledge?.currentWorkflow || [];
+  const pageStoreMissing = page.storeMissing;
 
-  // A missing page embedding store (e.g. still pending generation) is not the same as a
-  // corrupt/stale one. pageKnowledge[pageId] is still a fully supported page, so this falls
-  // back to lexical/structured ranking over the freshly built pageChunks instead of failing
-  // the whole request the way a real validation error (stale hash, dimension mismatch, etc.) does.
-  const pageStoreMissing = !pageStore;
+  const globalSource = loadGlobalSource(page.store);
+  const referenceModel = page.store?.model || globalSource.store?.model || getEmbeddingModel();
+  const referenceDimension = Number(page.store?.embeddingDimension) || Number(globalSource.store?.embeddingDimension) || DEFAULT_EMBEDDING_DIMENSION;
 
-  if (!pageStoreMissing) {
-    const pageValidation = validateEmbeddingStore(pageId, pageChunks, pageStore);
-
-    if (!pageValidation.ok) {
-      throw new Error(`Page embedding store validation failed: ${pageValidation.errors.join("; ")}`);
-    }
-  }
-
-  const globalStore = loadGlobalEmbeddingStore();
-  const globalChunks = buildGlobalKnowledgeChunks();
-  const referenceModel = pageStore?.model || globalStore?.model || getEmbeddingModel();
-  const referenceDimension = Number(pageStore?.embeddingDimension) || Number(globalStore?.embeddingDimension) || DEFAULT_EMBEDDING_DIMENSION;
-  const globalValidation = validateGlobalEmbeddingStore({
-    chunks: globalChunks,
-    store: globalStore,
-    expectedModel: referenceModel,
-    expectedDimension: referenceDimension,
-  });
-
-  if (!globalValidation.ok) {
-    throw new Error(`Global embedding store validation failed: ${globalValidation.errors.join("; ")}`);
-  }
-
-  let queryEmbedding = null;
-  let embeddingUnavailableReason = pageStoreMissing ? "page_store_missing" : null;
-
-  if (!pageStoreMissing) {
-    try {
-      const candidateEmbedding = await createEmbedding(["task: retrieval_query", retrievalQuery].join("\n"), {
-        model: referenceModel,
-        outputDimensionality: referenceDimension,
-      });
-
-      if (!isValidEmbedding(candidateEmbedding, referenceDimension)) {
-        embeddingUnavailableReason = "invalid_embedding";
-      } else {
-        queryEmbedding = candidateEmbedding;
-      }
-    } catch (error) {
-      embeddingUnavailableReason = isGeminiRateLimitError(error) ? "rate_limited" : "embedding_error";
-    }
-  }
+  const { queryEmbedding, embeddingUnavailableReason } = pageStoreMissing
+    ? { queryEmbedding: null, embeddingUnavailableReason: "page_store_missing" }
+    : await embedQuery(retrievalQuery, referenceModel, referenceDimension);
 
   const retrievalMode = queryEmbedding
     ? RETRIEVAL_MODE_SEMANTIC
@@ -100,8 +70,12 @@ async function retrieveHybridChunks({
 
   const mentionedServices = detectMentionedServices(retrievalQuery);
   const hasGlobalIntent = understanding.primaryIntent === "service_list" || detectGlobalIntent(retrievalQuery);
+  const pageServices = getPageServices(pageId);
+  const relatedServices = getRelatedServices(pageId);
+  const allowedGlobalServices = new Set([...pageServices, ...mentionedServices]);
+
   const pageCandidates = rankRecords({
-    records: pageStoreMissing ? pageChunks : pageStore.records,
+    records: page.records,
     queryEmbedding,
     question: retrievalQuery,
     topK: pageTopK,
@@ -112,8 +86,31 @@ async function retrieveHybridChunks({
     understanding,
     currentWorkflow,
   });
+
+  const relatedCandidates = getRelatedPageIds(pageId)
+    .filter((relatedId) => intersects(getPageServices(relatedId), mentionedServices))
+    .flatMap((relatedId) => {
+      const related = loadPageSource(relatedId, { allowMissing: true });
+      if (related.storeMissing || !queryEmbedding) return [];
+      return rankRecords({
+        records: related.records,
+        queryEmbedding,
+        question: retrievalQuery,
+        topK: relatedTopK,
+        sourceType: "related",
+        sourceBoost: 0,
+        serviceBoost,
+        mentionedServices,
+        understanding,
+        currentWorkflow: [],
+      });
+    });
+
   const globalCandidates = rankRecords({
-    records: globalStore.records,
+    records: globalSource.records.filter((record) => {
+      const services = Array.isArray(record.service) ? record.service : [];
+      return isGlobalRecordAllowedOnPage({ record, services, pageServices, allowedGlobalServices, relatedServices, retrievalQuery });
+    }),
     queryEmbedding,
     question: retrievalQuery,
     topK: globalTopK,
@@ -125,7 +122,7 @@ async function retrieveHybridChunks({
     currentWorkflow: [],
   });
 
-  const chunks = mergeCandidates([...pageCandidates, ...globalCandidates], mergedTopK);
+  const chunks = mergeCandidates([...pageCandidates, ...relatedCandidates, ...globalCandidates], mergedTopK);
   const topScore = chunks[0]?.score || 0;
 
   return {
@@ -151,6 +148,156 @@ async function retrieveHybridChunks({
   };
 }
 
+// Global After-Sales assistant: searches every page store plus the global store. No page gets
+// priority; services named in the question are boosted, and when several services are named the
+// result keeps the best chunks of each so cross-service questions see both sides.
+async function retrieveGlobalAssistantChunks({
+  question,
+  topK = DEFAULT_GLOBAL_ASSISTANT_TOP_K,
+  perServiceTopK = DEFAULT_PER_SERVICE_TOP_K,
+  minScore = DEFAULT_MIN_SCORE,
+  lexicalFallbackMinScore = readNumberEnv("HYBRID_LEXICAL_FALLBACK_MIN_SCORE", DEFAULT_LEXICAL_FALLBACK_MIN_SCORE),
+  serviceBoost = readNumberEnv("HYBRID_SERVICE_BOOST", DEFAULT_SERVICE_BOOST),
+  offServicePenalty = DEFAULT_OFF_SERVICE_PENALTY,
+  queryUnderstanding = null,
+} = {}) {
+  const understanding = queryUnderstanding || understandQuery(question);
+  const retrievalQuery = understanding.retrievalQuery || question;
+  const pageSources = Object.keys(pageKnowledge).map((pageId) => loadPageSource(pageId, { allowMissing: false }));
+  const globalSource = loadGlobalSource(pageSources[0]?.store);
+  const referenceModel = globalSource.store?.model || getEmbeddingModel();
+  const referenceDimension = Number(globalSource.store?.embeddingDimension) || DEFAULT_EMBEDDING_DIMENSION;
+  const { queryEmbedding, embeddingUnavailableReason } = await embedQuery(retrievalQuery, referenceModel, referenceDimension);
+  const effectiveMinScore = queryEmbedding ? minScore : lexicalFallbackMinScore;
+  const mentionedServices = detectMentionedServices(retrievalQuery);
+
+  const rankAll = (records, sourceType) =>
+    rankRecords({
+      records,
+      queryEmbedding,
+      question: retrievalQuery,
+      topK: records.length,
+      sourceType,
+      sourceBoost: 0,
+      serviceBoost,
+      mentionedServices,
+      understanding,
+      currentWorkflow: [],
+      offServicePenalty: mentionedServices.length > 0 ? offServicePenalty : 0,
+    });
+
+  const ranked = [
+    ...pageSources.flatMap((source) => rankAll(source.records, "page")),
+    ...rankAll(globalSource.records, "global"),
+  ].sort((a, b) => b.score - a.score);
+
+  const perService = mentionedServices.length > 1
+    ? mentionedServices.flatMap((service) => ranked.filter((chunk) => chunk.service.includes(service)).slice(0, perServiceTopK))
+    : [];
+  const chunks = mergeCandidates([...perService, ...ranked.slice(0, topK)], topK + perService.length);
+  const topScore = chunks[0]?.score || 0;
+
+  return {
+    chunks: topScore >= effectiveMinScore ? chunks : [],
+    topScore,
+    thresholdTriggered: topScore < effectiveMinScore,
+    queryEmbeddingDimension: queryEmbedding?.length || 0,
+    retrievalMode: queryEmbedding ? RETRIEVAL_MODE_SEMANTIC : RETRIEVAL_MODE_LEXICAL_FALLBACK,
+    embeddingUnavailableReason,
+    effectiveMinScore,
+    mentionedServices,
+    understanding,
+  };
+}
+
+function loadPageSource(pageId, { allowMissing }) {
+  const chunks = buildKnowledgeChunks(pageId);
+  const store = loadEmbeddingStore(pageId);
+
+  // A missing page embedding store (e.g. still pending generation) is not the same as a
+  // corrupt/stale one. The page is still fully supported, so page mode falls back to
+  // lexical/structured ranking over the freshly built chunks instead of failing the whole request
+  // the way a real validation error (stale hash, dimension mismatch, etc.) does.
+  if (!store) {
+    if (!allowMissing) throw new Error(`Page embedding store is missing: ${pageId}`);
+    return { pageId, store: null, storeMissing: true, records: chunks.map(withChunkServices) };
+  }
+
+  const validation = validateEmbeddingStore(pageId, chunks, store);
+  if (!validation.ok) {
+    throw new Error(`Page embedding store validation failed (${pageId}): ${validation.errors.join("; ")}`);
+  }
+
+  // Metadata is not part of the content hash, so always take it from the current chunks.
+  const metadataById = new Map(chunks.map((chunk) => [chunk.id, chunk.metadata || null]));
+  const records = store.records.map((record) => withChunkServices({ ...record, metadata: metadataById.get(record.id) || null }));
+  return { pageId, store, storeMissing: false, records };
+}
+
+function loadGlobalSource(referenceStore) {
+  const store = loadGlobalEmbeddingStore();
+  const chunks = buildGlobalKnowledgeChunks();
+  const validation = validateGlobalEmbeddingStore({
+    chunks,
+    store,
+    expectedModel: referenceStore?.model || store?.model || getEmbeddingModel(),
+    expectedDimension: Number(referenceStore?.embeddingDimension) || Number(store?.embeddingDimension) || DEFAULT_EMBEDDING_DIMENSION,
+  });
+
+  if (!validation.ok) {
+    throw new Error(`Global embedding store validation failed: ${validation.errors.join("; ")}`);
+  }
+
+  return { store, records: store.records };
+}
+
+function withChunkServices(record) {
+  return { ...record, service: record.metadata?.services || record.service || [] };
+}
+
+async function embedQuery(retrievalQuery, model, dimension) {
+  try {
+    const candidateEmbedding = await createEmbedding(["task: retrieval_query", retrievalQuery].join("\n"), {
+      model,
+      outputDimensionality: dimension,
+    });
+
+    return isValidEmbedding(candidateEmbedding, dimension)
+      ? { queryEmbedding: candidateEmbedding, embeddingUnavailableReason: null }
+      : { queryEmbedding: null, embeddingUnavailableReason: "invalid_embedding" };
+  } catch (error) {
+    return { queryEmbedding: null, embeddingUnavailableReason: isGeminiRateLimitError(error) ? "rate_limited" : "embedding_error" };
+  }
+}
+
+function getPageServices(pageId) {
+  const knowledge = pageKnowledge[pageId];
+  return knowledge?.services || buildKnowledgeChunks(pageId)[0]?.metadata?.services || [];
+}
+
+// Service-tagged global items are allowed on a page when they belong to the page's own service or
+// to a service the question names (a system code from the question, e.g. J504, counts as naming it).
+// Items of a documented related service are allowed too, except workflow/stage descriptions: a
+// generic question must never pull another service's stages into the answer.
+function isGlobalRecordAllowedOnPage({ record, services, pageServices, allowedGlobalServices, relatedServices, retrievalQuery }) {
+  if (pageServices.length === 0 || services.length === 0) return true;
+  if (services.some((service) => allowedGlobalServices.has(service))) return true;
+  if (record.type !== "workflow" && services.some((service) => relatedServices.includes(service))) return true;
+  return calculateCodeBoost(retrievalQuery, record) > 0;
+}
+
+function getRelatedServices(pageId) {
+  const knowledge = pageKnowledge[pageId];
+  if (knowledge?.relatedServices) return knowledge.relatedServices;
+  return LEGACY_RELATED[pageId]?.relatedServices || [];
+}
+
+function getRelatedPageIds(pageId) {
+  const knowledge = pageKnowledge[pageId];
+  if (knowledge?.relatedPages) return knowledge.relatedPages.filter((id) => pageKnowledge[id]);
+  return (LEGACY_RELATED[pageId]?.relatedPages || []).filter((id) => pageKnowledge[id]);
+}
+
 function buildHybridRetrievedContext(retrievedChunks) {
   return retrievedChunks
     .map((chunk) =>
@@ -160,6 +307,9 @@ function buildHybridRetrievedContext(retrievedChunks) {
         `Status: ${chunk.status}`,
         chunk.service?.length ? `Service: ${chunk.service.join(", ")}` : "",
         chunk.domain ? `Domain: ${chunk.domain}` : "",
+        chunk.metadata?.page ? `Page: ${chunk.metadata.page} (${chunk.metadata.page_title})` : "",
+        chunk.metadata?.stage_number ? `Stage: ${chunk.metadata.stage_number} — ${chunk.metadata.stage_title}` : "",
+        chunk.metadata?.responsibility ? `Execution / responsibility: ${chunk.metadata.responsibility}` : "",
         `Type: ${chunk.type}`,
         `Title: ${chunk.title}`,
         chunk.stageId ? `Stage ID: ${chunk.stageId}` : "",
@@ -174,31 +324,48 @@ function buildHybridRetrievedContext(retrievedChunks) {
     .join("\n\n");
 }
 
-function rankRecords({ records, queryEmbedding, question, topK, sourceType, sourceBoost, serviceBoost, mentionedServices, understanding, currentWorkflow }) {
+function rankRecords({
+  records,
+  queryEmbedding,
+  question,
+  topK,
+  sourceType,
+  sourceBoost,
+  serviceBoost,
+  mentionedServices,
+  understanding,
+  currentWorkflow,
+  offServicePenalty = 0,
+}) {
   return records
     .map((record) => {
       const semanticScore = queryEmbedding ? cosineSimilarity(queryEmbedding, record.embedding) : 0;
       const lexicalBoost = calculateLexicalBoost(question, record);
-      const matchedServices = sourceType === "global" ? getMatchedServices(record.service, mentionedServices) : [];
+      const codeBoost = calculateCodeBoost(question, record);
+      const recordServices = Array.isArray(record.service) ? record.service : [];
+      const matchedServices = sourceType === "page" && serviceBoost === 0 ? [] : getMatchedServices(recordServices, mentionedServices);
       const appliedServiceBoost = matchedServices.length > 0 ? serviceBoost : 0;
+      const appliedPenalty = offServicePenalty && recordServices.length > 0 && matchedServices.length === 0 ? offServicePenalty : 0;
       const intentBoost = calculateIntentBoost(question, record, sourceType);
       const nluBoost = sourceType === "page" ? calculateNluRecordBoost({ record, understanding, currentWorkflow }) : 0;
-      const score = semanticScore + lexicalBoost + sourceBoost + appliedServiceBoost + intentBoost + nluBoost;
+      const score = semanticScore + lexicalBoost + codeBoost + sourceBoost + appliedServiceBoost + intentBoost + nluBoost - appliedPenalty;
 
       return {
         id: record.id,
         sourceType,
-        status: sourceType === "page" ? "confirmed" : record.status,
-        service: Array.isArray(record.service) ? record.service : [],
-        domain: record.domain || (sourceType === "page" ? "current_page" : ""),
+        status: sourceType === "global" ? record.status : "confirmed",
+        service: recordServices,
+        domain: record.domain || (sourceType === "global" ? "" : "current_page"),
         title: record.title,
         type: record.type,
         text: record.text,
         stageId: record.stageId || null,
+        metadata: record.metadata || null,
         relatedTerms: record.relatedTerms || [],
         score: roundScore(score),
         semanticScore: roundScore(semanticScore),
         lexicalBoost: roundScore(lexicalBoost),
+        codeBoost: roundScore(codeBoost),
         sourceBoost: roundScore(sourceBoost),
         serviceBoost: roundScore(appliedServiceBoost),
         intentBoost: roundScore(intentBoost),
@@ -209,6 +376,26 @@ function rankRecords({ records, queryEmbedding, question, topK, sourceType, sour
     .sort((a, b) => b.score - a.score)
     .slice(0, topK);
 }
+
+// System codes (billing types such as ZRE/ZCF2, warehouse codes such as R574/J521, invoice numbers)
+// are unambiguous: a code named in the question that also appears in a chunk is strong evidence.
+const CODE_TOKEN_PATTERN = /[A-Z]{1,5}[0-9]*[A-Z0-9/]*/g;
+const CODE_BOOST_PER_MATCH = 0.03;
+const MAX_CODE_BOOST = 0.06;
+
+function calculateCodeBoost(question, record) {
+  const codes = [...new Set(String(question || "").match(CODE_TOKEN_PATTERN) || [])].filter(
+    (code) => code.length >= 3 && /[A-Z]/.test(code) && (/[0-9]/.test(code) || code.length <= 5) && !COMMON_ENGLISH_WORDS.has(code),
+  );
+  if (codes.length === 0) return 0;
+
+  const recordText = [record.title, record.text, ...(record.relatedTerms || [])].join(" ");
+  const matches = codes.filter((code) => new RegExp(`(^|[^A-Za-z0-9])${code.replace(/[/]/g, "\/")}(?=$|[^A-Za-z0-9])`).test(recordText)).length;
+  return Math.min(MAX_CODE_BOOST, matches * CODE_BOOST_PER_MATCH);
+}
+
+// Upper-case words that are ordinary product terms rather than system codes.
+const COMMON_ENGLISH_WORDS = new Set(["SAP", "OTP", "SLA", "UAT", "ERP", "API", "PDF", "KPI", "KPIS"]);
 
 function mergeCandidates(candidates, topK) {
   const byId = new Map();
@@ -282,11 +469,16 @@ function getMatchedServices(recordServices, mentionedServices) {
   return services.filter((service) => mentionedServices.includes(service));
 }
 
+function intersects(a, b) {
+  return a.some((item) => b.includes(item));
+}
+
 function normalizeText(value) {
   return String(value || "")
     .trim()
     .replace(/[؟?]/g, "")
     .replace(/[،,.;:()[\]{}"'`~!@#$%^&*_+=\\/|-]/g, " ")
+    .replace(/[أإآ]/g, "ا")
     .replace(/\s+/g, " ")
     .toLowerCase();
 }
@@ -304,14 +496,21 @@ function roundScore(score) {
   return Number(score.toFixed(6));
 }
 
+// Related services / pages for the hand-written Delivery page (structured pages carry their own).
+const LEGACY_RELATED = {
+  "intro-tour": { relatedServices: ["internal_transfer", "installation"], relatedPages: ["internal-transfer-delivery-link", "delivery-returns"] },
+};
+
 const SERVICE_TERMS = {
   delivery: ["خدمة التوصيل", "التوصيل", "Delivery"],
   installation: ["التركيب", "خدمة التركيب", "Installation"],
-  measurement: ["رفع القياسات", "القياسات", "Measurement"],
+  measurement: ["رفع القياسات", "القياسات", "قياسات", "رفع المقاسات", "المقاسات", "مقاسات", "Measurement"],
   manufacturing: ["التصنيع", "خدمة التصنيع", "Manufacturing"],
   design: ["التصميم", "خدمة التصميم", "Design"],
-  internal_transfer: ["التحويلات الداخلية", "التحويل الداخلي", "Internal Transfer"],
+  internal_transfer: ["التحويلات الداخلية", "التحويل الداخلي", "النقل الداخلي", "Internal Transfer"],
   maintenance: ["الصيانة الميدانية", "الصيانة", "Field Maintenance", "Maintenance"],
+  warehouse_pickup: ["الاستلام من المستودع", "استلام العميل البضاعة", "استلام البضاعة من المستودع", "يستلم من المستودع", "Warehouse Pickup"],
+  customer_service: ["خدمة العملاء", "الشكاوى", "شكوى", "الاستفسارات", "Customer Service"],
 };
 
 const GLOBAL_INTENT_TERMS = [
@@ -365,6 +564,7 @@ module.exports = {
   DEFAULT_PAGE_PRIORITY_BOOST,
   DEFAULT_PAGE_TOP_K,
   DEFAULT_SERVICE_BOOST,
+  GLOBAL_PAGE_ID,
   RETRIEVAL_MODE_SEMANTIC,
   RETRIEVAL_MODE_LEXICAL_FALLBACK,
   RETRIEVAL_MODE_PAGE_STORE_MISSING_FALLBACK,
@@ -375,5 +575,6 @@ module.exports = {
   detectMentionedServices,
   detectServiceListIntent,
   isGeminiRateLimitError,
+  retrieveGlobalAssistantChunks,
   retrieveHybridChunks,
 };

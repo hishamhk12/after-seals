@@ -2683,6 +2683,165 @@ tbody tr:last-child td {
   margin-bottom: var(--spacing-32);
 }
 
+/* Seven Design stages cannot fit on one phone-width row: fall back to the
+   default wrapping workflow cards used by the other service pages. */
+@media (max-width: 720px) {
+  #bookPortal .design-workflow > .case-header .workflow-flow {
+    flex-wrap: wrap;
+    column-gap: var(--spacing-12);
+  }
+
+  #bookPortal .design-workflow > .case-header .workflow-flow-node {
+    flex: 0 0 116px;
+    max-width: 116px;
+    padding-inline: var(--spacing-12);
+  }
+
+  #bookPortal .design-workflow > .case-header .workflow-flow-arrow {
+    flex-basis: 20px;
+  }
+}
+
+/* Customer Service overview: main content on the right (RTL start),
+   the separate Maintenance path on the left. */
+.customer-service-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--spacing-32);
+}
+
+.customer-service-layout .chapter-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.customer-service-maintenance-path {
+  padding-inline-start: var(--spacing-32);
+  border-inline-start: 1px solid var(--color-fog-white);
+}
+
+.customer-service-maintenance-path .entry-card {
+  border-color: #b8d4fb;
+}
+
+@media (max-width: 820px) {
+  .customer-service-layout,
+  .customer-service-layout .chapter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-service-maintenance-path {
+    padding-inline-start: 0;
+    padding-top: var(--spacing-24);
+    border-inline-start: 0;
+    border-top: 1px solid var(--color-fog-white);
+  }
+}
+
+/* "How cases reach Customer Service": three sources feeding one team. */
+.cs-sources-diagram {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-12);
+  margin-top: var(--spacing-24);
+}
+
+.cs-sources-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-16);
+  direction: rtl;
+}
+
+.cs-source-card {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: var(--spacing-8);
+  padding: var(--spacing-16);
+  border: 1px solid var(--color-fog-white);
+  border-radius: var(--radius-cards);
+  background: var(--color-pure-white);
+  color: var(--color-midnight-navy);
+  text-align: center;
+}
+
+.cs-source-card strong {
+  font-size: 15px;
+  font-weight: var(--font-weight-medium);
+}
+
+.cs-source-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-carbon-edge);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.cs-sources-merge {
+  color: var(--color-atlassian-blue);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.workflow-flow-node.cs-sources-target {
+  width: 180px;
+  font-size: 15px;
+  cursor: default;
+}
+
+.workflow-flow-node.cs-sources-target:hover {
+  outline: none;
+}
+
+@media (max-width: 720px) {
+  .cs-sources-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Phone-width fallback for the Customer Service complaints and Maintenance stages. */
+@media (max-width: 720px) {
+  #bookPortal .customer-service-complaints-workflow > .case-header .workflow-flow,
+  #bookPortal .customer-service-maintenance-workflow > .case-header .workflow-flow {
+    flex-wrap: wrap;
+    column-gap: var(--spacing-12);
+  }
+
+  #bookPortal .customer-service-complaints-workflow > .case-header .workflow-flow-node,
+  #bookPortal .customer-service-maintenance-workflow > .case-header .workflow-flow-node {
+    flex: 0 0 116px;
+    max-width: 116px;
+    padding-inline: var(--spacing-12);
+  }
+
+  #bookPortal .customer-service-complaints-workflow > .case-header .workflow-flow-arrow,
+  #bookPortal .customer-service-maintenance-workflow > .case-header .workflow-flow-arrow {
+    flex-basis: 20px;
+  }
+}
+
+/* Same phone-width fallback for the five Manufacturing stages. */
+@media (max-width: 720px) {
+  #bookPortal .manufacturing-workflow > .case-header .workflow-flow {
+    flex-wrap: wrap;
+    column-gap: var(--spacing-12);
+  }
+
+  #bookPortal .manufacturing-workflow > .case-header .workflow-flow-node {
+    flex: 0 0 116px;
+    max-width: 116px;
+    padding-inline: var(--spacing-12);
+  }
+
+  #bookPortal .manufacturing-workflow > .case-header .workflow-flow-arrow {
+    flex-basis: 20px;
+  }
+}
+
 /* Force the Partial Delivery top workflow cards to the exact same footprint as the
    Customer Delivery workflow cards (82px tall), regardless of title length. Longer
    titles are clamped to 2 lines with an ellipsis instead of growing the card. */

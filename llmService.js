@@ -1,12 +1,14 @@
 const { loadEnvFile } = require("./embeddingService");
 
 const FALLBACK_ANSWER = "المعلومة غير متوفرة ضمن هذه الصفحة.";
+const GLOBAL_FALLBACK_ANSWER = "المعلومة غير موثقة ضمن مسارات خدمات ما بعد البيع الحالية.";
 const ERROR_ANSWER = "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى.";
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.7-flash";
-const MAX_OUTPUT_TOKENS = 1400;
+// Cross-service answers list many stages; 1400 tokens truncated them mid-sentence.
+const MAX_OUTPUT_TOKENS = 3000;
 const TEMPERATURE = 0.05;
 
-async function answerFromRetrievedContext({ question, retrievedContext, queryUnderstanding = null }) {
+async function answerFromRetrievedContext({ question, retrievedContext, queryUnderstanding = null, fallbackAnswer = FALLBACK_ANSWER }) {
   loadEnvFile();
 
   if (!process.env.ai) {
@@ -14,10 +16,10 @@ async function answerFromRetrievedContext({ question, retrievedContext, queryUnd
   }
 
   if (!retrievedContext || !hasRequiredExactTerms(question, retrievedContext)) {
-    return FALLBACK_ANSWER;
+    return fallbackAnswer;
   }
 
-  const prompt = buildGroundedPrompt({ question, retrievedContext, queryUnderstanding });
+  const prompt = buildGroundedPrompt({ question, retrievedContext, queryUnderstanding, fallbackAnswer });
   const geminiResponse = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`,
     {
@@ -47,12 +49,12 @@ async function answerFromRetrievedContext({ question, retrievedContext, queryUnd
   }
 
   const data = await geminiResponse.json();
-  const answer = stripGroundingIntro(data?.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("").trim());
+  const answer = stripGroundingIntro(data?.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("").trim(), fallbackAnswer);
 
-  return answer || FALLBACK_ANSWER;
+  return answer || fallbackAnswer;
 }
 
-function buildGroundedPrompt({ question, retrievedContext, queryUnderstanding = null }) {
+function buildGroundedPrompt({ question, retrievedContext, queryUnderstanding = null, fallbackAnswer = FALLBACK_ANSWER }) {
   const understandingSection = buildUnderstandingSection(queryUnderstanding);
 
   return [
@@ -61,7 +63,8 @@ function buildGroundedPrompt({ question, retrievedContext, queryUnderstanding = 
     "Use only the source material provided below to answer. Treat it as the complete allowed source for this turn.",
     "",
     "Internal accuracy rules:",
-    `- If the source material does not directly support the answer, respond exactly: ${FALLBACK_ANSWER}`,
+    `- If the source material does not support any part of the answer, respond exactly: ${fallbackAnswer}`,
+    "- If the source material supports part of the answer (for example the relevant workflow or path) but not a detail in the question (for example a classification, duration or channel that is not documented), answer the supported part and say explicitly that the other detail is not documented in the current workflow. Do not refuse the whole question in that case.",
     "- Do not use outside Odoo knowledge.",
     "- Do not invent missing workflow behavior, missing fields, future stages, or business rules.",
     "- Do not answer from a similar-sounding term if the exact requested concept is not present in the source material.",
@@ -83,6 +86,10 @@ function buildGroundedPrompt({ question, retrievedContext, queryUnderstanding = 
     "- Do not include provenance, source, scope, or retrieval-process preambles in supported answers.",
     "- Do not begin with Arabic phrases that mean 'according to the available information' or 'based on the page'.",
     "- Adapt answer length to the question: define simple terms briefly, compare two fields in 2-3 lines, and use a short ordered list for sequence questions.",
+    "- Stage numbers are shown exactly as on the website (most workflows start at 00). Use the stage number and exact stage title from the facts; never renumber stages.",
+    "- For responsibility or manual/automatic (يدوي/آلي) questions, answer only from explicit 'التنفيذ' labels or explicit statements in the facts (for example 'يقوم النظام تلقائيًا'). If the facts do not state who performs a stage or whether it is manual or automatic, say clearly that this is not documented in the current workflow. Never infer automation, responsibilities, approvals, notifications, dependencies, or SLA rules.",
+    "- Facts may come from several services. Never attribute a stage of one service to another service; when an answer covers more than one service, name each service explicitly.",
+    "- Treat [Derived ...] blocks as exact structured data taken from the current website workflows.",
     "- Answer in clear Arabic.",
     "",
     understandingSection,
@@ -111,8 +118,8 @@ function buildUnderstandingSection(queryUnderstanding) {
     .join("\n");
 }
 
-function stripGroundingIntro(answer) {
-  if (answer === FALLBACK_ANSWER) {
+function stripGroundingIntro(answer, fallbackAnswer = FALLBACK_ANSWER) {
+  if (answer === FALLBACK_ANSWER || answer === fallbackAnswer) {
     return answer;
   }
 
@@ -199,6 +206,7 @@ const ENGLISH_STOP_WORDS = new Set([
 module.exports = {
   ERROR_ANSWER,
   FALLBACK_ANSWER,
+  GLOBAL_FALLBACK_ANSWER,
   answerFromRetrievedContext,
   buildGroundedPrompt,
   buildUnderstandingSection,

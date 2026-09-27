@@ -7,11 +7,13 @@ const GLOBAL_PAGE_ID = "global-after-sales";
 const GLOBAL_STORE_PATH = path.join(__dirname, "data", "embeddings", `${GLOBAL_PAGE_ID}.json`);
 
 function getGlobalKnowledgeItems() {
-  return globalKnowledgeItems.map((item) => ({
-    ...item,
-    service: normalizeService(item.service),
-    relatedTerms: [...(item.relatedTerms || [])],
-  }));
+  return globalKnowledgeItems
+    .filter((item) => item.status !== "superseded")
+    .map((item) => ({
+      ...item,
+      service: normalizeService(item.service),
+      relatedTerms: [...(item.relatedTerms || [])],
+    }));
 }
 
 function buildGlobalKnowledgeChunks() {

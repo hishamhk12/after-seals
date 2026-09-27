@@ -87,6 +87,68 @@ const internalTransferTour = {
   ],
 };
 
+const warehousePickupTour = {
+  id: "warehouse-pickup",
+  title: "خدمة استلام العميل البضاعة من المستودع",
+  children: [
+    { id: "warehouse-pickup-invoice", title: "فاتورة من SAP", targetId: "warehouse-pickup-step-invoice" },
+    { id: "warehouse-pickup-notify", title: "إرسال رسالة إلى العميل", targetId: "warehouse-pickup-step-notify" },
+    { id: "warehouse-pickup-confirm", title: "تأكيد استلام العميل", targetId: "warehouse-pickup-step-confirm" },
+  ],
+};
+
+const designTour = {
+  id: "design",
+  title: "خدمة التصميم",
+  children: [
+    { id: "design-invoice", title: "فاتورة من SAP", targetId: "design-step-invoice" },
+    { id: "design-request", title: "طلب تصميم", targetId: "design-step-request" },
+    { id: "design-assigned", title: "مُسندة لمصمم", targetId: "design-step-assigned" },
+    { id: "design-in-progress", title: "جاري العمل على التصميم", targetId: "design-step-in-progress" },
+    { id: "design-internal-approvals", title: "موافقات داخلية", targetId: "design-step-internal-approvals" },
+    { id: "design-customer-approval", title: "بانتظار موافقة العميل", targetId: "design-step-customer-approval" },
+    { id: "design-approved", title: "مكتمل ومعتمد", targetId: "design-step-approved" },
+  ],
+};
+
+const manufacturingTour = {
+  id: "manufacturing",
+  title: "خدمة التصنيع",
+  children: [
+    { id: "manufacturing-invoice", title: "فاتورة من SAP", targetId: "manufacturing-step-invoice" },
+    { id: "manufacturing-request", title: "طلب خدمة تصنيع", targetId: "manufacturing-step-request" },
+    { id: "manufacturing-workshop", title: "إرسال إلى ورشة التصنيع", targetId: "manufacturing-step-workshop" },
+    { id: "manufacturing-in-progress", title: "جاري التصنيع", targetId: "manufacturing-step-in-progress" },
+    { id: "manufacturing-completed", title: "تم الانتهاء من الخدمة", targetId: "manufacturing-step-completed" },
+  ],
+};
+
+const complaintsTour = {
+  id: "customer-service-complaints",
+  title: "الشكاوى / الاستفسارات",
+  children: [
+    { id: "complaints-received", title: "شكوى/استفسار العميل", targetId: "complaints-step-received" },
+    { id: "complaints-type", title: "تحديد النوع", targetId: "complaints-step-type" },
+    { id: "complaints-forward", title: "ارسال إلى الجهة المختصة", targetId: "complaints-step-forward" },
+    { id: "complaints-follow-up", title: "متابعة", targetId: "complaints-step-follow-up" },
+    { id: "complaints-resolution", title: "حل أو تصعيد", targetId: "complaints-step-resolution" },
+  ],
+};
+
+const maintenanceTour = {
+  id: "customer-service-maintenance",
+  title: "خدمة الصيانة",
+  children: [
+    { id: "maintenance-new-request", title: "طلب صيانة جديد", targetId: "maintenance-step-new-request" },
+    { id: "maintenance-scheduling", title: "جدولة موعد", targetId: "maintenance-step-scheduling" },
+    { id: "maintenance-technician", title: "تعيين فني", targetId: "maintenance-step-technician" },
+    { id: "maintenance-initial-report", title: "التقرير المبدئي", targetId: "maintenance-step-initial-report" },
+    { id: "maintenance-final-decision", title: "القرار النهائي / الموافقات", targetId: "maintenance-step-final-decision" },
+    { id: "maintenance-appointment", title: "تحديد موعد الصيانة", targetId: "maintenance-step-appointment" },
+    { id: "maintenance-in-progress", title: "جاري الصيانة / تسليم الخدمة", targetId: "maintenance-step-in-progress" },
+  ],
+};
+
 const subTaskCycleTour = {
   id: "sub-task-cycle",
   title: "دورة التوصيل الجزئي للعميل",
@@ -168,8 +230,8 @@ const chapters = [
       {
         id: "warehouse-pickup",
         title: "خدمة الاستلام من المستودع",
-        description: "سيتم إضافة محتوى هذه العملية لاحقًا.",
-        status: "قيد الإعداد",
+        description: "دورة عمل خدمة استلام العميل البضاعة من المستودع من وصول الفاتورة من SAP وحتى تأكيد استلام العميل.",
+        status: "مكتمل",
         visible: true,
       },
       {
@@ -320,6 +382,30 @@ const chapters = [
     ],
   },
   {
+    id: "customer-service-sources",
+    number: "القسم الأول",
+    title: "كيف تصل الحالات إلى خدمة العملاء؟",
+    description: "ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة: الإدارات الداخلية، والعميل مباشرة، والنظام.",
+    visible: true,
+    items: [],
+  },
+  {
+    id: "customer-service-complaints",
+    number: "القسم الثاني",
+    title: "الشكاوى / الاستفسارات",
+    description: "دورة معالجة شكوى أو استفسار العميل من الاستقبال وتحديد النوع وحتى الحل أو التصعيد.",
+    visible: true,
+    items: [],
+  },
+  {
+    id: "customer-service-maintenance",
+    number: "مسار مستقل",
+    title: "الصيانة",
+    description: "دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى تنفيذ أعمال الصيانة وتسليم الخدمة.",
+    visible: true,
+    items: [],
+  },
+  {
     id: "other-after-sales-relationships",
     number: "الباب الرابع",
     title: "العلاقة مع خدمات ما بعد البيع الأخرى",
@@ -385,20 +471,21 @@ const services = [
   {
     id: "design",
     title: "خدمة التصميم",
-    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
-    status: "قريبًا",
+    description: "دورة عمل خدمة التصميم من وصول الفاتورة من SAP وحتى اعتماد التصميم.",
+    status: "متاح",
   },
   {
     id: "manufacturing",
     title: "خدمة التصنيع",
-    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
-    status: "قريبًا",
+    description: "دورة عمل خدمة التصنيع من وصول الفاتورة من SAP وحتى الانتهاء من الخدمة.",
+    status: "متاح",
   },
   {
     id: "customer-service",
     title: "خدمة العملاء",
-    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
-    status: "قريبًا",
+    description: "كيف تصل الحالات إلى خدمة العملاء، ودورة معالجة الشكاوى والاستفسارات، ومسار الصيانة.",
+    status: "متاح",
+    chapterIds: ["customer-service-sources", "customer-service-complaints", "customer-service-maintenance"],
   },
 ];
 
@@ -618,16 +705,65 @@ function isInstallationWorkflowRoute(route = navigationState.route) {
     || (route.type === "operation" && route.operationId === "delivery-installation");
 }
 
+// Which assistant knowledge each completed page uses (pageId in pageKnowledge.js on the server).
+// Any other page (home, overviews, placeholders) uses the site-wide After-Sales assistant.
+const GLOBAL_ASSISTANT_ID = "after-sales-global";
+const PAGE_ASSISTANT_ROUTES = {
+  lesson: {
+    "customer-delivery": "intro-tour",
+    "internal-transfer": "internal-transfer",
+    "warehouse-pickup": "warehouse-pickup",
+    "internal-transfer-delivery-link": "internal-transfer-delivery-link",
+    "full-cancellation": "delivery-returns",
+    "partial-return": "delivery-returns",
+    "installation-full-cancellation": "installation-returns",
+    "installation-partial-return": "installation-returns",
+  },
+  service: {
+    installation: "installation",
+    measurement: "measurement",
+    design: "design",
+    manufacturing: "manufacturing",
+    "customer-service": "customer-service",
+  },
+  chapter: {
+    "customer-service-sources": "customer-service",
+    "customer-service-complaints": "complaints",
+    "customer-service-maintenance": "maintenance",
+  },
+  operation: {
+    "delivery-installation": "installation",
+  },
+};
+
 function getActivePageAssistantId() {
   if (navigationState.selectedExperienceId === introductoryTour.id) {
     return introductoryTour.id;
   }
 
-  if (navigationState.route.type === "lesson" && navigationState.route.itemId === internalTransferTour.id) {
-    return internalTransferTour.id;
+  const route = navigationState.route;
+  const routeKey = route.itemId || route.serviceId || route.chapterId || route.operationId;
+  return PAGE_ASSISTANT_ROUTES[route.type]?.[routeKey] || GLOBAL_ASSISTANT_ID;
+}
+
+let renderedAssistantScope = null;
+
+function renderAssistantScope(pageAssistant) {
+  const scope = getActivePageAssistantId();
+  const isGlobal = scope === GLOBAL_ASSISTANT_ID;
+  const toggleLabel = pageAssistant.querySelector("#assistantToggle span:last-child");
+  const answer = pageAssistant.querySelector("#assistantAnswer");
+
+  if (toggleLabel) toggleLabel.textContent = isGlobal ? "اسأل عن خدمات ما بعد البيع" : "اسأل عن هذه الصفحة";
+
+  // Reset the answer area when the assistant moves to another page's knowledge.
+  if (answer && renderedAssistantScope !== null && renderedAssistantScope !== scope && !answer.hasAttribute("aria-busy")) {
+    answer.textContent = isGlobal
+      ? "اسأل سؤالًا عن أي خدمة من خدمات ما بعد البيع."
+      : "اسأل سؤالًا عن محتوى هذه الصفحة فقط.";
   }
 
-  return null;
+  renderedAssistantScope = scope;
 }
 
 function statusClass(status) {
@@ -982,6 +1118,327 @@ function renderInternalTransferWorkflow() {
           <img src="assest/النقل الداخلي/8.png" alt="لوحة عمليات التحويلات الداخلية في نظام خدمات مابعد البيع مع تمييز مهمة التحويلات الداخلية في عمود تم الاستلام" tabindex="0" role="button" aria-label="اضغط لتكبير صورة مرحلة تم الاستلام" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
+    </div>`;
+}
+
+function renderWarehousePickupWorkflow() {
+  const stages = [
+    {
+      title: "فاتورة من SAP",
+      description: "وصول فاتورة من SAP تحتوي على خدمة استلام العميل البضاعة من المستودع.",
+    },
+    {
+      title: "إرسال رسالة إلى العميل",
+      description: "يقوم النظام تلقائيًا بإرسال رسالة إلى العميل لإبلاغه بجاهزية البضاعة للاستلام من المستودع.",
+    },
+    {
+      title: "تأكيد استلام العميل",
+      description: "بعد استلام العميل للبضاعة، يتم تأكيد الاستلام داخل النظام وتكتمل دورة الخدمة.",
+    },
+  ];
+
+  return `
+    <div class="workflow-content warehouse-pickup-workflow">
+      <header class="case-header" aria-labelledby="warehousePickupTitle">
+        <div>
+          <h1 id="warehousePickupTitle">${warehousePickupTour.title}</h1>
+          ${renderWorkflowFlow(warehousePickupTour, {
+            activeTargetId: warehousePickupTour.children[0].targetId,
+            numberStart: 0,
+          })}
+        </div>
+      </header>
+      ${stages.map((stage, index) => {
+        const step = warehousePickupTour.children[index];
+        const titleId = `warehousePickupStage${index}Title`;
+        return `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+          <div><h2 id="${titleId}">${stage.title}</h2></div>
+        </div>
+        <p class="field-explanation-intro">${stage.description}</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> آلي من خلال النظام</aside>
+      </section>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderDesignWorkflow() {
+  const stageDescriptions = [
+    "تبدأ دورة خدمة التصميم بوصول فاتورة من SAP تحتوي على خدمة التصميم إلى نظام خدمات ما بعد البيع، حيث يتم إنشاء طلب التصميم وبدء متابعة الخدمة.",
+    "بعد وصول الفاتورة وإنشاء خدمة التصميم، يظهر الطلب في مرحلة طلب تصميم ليتم بدء متابعة الخدمة وتجهيزها للإسناد إلى المصمم.",
+    "في هذه المرحلة يتم إسناد طلب التصميم إلى المصمم المسؤول عن تنفيذ الخدمة، ليصبح الطلب جاهزًا للبدء في إعداد التصميم.",
+    "بعد إسناد الطلب إلى المصمم، تنتقل المهمة إلى مرحلة جاري العمل على التصميم، حيث يبدأ المصمم بإعداد التصميم ومتابعة متطلبات العميل والمواصفات المطلوبة.",
+    "بعد إعداد التصميم، يتم استكمال المراجعات والموافقات الداخلية المطلوبة للتأكد من جاهزية التصميم قبل عرضه على العميل.",
+    "بعد اكتمال الموافقات الداخلية، ينتقل الطلب إلى مرحلة بانتظار موافقة العميل، حيث يتم عرض أو إرسال التصميم للعميل لاعتماده.",
+    "بعد اعتماد العميل للتصميم، تنتقل المهمة إلى مرحلة مكتمل ومعتمد، وبذلك تكتمل دورة خدمة التصميم.",
+  ];
+  const stageFigures = {
+    0: `
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/التصميم/1.png" alt="لوحة عمليات خدمة التصميم في نظام خدمات مابعد البيع وتعرض مراحل طلب تصميم ومُسندة لمصمم وجاري العمل على التصميم وموافقات داخلية وبانتظار موافقة العميل ومكتمل ومعتمد" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة خدمة التصميم" title="اضغط لتكبير الصورة" />
+        </figure>`,
+  };
+
+  return `
+    <div class="workflow-content design-workflow">
+      <header class="case-header" aria-labelledby="designWorkflowTitle">
+        <div>
+          <h1 id="designWorkflowTitle">${designTour.title}</h1>
+          ${renderWorkflowFlow(designTour, {
+            activeTargetId: designTour.children[0].targetId,
+            numberStart: 0,
+          })}
+        </div>
+      </header>
+      ${designTour.children.map((step, index) => {
+        const titleId = `designStage${index}Title`;
+        return `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+          <div><h2 id="${titleId}">${step.title}</h2></div>
+        </div>
+        <p class="field-explanation-intro">${stageDescriptions[index]}</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> يدوي / إدارة التصميم</aside>${stageFigures[index] || ""}
+      </section>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderManufacturingWorkflow() {
+  const stages = [
+    {
+      description: "تبدأ دورة خدمة التصنيع بوصول فاتورة من SAP تحتوي على خدمة التصنيع إلى نظام خدمات ما بعد البيع، حيث يتم إنشاء طلب الخدمة وبدء متابعة دورة التصنيع.",
+      execution: "آلي من خلال النظام",
+      figure: `
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/التصنيع/1.png" alt="لوحة عمليات خدمة التصنيع في نظام خدمات مابعد البيع وتعرض مراحل طلب خدمة تصنيع وإرسال إلى ورشة التصنيع وجاري التصنيع وتم الانتهاء من الخدمة" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة خدمة التصنيع" title="اضغط لتكبير الصورة" />
+        </figure>`,
+    },
+    {
+      description: "بعد وصول الفاتورة وإنشاء الخدمة، يظهر الطلب في مرحلة طلب خدمة تصنيع ليتم تجهيز الطلب وبدء متابعته قبل تحويله إلى ورشة التصنيع.",
+      execution: "آلي من خلال النظام",
+    },
+    {
+      description: "في هذه المرحلة يتم تحويل طلب التصنيع إلى ورشة التصنيع المختصة، لتبدأ الجهة المسؤولة باستلام الطلب وتجهيزه للتنفيذ حسب المواصفات المطلوبة.",
+      execution: "يدوي / إدارة التصنيع",
+    },
+    {
+      description: "بعد إرسال الطلب إلى ورشة التصنيع، تنتقل المهمة إلى مرحلة جاري التصنيع، حيث يتم تنفيذ أعمال التصنيع ومتابعة سير العمل وفق المواصفات المعتمدة.",
+      execution: "يدوي / إدارة التصنيع",
+    },
+    {
+      description: "بعد اكتمال أعمال التصنيع، تنتقل المهمة إلى مرحلة تم الانتهاء من الخدمة، وبذلك تكتمل دورة خدمة التصنيع داخل النظام.",
+      execution: "يدوي / إدارة التصنيع",
+    },
+  ];
+
+  return `
+    <div class="workflow-content manufacturing-workflow">
+      <header class="case-header" aria-labelledby="manufacturingWorkflowTitle">
+        <div>
+          <h1 id="manufacturingWorkflowTitle">${manufacturingTour.title}</h1>
+          ${renderWorkflowFlow(manufacturingTour, {
+            activeTargetId: manufacturingTour.children[0].targetId,
+            numberStart: 0,
+          })}
+        </div>
+      </header>
+      ${manufacturingTour.children.map((step, index) => {
+        const stage = stages[index];
+        const titleId = `manufacturingStage${index}Title`;
+        return `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+          <div><h2 id="${titleId}">${step.title}</h2></div>
+        </div>
+        <p class="field-explanation-intro">${stage.description}</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> ${stage.execution}</aside>${stage.figure || ""}
+      </section>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderResponsibilityWorkflow(tour, stages, className, titleIdPrefix) {
+  return `
+    <div class="workflow-content ${className}">
+      <header class="case-header" aria-labelledby="${titleIdPrefix}Title">
+        <div>
+          <h1 id="${titleIdPrefix}Title">${tour.title}</h1>
+          ${renderWorkflowFlow(tour, {
+            activeTargetId: tour.children[0].targetId,
+            numberStart: 0,
+          })}
+        </div>
+      </header>
+      ${tour.children.map((step, index) => {
+        const stage = stages[index];
+        const titleId = `${titleIdPrefix}Stage${index}Title`;
+        return `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+          <div><h2 id="${titleId}">${step.title}</h2></div>
+        </div>
+        <p class="field-explanation-intro">${stage.description}</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> ${stage.execution}</aside>
+      </section>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderComplaintsWorkflow() {
+  return renderResponsibilityWorkflow(complaintsTour, [
+    {
+      description: "تبدأ الدورة باستقبال شكوى أو استفسار العميل من قبل خدمة العملاء، ويتم توثيق تفاصيل الحالة لتكون مرجعًا في بقية مراحل المعالجة.",
+      execution: "يدوي / خدمة العملاء",
+    },
+    {
+      description: "بعد توثيق الحالة، تقوم خدمة العملاء بتحديد نوع الحالة وتصنيفها، تمهيدًا لتحويلها إلى الجهة المختصة بمعالجتها.",
+      execution: "يدوي / خدمة العملاء",
+    },
+    {
+      description: "بعد تحديد نوع الحالة، يتم تحويل الشكوى إلى الجهة المختصة بالمعالجة، وتشترك خدمة العملاء والجهة المختصة في تنفيذ هذه المرحلة.",
+      execution: "يدوي / خدمة العملاء / الجهة المختصة",
+    },
+    {
+      description: "بعد تحويل الشكوى، تتابع خدمة العملاء الحالة مع الجهة المختصة حتى اكتمال الإجراء المطلوب.",
+      execution: "يدوي / خدمة العملاء",
+    },
+    {
+      description: "بعد اكتمال الإجراء، يتم الوصول إلى حل الشكوى، أو تصعيدها عند الحاجة، وبذلك تنتهي دورة معالجة الشكوى أو الاستفسار.",
+      execution: "يدوي / خدمة العملاء",
+    },
+  ], "customer-service-complaints-workflow", "complaints");
+}
+
+function renderMaintenanceWorkflow() {
+  return renderResponsibilityWorkflow(maintenanceTour, [
+    {
+      description: "تبدأ دورة خدمة الصيانة بإنشاء طلب صيانة جديد داخل نظام خدمات ما بعد البيع من قبل خدمة العملاء، ليبدأ تتبع الطلب ضمن مراحل الصيانة.",
+      execution: "يدوي / خدمة العملاء",
+    },
+    {
+      description: "بعد إنشاء الطلب، يتم الانتقال إلى مرحلة جدولة الموعد، حيث تقوم خدمة العملاء بتحديد موعد زيارة الصيانة.",
+      execution: "يدوي / خدمة العملاء",
+    },
+    {
+      description: "بعد جدولة الموعد، يكون طلب الصيانة بانتظار تعيين الفني المسؤول عن تنفيذ الزيارة، ويتم التعيين من قبل الجهة المختصة.",
+      execution: "يدوي / الجهة المختصة",
+    },
+    {
+      description: "بعد زيارة الفني، يتم تسجيل التقرير المبدئي للحالة وتحديد الإجراء المطلوب لمعالجتها.",
+      execution: "يدوي / الجهة المختصة",
+    },
+    {
+      description: "بعد تسجيل التقرير المبدئي، تتخذ الإدارة القرار النهائي للحالة ويتم استكمال الموافقات المطلوبة.",
+      execution: "يدوي / الإدارة",
+    },
+    {
+      description: "بعد جاهزية الحالة، تقوم خدمة العملاء بتحديد موعد تنفيذ أعمال الصيانة.",
+      execution: "يدوي / خدمة العملاء",
+    },
+    {
+      description: "في الموعد المحدد يقوم الفني بتنفيذ أعمال الصيانة، ثم يتم تسليم الخدمة بعد الانتهاء من الأعمال المطلوبة، وبذلك تكتمل دورة خدمة الصيانة.",
+      execution: "يدوي / الفني",
+    },
+  ], "customer-service-maintenance-workflow", "maintenance");
+}
+
+const customerServiceSources = [
+  {
+    title: "من الإدارات الداخلية",
+    description: "تصل الحالة إلى خدمة العملاء من إحدى الإدارات الداخلية عندما يظهر موقف مع العميل يحتاج إلى متابعة من خدمة العملاء.",
+    examples: ["عميل رفض التوقيع", "عميل غير راضٍ عن التركيب", "صعوبة تواصل"],
+  },
+  {
+    title: "من العميل مباشرة",
+    description: "يتواصل العميل مباشرة مع خدمة العملاء لتقديم استفسار أو شكوى.",
+    examples: ["استفسار", "شكوى"],
+  },
+  {
+    title: "من النظام",
+    description: "تظهر الحالة من خلال النظام عند وجود طلب يحتاج إلى متابعة من خدمة العملاء.",
+    examples: ["حالة عالقة", "عميل لم يحجز موعد", "تأخر في إجراء مطلوب"],
+  },
+];
+
+function renderCustomerServiceSources() {
+  return `
+    <div class="workflow-content customer-service-sources">
+      <header class="case-header" aria-labelledby="customerServiceSourcesTitle">
+        <div>
+          <h1 id="customerServiceSourcesTitle">كيف تصل الحالات إلى خدمة العملاء؟</h1>
+          <p>ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة.</p>
+          <div class="cs-sources-diagram" aria-label="مصادر الحالات التي تصل إلى خدمة العملاء">
+            <div class="cs-sources-row">
+              ${customerServiceSources.map((source, index) => `
+                <div class="cs-source-card">
+                  <span class="workflow-flow-index">${String(index + 1).padStart(2, "0")}</span>
+                  <strong>${source.title}</strong>
+                  <ul>${source.examples.map((example) => `<li>${example}</li>`).join("")}</ul>
+                </div>`).join("")}
+            </div>
+            <span class="cs-sources-merge" aria-hidden="true">↓</span>
+            <div class="workflow-flow-node active cs-sources-target">
+              <span>خدمة العملاء</span>
+            </div>
+          </div>
+        </div>
+      </header>
+      <p class="internal-transfer-result-note"><strong>ملاحظة:</strong> جميع القنوات الثلاثة تصب في جهة واحدة لإدارة الحالة ومتابعتها حتى الإغلاق.</p>
+      ${customerServiceSources.map((source, index) => `
+      <section class="panel invoice-training-section" aria-labelledby="customerServiceSource${index + 1}Title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+          <div><h2 id="customerServiceSource${index + 1}Title">${source.title}</h2></div>
+        </div>
+        <p class="field-explanation-intro">${source.description}</p>
+        <aside class="internal-transfer-example"><strong>أمثلة:</strong> ${source.examples.join("، ")}.</aside>
+      </section>`).join("")}
+    </div>`;
+}
+
+function renderCustomerServiceEntryCard(chapterId, meta) {
+  const chapter = getChapter(chapterId);
+  return `
+    <a class="entry-card" href="${routeHref("chapter", chapter.id)}">
+      <span class="entry-card-index" aria-hidden="true">${chapter.number}</span>
+      <strong class="entry-card-title">${chapter.title}</strong>
+      <span class="entry-card-description">${chapter.description}</span>
+      <span class="entry-card-meta">${meta}</span>
+      <span class="entry-card-action">فتح القسم <span aria-hidden="true">←</span></span>
+    </a>`;
+}
+
+function renderCustomerServiceOverview(service) {
+  return `
+    <header class="chapter-header service-header">
+      <p class="chapter-number">نطاق الخدمة</p>
+      <h1>${service.title}</h1>
+      <p>${service.description}</p>
+    </header>
+    <div class="customer-service-layout">
+      <section class="chapter-index customer-service-main" aria-labelledby="customerServiceContentTitle">
+        <div class="index-heading">
+          <span>فهرس خدمة العملاء</span>
+          <h2 id="customerServiceContentTitle">محتوى خدمة العملاء</h2>
+        </div>
+        <div class="chapter-grid">
+          ${renderCustomerServiceEntryCard("customer-service-sources", "3 مصادر")}
+          ${renderCustomerServiceEntryCard("customer-service-complaints", "5 مراحل")}
+        </div>
+      </section>
+      <aside class="chapter-index customer-service-maintenance-path" aria-labelledby="customerServiceMaintenanceTitle">
+        <div class="index-heading">
+          <span>مسار مستقل</span>
+          <h2 id="customerServiceMaintenanceTitle">الصيانة</h2>
+        </div>
+        ${renderCustomerServiceEntryCard("customer-service-maintenance", "7 مراحل")}
+      </aside>
     </div>`;
 }
 
@@ -1397,6 +1854,12 @@ function renderBookPortal() {
           </section>
         </div>`;
       bindLearningMap(portal);
+    } else if (service.id === "design") {
+      portal.innerHTML = renderDesignWorkflow();
+    } else if (service.id === "manufacturing") {
+      portal.innerHTML = renderManufacturingWorkflow();
+    } else if (service.id === "customer-service") {
+      portal.innerHTML = renderCustomerServiceOverview(service);
     } else {
       portal.innerHTML = `
         <article class="placeholder-page service-placeholder">
@@ -1426,6 +1889,17 @@ function renderBookPortal() {
       return;
     }
 
+    const customerServiceChapterRenderers = {
+      "customer-service-sources": renderCustomerServiceSources,
+      "customer-service-complaints": renderComplaintsWorkflow,
+      "customer-service-maintenance": renderMaintenanceWorkflow,
+    };
+    if (customerServiceChapterRenderers[chapter.id]) {
+      portal.innerHTML = customerServiceChapterRenderers[chapter.id]();
+      document.title = `${chapter.title} | دليل خدمات ما بعد البيع`;
+      return;
+    }
+
     if (chapter.placeholderOnly) {
       portal.innerHTML = renderMinimalPlaceholderPage(`${chapter.number} — ${chapter.title}`, chapter.description);
       document.title = `${chapter.title} | دليل خدمات ما بعد البيع`;
@@ -1449,6 +1923,12 @@ function renderBookPortal() {
   if (match?.item.id === "internal-transfer") {
     portal.innerHTML = renderInternalTransferWorkflow();
     document.title = `${internalTransferTour.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "warehouse-pickup") {
+    portal.innerHTML = renderWarehousePickupWorkflow();
+    document.title = `${warehousePickupTour.title} | دليل خدمات ما بعد البيع`;
     return;
   }
 
@@ -1745,7 +2225,6 @@ function renderWorkflowVisibility() {
   const deliveryInstallationWorkflow = document.querySelector("#deliveryInstallationWorkflow");
   const shouldShowWorkflow = navigationState.selectedExperienceId === introductoryTour.id;
   const shouldShowDeliveryInstallation = navigationState.selectedExperienceId === deliveryInstallationTour.id;
-  const shouldShowInternalTransfer = navigationState.route.type === "lesson" && navigationState.route.itemId === internalTransferTour.id;
 
   workflowContent.hidden = !shouldShowWorkflow;
   deliveryInstallationPlaceholder.hidden = !shouldShowDeliveryInstallation;
@@ -1754,7 +2233,8 @@ function renderWorkflowVisibility() {
   });
 
   if (pageAssistant) {
-    pageAssistant.hidden = !(shouldShowWorkflow || shouldShowInternalTransfer);
+    pageAssistant.hidden = false;
+    renderAssistantScope(pageAssistant);
   }
 
   if (shouldShowWorkflow) {
@@ -1790,6 +2270,21 @@ function renderNavigationState() {
   if (navigationState.route.type === "lesson" && navigationState.route.itemId === "internal-transfer") {
     bindLearningMap(document.querySelector("#bookPortal"));
     initTourStepObserver(internalTransferTour);
+  } else if (navigationState.route.type === "lesson" && navigationState.route.itemId === "warehouse-pickup") {
+    bindLearningMap(document.querySelector("#bookPortal"));
+    initTourStepObserver(warehousePickupTour);
+  } else if (navigationState.route.type === "service" && navigationState.route.serviceId === "design") {
+    bindLearningMap(document.querySelector("#bookPortal"));
+    initTourStepObserver(designTour);
+  } else if (navigationState.route.type === "service" && navigationState.route.serviceId === "manufacturing") {
+    bindLearningMap(document.querySelector("#bookPortal"));
+    initTourStepObserver(manufacturingTour);
+  } else if (navigationState.route.type === "chapter" && navigationState.route.chapterId === complaintsTour.id) {
+    bindLearningMap(document.querySelector("#bookPortal"));
+    initTourStepObserver(complaintsTour);
+  } else if (navigationState.route.type === "chapter" && navigationState.route.chapterId === maintenanceTour.id) {
+    bindLearningMap(document.querySelector("#bookPortal"));
+    initTourStepObserver(maintenanceTour);
   } else if (navigationState.route.type === "lesson" && navigationState.route.itemId === "sub-task-cycle") {
     bindLearningMap(document.querySelector("#bookPortal"));
     tourStepObserver?.disconnect();
@@ -2425,7 +2920,7 @@ function initPageAssistant() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pageId: getActivePageAssistantId() || introductoryTour.id,
+          pageId: getActivePageAssistantId(),
           question,
         }),
       });

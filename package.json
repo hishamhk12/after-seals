@@ -22,7 +22,14 @@
     "llm:validate": "node validateLlm.js",
     "ai:evaluate": "node evaluateAi.js",
     "ai:regression": "node regressionAi.js",
-    "nlu:evaluate": "node evaluateNlu.js"
+    "nlu:evaluate": "node evaluateNlu.js",
+    "powerpoint:extract": "node buildPowerPointKnowledge.js",
+    "powerpoint:check": "node buildPowerPointKnowledge.js --check",
+    "powerpoint:validate": "node validatePowerPointKnowledge.js",
+    "powerpoint:embeddings:plan": "node buildPowerPointEmbeddings.js --dry-run",
+    "powerpoint:embeddings:build": "node buildPowerPointEmbeddings.js",
+    "powerpoint:test": "node testPowerPointRag.js",
+    "powerpoint:smoke": "node testPowerPointRag.js --live"
   },
   "dependencies": {
     "react": "^19.2.8",

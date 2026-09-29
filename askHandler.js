@@ -1,6 +1,11 @@
 const { loadEnvFile } = require("./embeddingService");
 const { ERROR_ANSWER, FALLBACK_ANSWER, GLOBAL_FALLBACK_ANSWER, answerFromRetrievedContext } = require("./llmService");
-const { buildHybridRetrievedContext, retrieveGlobalAssistantChunks, retrieveHybridChunks } = require("./hybridRetrievalService");
+const {
+  buildHybridRetrievedContext,
+  detectMentionedServices,
+  getPageServices,
+  retrieveGlobalAssistantChunks,
+} = require("./hybridRetrievalService");
 const {
   buildAutomationSummaryContext,
   buildResponsibilityContext,
@@ -14,40 +19,94 @@ const { pageKnowledge, findSupportedAnswer } = require("./pageKnowledge");
 const { understandQuery } = require("./queryUnderstanding");
 
 const MAX_QUESTION_LENGTH = 500;
-// pageId used by the site-wide assistant (home and overview pages): answers across all services.
+// pageId sent by the site-wide assistant on home and overview pages: no page context at all.
 const GLOBAL_ASSISTANT_ID = "after-sales-global";
 const INVALID_QUESTION_ANSWER = "يرجى كتابة سؤال واضح لا يتجاوز 500 حرف.";
 
+// The page that owns each service's own workflow, so a question about a service the reader does not
+// have open is still answered from that service's structured knowledge. Mirrors the site's
+// PAGE_ASSISTANT_ROUTES: one canonical page per service, link and returns pages excluded.
+const SERVICE_PRIMARY_PAGE = {
+  delivery: "intro-tour",
+  installation: "installation",
+  measurement: "measurement",
+  design: "design",
+  manufacturing: "manufacturing",
+  internal_transfer: "internal-transfer",
+  maintenance: "maintenance",
+  warehouse_pickup: "warehouse-pickup",
+  customer_service: "customer-service",
+};
+
+// One assistant for all of After-Sales. The page and stage the reader has open are context, never a
+// scope: every question is answered from the whole knowledge base, and a question that names another
+// service is answered from that service instead of being refused as "not on this page".
 async function handleAskPayload(body, logger = console) {
   loadEnvFile();
 
-  const pageId = typeof body?.pageId === "string" ? body.pageId.trim() : "";
+  const requestedPageId = typeof body?.pageId === "string" ? body.pageId.trim() : "";
   const question = typeof body?.question === "string" ? body.question.trim() : "";
-
-  const isGlobal = pageId === GLOBAL_ASSISTANT_ID;
-
-  logger.log?.(
-    `Ask payload: pageId=${pageId || "(missing)"}, questionLength=${question.length}, scope=${isGlobal ? "global" : "page"}, supportedPage=${isGlobal || Boolean(pageKnowledge[pageId])}`,
-  );
-
-  if (!isGlobal && !pageKnowledge[pageId]) {
-    return jsonResult(400, { answer: FALLBACK_ANSWER });
-  }
+  // Optional context from the site: the workflow stage the reader currently has open.
+  const stageId = typeof body?.stageId === "string" ? body.stageId.trim() : "";
+  const stageTitle = typeof body?.stageTitle === "string" ? body.stageTitle.trim() : "";
 
   if (!question || question.length > MAX_QUESTION_LENGTH) {
     return jsonResult(400, { answer: INVALID_QUESTION_ANSWER });
   }
 
-  if (isGlobal) {
-    return handleGlobalQuestion(question, logger);
-  }
+  // An unknown or global pageId simply means the reader has no service page open.
+  const openPageId = pageKnowledge[requestedPageId] ? requestedPageId : "";
+  const mentionedServices = detectMentionedServices(question);
+  const contextPageId = keepsOpenPageContext(openPageId, mentionedServices) ? openPageId : "";
+  // Whose structured workflow the answer is about: the open page while the question is about it,
+  // otherwise the page of the one service the question names.
+  const answerPageId = contextPageId || resolveNamedServicePage(mentionedServices);
 
+  logger.log?.(
+    [
+      `Ask payload: openPage=${requestedPageId || "(missing)"}`,
+      `questionLength=${question.length}`,
+      `namedServices=${mentionedServices.join(",") || "none"}`,
+      `pageContext=${contextPageId || "none"}`,
+      `answerPage=${answerPageId || "none"}`,
+      stageId ? `openStage=${stageId}` : "",
+    ]
+      .filter(Boolean)
+      .join(", "),
+  );
+
+  return handleGlobalQuestion({ question, contextPageId, answerPageId, stageTitle }, logger);
+}
+
+// The open page keeps applying while the question is about one of that page's services, or names no
+// service at all — which is what an ambiguous follow-up ("شو بيجي بعد هالمرحلة؟") looks like. Naming
+// a different service is what makes the reader's page step aside.
+function keepsOpenPageContext(openPageId, mentionedServices) {
+  if (!openPageId) return false;
+  if (mentionedServices.length === 0) return true;
+
+  const pageServices = getPageServices(openPageId);
+  return pageServices.some((service) => mentionedServices.includes(service));
+}
+
+// Only an unambiguous single service routes to a page of its own; a question spanning several
+// services is left to global retrieval, which already reserves chunks per named service.
+function resolveNamedServicePage(mentionedServices) {
+  if (mentionedServices.length !== 1) return "";
+  const pageId = SERVICE_PRIMARY_PAGE[mentionedServices[0]];
+  return pageKnowledge[pageId] ? pageId : "";
+}
+
+async function handleGlobalQuestion({ question, contextPageId, answerPageId, stageTitle }, logger) {
   const queryUnderstanding = understandQuery(question);
-  const supportedAnswer = findSupportedAnswer(pageId, question);
 
-  if (supportedAnswer && shouldUseSupportedAnswer(pageId, supportedAnswer, queryUnderstanding)) {
-    logger.log?.(`Retrieval path: exact_structured; pageId=${pageId}`);
-    return jsonResult(200, { answer: formatSupportedAnswer(pageId, supportedAnswer, queryUnderstanding) });
+  // The curated exact answers of the service the question is about. This is what keeps a workflow
+  // question deterministic, and it now follows the question's service rather than the open page.
+  const supportedAnswer = answerPageId ? findSupportedAnswer(answerPageId, question) : "";
+
+  if (supportedAnswer && shouldUseSupportedAnswer(answerPageId, supportedAnswer, queryUnderstanding)) {
+    logger.log?.(`Retrieval path: exact_structured; answerPage=${answerPageId}`);
+    return jsonResult(200, { answer: formatSupportedAnswer(answerPageId, supportedAnswer, queryUnderstanding) });
   }
 
   if (!process.env.ai) {
@@ -56,73 +115,33 @@ async function handleAskPayload(body, logger = console) {
   }
 
   try {
-    const retrieval = await retrieveHybridChunks({ pageId, question, queryUnderstanding });
-
+    const retrieval = await retrieveGlobalAssistantChunks({ question, queryUnderstanding, currentPageId: contextPageId });
     logger.log?.(
       [
-        `Hybrid RAG retrieval: pageId=${pageId}`,
-        `retrievalMode=${retrieval.retrievalMode}`,
-        retrieval.embeddingUnavailableReason ? `embeddingUnavailableReason=${retrieval.embeddingUnavailableReason}` : "",
-        `intent=${retrieval.understanding?.primaryIntent || "unknown"}`,
-        `intentConfidence=${retrieval.understanding?.confidence || 0}`,
-        `concepts=${retrieval.understanding?.concepts?.join(",") || "none"}`,
-        `retrieved=${retrieval.chunks.map((chunk) => `${chunk.sourceType}:${chunk.id}:${chunk.score}:${chunk.status}`).join(", ") || "none"}`,
+        `Global RAG retrieval: retrievalMode=${retrieval.retrievalMode}`,
+        `pageContext=${contextPageId || "none"}`,
+        `mentionedServices=${retrieval.mentionedServices.join(",") || "none"}`,
+        `retrieved=${retrieval.chunks.map((chunk) => `${chunk.sourceType}:${chunk.id}:${chunk.score}`).join(", ") || "none"}`,
         `topScore=${retrieval.topScore}`,
-        `effectiveMinScore=${retrieval.effectiveMinScore}`,
         `thresholdTriggered=${retrieval.thresholdTriggered}`,
+        retrieval.powerpointUnavailableReason ? `powerpointUnavailableReason=${retrieval.powerpointUnavailableReason}` : "",
+        retrieval.powerpointMissing?.length ? `powerpointMissingEmbeddings=${retrieval.powerpointMissing.length}` : "",
+        retrieval.pagesMissingEmbeddings?.length ? `pagesMissingEmbeddings=${retrieval.pagesMissingEmbeddings.join(",")}` : "",
+        retrieval.staleEmbeddingChunks?.length ? `staleEmbeddingChunks=${retrieval.staleEmbeddingChunks.join(",")}` : "",
       ]
         .filter(Boolean)
         .join("; "),
     );
 
-    if (retrieval.thresholdTriggered || retrieval.chunks.length === 0) {
-      logger.log?.(`Retrieval path: unsupported_fallback; pageId=${pageId}; retrievalMode=${retrieval.retrievalMode}`);
-      return jsonResult(200, { answer: FALLBACK_ANSWER });
-    }
-
-    logger.log?.(`Retrieval path: ${retrieval.retrievalMode}; pageId=${pageId}`);
-
-    const answer = await answerFromRetrievedContext({
-      question,
-      retrievedContext: [
-        buildCurrentWorkflowContext(pageId, queryUnderstanding),
-        buildStageReferenceContext(pageId, question),
-        detectResponsibilityIntent(question) || detectAutomationIntent(question) ? buildResponsibilityContext(pageId) : "",
-        buildHybridRetrievedContext(retrieval.chunks),
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
-      queryUnderstanding: retrieval.understanding,
-    });
-
-    return jsonResult(200, { answer: answer || FALLBACK_ANSWER });
-  } catch (error) {
-    logger.error?.(`Gemini API failure: ${error.message}`);
-    return jsonResult(502, { answer: ERROR_ANSWER });
-  }
-}
-
-async function handleGlobalQuestion(question, logger) {
-  if (!process.env.ai) {
-    logger.error?.("Gemini key loaded: false");
-    return jsonResult(503, { answer: ERROR_ANSWER });
-  }
-
-  const queryUnderstanding = understandQuery(question);
-
-  try {
-    const retrieval = await retrieveGlobalAssistantChunks({ question, queryUnderstanding });
-    logger.log?.(
-      [
-        `Global RAG retrieval: retrievalMode=${retrieval.retrievalMode}`,
-        `mentionedServices=${retrieval.mentionedServices.join(",") || "none"}`,
-        `retrieved=${retrieval.chunks.map((chunk) => `${chunk.sourceType}:${chunk.id}:${chunk.score}`).join(", ") || "none"}`,
-        `topScore=${retrieval.topScore}`,
-        `thresholdTriggered=${retrieval.thresholdTriggered}`,
-      ].join("; "),
-    );
-
+    // Structured context for the service the question is about. The stage the reader has open is
+    // only added while the open page is still the one being asked about, so "شو بيجي بعد هالمرحلة؟"
+    // resolves against the stage on screen while "شو فلو التركيب" does not.
     const derived = [
+      answerPageId ? buildCurrentWorkflowContext(answerPageId, queryUnderstanding, contextPageId ? stageTitle : "") : "",
+      answerPageId ? buildStageReferenceContext(answerPageId, question) : "",
+      answerPageId && (detectResponsibilityIntent(question) || detectAutomationIntent(question))
+        ? buildResponsibilityContext(answerPageId)
+        : "",
       detectCatalogIntent(question) ? buildServiceCatalogContext() : "",
       detectAutomationIntent(question) ? buildAutomationSummaryContext() : "",
     ].filter(Boolean);
@@ -146,16 +165,24 @@ async function handleGlobalQuestion(question, logger) {
   }
 }
 
-function buildCurrentWorkflowContext(pageId, queryUnderstanding) {
+function buildCurrentWorkflowContext(pageId, queryUnderstanding, openStageTitle = "") {
   const currentWorkflow = pageKnowledge[pageId]?.currentWorkflow || [];
-  const intent = queryUnderstanding.primaryIntent;
 
-  if (currentWorkflow.length === 0 || !["workflow_sequence", "next_step", "previous_step"].includes(intent)) {
+  if (currentWorkflow.length === 0) {
+    return "";
+  }
+
+  // "طيب شو بيجي بعد هالمرحلة؟" names no stage and scores as unsupported on its own, but the reader has a
+  // stage open on the page and that is what "هالمرحلة" points at. Only a request that carries that
+  // context can take this path, so a request without it behaves exactly as before.
+  const intent = detectOpenStageAdjacency(queryUnderstanding.normalizedQuery, openStageTitle) || queryUnderstanding.primaryIntent;
+
+  if (!["workflow_sequence", "next_step", "previous_step"].includes(intent)) {
     return "";
   }
 
   const referencedIndex = ["next_step", "previous_step"].includes(intent)
-    ? findReferencedCurrentStage(queryUnderstanding.normalizedQuery, currentWorkflow)
+    ? resolveReferencedStage(queryUnderstanding.normalizedQuery, openStageTitle, currentWorkflow)
     : -1;
 
   if (["next_step", "previous_step"].includes(intent) && referencedIndex < 0) {
@@ -179,6 +206,24 @@ function buildCurrentWorkflowContext(pageId, queryUnderstanding) {
   }
 
   return lines.join("\n");
+}
+
+// A next/previous question pointed at the stage on screen rather than at a named one.
+const OPEN_STAGE_NEXT = /بعد\s*(?:هذه|هذي|هاي|هال|ال)?\s*(?:ال)?مرحل|(?:الخطوة|المرحلة)\s*(?:التالية|القادمة|الجاية)|بعدها|بعدين/u;
+const OPEN_STAGE_PREVIOUS = /قبل\s*(?:هذه|هذي|هاي|هال|ال)?\s*(?:ال)?مرحل|(?:الخطوة|المرحلة)\s*السابقة|اللي قبل/u;
+
+function detectOpenStageAdjacency(normalizedQuestion, openStageTitle) {
+  if (!openStageTitle) return "";
+  if (OPEN_STAGE_PREVIOUS.test(normalizedQuestion)) return "previous_step";
+  return OPEN_STAGE_NEXT.test(normalizedQuestion) ? "next_step" : "";
+}
+
+// "طيب شو بيجي بعد هالمرحلة؟" names no stage, so a next/previous question falls back to the stage the
+// reader has open on the page. Requests without that context behave exactly as before.
+function resolveReferencedStage(normalizedQuestion, openStageTitle, currentWorkflow) {
+  const named = findReferencedCurrentStage(normalizedQuestion, currentWorkflow);
+  if (named >= 0 || !openStageTitle) return named;
+  return findReferencedCurrentStage(normalizeForSequence(openStageTitle), currentWorkflow);
 }
 
 function findReferencedCurrentStage(normalizedQuestion, currentWorkflow) {

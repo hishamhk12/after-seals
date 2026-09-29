@@ -107,9 +107,14 @@ const pageTests = [
   t("installation-F-form", "installation", "F", "ماذا يحدث في مرحلة ملئ النموذج؟", { expect: [["Start Installation", "بدء التركيب"]], forbid: [["سند التحميل"], ["Start Measurement"]] }),
   t("intro-tour-F-form", "intro-tour", "F", "ماذا يحدث في مرحلة ملئ النموذج؟", { expect: [["سند التحميل", "أمر التحميل"]], forbid: [["Start Installation"], ["Start Measurement"]] }),
 
+  // Maintenance stage 06 documents "Send OTP & PDF" on the website, so OTP is a supported detail.
+  t("maintenance-B-otp", "maintenance", "B", "هل يتم إرسال رمز OTP للعميل في خدمة الصيانة؟", {
+    expect: [["OTP"], ["Send OTP & PDF"], ["جاري العمل بالموقع"]],
+    forbid: [["سند التحميل"], ["بوابة السائق"]],
+  }),
+
   // Unsupported details on pages must not be invented.
   t("design-G-whatsapp", "design", "G", "هل يتم إرسال إشعار واتساب للعميل عند اعتماد التصميم؟", { expectFallback: true }),
-  t("maintenance-G-otp", "maintenance", "G", "هل يتم إرسال رمز OTP للعميل في خدمة الصيانة؟", { expectFallback: true }),
   t("complaints-G-admin-technical", "complaints", "G", "هل يتم تصنيف الشكوى إلى إدارية أو فنية؟", { expectFallback: true, forbid: [["إدارية / فنية", "إدارية أو فنية حسب"]] }),
   t("manufacturing-G-duration", "manufacturing", "G", "كم يوم تستغرق مرحلة جاري التصنيع؟", { expectFallback: true }),
 ];
@@ -131,7 +136,7 @@ const globalTests = [
     expect: [["تلقائي"], ["إلغاء"]],
     expectPages: ["installation-returns"],
   }),
-  t("global-C-maintenance-decision", GLOBAL, "C", "من المسؤول عن القرار النهائي في خدمة الصيانة؟", { expect: [["الإدارة"]], expectPages: ["maintenance"] }),
+  t("global-C-maintenance-on-site", GLOBAL, "C", "من ينفذ أعمال الصيانة في مرحلة جاري العمل بالموقع؟", { expect: [["الفني"]], expectPages: ["maintenance"] }),
   t("global-C-design", GLOBAL, "C", "من المسؤول عن مراحل خدمة التصميم؟", { expect: [["إدارة التصميم"]], expectPages: ["design"] }),
   t("global-C-complaint-forward", GLOBAL, "C", "من يقوم بإرسال الشكوى إلى الجهة المختصة؟", { expect: [["خدمة العملاء"], ["الجهة المختصة"]], expectPages: ["complaints"] }),
   t("global-D-all", GLOBAL, "D", "أي خدمات فيها مراحل آلية وأيها يدوية؟", {

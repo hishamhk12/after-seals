@@ -323,7 +323,18 @@ function conceptMatches(text, concept) {
     return concept.some((item) => conceptMatches(text, item));
   }
 
-  return text.includes(normalize(concept));
+  return stripClitics(text).includes(stripClitics(normalize(concept)));
+}
+
+// Arabic attaches the definite article and one-letter prepositions/conjunctions to the word itself
+// (الخدمة / بخدمة / للخدمة / لفواتير), so a plain substring check misses a concept the answer does
+// state, only in a different grammatical position. Both sides are reduced the same way, so the
+// concept is still required - just not in one fixed spelling.
+const CLITIC_PREFIX = /(^|\s)(وال|بال|كال|فال|ال|لل|و|ب|ل|ف|ك)(?=\S{3,})/gu;
+
+function stripClitics(text) {
+  // Twice, so a stacked prefix such as وبالخدمة also reduces to its stem.
+  return String(text).replace(CLITIC_PREFIX, "$1").replace(CLITIC_PREFIX, "$1");
 }
 
 function normalize(value) {

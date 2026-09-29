@@ -59,7 +59,9 @@ const globalRagEvaluationDataset = [
   q("global-054", "شو العلاقة الأساسية بين Customer و Rating؟", ["relationship-core-after-sales-chain-001"], "confirmed", [], [["Customer"], ["Service", "الخدمة"], ["Rating", "التقييم"]]),
   q("global-055", "شو شكل target system المقترح؟", ["relationship-target-system-map-001"], "proposed", [], [["SAP"], ["Odoo"], ["After Sales Request"], ["Analytics"], ["AI"]], { statusSensitive: true }),
   q("global-056", "شو يعني Tasks؟", ["intro-tour:glossary:tasks"], "confirmed", [], ["Tasks", ["مهمة التوصيل"], ["الفاتورة"]], { expectedSourceType: "page", category: "page_regression" }),
-  q("global-057", "شو تسلسل خدمة التوصيل؟", ["intro-tour:workflow-question:full-delivery-workflow-question"], "confirmed", ["delivery"], ["الفاتورة", "Tasks", "Appointment From", "Completed"], { expectedSourceType: "page", category: "page_regression" }),
+  // Terms follow the current website stage sequence: a general workflow_sequence answer deliberately
+  // omits Tasks / Appointment From / Completed, which belong to a detailed-execution question.
+  q("global-057", "شو تسلسل خدمة التوصيل؟", ["intro-tour:workflow-question:full-delivery-workflow-question"], "confirmed", ["delivery"], ["فاتورة", "جدولة التوصيل", "ربط الخدمة بالسائق", "استلام الخدمة"], { expectedSourceType: "page", category: "page_regression" }),
   unsupported("unsupported-001", "شو عاصمة اليابان؟"),
   unsupported("unsupported-002", "كم عمر الشمس؟"),
   unsupported("unsupported-003", "كيف أطبخ كبسة؟"),

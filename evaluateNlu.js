@@ -1,10 +1,13 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const { handleAskPayload } = require("./askHandler");
+const { GLOBAL_FALLBACK_ANSWER, handleAskPayload } = require("./askHandler");
 const { nluEvaluationDataset, NLU_FALLBACK_ANSWER } = require("./nluEvaluationDataset");
 const { understandQuery } = require("./queryUnderstanding");
 
 const PAGE_ID = "intro-tour";
+// One assistant answers from all After-Sales knowledge, so a question it cannot support returns the
+// global fallback. The page-scoped wording is still recognised for older recorded results.
+const FALLBACK_ANSWERS = new Set([NLU_FALLBACK_ANSWER, GLOBAL_FALLBACK_ANSWER]);
 const RESULT_PATH = path.join(__dirname, "data", "evaluation", "intro-tour-nlu-latest.json");
 
 async function main() {
@@ -15,7 +18,7 @@ async function main() {
     const response = await handleAskPayload({ pageId: PAGE_ID, question: test.question }, SILENT_LOGGER);
     const answer = response.payload?.answer || "";
     const intentPass = understanding.primaryIntent === test.expectedIntent;
-    const refusalPass = test.expectedFallback ? answer === NLU_FALLBACK_ANSWER : answer !== NLU_FALLBACK_ANSWER;
+    const refusalPass = test.expectedFallback ? FALLBACK_ANSWERS.has(answer) : !FALLBACK_ANSWERS.has(answer);
     const conceptPass = test.expectedFallback || (test.requiredConcepts || []).every((concept) => conceptMatches(answer, concept));
     const sequencePass = !test.expectedSequence || sequenceMatches(answer, test.expectedSequence);
     const pass = intentPass && refusalPass && conceptPass && sequencePass;

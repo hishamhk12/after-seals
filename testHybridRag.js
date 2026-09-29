@@ -1,4 +1,8 @@
-const { handleAskPayload, FALLBACK_ANSWER } = require("./askHandler");
+const { handleAskPayload, FALLBACK_ANSWER, GLOBAL_FALLBACK_ANSWER } = require("./askHandler");
+
+// One assistant answers from all After-Sales knowledge, so an unsupported question returns the
+// global fallback. The page-scoped one is still recognised here for older recorded answers.
+const FALLBACK_ANSWERS = new Set([FALLBACK_ANSWER, GLOBAL_FALLBACK_ANSWER]);
 
 const PAGE_ID = "intro-tour";
 
@@ -60,10 +64,10 @@ async function main() {
 
 function evaluate(testCase, answer) {
   if (testCase.expectedFallback) {
-    return answer === FALLBACK_ANSWER;
+    return FALLBACK_ANSWERS.has(answer);
   }
 
-  if (answer === FALLBACK_ANSWER) {
+  if (FALLBACK_ANSWERS.has(answer)) {
     return false;
   }
 

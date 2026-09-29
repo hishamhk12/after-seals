@@ -212,7 +212,7 @@
             </div>
 
             <div class="technician-assignment-flow">
-              <p class="field-explanation-intro">بما أن موعد التوصيل تم تحديده مسبقًا ليكون قبل موعد التركيب بـ 48 ساعة، يتم تحديد موعد التوصيل تلقائيًا. لذلك عند الانتقال إلى خدمة التوصيل لا تبدأ دورة العمل من الصفر، وإنما تنتقل المهمة مباشرة إلى مرحلة "ربط الخدمة بالسائق".</p>
+              <p class="field-explanation-intro">يتم تحديد موعد التوصيل قبل موعد التركيب بـ 24 أو 48 ساعة حسب الإعداد المعتمد. وبما أن موعد التوصيل يُحدَّد تلقائيًا، فعند الانتقال إلى خدمة التوصيل لا تبدأ دورة العمل من الصفر، وإنما تنتقل المهمة مباشرة إلى مرحلة "ربط الخدمة بالسائق".</p>
 
               <figure class="odoo-screenshot-frame">
                 <img
@@ -618,16 +618,19 @@
     <section id="pageAssistant" class="page-assistant" aria-label="المساعد الشخصي" hidden>
       <button id="assistantToggle" class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">
         <span class="assistant-toggle-dot" aria-hidden="true"></span>
-        <span>اسأل عن هذه الصفحة</span>
+        <span>اسأل عن خدمات ما بعد البيع</span>
       </button>
 
       <div id="assistantPanel" class="assistant-panel" hidden>
         <div class="assistant-header">
-          <strong>المساعد الشخصي</strong>
+          <span class="assistant-header-text">
+            <strong>المساعد الشخصي</strong>
+            <span id="assistantContextLabel" class="assistant-context"></span>
+          </span>
           <button id="assistantClose" class="assistant-close" type="button" aria-label="إغلاق المساعد">×</button>
         </div>
         <div id="assistantAnswer" class="assistant-answer" aria-live="polite">
-          اسأل سؤالًا عن محتوى هذه الصفحة فقط.
+          <p id="assistantEmptyState" class="assistant-empty">اسأل سؤالًا عن خدمات ما بعد البيع.</p>
         </div>
         <form id="assistantForm" class="assistant-form">
           <label class="sr-only" for="assistantQuestion">السؤال</label>

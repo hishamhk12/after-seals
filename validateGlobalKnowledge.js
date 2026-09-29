@@ -5,6 +5,8 @@ const { VALID_SERVICES, VALID_STATUSES, VALID_TYPES } = require("./knowledge/sta
 
 const KNOW_SOURCE = "know.md";
 const knowPath = path.join(__dirname, KNOW_SOURCE);
+// Source documents global items may cite (each must exist in the project root).
+const KNOWN_SOURCES = [KNOW_SOURCE, "after-sales-training-portal.md"];
 
 function main() {
   const errors = [];
@@ -21,8 +23,10 @@ function main() {
 }
 
 function validateGlobalKnowledge(items = globalKnowledgeItems, errors = []) {
-  if (!fs.existsSync(knowPath)) {
-    errors.push("know.md is missing.");
+  for (const source of KNOWN_SOURCES) {
+    if (!fs.existsSync(path.join(__dirname, source))) {
+      errors.push(`${source} is missing.`);
+    }
   }
 
   validateItems(items, errors);
@@ -68,8 +72,8 @@ function validateItems(items, errors) {
       errors.push(`${location}: invalid status ${JSON.stringify(item.status)}.`);
     }
 
-    if (item.source !== KNOW_SOURCE) {
-      errors.push(`${location}: source must be ${KNOW_SOURCE}.`);
+    if (!KNOWN_SOURCES.includes(item.source)) {
+      errors.push(`${location}: source must be one of ${KNOWN_SOURCES.join(", ")}.`);
     }
 
     if (typeof item.text !== "string" || !item.text.trim()) {

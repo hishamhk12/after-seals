@@ -1,7 +1,11 @@
 // Deterministic context blocks derived from the page knowledge (the single canonical source for
 // each workflow). They are prepended to the retrieved chunks so the LLM answers structural
 // questions — service list, stage N, responsibilities, manual vs automatic — from exact data.
+// Where the website shows no execution label for a stage, the supplemental label from the current
+// approved PowerPoint is added and marked as such (website labels always win; conflicting slide
+// labels are already excluded by powerpointKnowledge).
 const { pageKnowledge } = require("./pageKnowledge");
+const { getPowerPointServiceParty, getPowerPointStageLabels } = require("./powerpointKnowledge");
 const { SERVICE_NAMES } = require("./knowledge/pages/structuredPageKnowledge");
 
 const AUTOMATION_PATTERN = /(?:آلي|الي(?:ة)?\b|آلية|يدوي|يدوية|تلقائي|اوتوماتيك|أوتوماتيك|automatic|manual|automated)/iu;
@@ -19,6 +23,9 @@ const CATALOG_ORDER = [
   "design",
   "manufacturing",
   "installation",
+  "installation-delivery-link",
+  "installation-internal-transfer-link",
+  "installation-manufacturing-link",
   "installation-returns",
   "customer-service",
   "complaints",
@@ -33,6 +40,19 @@ function servicesOf(pageId) {
 
 function stageLabel(stage) {
   return `${String(stage.number ?? stage.order).padStart(2, "0")} — ${stage.title}`;
+}
+
+function stageNumber(stage) {
+  return String(stage.number ?? stage.order).padStart(2, "0");
+}
+
+const POWERPOINT_MARK = "(العرض التقديمي المعتمد؛ لا تعرضه الصفحة)";
+
+// { text, source } for a stage: the website label, else the supplemental PowerPoint label, else null.
+function executionOf(pageId, stage, powerpointLabels = getPowerPointStageLabels(pageId)) {
+  if (stage.execution) return { text: stage.execution, source: "website" };
+  const supplemental = powerpointLabels.get(stageNumber(stage));
+  return supplemental ? { text: supplemental.label, source: "powerpoint" } : null;
 }
 
 function detectAutomationIntent(question) {
@@ -79,10 +99,17 @@ function buildStageReferenceContext(pageId, question) {
     `Referenced stage: ${stageLabel(stage)}`,
     `Summary: ${stage.summary}`,
     ...(stage.details || []).map((detail) => `Detail: ${detail}`),
-    stage.execution ? `Execution / responsibility (التنفيذ): ${stage.execution}` : "Execution / responsibility: not labelled on this page.",
+    formatStageExecution(executionOf(pageId, stage)),
     previous ? `Previous stage: ${stageLabel(previous)}` : "This is the first stage.",
     next ? `Next stage: ${stageLabel(next)}` : "This is the last stage.",
   ].join("\n");
+}
+
+function formatStageExecution(execution) {
+  if (!execution) return "Execution / responsibility: not labelled on this page or in the approved PowerPoint.";
+  return execution.source === "website"
+    ? `Execution / responsibility (التنفيذ): ${execution.text}`
+    : `Execution / responsibility (التنفيذ): ${execution.text} ${POWERPOINT_MARK}`;
 }
 
 function buildResponsibilityContext(pageId) {
@@ -90,14 +117,24 @@ function buildResponsibilityContext(pageId) {
   const workflow = knowledge?.currentWorkflow || [];
   if (workflow.length === 0) return "";
 
-  const labelled = workflow.some((stage) => stage.execution);
+  const powerpointLabels = getPowerPointStageLabels(pageId);
+  const executions = workflow.map((stage) => executionOf(pageId, stage, powerpointLabels));
+  const party = getPowerPointServiceParty(pageId);
   return [
     "[Derived execution / responsibility per stage]",
     `Workflow: ${knowledge.workflowLabel || knowledge.title}`,
-    ...workflow.map((stage) => `${stageLabel(stage)}: ${stage.execution || "لا يوجد تصنيف منفصل لهذه المرحلة في الصفحة"}`),
-    labelled
-      ? ""
-      : "This page does not label each stage as manual/automatic or name a responsible party per stage; only what the stage text itself states is documented.",
+    party ? `الجهة المسؤولة عن الخدمة: ${party.party} ${POWERPOINT_MARK}` : "",
+    ...workflow.map((stage, index) => {
+      const execution = executions[index];
+      if (!execution) return `${stageLabel(stage)}: لا يوجد تصنيف منفصل لهذه المرحلة في الصفحة ولا في العرض التقديمي المعتمد`;
+      return `${stageLabel(stage)}: ${execution.text}${execution.source === "powerpoint" ? ` ${POWERPOINT_MARK}` : ""}`;
+    }),
+    executions.some((execution) => execution?.source === "powerpoint")
+      ? "Labels marked العرض التقديمي come from the current approved PowerPoint and apply only where the website shows no label; the website stays authoritative."
+      : "",
+    executions.every((execution) => !execution)
+      ? "This page does not label each stage as manual/automatic or name a responsible party per stage; only what the stage text itself states is documented."
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -112,7 +149,10 @@ function buildAutomationSummaryContext() {
     if (!knowledge || workflow.length === 0) continue;
 
     const serviceName = SERVICE_NAMES[servicesOf(pageId)[0]] || knowledge.title;
-    const labelled = workflow.filter((stage) => stage.execution);
+    const powerpointLabels = getPowerPointStageLabels(pageId);
+    const labelled = workflow
+      .map((stage) => ({ stage, execution: executionOf(pageId, stage, powerpointLabels) }))
+      .filter((item) => item.execution);
     if (labelled.length === 0) {
       lines.push(
         `- ${serviceName} (${knowledge.title}): الصفحة لا تعرض تصنيفًا منفصلًا (آلي/يدوي) لكل مرحلة؛ المعتمد هو ما يذكره شرح كل مرحلة صراحةً (مثل ما يقوم به النظام تلقائيًا).`,
@@ -120,13 +160,17 @@ function buildAutomationSummaryContext() {
       continue;
     }
 
-    const automatic = labelled.filter((stage) => /آلي/u.test(stage.execution)).map(stageLabel);
-    const manual = labelled.filter((stage) => /يدوي/u.test(stage.execution)).map(stageLabel);
+    const mark = ({ stage, execution }) => `${stageLabel(stage)}${execution.source === "powerpoint" ? "*" : ""}`;
+    const automatic = labelled.filter(({ execution }) => /آلي/u.test(execution.text)).map(mark);
+    const manual = labelled.filter(({ execution }) => /يدوي/u.test(execution.text)).map(mark);
+    const partyOnly = labelled.filter(({ execution }) => !/آلي|يدوي/u.test(execution.text)).map((item) => `${mark(item)} (${item.execution.text})`);
+    const unlabelled = workflow.filter((stage) => !labelled.some((item) => item.stage === stage)).map(stageLabel);
     lines.push(
-      `- ${serviceName} (${knowledge.title}): مراحل آلية: ${automatic.length ? automatic.join("، ") : "لا يوجد"}؛ مراحل يدوية: ${manual.length ? manual.join("، ") : "لا يوجد"}.`,
+      `- ${serviceName} (${knowledge.title}): مراحل آلية: ${automatic.length ? automatic.join("، ") : "لا يوجد"}؛ مراحل يدوية: ${manual.length ? manual.join("، ") : "لا يوجد"}${partyOnly.length ? `؛ جهة مسؤولة دون تصنيف آلي/يدوي: ${partyOnly.join("، ")}` : ""}${unlabelled.length ? `؛ مراحل بلا تصنيف موثق: ${unlabelled.join("، ")}` : ""}.`,
     );
   }
 
+  lines.push("* = the label comes from the current approved PowerPoint because the website page shows no label for that stage.");
   return lines.join("\n");
 }
 

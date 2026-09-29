@@ -8,6 +8,9 @@ const manufacturing = require("./manufacturing");
 const measurement = require("./measurement");
 const installation = require("./installation");
 const internalTransferDeliveryLink = require("./internalTransferDeliveryLink");
+const installationDeliveryLink = require("./installationDeliveryLink");
+const installationInternalTransferLink = require("./installationInternalTransferLink");
+const installationManufacturingLink = require("./installationManufacturingLink");
 const { deliveryReturns, installationReturns } = require("./returns");
 const { customerService, complaints, maintenance } = require("./customerService");
 
@@ -20,6 +23,9 @@ const structuredPages = [
   design,
   manufacturing,
   installation,
+  installationDeliveryLink,
+  installationInternalTransferLink,
+  installationManufacturingLink,
   installationReturns,
   customerService,
   complaints,

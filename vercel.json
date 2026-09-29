@@ -7,7 +7,9 @@
       "config": {
         "includeFiles": [
           "data/embeddings/intro-tour.json",
-          "data/embeddings/internal-transfer.json"
+          "data/embeddings/internal-transfer.json",
+          "data/embeddings/powerpoint-after-sales.json",
+          "data/powerpoint/after-sales-powerpoint.json"
         ]
       }
     },

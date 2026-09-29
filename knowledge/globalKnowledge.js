@@ -3,6 +3,7 @@ const { customerExperienceKnowledge } = require("./customerExperience");
 const { integrationKnowledge } = require("./integration");
 const { openQuestionsKnowledge } = require("./openQuestions");
 const { relationshipsKnowledge } = require("./relationships");
+const { trainingPortalKnowledge } = require("./trainingPortal");
 const { uatKnowledge } = require("./uatKnowledge");
 const { deliveryKnowledge } = require("./services/delivery");
 const { designKnowledge } = require("./services/design");
@@ -26,6 +27,7 @@ const globalKnowledgeItems = [
   ...designKnowledge,
   ...internalTransferKnowledge,
   ...maintenanceKnowledge,
+  ...trainingPortalKnowledge,
 ];
 
 module.exports = {

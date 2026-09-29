@@ -227,6 +227,12 @@ function calculateNluRecordBoost({ record, understanding, currentWorkflow = [] }
     boost += 0.18;
   }
 
+  // A "where does the driver execute the service" question is answered by the portal itself, so the
+  // chunks that name it rank with the full driver journey instead of behind every assignment chunk.
+  if (intents.has("driver_execution") && hasAllConceptTerms(recordText, [["بوابة السائق", "driver portal"]])) {
+    boost += 0.08;
+  }
+
   return Math.min(0.28, boost);
 }
 

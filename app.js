@@ -60,6 +60,45 @@ const deliveryInstallationTour = {
   ],
 };
 
+// Relationship page خدمة التركيب → الباب الثاني → تركيب مع توصيل.
+const installationWithDeliveryTour = {
+  id: "installation-with-delivery",
+  title: "تركيب مع توصيل",
+  children: [
+    { id: "invoice", title: "فاتورة من SAP", targetId: "installation-with-delivery-step-invoice" },
+    { id: "scheduling", title: "جدولة خدمة التركيب وتحديد موعد التوصيل", targetId: "installation-with-delivery-step-scheduling" },
+    { id: "delivery", title: "تنفيذ خدمة التوصيل للعميل", targetId: "installation-with-delivery-step-delivery" },
+    { id: "installation", title: "استكمال خدمة التركيب", targetId: "installation-with-delivery-step-installation" },
+    { id: "completed", title: "تم التركيب", targetId: "installation-with-delivery-step-completed" },
+  ],
+};
+
+// Relationship page خدمة التركيب → الباب الثاني → تركيب مع التحويلات الداخلية.
+const installationWithInternalTransferTour = {
+  id: "installation-with-internal-transfer",
+  title: "تركيب مع التحويلات الداخلية",
+  children: [
+    { id: "invoice", title: "فاتورة من SAP", targetId: "installation-with-internal-transfer-step-invoice" },
+    { id: "internal-transfer", title: "تنفيذ التحويلات الداخلية", targetId: "installation-with-internal-transfer-step-transfer" },
+    { id: "delivery", title: "تنفيذ خدمة التوصيل للعميل", targetId: "installation-with-internal-transfer-step-delivery" },
+    { id: "installation", title: "استكمال خدمة التركيب", targetId: "installation-with-internal-transfer-step-installation" },
+    { id: "completed", title: "تم التركيب", targetId: "installation-with-internal-transfer-step-completed" },
+  ],
+};
+
+// Relationship page خدمة التركيب → الباب الثاني → تركيب مع تصنيع.
+const installationWithManufacturingTour = {
+  id: "installation-with-manufacturing",
+  title: "تركيب مع تصنيع",
+  children: [
+    { id: "invoice", title: "فاتورة من SAP", targetId: "installation-with-manufacturing-step-invoice" },
+    { id: "manufacturing", title: "تنفيذ خدمة التصنيع", targetId: "installation-with-manufacturing-step-manufacturing" },
+    { id: "delivery", title: "تنفيذ خدمة التوصيل للعميل", targetId: "installation-with-manufacturing-step-delivery" },
+    { id: "installation", title: "استكمال خدمة التركيب", targetId: "installation-with-manufacturing-step-installation" },
+    { id: "completed", title: "تم التركيب", targetId: "installation-with-manufacturing-step-completed" },
+  ],
+};
+
 const measurementTour = {
   id: "measurement",
   title: "دورة عمل خدمة رفع المقاسات",
@@ -135,17 +174,19 @@ const complaintsTour = {
   ],
 };
 
+// خدمة الصيانة (00–07): the top workflow row and the detailed sections.
 const maintenanceTour = {
   id: "customer-service-maintenance",
   title: "خدمة الصيانة",
   children: [
     { id: "maintenance-new-request", title: "طلب صيانة جديد", targetId: "maintenance-step-new-request" },
     { id: "maintenance-scheduling", title: "جدولة موعد", targetId: "maintenance-step-scheduling" },
-    { id: "maintenance-technician", title: "تعيين فني", targetId: "maintenance-step-technician" },
+    { id: "maintenance-technician", title: "في انتظار تعيين فني", targetId: "maintenance-step-technician" },
     { id: "maintenance-initial-report", title: "التقرير المبدئي", targetId: "maintenance-step-initial-report" },
-    { id: "maintenance-final-decision", title: "القرار النهائي / الموافقات", targetId: "maintenance-step-final-decision" },
+    { id: "maintenance-spare-parts", title: "في انتظار قطع الغيار", targetId: "maintenance-step-spare-parts" },
     { id: "maintenance-appointment", title: "تحديد موعد الصيانة", targetId: "maintenance-step-appointment" },
-    { id: "maintenance-in-progress", title: "جاري الصيانة / تسليم الخدمة", targetId: "maintenance-step-in-progress" },
+    { id: "maintenance-on-site", title: "جاري العمل بالموقع", targetId: "maintenance-step-on-site" },
+    { id: "maintenance-completed", title: "مكتملة", targetId: "maintenance-step-completed" },
   ],
 };
 
@@ -174,7 +215,6 @@ const navigationState = {
   route: { type: "home" },
   activeServiceId: null,
   selectedExperienceId: null,
-  currentTourTargetId: "step-invoice",
 };
 
 const sidebarManuallyExpandedBranches = new Set();
@@ -308,10 +348,11 @@ const chapters = [
       {
         id: "installation-full",
         title: "تركيب كامل",
-        description: "سيتم توثيق هذه الدورة لاحقًا.",
-        status: "قيد الإعداد",
+        description: "دورة عمل خدمة توصيل مع تركيب، من وصول الفاتورة من SAP وحتى مرحلة تم التركيب.",
+        status: "مكتمل",
         visible: true,
-        placeholderOnly: true,
+        // The approved Installation workflow (#deliveryInstallationPlaceholder in index.html).
+        experienceId: "delivery-installation",
       },
       {
         id: "installation-partial",
@@ -333,26 +374,23 @@ const chapters = [
       {
         id: "installation-with-delivery",
         title: "تركيب مع توصيل",
-        description: "سيتم توثيق هذه الدورة لاحقًا.",
-        status: "قيد الإعداد",
+        description: "علاقة خدمة التركيب بخدمة التوصيل: موعد التوصيل يُحدَّد من موعد التركيب، وبعد اكتمال التوصيل يُستكمل التركيب.",
+        status: "مكتمل",
         visible: true,
-        placeholderOnly: true,
       },
       {
         id: "installation-with-internal-transfer",
         title: "تركيب مع التحويلات الداخلية",
-        description: "سيتم توثيق هذه الدورة لاحقًا.",
-        status: "قيد الإعداد",
+        description: "التحويلات الداخلية تحظر خدمة التوصيل حتى تصل البضاعة إلى مستودع التجمع، وبعد اكتمال التوصيل يُستكمل التركيب.",
+        status: "مكتمل",
         visible: true,
-        placeholderOnly: true,
       },
       {
         id: "installation-with-manufacturing",
         title: "تركيب مع تصنيع",
-        description: "لا يمكن البدء بخدمة التركيب قبل اكتمال خدمة التصنيع.",
-        status: "قيد الإعداد",
+        description: "لا يمكن البدء بتنفيذ خدمة التركيب قبل اكتمال خدمة التصنيع.",
+        status: "مكتمل",
         visible: true,
-        placeholderOnly: true,
       },
     ],
   },
@@ -451,16 +489,6 @@ const services = [
     description: "دورات العمل المتاحة لخدمة التركيب.",
     status: "متاح",
     chapterIds: ["installation-services", "installation-relationships", "installation-returns-cancellations"],
-    operations: [
-      {
-        id: "delivery-installation",
-        title: "تركيب مع توصيل",
-        description: "دورة عمل خدمة توصيل مع تركيب.",
-        status: "متاح",
-        experienceId: "delivery-installation",
-        visible: false,
-      },
-    ],
   },
   {
     id: "measurement",
@@ -489,7 +517,6 @@ const services = [
   },
 ];
 
-let tourStepObserver = null;
 
 const trainingFlow = [
   "فاتورة توصيل فقط",
@@ -645,8 +672,16 @@ function routeHref(type, id = "") {
   return `#/${type}/${id}`;
 }
 
+// A workflow stage can be linked directly with a third segment: #/lesson/installation-full/installation-form
+// (the stage id or its section id from the tour definition).
 function parseRoute() {
   const parts = window.location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  const route = parseRouteTarget(parts);
+  if (route.type !== "home" && parts.length === 3) route.stage = decodeURIComponent(parts[2]);
+  return route;
+}
+
+function parseRouteTarget(parts) {
   if (!parts.length) return { type: "home" };
 
   const legacyDeliveryRoutes = {
@@ -654,7 +689,7 @@ function parseRoute() {
     "intro-tour": { type: "lesson", itemId: "customer-delivery" },
     "customer-delivery": { type: "lesson", itemId: "customer-delivery" },
     "internal-transfer": { type: "lesson", itemId: "internal-transfer" },
-    "delivery-installation": { type: "operation", operationId: "delivery-installation" },
+    "delivery-installation": { type: "lesson", itemId: "installation-full" },
     measurement: { type: "service", serviceId: "measurement" },
   };
   if (parts.length === 1 && legacyDeliveryRoutes[parts[0]]) {
@@ -666,8 +701,9 @@ function parseRoute() {
     return service ? { type: "service", serviceId: service.id } : { type: "home" };
   }
 
+  // The Installation workflow moved from the service overview to "تركيب كامل"; old links land there.
   if (parts[0] === "operation" && parts[1] === "delivery-installation") {
-    return { type: "operation", operationId: parts[1] };
+    return { type: "lesson", itemId: "installation-full" };
   }
 
   if (parts[0] === "chapter") {
@@ -685,7 +721,6 @@ function parseRoute() {
 
 function getActiveServiceId(route = navigationState.route) {
   if (route.type === "service") return route.serviceId;
-  if (route.type === "operation" && route.operationId === "delivery-installation") return "installation";
   if (route.type === "chapter") {
     return services.find((service) => service.chapterIds?.includes(route.chapterId))?.id || null;
   }
@@ -700,9 +735,9 @@ function isDeliveryWorkflowRoute(route = navigationState.route) {
   return route.type === "lesson" && route.itemId === "customer-delivery";
 }
 
+// The approved Installation workflow lives under الباب الأول → تركيب كامل.
 function isInstallationWorkflowRoute(route = navigationState.route) {
-  return (route.type === "service" && route.serviceId === "installation")
-    || (route.type === "operation" && route.operationId === "delivery-installation");
+  return route.type === "lesson" && route.itemId === "installation-full";
 }
 
 // Which assistant knowledge each completed page uses (pageId in pageKnowledge.js on the server).
@@ -716,11 +751,14 @@ const PAGE_ASSISTANT_ROUTES = {
     "internal-transfer-delivery-link": "internal-transfer-delivery-link",
     "full-cancellation": "delivery-returns",
     "partial-return": "delivery-returns",
+    "installation-full": "installation",
+    "installation-with-delivery": "installation-delivery-link",
+    "installation-with-internal-transfer": "installation-internal-transfer-link",
+    "installation-with-manufacturing": "installation-manufacturing-link",
     "installation-full-cancellation": "installation-returns",
     "installation-partial-return": "installation-returns",
   },
   service: {
-    installation: "installation",
     measurement: "measurement",
     design: "design",
     manufacturing: "manufacturing",
@@ -730,9 +768,6 @@ const PAGE_ASSISTANT_ROUTES = {
     "customer-service-sources": "customer-service",
     "customer-service-complaints": "complaints",
     "customer-service-maintenance": "maintenance",
-  },
-  operation: {
-    "delivery-installation": "installation",
   },
 };
 
@@ -746,24 +781,44 @@ function getActivePageAssistantId() {
   return PAGE_ASSISTANT_ROUTES[route.type]?.[routeKey] || GLOBAL_ASSISTANT_ID;
 }
 
-let renderedAssistantScope = null;
+// The page the assistant is reading right now. This is metadata only: navigation updates it, and it
+// never identifies or resets the conversation, which belongs to the site rather than to a page.
+const assistantContext = { pageId: GLOBAL_ASSISTANT_ID, pageTitle: "", stageId: null, stageTitle: "" };
 
+function getAssistantPageTitle(route = navigationState.route) {
+  if (route.type === "lesson") return getItem(route.itemId)?.item.title || "";
+  if (route.type === "service") return getService(route.serviceId)?.title || "";
+  if (route.type === "chapter") return getChapter(route.chapterId)?.title || "";
+  return "خدمات ما بعد البيع";
+}
+
+function updateAssistantContext() {
+  const route = navigationState.route;
+  const stageId = route.stage || null;
+  const stage = stageId
+    ? getRouteWorkflowTour()?.children.find((node) => node.id === stageId || node.targetId === stageId)
+    : null;
+
+  assistantContext.pageId = getActivePageAssistantId();
+  assistantContext.pageTitle = getAssistantPageTitle(route);
+  assistantContext.stageId = stageId;
+  assistantContext.stageTitle = stage?.title || "";
+}
+
+// One assistant for the whole site: the launcher wording, the title and the shell are fixed in
+// index.html and are never rebuilt per page. Navigation only refreshes the context line, so the
+// page the reader is on is metadata and never part of the assistant's identity.
 function renderAssistantScope(pageAssistant) {
-  const scope = getActivePageAssistantId();
-  const isGlobal = scope === GLOBAL_ASSISTANT_ID;
-  const toggleLabel = pageAssistant.querySelector("#assistantToggle span:last-child");
-  const answer = pageAssistant.querySelector("#assistantAnswer");
+  updateAssistantContext();
 
-  if (toggleLabel) toggleLabel.textContent = isGlobal ? "اسأل عن خدمات ما بعد البيع" : "اسأل عن هذه الصفحة";
+  const contextLabel = pageAssistant.querySelector("#assistantContextLabel");
 
-  // Reset the answer area when the assistant moves to another page's knowledge.
-  if (answer && renderedAssistantScope !== null && renderedAssistantScope !== scope && !answer.hasAttribute("aria-busy")) {
-    answer.textContent = isGlobal
-      ? "اسأل سؤالًا عن أي خدمة من خدمات ما بعد البيع."
-      : "اسأل سؤالًا عن محتوى هذه الصفحة فقط.";
+  // Only the context line changes as the reader moves around; the thread below it is left alone.
+  if (contextLabel) {
+    contextLabel.textContent = assistantContext.stageTitle
+      ? `السياق: ${assistantContext.pageTitle} — ${assistantContext.stageTitle}`
+      : `السياق: ${assistantContext.pageTitle}`;
   }
-
-  renderedAssistantScope = scope;
 }
 
 function statusClass(status) {
@@ -825,7 +880,7 @@ function renderChapterCard(chapter) {
 }
 
 function renderLessonCard(chapter, item, index) {
-  const action = item.experienceId === introductoryTour.id ? "فتح الدورة" : "فتح الدرس";
+  const action = [introductoryTour.id, deliveryInstallationTour.id].includes(item.experienceId) ? "فتح الدورة" : "فتح الدرس";
   return `
     <a class="entry-card" href="${routeHref("lesson", item.id)}" aria-label="${action}: ${item.title}">
       <span class="entry-card-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
@@ -1315,37 +1370,94 @@ function renderComplaintsWorkflow() {
   ], "customer-service-complaints-workflow", "complaints");
 }
 
+// خدمة الصيانة. Screenshots from assest/الصيانة: 1–2 → 00, 3 → 01, 4–8 → 03 (activating and filling
+// the maintenance form, then its approvals & signatures), 9 → 06 (Send OTP), 10 → 07.
 function renderMaintenanceWorkflow() {
-  return renderResponsibilityWorkflow(maintenanceTour, [
-    {
-      description: "تبدأ دورة خدمة الصيانة بإنشاء طلب صيانة جديد داخل نظام خدمات ما بعد البيع من قبل خدمة العملاء، ليبدأ تتبع الطلب ضمن مراحل الصيانة.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد إنشاء الطلب، يتم الانتقال إلى مرحلة جدولة الموعد، حيث تقوم خدمة العملاء بتحديد موعد زيارة الصيانة.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد جدولة الموعد، يكون طلب الصيانة بانتظار تعيين الفني المسؤول عن تنفيذ الزيارة، ويتم التعيين من قبل الجهة المختصة.",
-      execution: "يدوي / الجهة المختصة",
-    },
-    {
-      description: "بعد زيارة الفني، يتم تسجيل التقرير المبدئي للحالة وتحديد الإجراء المطلوب لمعالجتها.",
-      execution: "يدوي / الجهة المختصة",
-    },
-    {
-      description: "بعد تسجيل التقرير المبدئي، تتخذ الإدارة القرار النهائي للحالة ويتم استكمال الموافقات المطلوبة.",
-      execution: "يدوي / الإدارة",
-    },
-    {
-      description: "بعد جاهزية الحالة، تقوم خدمة العملاء بتحديد موعد تنفيذ أعمال الصيانة.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "في الموعد المحدد يقوم الفني بتنفيذ أعمال الصيانة، ثم يتم تسليم الخدمة بعد الانتهاء من الأعمال المطلوبة، وبذلك تكتمل دورة خدمة الصيانة.",
-      execution: "يدوي / الفني",
-    },
-  ], "customer-service-maintenance-workflow", "maintenance");
+  const images = "assest/الصيانة";
+  const shot = (file, alt, label) => `
+          <figure class="odoo-screenshot-frame">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+  const execution = (label) => `<aside class="internal-transfer-example"><strong>التنفيذ:</strong> ${label}</aside>`;
+  const substep = (badge, title, body) => `
+          <article class="technician-assignment-step">
+            <h3 class="installation-substep-heading" aria-label="${badge} — ${title}"><span class="installation-substep-badge" aria-hidden="true">${badge}</span><span>— ${title}</span></h3>
+            ${body}
+          </article>`;
+  const transition = `<span class="technician-assignment-transition" aria-hidden="true">↓</span>`;
+  const bodies = [
+    // 00 — طلب صيانة جديد
+    `
+        <p class="field-explanation-intro">تبدأ دورة خدمة الصيانة بإنشاء طلب صيانة جديد داخل نظام خدمات ما بعد البيع من قبل خدمة العملاء، فيظهر الطلب في مرحلة طلب صيانة جديد ويصبح جاهزًا للمعالجة ضمن مراحل الصيانة.</p>
+        ${shot("1.png", "لوحة مهام الصيانة في نظام خدمات مابعد البيع وتظهر فيها الطلبات في مرحلة طلب صيانة جديد", "لوحة طلبات الصيانة")}
+        ${shot("2.png", "طلب صيانة جديد مفتوح في مرحلة طلب صيانة جديد ويعرض المشروع والفاتورة ومستودع التشغيل", "بيانات طلب الصيانة الجديد")}
+        ${execution("يدوي / خدمة العملاء")}`,
+    // 01 — جدولة موعد
+    `
+        <p class="field-explanation-intro">بعد إنشاء الطلب ينتقل إلى مرحلة جدولة موعد، حيث يتم تحديد موعد وإرسال رسالة للعميل لحجز موعد للصيانة ومعاينة المشكلة بشكل ميداني.</p>
+        <p class="field-explanation-intro">هذا الموعد هو موعد المعاينة الأولية في موقع العميل، والهدف منه أن يقوم الفني بفحص الحالة وتحديد طبيعة المشكلة، ومعرفة الإجراء المطلوب، مثل ما إذا كانت الحالة تحتاج إلى صيانة، إصلاح، استبدال جزء، أو أي إجراء آخر قبل الانتقال إلى المراحل التالية من الخدمة.</p>
+        ${shot("3.png", "مهمة الصيانة في مرحلة جدولة موعد وتظهر فيها حقول Appointment From و Appointment To", "جدولة موعد المعاينة")}
+        ${execution("يدوي / خدمة العملاء")}`,
+    // 02 — في انتظار تعيين فني
+    `
+        <p class="field-explanation-intro">بعد جدولة موعد المعاينة، يكون طلب الصيانة في مرحلة في انتظار تعيين فني حتى يتم تعيين الفني المسؤول عن زيارة المعاينة الأولى وتشخيص المشكلة في موقع العميل، ويتم التعيين من قبل الجهة المختصة.</p>
+        ${execution("يدوي / الجهة المختصة")}`,
+    // 03 — التقرير المبدئي
+    `
+        <p class="field-explanation-intro">يزور الفني موقع العميل ويعاين المشكلة، ثم يعبئ التقرير المبدئي من خلال نموذج الصيانة المرتبط بالمهمة:</p>
+        <div class="technician-assignment-flow" aria-label="خطوات تفعيل وتعبئة نموذج الصيانة">
+          ${substep("أ", "تفعيل نموذج الصيانة", `<p class="field-explanation-intro">من داخل المهمة، يتم فتح تبويب Task Forms لتفعيل نموذج الصيانة.</p>
+            ${shot("4.png", "مهمة الصيانة في مرحلة التقرير المبدئي مع تحديد تبويب Task Forms", "تبويب Task Forms")}`)}
+          ${transition}
+          ${substep("ب", "اختيار نموذج الصيانة وحفظ المهمة", `<p class="field-explanation-intro">في تبويب Task Forms، يتم اختيار نموذج الصيانة ضمن النماذج الظاهرة على المهمة، ثم حفظ المهمة.</p>
+            ${shot("5.png", "تبويب Task Forms مع اختيار نموذج الصيانة وحفظ المهمة", "اختيار نموذج الصيانة")}`)}
+          ${transition}
+          ${substep("ج", "فتح نموذج الصيانة", `<p class="field-explanation-intro">بعد الحفظ يظهر زر نموذج الصيانة أعلى المهمة، ومنه يتم فتح النموذج.</p>
+            ${shot("6.png", "زر نموذج الصيانة يظهر أعلى مهمة الصيانة بعد تفعيل النموذج", "زر نموذج الصيانة")}`)}
+          ${transition}
+          ${substep("د", "تعبئة بيانات التقرير", `<p class="field-explanation-intro">يعبئ الفني بيانات المعاينة في النموذج، مثل بيانات المستودع وتاريخ الفحص، ووصف المشكلة وكود الصنف والكمية المعيوبة، وملاحظات الورشة، وصور التوثيق.</p>
+            ${shot("7.png", "نموذج الصيانة ويعرض بيانات المستودع والعميل ووصف المشكلة والكمية المعيوبة وملاحظات الورشة وصورة التوثيق", "نموذج الصيانة")}`)}
+          ${transition}
+          ${substep("هـ", "الاعتمادات والتوقيعات", `<p class="field-explanation-intro">يتضمن النموذج قسم الاعتمادات والتوقيعات <bdi dir="ltr">(Approvals &amp; Signatures)</bdi>، الذي يوثّق توقيعات المسؤولين على التقرير: فني الصيانة، وأمين المستودع، ومشرف الورشة الفنية، ومشرف الفرع، ومسؤول إدارة الصنف.</p>
+            ${shot("8.png", "قسم الاعتمادات والتوقيعات في نموذج الصيانة ويضم توقيع فني الصيانة وأمين المستودع ومشرف الورشة الفنية ومشرف الفرع", "الاعتمادات والتوقيعات")}`)}
+        </div>
+        ${execution("يدوي / الجهة المختصة")}`,
+    // 04 — في انتظار قطع الغيار
+    `
+        <p class="field-explanation-intro">إذا أظهر التقرير المبدئي أن الحالة تحتاج إلى قطع غيار، ينتظر طلب الصيانة في هذه المرحلة حتى تتوفر القطع المطلوبة.</p>`,
+    // 05 — تحديد موعد الصيانة
+    `
+        <p class="field-explanation-intro">بعد جاهزية الحالة، تقوم خدمة العملاء بتحديد موعد تنفيذ أعمال الصيانة.</p>
+        <p class="field-explanation-intro">هذا موعد تنفيذ أعمال الصيانة الفعلية بعد التشخيص وجاهزية الحالة، ويختلف عن موعد المرحلة 01 (جدولة موعد) الذي يُحدَّد لمعاينة المشكلة في موقع العميل.</p>
+        ${execution("يدوي / خدمة العملاء")}`,
+    // 06 — جاري العمل بالموقع
+    `
+        <p class="field-explanation-intro">في الموعد المحدد يقوم الفني بتنفيذ أعمال الصيانة في موقع العميل.</p>
+        <p class="field-explanation-intro">بعد الانتهاء من الأعمال، يُستخدم زر <bdi dir="ltr">Send OTP &amp; PDF</bdi> في نموذج الصيانة لإرسال رمز التحقق (OTP) كخطوة تأكيد نهائية قبل إغلاق مهمة الصيانة. ويعرض النموذج حالاته: <bdi dir="ltr">Draft</bdi> ثم <bdi dir="ltr">OTP Sent</bdi> ثم <bdi dir="ltr">Verified</bdi>.</p>
+        ${shot("9.png", "زر Send OTP & PDF في نموذج الصيانة للتأكيد النهائي قبل إغلاق المهمة", "زر Send OTP & PDF")}
+        ${execution("يدوي / الفني")}`,
+    // 07 — مكتملة
+    `
+        <p class="field-explanation-intro">بعد التأكيد النهائي من خلال OTP، تنتقل مهمة الصيانة إلى مرحلة مكتملة، وبذلك تكتمل خدمة الصيانة وتُغلق بنجاح.</p>
+        ${shot("10.png", "لوحة مهام الصيانة مع تحديد مرحلة مكتملة وفيها طلب صيانة مكتمل", "مرحلة مكتملة")}`,
+  ];
+
+  return `
+    <div class="workflow-content customer-service-maintenance-workflow">
+      <header class="case-header" aria-labelledby="maintenanceTitle">
+        <div>
+          <h1 id="maintenanceTitle">${maintenanceTour.title}</h1>
+          ${renderWorkflowFlow(maintenanceTour, { activeTargetId: maintenanceTour.children[0].targetId, numberStart: 0 })}
+        </div>
+      </header>
+      ${maintenanceTour.children.map((step, index) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="maintenanceStage${index}Title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+          <div><h2 id="maintenanceStage${index}Title">${step.title}</h2></div>
+        </div>${bodies[index]}
+      </section>`).join("")}
+    </div>`;
 }
 
 const customerServiceSources = [
@@ -1437,9 +1549,45 @@ function renderCustomerServiceOverview(service) {
           <span>مسار مستقل</span>
           <h2 id="customerServiceMaintenanceTitle">الصيانة</h2>
         </div>
-        ${renderCustomerServiceEntryCard("customer-service-maintenance", "7 مراحل")}
+        ${renderCustomerServiceEntryCard("customer-service-maintenance", "8 مراحل")}
       </aside>
     </div>`;
+}
+
+// Overview (نظرة عامة) of خدمة التركيب: an index of its three chapters. The workflow itself is
+// under الباب الأول → تركيب كامل.
+const INSTALLATION_CHAPTER_SUMMARIES = {
+  "installation-services": "يضم هذا الباب أنواع خدمة التركيب المختلفة.",
+  "installation-relationships": "يغطي هذا الباب دورات خدمة التركيب التي تعتمد على خدمات أخرى أو تتكامل معها.",
+  "installation-returns-cancellations": "يغطي هذا الباب حالات الإلغاء والمرتجعات المرتبطة بخدمة التركيب.",
+};
+
+function renderInstallationOverview(service) {
+  const chapters = service.chapterIds.map(getChapter).filter((chapter) => chapter?.visible !== false);
+  return `
+    <header class="chapter-header service-header">
+      <p class="chapter-number">نطاق الخدمة</p>
+      <h1>${service.title}</h1>
+      <p>${service.description}</p>
+    </header>
+    ${chapters
+      .map(
+        (chapter) => `
+      <section class="chapter-index" aria-labelledby="installationChapter-${chapter.id}">
+        <div class="index-heading">
+          <span>${chapter.number}</span>
+          <h2 id="installationChapter-${chapter.id}">${chapter.title}</h2>
+          <p>${INSTALLATION_CHAPTER_SUMMARIES[chapter.id] || chapter.description}</p>
+        </div>
+        <div class="chapter-grid">
+          ${chapter.items
+            .filter((item) => item.visible !== false)
+            .map((item, index) => renderLessonCard(chapter, item, index))
+            .join("")}
+        </div>
+      </section>`,
+      )
+      .join("")}`;
 }
 
 function renderRelationshipFlowDiagram() {
@@ -1537,8 +1685,251 @@ function renderInternalTransferDeliveryLinkContent() {
     </div>`;
 }
 
+function renderInstallationDeliveryScreenshot(src, alt, label) {
+  return `
+          <figure class="odoo-screenshot-frame">
+            <img src="${src}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+}
+
+// خدمة التركيب → الباب الثاني → تركيب مع توصيل: the relationship between the two services, not a copy
+// of either workflow (the full workflows open from stage 02 and stage 04).
+function renderInstallationDeliveryLinkContent() {
+  const [invoice, scheduling, delivery, installation, completed] = installationWithDeliveryTour.children;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content installation-with-delivery-workflow">
+      <header class="case-header" aria-labelledby="installationWithDeliveryTitle">
+        <div>
+          <h1 id="installationWithDeliveryTitle">${installationWithDeliveryTour.title}</h1>
+          ${renderWorkflowFlow(installationWithDeliveryTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro internal-transfer-delivery-link-summary">عندما تحتوي الفاتورة على خدمة التوصيل وخدمة التركيب، يحجز العميل موعد التركيب، ويُحدَّد موعد التوصيل بناءً عليه، فتُنفَّذ خدمة التوصيل أولًا، ثم تُستكمل خدمة التركيب بعد اكتمال التوصيل ووصول البضاعة إلى العميل.</p>
+
+      ${section(invoice, "00", `
+        <p class="field-explanation-intro">تبدأ الدورة بوصول فاتورة من SAP تحتوي على خدمة التوصيل وخدمة التركيب إلى نظام خدمات مابعد البيع، وتظهر الفاتورة ضمن دورة عمل خدمة التركيب في مرحلة طلب تركيب.</p>
+        ${renderInstallationDeliveryScreenshot("assest/installation/1.png", "شاشة نظام خدمات مابعد البيع تعرض خدمة التوصيل والتركيب في مرحلة طلب تركيب", "الفاتورة في مرحلة طلب تركيب")}`)}
+
+      ${section(scheduling, "01", `
+        <p class="field-explanation-intro">يحدد المشرف موعد التركيب والفترة المسموح للعميل بالحجز ضمنها، ثم يرسل النظام تلقائيًا رابط حجز موعد التركيب إلى العميل، فيختار العميل موعد التركيب ضمن الفترة المسموحة ويؤكد الحجز.</p>
+        <p class="field-explanation-intro">بعد حجز موعد التركيب، يتم تحديد موعد التوصيل قبل موعد التركيب بـ 24 أو 48 ساعة حسب الإعداد المعتمد، بحيث تصل البضاعة إلى العميل قبل تنفيذ أعمال التركيب.</p>
+        <div class="internal-transfer-delivery-link-image-pair">
+          ${renderInstallationDeliveryScreenshot("assest/installation/3.png", "سؤال في نظام خدمات مابعد البيع لمعرفة موعد التوصيل قبل التركيب بكم ساعة", "سؤال موعد التوصيل قبل التركيب")}
+          ${renderInstallationDeliveryScreenshot("assest/installation/5.png", "شاشة اختيار التاريخ والوقت لموعد التركيب", "اختيار موعد التركيب")}
+        </div>`)}
+
+      ${section(delivery, "02", `
+        <p class="field-explanation-intro">بعد تحديد موعد التوصيل، لا تبدأ مهمة التوصيل من بداية دورة عمل خدمة التوصيل، وإنما تنتقل مباشرة إلى مرحلة "ربط الخدمة بالسائق"، ثم تستكمل مراحل خدمة التوصيل: <strong>ربط الخدمة بالسائق ← ملئ النموذج (سند التحميل) ← جاري التوصيل ← استلام الخدمة</strong>.</p>
+        <p class="field-explanation-intro">بعد تأكيد استلام العميل للخدمة تكتمل خدمة التوصيل.</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> إدارة المستودعات</aside>
+        ${renderInstallationDeliveryScreenshot("assest/installation/9.png", "مهمة التوصيل في مرحلة ربط الخدمة بالسائق ضمن دورة التوصيل مع التركيب", "مهمة التوصيل في مرحلة ربط الخدمة بالسائق")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "customer-delivery")}" data-workflow-overlay="customer-delivery">عرض دورة التوصيل <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(installation, "03", `
+        <p class="field-explanation-intro">بعد اكتمال خدمة التوصيل ووصول البضاعة إلى العميل، يصل الفني إلى موقع العميل وتظهر مهمة التركيب في مرحلة ملئ النموذج، حيث يفتح الفني نموذج التركيب، ثم يضغط على زر بدء التركيب (Start Installation)، وينفذ أعمال التركيب ويعبئ البيانات المطلوبة، ثم يضغط على زر إنهاء التركيب (Finish Installation)، ويتم توثيق استلام العميل للخدمة من خلال توقيعه على النموذج.</p>
+        <div class="internal-transfer-delivery-link-image-pair">
+          ${renderInstallationDeliveryScreenshot("assest/installation/11.png", "زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب في موقع العميل", "بدء تنفيذ التركيب")}
+          ${renderInstallationDeliveryScreenshot("assest/installation/12.png", "إنهاء خدمة التركيب وتوثيق استلام العميل من خلال توقيعه على النموذج", "إنهاء التركيب واستلام العميل")}
+        </div>`)}
+
+      ${section(completed, "04", `
+        <p class="field-explanation-intro">بعد إنهاء أعمال التركيب وتوثيق استلام العميل للخدمة، تنتقل مهمة التركيب إلى مرحلة تم التركيب، وبذلك تكتمل دورة التوصيل مع التركيب.</p>
+        ${renderInstallationDeliveryScreenshot("assest/installation/14.png", "اكتمال دورة خدمة التركيب وانتقال المهمة إلى مرحلة تم التركيب", "مرحلة تم التركيب")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "installation-full")}">عرض تركيب كامل <span aria-hidden="true">←</span></a></p>`)}
+
+      <aside class="internal-transfer-dependency-note"><strong>الاعتماد بين الخدمتين:</strong> موعد التوصيل يُحدَّد بناءً على موعد التركيب، وتُنفَّذ خدمة التوصيل قبل تنفيذ التركيب، واكتمال التوصيل ووصول البضاعة إلى العميل هو ما يسمح باستكمال أعمال التركيب في موقع العميل.</aside>
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        موعد التوصيل يُحدَّد من موعد التركيب قبله بـ 24 أو 48 ساعة حسب الإعداد المعتمد، وتُنفَّذ خدمة التوصيل قبل التركيب بدءًا من مرحلة ربط الخدمة بالسائق، وبعد اكتمال التوصيل ووصول البضاعة إلى العميل يستكمل الفني خدمة التركيب حتى مرحلة تم التركيب.
+      </aside>
+    </div>`;
+}
+
+// خدمة التركيب → الباب الثاني → تركيب مع التحويلات الداخلية: the chain
+// التحويلات الداخلية → (يحظر) التوصيل → مستودع التجمع → التوصيل جاهز → اكتمال التوصيل → استكمال التركيب.
+// The Blocked / Ready statuses belong to the Delivery task here, never to the Installation task.
+function renderInstallationInternalTransferLinkContent() {
+  const [invoice, transfer, delivery, installation, completed] = installationWithInternalTransferTour.children;
+  const linkImages = "assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل";
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content installation-with-internal-transfer-workflow">
+      <header class="case-header" aria-labelledby="installationWithInternalTransferTitle">
+        <div>
+          <h1 id="installationWithInternalTransferTitle">${installationWithInternalTransferTour.title}</h1>
+          ${renderWorkflowFlow(installationWithInternalTransferTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro internal-transfer-delivery-link-summary">عندما تحتوي فاتورة SAP على خدمة التركيب وخدمة التوصيل وتحويل داخلي، فهذا يعني أن البضاعة غير متوفرة بالكامل بعد في مستودع التجمع. لذلك تُنفَّذ التحويلات الداخلية أولًا، وتبقى خدمة التوصيل محظورة بسبب الاعتماد حتى تصل البضاعة كاملة إلى مستودع التجمع، ثم تُنفَّذ خدمة التوصيل للعميل، وبعد اكتمالها ووصول البضاعة إلى العميل تُستكمل خدمة التركيب.</p>
+
+      ${section(invoice, "00", `
+        <p class="field-explanation-intro">تبدأ الدورة بوصول فاتورة من SAP تحتوي على خدمة التركيب وخدمة التوصيل وتحويل داخلي إلى نظام خدمات مابعد البيع.</p>
+        <p class="field-explanation-intro">وجود التحويل الداخلي يعني أن البضاعة، أو جزءًا منها، غير متوفرة بعد في مستودع التجمع، لذلك لا يمكن متابعة خدمة التوصيل بشكل طبيعي لأنها تعتمد على اكتمال التحويلات الداخلية.</p>
+        ${renderInstallationDeliveryScreenshot(`${linkImages}/1.png`, "مهام الفاتورة في نظام خدمات مابعد البيع تعرض التحويلات الداخلية وخدمة التوصيل معًا على نفس الفاتورة", "مهمتي التحويلات الداخلية والتوصيل على نفس الفاتورة")}`)}
+
+      ${section(transfer, "01", `
+        <p class="field-explanation-intro">يتم نقل البضاعة من المستودع المصدر إلى مستودع التجمع من خلال دورة عمل التحويلات الداخلية الحالية، حتى تصل البضاعة إلى مستودع التجمع ويتم تأكيد استلامها، فتنتقل مهمة التحويلات الداخلية إلى مرحلة تم الاستلام.</p>
+        <p class="field-explanation-intro">خلال هذه المرحلة تظهر خدمة التوصيل بالحالة الحمراء: محظور بسبب الاعتماد <bdi dir="ltr">(Blocked by Dependency)</bdi>.</p>
+        <p class="field-explanation-intro">خدمة التوصيل موجودة، ولكن لا يمكن البدء بها لأن التحويلات الداخلية لم تكتمل بعد.</p>
+        ${renderInstallationDeliveryScreenshot(`${linkImages}/4.png`, "بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بالحالة الحمراء محظور بسبب الاعتماد (Blocked by Dependency)", "الحالة الحمراء محظور بسبب الاعتماد")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "internal-transfer")}" data-workflow-overlay="internal-transfer">عرض دورة التحويلات الداخلية <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(delivery, "02", `
+        <p class="field-explanation-intro">بعد اكتمال التحويلات الداخلية ووصول البضاعة إلى مستودع التجمع، تصبح خدمة التوصيل جاهزة للمتابعة، ويُفك الاعتماد وتتحول إلى الحالة الخضراء: جاهز بعد اكتمال الاعتماد <bdi dir="ltr">(Dependency Ready)</bdi>.</p>
+        <p class="field-explanation-intro">في دورة التوصيل مع التركيب، يُحدَّد موعد التوصيل بناءً على موعد التركيب قبله بـ 24 أو 48 ساعة حسب الإعداد المعتمد، ولا تبدأ مهمة التوصيل من بداية دورة عمل خدمة التوصيل، وإنما تنتقل مباشرة إلى مرحلة "ربط الخدمة بالسائق"، ثم تستكمل مراحل خدمة التوصيل: <strong>ربط الخدمة بالسائق ← ملئ النموذج (سند التحميل) ← جاري التوصيل ← استلام الخدمة</strong>.</p>
+        <p class="field-explanation-intro">بعد تأكيد استلام العميل للخدمة تكتمل خدمة التوصيل.</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> إدارة المستودعات</aside>
+        ${renderInstallationDeliveryScreenshot(`${linkImages}/3.png`, "بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بالحالة الخضراء جاهز بعد اكتمال الاعتماد (Dependency Ready)", "الحالة الخضراء جاهز بعد اكتمال الاعتماد")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "customer-delivery")}" data-workflow-overlay="customer-delivery">عرض دورة التوصيل <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(installation, "03", `
+        <p class="field-explanation-intro">لا يُستكمل التركيب بمجرد اكتمال التحويلات الداخلية، وإنما يجب تحقق الشرط الكامل التالي:</p>
+        <ol class="guide-steps">
+          <li>اكتمال التحويلات الداخلية.</li>
+          <li>تصبح خدمة التوصيل جاهزة.</li>
+          <li>اكتمال خدمة التوصيل.</li>
+          <li>وصول البضاعة إلى العميل.</li>
+          <li>استكمال تنفيذ خدمة التركيب.</li>
+        </ol>
+        <p class="field-explanation-intro">بعد وصول البضاعة إلى العميل، يصل الفني إلى موقع العميل وتظهر مهمة التركيب في مرحلة ملئ النموذج، حيث يفتح الفني نموذج التركيب، ثم يضغط على زر بدء التركيب (Start Installation)، وينفذ أعمال التركيب ويعبئ البيانات المطلوبة، ثم يضغط على زر إنهاء التركيب (Finish Installation)، ويتم توثيق استلام العميل للخدمة من خلال توقيعه على النموذج.</p>
+        <div class="internal-transfer-delivery-link-image-pair">
+          ${renderInstallationDeliveryScreenshot("assest/installation/11.png", "زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب في موقع العميل", "بدء تنفيذ التركيب")}
+          ${renderInstallationDeliveryScreenshot("assest/installation/12.png", "إنهاء خدمة التركيب وتوثيق استلام العميل من خلال توقيعه على النموذج", "إنهاء التركيب واستلام العميل")}
+        </div>`)}
+
+      ${section(completed, "04", `
+        <p class="field-explanation-intro">بعد إنهاء أعمال التركيب وتوثيق استلام العميل للخدمة، تنتقل مهمة التركيب إلى مرحلة تم التركيب، وبذلك تكتمل دورة التحويلات الداخلية والتوصيل والتركيب.</p>
+        ${renderInstallationDeliveryScreenshot("assest/installation/14.png", "اكتمال دورة خدمة التركيب وانتقال المهمة إلى مرحلة تم التركيب", "مرحلة تم التركيب")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "installation-full")}">عرض تركيب كامل <span aria-hidden="true">←</span></a></p>`)}
+
+      <div class="dependency-status-definitions" aria-label="حالات اعتماد خدمة التوصيل على التحويلات الداخلية">
+        <article class="dependency-status-definition dependency-status-definition--blocked">
+          <h2>الحالة الحمراء — محظور بسبب الاعتماد</h2>
+          <bdi class="dependency-status-technical-label" dir="ltr">(Blocked by Dependency)</bdi>
+          <p>تعني أن خدمة التوصيل موجودة، ولكن لا يمكن متابعتها لأن التحويلات الداخلية لم تكتمل بعد.</p>
+        </article>
+        <article class="dependency-status-definition dependency-status-definition--ready">
+          <h2>الحالة الخضراء — جاهز بعد اكتمال الاعتماد</h2>
+          <bdi class="dependency-status-technical-label" dir="ltr">(Dependency Ready)</bdi>
+          <p>تعني أن التحويلات الداخلية اكتملت وأن البضاعة متوفرة في مستودع التجمع، وأصبح بالإمكان متابعة خدمة التوصيل.</p>
+        </article>
+      </div>
+
+      <aside class="internal-transfer-dependency-note"><strong>ملاحظة:</strong> تنطبق الحالتان الحمراء والخضراء في هذه العلاقة على خدمة التوصيل، وليس على مهمة التركيب. وعند ظهور خدمة التوصيل بالحالة الحمراء، إذا ظهر اسم مدينة في الـ Tag أسفل اسم العميل، فهذا يعني أن خدمة التوصيل مرتبطة بالتحويلات الداخلية.</aside>
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        تحظر التحويلات الداخلية خدمة التوصيل حتى تصل البضاعة كاملة إلى مستودع التجمع، ثم تصبح خدمة التوصيل جاهزة وتُنفَّذ للعميل بدءًا من مرحلة ربط الخدمة بالسائق، وبعد اكتمال التوصيل ووصول البضاعة إلى العميل يستكمل الفني خدمة التركيب حتى مرحلة تم التركيب.
+      </aside>
+    </div>`;
+}
+
+// خدمة التركيب → الباب الثاني → تركيب مع تصنيع. The confirmed rule is only that Installation
+// execution waits for Manufacturing completion ("تم الانتهاء من الخدمة"); no Manufacturing → Delivery
+// Blocked / Ready rule is documented, so none is shown.
+function renderInstallationManufacturingLinkContent() {
+  const [invoice, manufacturing, delivery, installation, completed] = installationWithManufacturingTour.children;
+  const manufacturingExecution = [
+    ["00", "فاتورة من SAP", "آلي من خلال النظام"],
+    ["01", "طلب خدمة تصنيع", "آلي من خلال النظام"],
+    ["02", "إرسال إلى ورشة التصنيع", "يدوي / إدارة التصنيع"],
+    ["03", "جاري التصنيع", "يدوي / إدارة التصنيع"],
+    ["04", "تم الانتهاء من الخدمة", "يدوي / إدارة التصنيع"],
+  ];
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content installation-with-manufacturing-workflow">
+      <header class="case-header" aria-labelledby="installationWithManufacturingTitle">
+        <div>
+          <h1 id="installationWithManufacturingTitle">${installationWithManufacturingTour.title}</h1>
+          ${renderWorkflowFlow(installationWithManufacturingTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro internal-transfer-delivery-link-summary">لا يمكن البدء بتنفيذ خدمة التركيب قبل اكتمال خدمة التصنيع. وبعد اكتمال التصنيع، تستمر دورة التركيب وفق مسارها المعتمد، بما في ذلك تنفيذ خدمة التوصيل ووصول البضاعة إلى العميل قبل بدء أعمال التركيب.</p>
+
+      ${section(invoice, "00", `
+        <p class="field-explanation-intro">تبدأ العلاقة بوصول فاتورة من SAP تحتوي على خدمة التصنيع وخدمة التركيب. في هذه الحالة يجب استكمال دورة التصنيع أولًا قبل البدء بتنفيذ أعمال التركيب في موقع العميل.</p>
+        <p class="field-explanation-intro">وبما أن التركيب الكامل في هذا المشروع يتضمن التوصيل، تُنفَّذ خدمة التوصيل ضمن مسار التركيب الكامل.</p>`)}
+
+      ${section(manufacturing, "01", `
+        <p class="field-explanation-intro">تمر خدمة التصنيع بمراحلها المعتمدة حتى تصل مهمة التصنيع إلى مرحلة "04 — تم الانتهاء من الخدمة"، وعندها تكتمل دورة خدمة التصنيع.</p>
+        <p class="field-explanation-intro">مسار خدمة التصنيع: <strong>00 فاتورة من SAP ← 01 طلب خدمة تصنيع ← 02 إرسال إلى ورشة التصنيع ← 03 جاري التصنيع ← 04 تم الانتهاء من الخدمة</strong>.</p>
+        <p class="field-explanation-intro">التنفيذ في مراحل خدمة التصنيع:</p>
+        <ul class="guide-steps">
+          ${manufacturingExecution.map(([number, title, execution]) => `<li>${number} — ${title}: ${execution}</li>`).join("\n          ")}
+        </ul>
+        ${renderInstallationDeliveryScreenshot("assest/التصنيع/1.png", "لوحة عمليات خدمة التصنيع في نظام خدمات مابعد البيع وتعرض مراحل طلب خدمة تصنيع وإرسال إلى ورشة التصنيع وجاري التصنيع وتم الانتهاء من الخدمة", "لوحة خدمة التصنيع")}
+        <p><a class="secondary-link" href="${routeHref("service", "manufacturing")}" data-workflow-overlay="manufacturing">عرض دورة التصنيع <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(delivery, "02", `
+        <p class="field-explanation-intro">بعد اكتمال التصنيع، تستمر دورة التركيب وفق مسارها المعتمد، بما في ذلك تنفيذ خدمة التوصيل للعميل.</p>
+        <p class="field-explanation-intro">في دورة التوصيل مع التركيب، يُحدَّد موعد التوصيل بناءً على موعد التركيب قبله بـ 24 أو 48 ساعة حسب الإعداد المعتمد، ولا تبدأ مهمة التوصيل من بداية دورة عمل خدمة التوصيل، وإنما تنتقل مباشرة إلى مرحلة "ربط الخدمة بالسائق"، ثم تستكمل مراحل خدمة التوصيل: <strong>ربط الخدمة بالسائق ← ملئ النموذج (سند التحميل) ← جاري التوصيل ← استلام الخدمة</strong>.</p>
+        <p class="field-explanation-intro">بعد تأكيد استلام العميل للخدمة تكتمل خدمة التوصيل.</p>
+        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> إدارة المستودعات</aside>
+        ${renderInstallationDeliveryScreenshot("assest/installation/9.png", "مهمة التوصيل في مرحلة ربط الخدمة بالسائق ضمن دورة التوصيل مع التركيب", "مهمة التوصيل في مرحلة ربط الخدمة بالسائق")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "customer-delivery")}" data-workflow-overlay="customer-delivery">عرض دورة التوصيل <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(installation, "03", `
+        <p class="field-explanation-intro">لا يمكن البدء بتنفيذ خدمة التركيب قبل اكتمال خدمة التصنيع، كما يتطلب التنفيذ الفعلي للتركيب اكتمال خدمة التوصيل ووصول البضاعة إلى العميل، وفق التسلسل التالي:</p>
+        <ol class="guide-steps">
+          <li>اكتمال خدمة التصنيع.</li>
+          <li>تنفيذ خدمة التوصيل.</li>
+          <li>وصول البضاعة إلى العميل.</li>
+          <li>وصول الفني إلى الموقع.</li>
+          <li>فتح نموذج التركيب.</li>
+          <li>الضغط على زر بدء التركيب <bdi dir="ltr">(Start Installation)</bdi>.</li>
+          <li>تنفيذ أعمال التركيب.</li>
+          <li>الضغط على زر إنهاء التركيب <bdi dir="ltr">(Finish Installation)</bdi>.</li>
+          <li>توثيق استلام العميل للخدمة من خلال توقيعه على النموذج.</li>
+        </ol>
+        <div class="internal-transfer-delivery-link-image-pair">
+          ${renderInstallationDeliveryScreenshot("assest/installation/11.png", "زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب في موقع العميل", "بدء تنفيذ التركيب")}
+          ${renderInstallationDeliveryScreenshot("assest/installation/12.png", "إنهاء خدمة التركيب وتوثيق استلام العميل من خلال توقيعه على النموذج", "إنهاء التركيب واستلام العميل")}
+        </div>`)}
+
+      ${section(completed, "04", `
+        <p class="field-explanation-intro">بعد إنهاء أعمال التركيب وتوثيق استلام العميل للخدمة، تنتقل مهمة التركيب إلى مرحلة تم التركيب، وبذلك تكتمل علاقة التصنيع والتوصيل والتركيب.</p>
+        ${renderInstallationDeliveryScreenshot("assest/installation/14.png", "اكتمال دورة خدمة التركيب وانتقال المهمة إلى مرحلة تم التركيب", "مرحلة تم التركيب")}
+        <p><a class="secondary-link" href="${routeHref("lesson", "installation-full")}">عرض تركيب كامل <span aria-hidden="true">←</span></a></p>`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        تكتمل خدمة التصنيع أولًا عند وصول مهمتها إلى مرحلة تم الانتهاء من الخدمة، ثم تستمر دورة التركيب وتُنفَّذ خدمة التوصيل للعميل بدءًا من مرحلة ربط الخدمة بالسائق، وبعد اكتمال التوصيل ووصول البضاعة إلى العميل يبدأ الفني تنفيذ أعمال التركيب حتى مرحلة تم التركيب.
+      </aside>
+    </div>`;
+}
+
 function renderSubTaskCycleFlowDiagram() {
-  return renderWorkflowFlow(subTaskCycleTour, { numberStart: 0, activeTargetId: navigationState.currentTourTargetId });
+  return renderWorkflowFlow(subTaskCycleTour, { numberStart: 0 });
 }
 
 function renderSubTaskCycleContent() {
@@ -1675,31 +2066,7 @@ function renderBookPortal() {
           <div class="chapter-grid">${deliveryChapters.map(renderChapterCard).join("")}</div>
         </section>`;
     } else if (service.id === "installation") {
-      portal.innerHTML = `
-        <header class="chapter-header service-header">
-          <p class="chapter-number">نطاق الخدمة</p>
-          <h1>${service.title}</h1>
-          <p>${service.description}</p>
-        </header>
-        <section class="delivery-operations installation-operations" aria-labelledby="installationOperationsTitle">
-          <div class="index-heading">
-            <span>عمليات خدمة التركيب</span>
-            <h2 id="installationOperationsTitle">العمليات المتاحة</h2>
-          </div>
-          <nav class="operation-tabs installation-operation-tabs" aria-label="عمليات خدمة التركيب">
-            ${service.operations.map((operation, index) => {
-              const isAvailable = operation.status === "متاح";
-              return `
-                <a class="entry-card ${isAvailable ? "is-ready" : ""}" href="${routeHref("operation", operation.id)}">
-                  <span class="entry-card-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
-                  <span class="status-badge ${isAvailable ? "is-complete" : "is-soon"}">${operation.status}</span>
-                  <strong class="entry-card-title">${operation.title}</strong>
-                  <span class="entry-card-description">${operation.description}</span>
-                  <span class="entry-card-action">${isAvailable ? "فتح دورة العمل" : "فتح العملية"} <span aria-hidden="true">←</span></span>
-                </a>`;
-            }).join("")}
-          </nav>
-        </section>`;
+      portal.innerHTML = renderInstallationOverview(service);
     } else if (service.id === "measurement") {
       portal.innerHTML = `
         <div class="workflow-content">
@@ -1938,6 +2305,24 @@ function renderBookPortal() {
     return;
   }
 
+  if (match?.item.id === "installation-with-manufacturing") {
+    portal.innerHTML = renderInstallationManufacturingLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "installation-with-internal-transfer") {
+    portal.innerHTML = renderInstallationInternalTransferLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "installation-with-delivery") {
+    portal.innerHTML = renderInstallationDeliveryLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
   if (match?.item.id === "sub-task-cycle") {
     portal.innerHTML = renderSubTaskCycleContent();
     document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
@@ -2041,7 +2426,6 @@ function getCurrentSidebarNodeKey() {
   }
   if (route.type === "chapter") return `chapter:${route.chapterId}`;
   if (route.type === "lesson") return `item:${route.itemId}`;
-  if (route.type === "operation" && route.operationId === "delivery-installation") return "overview:installation";
   if (route.type === "operation") return `operation:${route.operationId}`;
 
   return null;
@@ -2125,16 +2509,22 @@ function renderSidebar() {
 
 function renderWorkflowFlow(caseNode, options = {}) {
   const flowNodes = caseNode.children.filter((flowNode) => flowNode.visible !== false);
-  const activeTargetId = options.activeTargetId || navigationState.currentTourTargetId;
+  // One active card, chosen by position: the first stage unless a target is given. Diagrams
+  // without stage sections (no targetId) start with no active card.
+  const hasStageTargets = flowNodes.some((flowNode) => flowNode.targetId);
+  const activeIndex = options.activeTargetId
+    ? flowNodes.findIndex((flowNode) => flowNode.targetId === options.activeTargetId)
+    : hasStageTargets ? 0 : -1;
   const interactive = options.interactive !== false;
   const numberStart = options.numberStart ?? 1;
 
   return `
-    <div class="workflow-flow" aria-label="جولة تعريفية">
+    <div class="workflow-flow" aria-label="جولة تعريفية" data-flow-tour="${caseNode.id}">
       ${flowNodes
         .map((flowNode, index) => {
-          const isActive = activeTargetId === flowNode.targetId;
-          const isInteractive = interactive || flowNode.interactive === true;
+          const isActive = index === activeIndex;
+          // A card without a stage section of its own is shown but not clickable.
+          const isInteractive = (interactive || flowNode.interactive === true) && Boolean(flowNode.targetId);
           const opensWorkflowOverlay = isInteractive && Boolean(flowNode.overlayId);
           const interactionAttributes = !isInteractive
             ? 'aria-disabled="true"'
@@ -2144,7 +2534,7 @@ function renderWorkflowFlow(caseNode, options = {}) {
           const openableClass = opensWorkflowOverlay ? "workflow-flow-node--openable" : "";
 
           return `
-            <button class="workflow-flow-node ${openableClass} ${isActive ? "active" : ""}" type="button" ${interactionAttributes} ${isActive ? 'aria-current="step"' : ""}>
+            <button class="workflow-flow-node ${openableClass} ${isActive ? "active" : ""}" type="button" data-flow-index="${index}" ${interactionAttributes} ${isActive ? 'aria-current="step"' : ""}>
               <span class="workflow-flow-index">${String(index + numberStart).padStart(2, "0")}</span>
               <span>${flowNode.title}</span>
               ${opensWorkflowOverlay ? '<span class="workflow-flow-node-hint" aria-hidden="true">عرض دورة العمل ↗</span>' : ""}
@@ -2159,62 +2549,220 @@ function renderWorkflowFlow(caseNode, options = {}) {
 
 function bindLearningMap(container = document) {
   container.querySelectorAll("[data-stage-target]").forEach((button) => {
+    if (button.dataset.stageBound) return;
+    button.dataset.stageBound = "true";
     button.addEventListener("click", () => {
-      const targetId = button.dataset.stageTarget;
-      setActiveTourStep(targetId);
-      requestAnimationFrame(() => {
-        document.querySelector(`#${targetId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+      if (workflowScrollSpy?.owns(button)) {
+        workflowScrollSpy.focusStage(Number(button.dataset.flowIndex));
+        return;
+      }
+      setActiveFlowCard(button);
+      document.getElementById(button.dataset.stageTarget)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
 
-function setActiveTourStep(targetId) {
-  navigationState.currentTourTargetId = targetId;
-  document.querySelectorAll("[data-stage-target], [data-workflow-target]").forEach((button) => {
-    const buttonTargetId = button.dataset.stageTarget || button.dataset.workflowTarget;
-    const isActive = buttonTargetId === targetId;
-    button.classList.toggle("active", isActive);
-
-    if (isActive) {
-      button.setAttribute("aria-current", "step");
-    } else {
-      button.removeAttribute("aria-current");
-    }
+// Marks one card of its workflow row as active. Cards are matched by position, so two cards that
+// point at the same section never light up together.
+function setActiveFlowCard(card) {
+  const flow = card?.closest(".workflow-flow");
+  if (!flow) return;
+  flow.querySelectorAll("[data-flow-index]").forEach((candidate) => {
+    const isActive = candidate === card;
+    candidate.classList.toggle("active", isActive);
+    if (isActive) candidate.setAttribute("aria-current", "step");
+    else candidate.removeAttribute("aria-current");
   });
 }
 
-function initTourStepObserver(tour = introductoryTour) {
-  if (tourStepObserver) {
-    tourStepObserver.disconnect();
-  }
+// Workflow pages that have top workflow cards and detailed stage sections, by route.
+const ROUTE_WORKFLOW_TOURS = {
+  "lesson:internal-transfer": internalTransferTour,
+  "lesson:warehouse-pickup": warehousePickupTour,
+  "lesson:sub-task-cycle": subTaskCycleTour,
+  "lesson:installation-with-delivery": installationWithDeliveryTour,
+  "lesson:installation-with-internal-transfer": installationWithInternalTransferTour,
+  "lesson:installation-with-manufacturing": installationWithManufacturingTour,
+  "service:measurement": measurementTour,
+  "service:design": designTour,
+  "service:manufacturing": manufacturingTour,
+  [`chapter:${complaintsTour.id}`]: complaintsTour,
+  [`chapter:${maintenanceTour.id}`]: maintenanceTour,
+};
 
-  const sections = tour.children
-    .filter((step) => step.visible !== false)
-    .map((step) => document.querySelector(`#${step.targetId}`))
-    .filter(Boolean);
+// Workflows the shared overlay can open (data-workflow-overlay="<key>").
+const OVERLAY_WORKFLOW_TOURS = {
+  "internal-transfer": internalTransferTour,
+  manufacturing: manufacturingTour,
+  "customer-delivery": introductoryTour,
+};
 
-  if (!sections.length || !("IntersectionObserver" in window)) {
+function getRouteWorkflowTour(route = navigationState.route) {
+  if (navigationState.selectedExperienceId === introductoryTour.id) return introductoryTour;
+  if (isInstallationWorkflowRoute(route)) return deliveryInstallationTour;
+  return ROUTE_WORKFLOW_TOURS[`${route.type}:${route.itemId || route.serviceId || route.chapterId || ""}`] || null;
+}
+
+function initRouteWorkflowScrollSpy({ applyStageLink = true } = {}) {
+  const tour = getRouteWorkflowTour();
+  if (!tour) {
+    stopWorkflowScrollSpy();
     return;
   }
+  initWorkflowScrollSpy(tour, { initialStage: applyStageLink ? navigationState.route.stage : null });
+}
 
-  tourStepObserver = new IntersectionObserver(
-    (entries) => {
-      const visibleEntry = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+// Scroll-spy shared by all workflow pages: the top workflow cards follow the stage section being read.
+// - The active stage is the last section whose top has passed a reading line at
+//   WORKFLOW_READING_LINE of the scroll viewport (the window, or the overlay's scroll area).
+// - At the very top the first card (usually 00) is active; at the bottom of the page the last
+//   section in view wins, because a short final section never reaches the reading line.
+// - Cards without a section of their own (e.g. a 00 card whose stage is the page header) are
+//   active only at the top; when several cards share a section, the later card owns it.
+// - A clicked card is pinned while the page scrolls to its section and stays pinned until the user
+//   scrolls again, so a short section is not immediately replaced by the next one.
+const WORKFLOW_READING_LINE = 0.3;
+const WORKFLOW_SCROLL_SETTLE_MS = 200;
+const WORKFLOW_SCROLL_KEYS = new Set(["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "]);
+let workflowScrollSpy = null;
 
-      if (visibleEntry) {
-        setActiveTourStep(visibleEntry.target.id);
+function stopWorkflowScrollSpy() {
+  workflowScrollSpy?.stop();
+  workflowScrollSpy = null;
+}
+
+function initWorkflowScrollSpy(tour, { root = document, initialStage = null } = {}) {
+  stopWorkflowScrollSpy();
+
+  const nodes = tour.children.filter((node) => node.visible !== false);
+  const flows = [...root.querySelectorAll(`.workflow-flow[data-flow-tour="${tour.id}"]`)];
+  if (!flows.length) return;
+
+  const stages = [];
+  nodes.forEach((node, index) => {
+    const section = node.targetId ? root.querySelector(`[id="${node.targetId}"]`) : null;
+    if (!section) return;
+    const shared = stages.find((stage) => stage.section === section);
+    if (shared) shared.index = index;
+    else stages.push({ index, section });
+  });
+
+  // Page workflows scroll with the window; an overlay passes its own scroll area as `root`.
+  const container = root === document ? null : root;
+  const scrollTarget = container || window;
+  let current = -1;
+  let pinned = null;
+  let programmatic = false;
+  let settleTimer = 0;
+  let frame = 0;
+
+  const viewport = () => {
+    if (!container) {
+      const scrollElement = document.scrollingElement || document.documentElement;
+      return { top: 0, height: window.innerHeight, scrollTop: window.scrollY, maxScroll: scrollElement.scrollHeight - window.innerHeight };
+    }
+    return {
+      top: container.getBoundingClientRect().top,
+      height: container.clientHeight,
+      scrollTop: container.scrollTop,
+      maxScroll: container.scrollHeight - container.clientHeight,
+    };
+  };
+
+  const readStageIndex = () => {
+    const view = viewport();
+    if (view.scrollTop <= 1) return 0;
+    const line = view.top + view.height * WORKFLOW_READING_LINE;
+    const bottom = view.top + view.height;
+    const atEnd = view.maxScroll - view.scrollTop <= 2;
+    let active = 0;
+    let activeTop = -Infinity;
+    for (const stage of stages) {
+      if (!stage.section.getClientRects().length) continue;
+      const top = stage.section.getBoundingClientRect().top;
+      if ((top <= line || (atEnd && top < bottom)) && top >= activeTop) {
+        active = stage.index;
+        activeTop = top;
       }
-    },
-    {
-      rootMargin: "-20% 0px -55% 0px",
-      threshold: [0.1, 0.25, 0.5],
-    },
-  );
+    }
+    return active;
+  };
 
-  sections.forEach((section) => tourStepObserver.observe(section));
+  const show = (index) => {
+    if (index === current) return;
+    current = index;
+    flows.forEach((flow) => setActiveFlowCard(flow.querySelector(`[data-flow-index="${index}"]`)));
+  };
+
+  const update = () => {
+    frame = 0;
+    if (pinned === null) show(readStageIndex());
+  };
+  const schedule = () => {
+    if (!frame) frame = requestAnimationFrame(update);
+  };
+  const settleSoon = () => {
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(() => {
+      programmatic = false;
+    }, WORKFLOW_SCROLL_SETTLE_MS);
+  };
+  const onScroll = () => {
+    if (programmatic) {
+      settleSoon();
+      return;
+    }
+    pinned = null;
+    schedule();
+  };
+  // The user takes over (wheel, touch, scrolling keys) even in the middle of a card-triggered scroll.
+  const onUserScrollIntent = (event) => {
+    if (event.type === "keydown" && !WORKFLOW_SCROLL_KEYS.has(event.key)) return;
+    if (!programmatic && pinned === null) return;
+    programmatic = false;
+    pinned = null;
+    schedule();
+  };
+
+  const focusStage = (index, { smooth = true } = {}) => {
+    const section = root.querySelector(`[id="${nodes[index]?.targetId}"]`);
+    show(index);
+    pinned = index;
+    if (!section) return;
+    programmatic = true;
+    settleSoon();
+    section.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  };
+
+  scrollTarget.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", schedule);
+  window.addEventListener("wheel", onUserScrollIntent, { passive: true });
+  window.addEventListener("touchstart", onUserScrollIntent, { passive: true });
+  window.addEventListener("keydown", onUserScrollIntent);
+
+  workflowScrollSpy = {
+    owns: (button) => flows.some((flow) => flow.contains(button)),
+    focusStage,
+    stop() {
+      scrollTarget.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("wheel", onUserScrollIntent);
+      window.removeEventListener("touchstart", onUserScrollIntent);
+      window.removeEventListener("keydown", onUserScrollIntent);
+      cancelAnimationFrame(frame);
+      clearTimeout(settleTimer);
+    },
+  };
+
+  const linkedIndex = initialStage ? nodes.findIndex((node) => node.id === initialStage || node.targetId === initialStage) : -1;
+  if (linkedIndex >= 0) {
+    // After the route change has reset the scroll position.
+    requestAnimationFrame(() => {
+      if (workflowScrollSpy?.focusStage === focusStage) focusStage(linkedIndex, { smooth: false });
+    });
+  } else {
+    show(readStageIndex());
+  }
 }
 
 function renderWorkflowVisibility() {
@@ -2241,14 +2789,10 @@ function renderWorkflowVisibility() {
     workflowContent.querySelector(".workflow-flow")?.remove();
     workflowContent.insertAdjacentHTML("afterbegin", renderWorkflowFlow(introductoryTour, { numberStart: 0 }));
     bindLearningMap(workflowContent);
-    initTourStepObserver();
   }
 
   if (shouldShowDeliveryInstallation) {
-    deliveryInstallationWorkflow.innerHTML = renderWorkflowFlow(deliveryInstallationTour, {
-      activeTargetId: deliveryInstallationTour.children[5].targetId,
-      numberStart: 0,
-    });
+    deliveryInstallationWorkflow.innerHTML = renderWorkflowFlow(deliveryInstallationTour, { numberStart: 0 });
     bindLearningMap(deliveryInstallationWorkflow);
   }
 }
@@ -2267,35 +2811,13 @@ function renderNavigationState() {
   renderSidebar();
   renderWorkflowVisibility();
 
-  if (navigationState.route.type === "lesson" && navigationState.route.itemId === "internal-transfer") {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    initTourStepObserver(internalTransferTour);
-  } else if (navigationState.route.type === "lesson" && navigationState.route.itemId === "warehouse-pickup") {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    initTourStepObserver(warehousePickupTour);
-  } else if (navigationState.route.type === "service" && navigationState.route.serviceId === "design") {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    initTourStepObserver(designTour);
-  } else if (navigationState.route.type === "service" && navigationState.route.serviceId === "manufacturing") {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    initTourStepObserver(manufacturingTour);
-  } else if (navigationState.route.type === "chapter" && navigationState.route.chapterId === complaintsTour.id) {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    initTourStepObserver(complaintsTour);
-  } else if (navigationState.route.type === "chapter" && navigationState.route.chapterId === maintenanceTour.id) {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    initTourStepObserver(maintenanceTour);
-  } else if (navigationState.route.type === "lesson" && navigationState.route.itemId === "sub-task-cycle") {
-    bindLearningMap(document.querySelector("#bookPortal"));
-    tourStepObserver?.disconnect();
-  } else if (navigationState.selectedExperienceId !== introductoryTour.id && tourStepObserver) {
-    tourStepObserver.disconnect();
-  }
+  bindLearningMap(document.querySelector("#bookPortal"));
+  initRouteWorkflowScrollSpy();
 
   if (navigationState.selectedExperienceId === introductoryTour.id) {
     document.title = "التوصيل إلى العميل | دليل خدمات ما بعد البيع";
   } else if (navigationState.selectedExperienceId === deliveryInstallationTour.id) {
-    document.title = "تركيب مع توصيل | دليل خدمات ما بعد البيع";
+    document.title = "تركيب كامل | دليل خدمات ما بعد البيع";
   }
 
   closeBookSidebar();
@@ -2638,12 +3160,13 @@ function initWorkflowOverlay() {
       pageAssistant.inert = false;
     }
 
-    tourStepObserver?.disconnect();
+    stopWorkflowScrollSpy();
     window.scrollTo({ top: pageScrollY, behavior: "auto" });
+    initRouteWorkflowScrollSpy({ applyStageLink: false });
     lastFocusedElement?.focus?.({ preventScroll: true });
   }
 
-  function openWorkflowOverlay(workflowId) {
+  function openWorkflowOverlay(workflowId, { initialStage = null } = {}) {
     lastFocusedElement = document.activeElement;
     pageScrollY = window.scrollY;
     content.replaceChildren();
@@ -2651,6 +3174,9 @@ function initWorkflowOverlay() {
     if (workflowId === "internal-transfer") {
       title.textContent = internalTransferTour.title;
       content.innerHTML = renderInternalTransferWorkflow();
+    } else if (workflowId === "manufacturing") {
+      title.textContent = manufacturingTour.title;
+      content.innerHTML = renderManufacturingWorkflow();
     } else if (workflowId === "customer-delivery") {
       const workflowContent = document.querySelector("#workflowContent");
 
@@ -2671,6 +3197,9 @@ function initWorkflowOverlay() {
     }
 
     overlay.hidden = false;
+    // Each workflow opens at its first stage, not at the previous overlay's scroll position (set only
+    // once the overlay is visible: a hidden element ignores scrollTop).
+    content.scrollTop = 0;
     document.body.classList.add("workflow-overlay-open");
     appShell.inert = true;
 
@@ -2679,7 +3208,7 @@ function initWorkflowOverlay() {
     }
 
     bindLearningMap(content);
-    initTourStepObserver(workflowId === "internal-transfer" ? internalTransferTour : introductoryTour);
+    initWorkflowScrollSpy(OVERLAY_WORKFLOW_TOURS[workflowId], { root: content, initialStage });
     closeButton.focus({ preventScroll: true });
   }
 
@@ -2692,9 +3221,9 @@ function initWorkflowOverlay() {
 
     event.preventDefault();
     if (trigger.dataset.workflowTarget) {
-      setActiveTourStep(trigger.dataset.workflowTarget);
+      setActiveFlowCard(trigger);
     }
-    openWorkflowOverlay(trigger.dataset.workflowOverlay);
+    openWorkflowOverlay(trigger.dataset.workflowOverlay, { initialStage: trigger.dataset.workflowOverlayStage || null });
   });
 
   closeButton.addEventListener("click", closeWorkflowOverlay);
@@ -2711,6 +3240,1009 @@ function initWorkflowOverlay() {
   });
 }
 
+// ---------------------------------------------------------------- Assistant answer entities
+// Services, workflows and stages an answer mentions become links into this site. Every destination
+// is an existing hash route (see parseRoute) or an existing overlay key (OVERLAY_WORKFLOW_TOURS) —
+// no route is invented here. Adding a service or a workflow means one entry in the two lists below;
+// stages are read from the workflow tours themselves, so a new stage needs no change here.
+const ASSISTANT_SERVICE_ENTITIES = [
+  {
+    id: "service:delivery",
+    type: "service",
+    title: "خدمة التوصيل",
+    actionLabel: "فتح خدمة التوصيل",
+    href: routeHref("service", "delivery"),
+    workflowId: "workflow:customer-delivery",
+    aliases: ["خدمة التوصيل", "خدمة التوصيل إلى العميل", "التوصيل إلى العميل"],
+  },
+  {
+    id: "service:installation",
+    type: "service",
+    title: "خدمة التركيب",
+    actionLabel: "فتح خدمة التركيب",
+    href: routeHref("service", "installation"),
+    workflowId: "workflow:installation-full",
+    aliases: ["خدمة التركيب"],
+  },
+  {
+    id: "service:measurement",
+    type: "service",
+    title: "خدمة رفع المقاسات",
+    actionLabel: "فتح خدمة رفع المقاسات",
+    href: routeHref("service", "measurement"),
+    workflowId: "workflow:measurement",
+    aliases: ["خدمة رفع المقاسات", "خدمة رفع القياسات", "رفع المقاسات"],
+  },
+  {
+    id: "service:design",
+    type: "service",
+    title: "خدمة التصميم",
+    actionLabel: "فتح خدمة التصميم",
+    href: routeHref("service", "design"),
+    workflowId: "workflow:design",
+    aliases: ["خدمة التصميم"],
+  },
+  {
+    id: "service:manufacturing",
+    type: "service",
+    title: "خدمة التصنيع",
+    actionLabel: "فتح خدمة التصنيع",
+    href: routeHref("service", "manufacturing"),
+    workflowId: "workflow:manufacturing",
+    aliases: ["خدمة التصنيع"],
+  },
+  {
+    id: "service:customer-service",
+    type: "service",
+    title: "خدمة العملاء",
+    actionLabel: "فتح خدمة العملاء",
+    href: routeHref("service", "customer-service"),
+    aliases: ["خدمة العملاء"],
+  },
+  {
+    id: "service:maintenance",
+    type: "service",
+    title: "خدمة الصيانة",
+    actionLabel: "فتح خدمة الصيانة",
+    href: routeHref("chapter", "customer-service-maintenance"),
+    workflowId: "workflow:maintenance",
+    aliases: ["خدمة الصيانة", "الصيانة الميدانية"],
+  },
+  {
+    id: "service:complaints",
+    type: "service",
+    title: "الشكاوى والاستفسارات",
+    actionLabel: "فتح الشكاوى والاستفسارات",
+    href: routeHref("chapter", "customer-service-complaints"),
+    workflowId: "workflow:complaints",
+    aliases: ["الشكاوى / الاستفسارات", "الشكاوى والاستفسارات", "خدمة الشكاوى"],
+  },
+  {
+    id: "service:internal-transfer",
+    type: "service",
+    title: "التحويلات الداخلية",
+    actionLabel: "فتح التحويلات الداخلية",
+    href: routeHref("lesson", "internal-transfer"),
+    workflowId: "workflow:internal-transfer",
+    aliases: ["خدمة التحويلات الداخلية", "التحويلات الداخلية", "التحويل الداخلي"],
+  },
+  {
+    id: "service:warehouse-pickup",
+    type: "service",
+    title: "استلام العميل البضاعة من المستودع",
+    actionLabel: "فتح خدمة الاستلام من المستودع",
+    href: routeHref("lesson", "warehouse-pickup"),
+    workflowId: "workflow:warehouse-pickup",
+    aliases: [
+      "خدمة استلام العميل البضاعة من المستودع",
+      "استلام العميل البضاعة من المستودع",
+      "خدمة الاستلام من المستودع",
+      "الاستلام من المستودع",
+    ],
+  },
+];
+
+// `overlayId` is set only where the shared workflow overlay already knows the workflow.
+const ASSISTANT_WORKFLOW_ENTITIES = [
+  {
+    id: "workflow:customer-delivery",
+    type: "workflow",
+    title: "دورة التوصيل",
+    actionLabel: "عرض دورة التوصيل",
+    href: routeHref("lesson", "customer-delivery"),
+    overlayId: "customer-delivery",
+    tour: introductoryTour,
+    serviceId: "service:delivery",
+    aliases: ["دورة عمل خدمة التوصيل", "دورة خدمة التوصيل", "دورة عمل التوصيل", "دورة التوصيل"],
+  },
+  {
+    id: "workflow:installation-full",
+    type: "workflow",
+    title: "تركيب كامل",
+    actionLabel: "فتح تركيب كامل",
+    href: routeHref("lesson", "installation-full"),
+    tour: deliveryInstallationTour,
+    serviceId: "service:installation",
+    aliases: ["تركيب كامل", "دورة عمل خدمة توصيل مع تركيب", "توصيل مع تركيب"],
+  },
+  {
+    id: "workflow:installation-with-delivery",
+    type: "workflow",
+    title: "تركيب مع توصيل",
+    actionLabel: "فتح تركيب مع توصيل",
+    href: routeHref("lesson", "installation-with-delivery"),
+    tour: installationWithDeliveryTour,
+    serviceId: "service:installation",
+    aliases: ["تركيب مع توصيل"],
+  },
+  {
+    id: "workflow:installation-with-internal-transfer",
+    type: "workflow",
+    title: "تركيب مع التحويلات الداخلية",
+    actionLabel: "فتح تركيب مع التحويلات الداخلية",
+    href: routeHref("lesson", "installation-with-internal-transfer"),
+    tour: installationWithInternalTransferTour,
+    serviceId: "service:installation",
+    aliases: ["تركيب مع التحويلات الداخلية"],
+  },
+  {
+    id: "workflow:installation-with-manufacturing",
+    type: "workflow",
+    title: "تركيب مع تصنيع",
+    actionLabel: "فتح تركيب مع تصنيع",
+    href: routeHref("lesson", "installation-with-manufacturing"),
+    tour: installationWithManufacturingTour,
+    serviceId: "service:installation",
+    aliases: ["تركيب مع تصنيع"],
+  },
+  {
+    id: "workflow:internal-transfer",
+    type: "workflow",
+    title: "دورة التحويلات الداخلية",
+    actionLabel: "عرض دورة التحويلات الداخلية",
+    href: routeHref("lesson", "internal-transfer"),
+    overlayId: "internal-transfer",
+    tour: internalTransferTour,
+    serviceId: "service:internal-transfer",
+    aliases: ["دورة عمل التحويلات الداخلية", "دورة التحويلات الداخلية"],
+  },
+  {
+    id: "workflow:warehouse-pickup",
+    type: "workflow",
+    title: "دورة الاستلام من المستودع",
+    actionLabel: "عرض دورة الاستلام من المستودع",
+    href: routeHref("lesson", "warehouse-pickup"),
+    tour: warehousePickupTour,
+    serviceId: "service:warehouse-pickup",
+    aliases: ["دورة الاستلام من المستودع", "دورة استلام العميل البضاعة من المستودع"],
+  },
+  {
+    id: "workflow:sub-task-cycle",
+    type: "workflow",
+    title: "دورة التوصيل الجزئي للعميل",
+    actionLabel: "فتح دورة التوصيل الجزئي للعميل",
+    href: routeHref("lesson", "sub-task-cycle"),
+    tour: subTaskCycleTour,
+    serviceId: "service:delivery",
+    aliases: ["دورة التوصيل الجزئي للعميل", "التوصيل الجزئي للعميل"],
+  },
+  {
+    id: "workflow:measurement",
+    type: "workflow",
+    title: "دورة رفع المقاسات",
+    actionLabel: "عرض دورة رفع المقاسات",
+    href: routeHref("service", "measurement"),
+    tour: measurementTour,
+    serviceId: "service:measurement",
+    aliases: ["دورة عمل خدمة رفع المقاسات", "دورة رفع المقاسات", "دورة رفع القياسات"],
+  },
+  {
+    id: "workflow:design",
+    type: "workflow",
+    title: "دورة التصميم",
+    actionLabel: "عرض دورة التصميم",
+    href: routeHref("service", "design"),
+    tour: designTour,
+    serviceId: "service:design",
+    aliases: ["دورة عمل خدمة التصميم", "دورة التصميم"],
+  },
+  {
+    id: "workflow:manufacturing",
+    type: "workflow",
+    title: "دورة التصنيع",
+    actionLabel: "عرض دورة التصنيع",
+    href: routeHref("service", "manufacturing"),
+    overlayId: "manufacturing",
+    tour: manufacturingTour,
+    serviceId: "service:manufacturing",
+    aliases: ["دورة عمل خدمة التصنيع", "دورة التصنيع"],
+  },
+  {
+    id: "workflow:complaints",
+    type: "workflow",
+    title: "دورة الشكاوى",
+    actionLabel: "عرض دورة الشكاوى",
+    href: routeHref("chapter", "customer-service-complaints"),
+    tour: complaintsTour,
+    serviceId: "service:complaints",
+    aliases: ["دورة الشكاوى", "دورة الشكاوى والاستفسارات"],
+  },
+  {
+    id: "workflow:maintenance",
+    type: "workflow",
+    title: "دورة الصيانة",
+    actionLabel: "عرض دورة الصيانة",
+    href: routeHref("chapter", "customer-service-maintenance"),
+    tour: maintenanceTour,
+    serviceId: "service:maintenance",
+    aliases: ["دورة عمل خدمة الصيانة", "دورة الصيانة"],
+  },
+];
+
+// One entity per stage of every registered workflow. The stage id is the third route segment that
+// parseRoute already understands (#/lesson/customer-delivery/driver-linking) and that the workflow
+// scroll-spy uses to open the page on that stage.
+function buildAssistantStageEntities() {
+  return ASSISTANT_WORKFLOW_ENTITIES.flatMap((workflow) =>
+    workflow.tour.children
+      .filter((node) => node.visible !== false && node.targetId)
+      .map((node) => ({
+        id: `stage:${workflow.tour.id}:${node.id}`,
+        type: "stage",
+        title: node.title,
+        actionLabel: `الانتقال إلى مرحلة ${node.title}`,
+        href: `${workflow.href}/${encodeURIComponent(node.id)}`,
+        workflow,
+        stageId: node.id,
+        aliases: [node.title],
+      })),
+  );
+}
+
+// Aliases longest first, so "خدمة التوصيل إلى العميل" wins over "خدمة التوصيل" at the same position.
+// One alias can belong to several stages (every cycle starts with "فاتورة من SAP"); the open page
+// and the question decide which one is meant — see resolveAssistantEntity.
+function buildAssistantEntityIndex() {
+  const entities = [...ASSISTANT_SERVICE_ENTITIES, ...ASSISTANT_WORKFLOW_ENTITIES, ...buildAssistantStageEntities()];
+  const byAlias = new Map();
+
+  for (const entity of entities) {
+    for (const alias of entity.aliases) {
+      const key = normalizeAssistantText(alias);
+      if (!key) continue;
+      if (!byAlias.has(key)) byAlias.set(key, []);
+      byAlias.get(key).push(entity);
+    }
+  }
+
+  return {
+    byId: new Map(entities.map((entity) => [entity.id, entity])),
+    aliases: [...byAlias.entries()]
+      .map(([alias, matches]) => ({ alias, matches }))
+      .sort((a, b) => b.alias.length - a.alias.length),
+  };
+}
+
+const ARABIC_LETTER = /[ء-يٮ-ۓ]/u;
+// Letters Arabic glues to the front of a word (ال، بـ، لـ، وـ، فـ، كـ), so "بخدمة التوصيل" matches too.
+const ARABIC_CLITIC_RUN = /^[البوفك]+$/u;
+const ARABIC_MARK = /[ً-ٰٟـ]/u;
+
+function foldAssistantCharacter(character) {
+  if ("أإآٱ".includes(character)) return "ا";
+  if (character === "ى") return "ي";
+  if (character === "ة") return "ه";
+  return character.toLowerCase();
+}
+
+function normalizeAssistantText(value) {
+  return normalizeAssistantWithIndex(value).text;
+}
+
+// Folds the text for matching and keeps, for every folded character, the index it came from — so a
+// match found on the folded text can be cut out of the original string exactly.
+function normalizeAssistantWithIndex(value) {
+  const source = String(value || "");
+  const map = [];
+  let text = "";
+  let previousWasSpace = false;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (ARABIC_MARK.test(character)) continue;
+
+    if (/\s/u.test(character)) {
+      if (previousWasSpace || !text) continue;
+      previousWasSpace = true;
+      text += " ";
+      map.push(index);
+      continue;
+    }
+
+    previousWasSpace = false;
+    text += foldAssistantCharacter(character);
+    map.push(index);
+  }
+
+  map.push(source.length);
+  return { text, map };
+}
+
+const ASSISTANT_ENTITY_INDEX = buildAssistantEntityIndex();
+
+function hasAssistantWordBoundary(text, start, end) {
+  const after = text[end] || "";
+  if (after && (ARABIC_LETTER.test(after) || /[a-z0-9]/u.test(after))) return false;
+
+  const before = text[start - 1] || "";
+  if (!before) return true;
+  if (/[a-z0-9]/u.test(before)) return false;
+  if (!ARABIC_LETTER.test(before)) return true;
+
+  let cursor = start - 1;
+  let run = "";
+  while (cursor >= 0 && ARABIC_LETTER.test(text[cursor])) {
+    run = text[cursor] + run;
+    cursor -= 1;
+  }
+  return run.length <= 2 && ARABIC_CLITIC_RUN.test(run);
+}
+
+// Non-overlapping entity mentions, in the order they appear in `value`.
+function findAssistantEntities(value, context = {}) {
+  const { text, map } = normalizeAssistantWithIndex(value);
+  if (!text) return [];
+
+  const candidates = [];
+  for (const { alias, matches } of ASSISTANT_ENTITY_INDEX.aliases) {
+    let from = text.indexOf(alias);
+    while (from !== -1) {
+      const to = from + alias.length;
+      if (hasAssistantWordBoundary(text, from, to)) candidates.push({ from, to, matches });
+      from = text.indexOf(alias, from + 1);
+    }
+  }
+
+  candidates.sort((a, b) => a.from - b.from || b.to - a.to);
+
+  const found = [];
+  let cursor = -1;
+  for (const candidate of candidates) {
+    if (candidate.from < cursor) continue;
+
+    const matches = allowedAssistantMatches(candidate.matches, context);
+    if (!matches.length) continue;
+
+    cursor = candidate.to;
+    found.push({
+      entity: resolveAssistantEntity(matches, context),
+      start: map[candidate.from],
+      end: map[candidate.to],
+    });
+  }
+
+  return found;
+}
+
+// A stage is linked only when its workflow is in scope. Short stage titles such as "جدولة موعد"
+// otherwise match inside a sentence about another service and would link to the wrong page.
+function allowedAssistantMatches(matches, context) {
+  if (!context.scopedWorkflowIds) return matches;
+  return matches.filter((entity) => entity.type !== "stage" || context.scopedWorkflowIds.has(entity.workflow.id));
+}
+
+// A stage title shared by several workflows belongs to the workflow the reader is in: the open
+// page's workflow first, then a workflow or service the question/answer named, then list order.
+function resolveAssistantEntity(matches, context) {
+  if (matches.length === 1) return matches[0];
+
+  const preferences = [
+    (entity) => entity.type === "stage" && context.tourId && entity.workflow.tour.id === context.tourId,
+    (entity) => entity.type === "stage" && context.workflowIds?.has(entity.workflow.id),
+    (entity) => entity.type === "stage" && context.serviceIds?.has(entity.workflow.serviceId),
+  ];
+
+  for (const preference of preferences) {
+    const match = matches.find(preference);
+    if (match) return match;
+  }
+
+  return matches[0];
+}
+
+// Which workflow/service the question and the answer are about, used to disambiguate stage titles.
+function buildAssistantEntityContext(question, answerText) {
+  const context = { tourId: getRouteWorkflowTour()?.id || null, workflowIds: new Set(), serviceIds: new Set() };
+
+  for (const { entity } of findAssistantEntities(`${question}\n${answerText}`, context)) {
+    if (entity.type === "workflow") {
+      context.workflowIds.add(entity.id);
+      if (entity.serviceId) context.serviceIds.add(entity.serviceId);
+    }
+    if (entity.type === "service") {
+      context.serviceIds.add(entity.id);
+      if (entity.workflowId) context.workflowIds.add(entity.workflowId);
+    }
+  }
+
+  // In scope: the workflow of the open page, the workflows of the services and workflows the answer
+  // named, and the workflow of any stage the reader asked about.
+  const scoped = new Set(context.workflowIds);
+  for (const workflow of ASSISTANT_WORKFLOW_ENTITIES) {
+    if (context.tourId === workflow.tour.id) scoped.add(workflow.id);
+    if (context.serviceIds.has(workflow.serviceId)) scoped.add(workflow.id);
+  }
+  for (const { entity } of findAssistantEntities(question, context)) {
+    if (entity.type === "stage") scoped.add(entity.workflow.id);
+  }
+
+  context.scopedWorkflowIds = scoped;
+  return context;
+}
+
+// ---------------------------------------------------------------- Assistant answer model
+// A plain answer becomes { title, blocks, relatedLinks, referencedEntities } so the panel can lay it
+// out instead of printing one block of text.
+const ASSISTANT_FALLBACK_ANSWERS = [
+  "المعلومة غير متوفرة ضمن هذه الصفحة",
+  "المعلومة غير موثقة ضمن مسارات خدمات ما بعد البيع الحالية",
+];
+const ASSISTANT_GROUNDING_INTRO =
+  /^\s*(وفقًا للمعلومات المتاحة في الصفحة|وفقًا للمعلومات المتاحة|حسب المعلومات المتاحة|حسب المعلومات المتوفرة|بناءً على المعلومات المتاحة)\s*[:：،.-]?\s*/i;
+// A workflow sequence is recognised by its numbered stages, not by whatever an answer puts between
+// them: "00 — فاتورة من SAP → 01 — طلب توصيل → …", the same stages one per line, and the same stages
+// joined by "ثم" or by commas are one sequence written three ways, and all three become stage cards.
+// Three steps or more, so an ordinary sentence that happens to contain a number is never mistaken
+// for a workflow sequence.
+const ASSISTANT_STEP_MARKER = /(^|[\s([،,;؛:.—–>»→←])(\d{1,2})\s*[—–-]\s+/gu;
+const ASSISTANT_SEQUENCE_STEP = /^\s*(\d{1,2})\s*[—–-]\s*([\s\S]*)$/u;
+// Whatever is left between the end of one stage title and the next stage number.
+const ASSISTANT_STEP_SEPARATOR = /[\s.,،؛;]*(?:→|←|⟵|⟶|»|«|>|ثم|بعدها|بعد\s+ذلك)?[\s.,،؛;]*$/u;
+const ASSISTANT_SEQUENCE_MIN_STEPS = 3;
+// How much of a sequence a tour has to cover before its stages are linked to that workflow.
+const ASSISTANT_SEQUENCE_MATCH_RATIO = 0.7;
+const ASSISTANT_MAX_RELATED_LINKS = 6;
+// An answer that enumerates every service and stage would otherwise turn into a wall of links; the
+// entities past this point still appear under "روابط ذات صلة".
+const ASSISTANT_MAX_INLINE_LINKS = 10;
+const ASSISTANT_STAGE_LIST_MAX_LENGTH = 54;
+
+function isAssistantFallbackAnswer(text) {
+  const normalized = normalizeAssistantText(text).replace(/[.\s]+$/u, "");
+  return ASSISTANT_FALLBACK_ANSWERS.some((fallback) => normalized === normalizeAssistantText(fallback));
+}
+
+function stripAssistantGroundingIntro(text) {
+  return String(text || "").replace(ASSISTANT_GROUNDING_INTRO, "").trim();
+}
+
+function buildAssistantAnswerModel(rawAnswer, question) {
+  const answer = stripAssistantGroundingIntro(rawAnswer);
+
+  if (!answer || isAssistantFallbackAnswer(answer)) {
+    return { title: "", blocks: [{ kind: "paragraph", text: answer }], relatedLinks: [], referencedEntities: [], context: null, isPlain: true };
+  }
+
+  const context = buildAssistantEntityContext(question, answer);
+  const blocks = dedupeAssistantStageBlocks(buildAssistantBlocks(answer, context));
+  const heading = blocks[0]?.kind === "heading" ? blocks.shift().text : "";
+  const questionEntities = findAssistantEntities(question, context);
+  const referencedEntities = [...collectAssistantSequenceEntities(blocks, context), ...collectAssistantEntities(blocks, context)];
+
+  return {
+    title: heading || questionEntities[0]?.entity.title || "",
+    blocks,
+    relatedLinks: buildAssistantRelatedLinks(questionEntities, referencedEntities),
+    referencedEntities,
+    context,
+    isPlain: false,
+  };
+}
+
+function buildAssistantBlocks(answer, context) {
+  const blocks = [];
+  let paragraph = [];
+  let list = null;
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+    blocks.push(...splitAssistantSequence(paragraph.join(" ")));
+    paragraph = [];
+  };
+  const flushList = () => {
+    if (!list) return;
+    blocks.push(toAssistantListBlock(list, context));
+    list = null;
+  };
+
+  for (const rawLine of String(answer).split(/\r?\n/)) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+
+    const heading = line.match(/^#{1,6}\s+(.+)$/u);
+    if (heading) {
+      flushParagraph();
+      flushList();
+      blocks.push({ kind: "heading", text: heading[1].trim() });
+      continue;
+    }
+
+    const bullet = line.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/u);
+    if (bullet) {
+      flushParagraph();
+      list = list || [];
+      list.push(bullet[1].trim());
+      continue;
+    }
+
+    flushList();
+    paragraph.push(line);
+  }
+
+  flushParagraph();
+  flushList();
+  return blocks;
+}
+
+// Every "NN — " that opens a stage, in the order they appear. The number is what marks a step, so
+// the scan is blind to the punctuation the answer used to join the stages together — which is what
+// lets one parser handle an arrow sequence, a comma sequence and one stage per line alike.
+function scanAssistantStageSteps(text) {
+  const pattern = new RegExp(ASSISTANT_STEP_MARKER.source, "gu");
+  const markers = [];
+  let match = pattern.exec(text);
+
+  while (match) {
+    markers.push({ number: match[2], start: match.index + match[1].length, titleStart: match.index + match[0].length });
+    pattern.lastIndex = match.index + match[0].length;
+    match = pattern.exec(text);
+  }
+
+  return markers;
+}
+
+// A stage sequence written inline becomes its own block, keeping the sentence before it and the
+// sentence after it as ordinary text. A stage title runs up to the next stage number.
+function splitAssistantSequence(text) {
+  const markers = scanAssistantStageSteps(text);
+  if (markers.length < ASSISTANT_SEQUENCE_MIN_STEPS) return text ? [{ kind: "paragraph", text }] : [];
+
+  // Whatever the answer goes on to say after the last stage belongs to the text, not to its title.
+  const lastMarker = markers[markers.length - 1];
+  const sentenceEnd = text.slice(lastMarker.titleStart).search(/[.؟!]/u);
+  const runEnd = sentenceEnd > -1 ? lastMarker.titleStart + sentenceEnd : text.length;
+
+  const stages = markers.map((marker, index) => {
+    const next = markers[index + 1];
+    const title = text.slice(marker.titleStart, next ? next.start : runEnd).replace(ASSISTANT_STEP_SEPARATOR, "").trim();
+    return { number: marker.number.padStart(2, "0"), title };
+  });
+
+  // A "stage title" the length of a sentence means these numbers were never a stage sequence.
+  if (stages.some((stage) => !stage.title || stage.title.length > ASSISTANT_STAGE_LIST_MAX_LENGTH)) {
+    return [{ kind: "paragraph", text }];
+  }
+
+  const lead = text.slice(0, markers[0].start).trim();
+  const tail = text.slice(runEnd).replace(/^[\s.؟!]+/u, "").trim();
+
+  return [
+    lead ? { kind: "paragraph", text: lead } : null,
+    { kind: "stages", stages },
+    tail ? { kind: "paragraph", text: tail } : null,
+  ].filter(Boolean);
+}
+
+// A short list of stage names is shown as stage cards; anything longer stays a list, because
+// turning a full sentence into a card would hide the explanation. An item numbered like a stage
+// ("00 — فاتورة من SAP") is enough on its own; otherwise the item has to be a stage title in full.
+function toAssistantListBlock(items, context) {
+  const stages = items.map((item) => {
+    const plain = item.replace(/\*\*/gu, "").trim();
+
+    // A numbered item is a stage by construction, so the length limit applies to its title alone.
+    const step = plain.match(ASSISTANT_SEQUENCE_STEP);
+    if (step) {
+      const title = step[2].trim();
+      return title && title.length <= ASSISTANT_STAGE_LIST_MAX_LENGTH ? { number: step[1].padStart(2, "0"), title } : null;
+    }
+
+    if (plain.length > ASSISTANT_STAGE_LIST_MAX_LENGTH) return null;
+
+    const found = findAssistantEntities(plain, context)[0];
+    const coversWholeItem = found?.entity.type === "stage" && found.end - found.start >= plain.length - 2;
+    return coversWholeItem ? { number: "", title: plain } : null;
+  });
+
+  return stages.length >= 2 && stages.every(Boolean) ? { kind: "stages", stages } : { kind: "list", items };
+}
+
+// An answer that states its sequence twice — once as a sentence and once as a list — is still one
+// sequence. The first set of cards stays and any later block that repeats those same stages, or a
+// subset of them, is dropped rather than drawn a second time.
+function dedupeAssistantStageBlocks(blocks) {
+  const rendered = [];
+
+  return blocks.filter((block) => {
+    if (block.kind !== "stages") return true;
+
+    const titles = block.stages.map((stage) => normalizeAssistantText(stage.title));
+    if (rendered.some((shown) => titles.every((title) => shown.has(title)))) return false;
+
+    rendered.push(new Set(titles));
+    return true;
+  });
+}
+
+function collectAssistantEntities(blocks, context) {
+  const text = blocks
+    .map((block) => {
+      if (block.kind === "list") return block.items.join("\n");
+      // Stages shown as cards are already on screen; repeating them as chips adds nothing.
+      if (block.kind === "stages") return "";
+      return block.text;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  return findAssistantEntities(text, context).map((match) => match.entity);
+}
+
+// A workflow rendered as stage cards is offered as a link, together with its service.
+function collectAssistantSequenceEntities(blocks, context) {
+  const entities = [];
+
+  for (const block of blocks) {
+    if (block.kind !== "stages") continue;
+    const workflow = resolveAssistantSequenceWorkflow(block.stages, context);
+    if (!workflow) continue;
+    const service = workflow.serviceId ? ASSISTANT_ENTITY_INDEX.byId.get(workflow.serviceId) : null;
+    if (service) entities.push(service);
+    entities.push(workflow);
+  }
+
+  return entities;
+}
+
+// Question entities first, then the ones the answer names. A stage also offers its workflow and a
+// service also offers its workflow, so the reader can open the cycle and jump to the stage.
+// Where a workflow and its service are the same page (خدمة الصيانة، خدمة التصميم…), the service
+// label reads better than "عرض دورة …".
+function preferServiceOverWorkflow(entity) {
+  if (entity?.type !== "workflow" || !entity.serviceId) return entity;
+  const service = ASSISTANT_ENTITY_INDEX.byId.get(entity.serviceId);
+  return service?.href === entity.href ? service : entity;
+}
+
+const ASSISTANT_LINK_ORDER = { service: 0, workflow: 1, stage: 2 };
+
+function buildAssistantRelatedLinks(questionEntities, referencedEntities) {
+  const candidates = [];
+  const seenIds = new Set();
+  const seenHrefs = new Set();
+
+  // One chip per destination: a service and its workflow that share a route (خدمة الصيانة) collapse
+  // into a single link instead of two chips that go to the same page.
+  const add = (entity) => {
+    if (!entity || seenIds.has(entity.id) || seenHrefs.has(entity.href)) return;
+    seenIds.add(entity.id);
+    seenHrefs.add(entity.href);
+    candidates.push(entity);
+  };
+
+  for (const entity of [...questionEntities.map((match) => match.entity), ...referencedEntities]) {
+    add(preferServiceOverWorkflow(entity));
+
+    if (entity.type === "service" && entity.workflowId) add(ASSISTANT_ENTITY_INDEX.byId.get(entity.workflowId));
+    if (entity.type === "stage") add(preferServiceOverWorkflow(entity.workflow));
+  }
+
+  return candidates
+    .map((entity, index) => ({ entity, index }))
+    .sort((a, b) => ASSISTANT_LINK_ORDER[a.entity.type] - ASSISTANT_LINK_ORDER[b.entity.type] || a.index - b.index)
+    .slice(0, ASSISTANT_MAX_RELATED_LINKS)
+    .map((item) => item.entity);
+}
+
+// ---------------------------------------------------------------- Assistant answer rendering
+const ASSISTANT_ODOO_TERMS = [
+  "Appointment From",
+  "Appointment To",
+  "Source Invoice",
+  "Task Forms",
+  "Trip Date",
+  "End Task",
+  "Assignees",
+  "Completed",
+  "Project",
+  "Invoice",
+  "Assign",
+  "Stage",
+  "Start",
+  "OTP",
+];
+
+function escapeAssistantHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function escapeAssistantRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightAssistantOdooTerms(escapedText) {
+  return ASSISTANT_ODOO_TERMS.reduce((currentText, term) => {
+    const pattern = escapeAssistantRegExp(term).replace(/\s+/g, "\\s+");
+    const regex = new RegExp(`(^|[^A-Za-z0-9])(${pattern})(?=$|[^A-Za-z0-9])`, "gi");
+    return currentText.replace(regex, `$1<span class="odoo-term">$2</span>`);
+  }, escapedText);
+}
+
+// Every assistant link is a plain hash route, never a `data-workflow-overlay` trigger: the shared
+// overlay covers and inerts the assistant panel, which would interrupt the conversation. The site's
+// own in-page links still open that overlay as before.
+function assistantLinkAttributes(entity) {
+  const tour = entity.type === "stage" ? entity.workflow.tour : entity.tour;
+
+  return [
+    `href="${escapeAssistantHtml(entity.href)}"`,
+    `data-assistant-link="${escapeAssistantHtml(entity.type)}"`,
+    entity.type === "stage" ? `data-assistant-stage="${escapeAssistantHtml(entity.stageId)}"` : "",
+    tour ? `data-assistant-tour="${escapeAssistantHtml(tour.id)}"` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+// Inline text: markdown bold, Odoo terms, and the first mention of each entity as a link.
+function renderAssistantInlineText(text, context, linkState) {
+  const entities = context ? findAssistantEntities(text, context) : [];
+  const segments = [];
+  let cursor = 0;
+
+  for (const match of entities) {
+    if (linkState.linked.size >= ASSISTANT_MAX_INLINE_LINKS) break;
+    if (linkState.linked.has(match.entity.id)) continue;
+    linkState.linked.add(match.entity.id);
+    segments.push({ text: text.slice(cursor, match.start) });
+    segments.push({ text: text.slice(match.start, match.end), entity: match.entity });
+    cursor = match.end;
+  }
+
+  segments.push({ text: text.slice(cursor) });
+
+  return segments
+    .filter((segment) => segment.text)
+    .map((segment) => {
+      const html = renderAssistantMarkdown(segment.text);
+      return segment.entity ? `<a class="assistant-entity-link" ${assistantLinkAttributes(segment.entity)}>${html}</a>` : html;
+    })
+    .join("");
+}
+
+function renderAssistantMarkdown(text) {
+  return String(text)
+    .split(/(\*\*[^*]+\*\*)/gu)
+    .map((part) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return `<strong>${highlightAssistantOdooTerms(escapeAssistantHtml(part.slice(2, -2)))}</strong>`;
+      }
+      return highlightAssistantOdooTerms(escapeAssistantHtml(part.replace(/\*/gu, "")));
+    })
+    .join("");
+}
+
+// A sequence belongs to one workflow, so all of its cards are resolved together against the tour
+// registry instead of matching each title on its own. Matching titles one by one is what used to
+// scatter a single answer across several workflows (or drop the links entirely when the service
+// name happened to be written in a form the text matcher missed).
+function resolveAssistantSequenceWorkflow(stages, context) {
+  const titles = stages.map((stage) => normalizeAssistantText(stage.title)).filter(Boolean);
+  if (titles.length === 0) return null;
+
+  const covers = (workflow) => {
+    const nodes = assistantWorkflowStageNodes(workflow);
+    const matched = titles.filter((title) => nodes.some((node) => normalizeAssistantText(node.title) === title)).length;
+    return { workflow, nodes, matched };
+  };
+
+  // The workflow of the page being read wins whenever it covers the sequence.
+  const openWorkflow = ASSISTANT_WORKFLOW_ENTITIES.find((workflow) => workflow.tour.id === context?.tourId);
+  if (openWorkflow) {
+    const open = covers(openWorkflow);
+    if (open.matched === titles.length) return openWorkflow;
+  }
+
+  // Otherwise a full match wins first: the tour holds every stage listed and is about the same
+  // length, so a longer workflow that merely contains these stages is not assumed.
+  const candidates = ASSISTANT_WORKFLOW_ENTITIES.map(covers);
+  const byFit = (a, b) => Math.abs(a.nodes.length - titles.length) - Math.abs(b.nodes.length - titles.length);
+  const exact = candidates
+    .filter((candidate) => candidate.matched === titles.length && Math.abs(candidate.nodes.length - titles.length) <= 1)
+    .sort(byFit)[0];
+
+  if (exact) return exact.workflow;
+
+  // Failing that, the workflow that covers most of the sequence, as long as it covers a clear
+  // majority of it and no other workflow covers as much. One stage the answer paraphrased, or one
+  // the page hides, then costs that single card its link instead of unlinking the whole sequence.
+  const ranked = candidates
+    .filter((candidate) => candidate.matched >= Math.ceil(titles.length * ASSISTANT_SEQUENCE_MATCH_RATIO))
+    .sort((a, b) => b.matched - a.matched || byFit(a, b));
+
+  if (!ranked.length || ranked[1]?.matched === ranked[0].matched) return null;
+  return ranked[0].workflow;
+}
+
+function assistantWorkflowStageNodes(workflow) {
+  return workflow.tour.children.filter((node) => node.visible !== false && node.targetId);
+}
+
+function renderAssistantStageCards(stages, context) {
+  const workflow = resolveAssistantSequenceWorkflow(stages, context);
+  const nodes = workflow ? assistantWorkflowStageNodes(workflow) : [];
+
+  const cards = stages
+    .map((stage) => {
+      const node = nodes.find((candidate) => normalizeAssistantText(candidate.title) === normalizeAssistantText(stage.title));
+      const entity = node ? ASSISTANT_ENTITY_INDEX.byId.get(`stage:${workflow.tour.id}:${node.id}`) : null;
+      const index = stage.number ? `<span class="assistant-stage-index">${escapeAssistantHtml(stage.number)}</span>` : "";
+      const label = `${index}<span class="assistant-stage-title">${renderAssistantMarkdown(stage.title)}</span>`;
+
+      return entity
+        ? `<a class="assistant-stage-card" ${assistantLinkAttributes(entity)}>${label}</a>`
+        : `<span class="assistant-stage-card is-static">${label}</span>`;
+    })
+    .join("");
+
+  return `<div class="assistant-stage-cards">${cards}</div>`;
+}
+
+function renderAssistantRelatedLinks(links) {
+  if (!links.length) return "";
+
+  const chips = links
+    .map(
+      (entity) =>
+        `<a class="assistant-chip is-${escapeAssistantHtml(entity.type)}" ${assistantLinkAttributes(entity)}>${escapeAssistantHtml(entity.actionLabel)}</a>`,
+    )
+    .join("");
+
+  return `<div class="assistant-links"><span class="assistant-links-label">روابط ذات صلة</span><div class="assistant-links-row">${chips}</div></div>`;
+}
+
+function renderAssistantAnswerModel(model) {
+  if (model.isPlain) {
+    return `<div class="assistant-response"><p class="assistant-response-summary">${renderAssistantMarkdown(model.blocks[0]?.text || "")}</p></div>`;
+  }
+
+  const linkState = { linked: new Set() };
+  const parts = [];
+
+  if (model.title) parts.push(`<p class="assistant-response-title">${renderAssistantMarkdown(model.title)}</p>`);
+
+  const body = model.blocks
+    .map((block, index) => {
+      if (block.kind === "stages") return renderAssistantStageCards(block.stages, model.context);
+      if (block.kind === "heading") {
+        return `<p class="assistant-response-heading">${renderAssistantInlineText(block.text, model.context, linkState)}</p>`;
+      }
+      if (block.kind === "list") {
+        const items = block.items
+          .map((item) => `<li>${renderAssistantInlineText(item, model.context, linkState)}</li>`)
+          .join("");
+        return `<ul class="assistant-response-list">${items}</ul>`;
+      }
+      const className = index === 0 ? "assistant-response-summary" : "assistant-response-text";
+      return `<p class="${className}">${renderAssistantInlineText(block.text, model.context, linkState)}</p>`;
+    })
+    .join("");
+
+  parts.push(`<div class="assistant-response-body">${body}</div>`);
+  parts.push(renderAssistantRelatedLinks(model.relatedLinks));
+
+  return `<div class="assistant-response">${parts.filter(Boolean).join("")}</div>`;
+}
+
+function buildAssistantAnswerHtml(rawAnswer, question) {
+  return renderAssistantAnswerModel(buildAssistantAnswerModel(rawAnswer, question));
+}
+
+// A link pointing at the route the reader is already on does not fire `hashchange`, so the stage is
+// focused directly. Everything else is an ordinary hash link handled by the existing router.
+function focusAssistantStage(tourId, stageId) {
+  const tour = getRouteWorkflowTour();
+  if (!tour || tour.id !== tourId || !stageId || !workflowScrollSpy) return false;
+
+  const nodes = tour.children.filter((node) => node.visible !== false);
+  const index = nodes.findIndex((node) => node.id === stageId || node.targetId === stageId);
+  if (index < 0) return false;
+
+  workflowScrollSpy.focusStage(index);
+  return true;
+}
+
+// ---------------------------------------------------------------- Assistant conversation
+// One assistant for the whole site. Its markup lives in index.html next to #bookPortal — the only
+// container route rendering replaces — so navigating never unmounts it, and this array is its only
+// history. Route changes update `assistantContext` underneath the thread and never touch it.
+const assistantConversation = { messages: [] };
+
+function getAssistantThread() {
+  return document.querySelector("#assistantAnswer");
+}
+
+// Appends one turn and returns its element. Appending (rather than re-rendering the thread) is what
+// keeps the reader's scroll position, the mounted thinking orb and any open link untouched.
+function appendAssistantMessage(message) {
+  const thread = getAssistantThread();
+  if (!thread) return null;
+
+  thread.querySelector("#assistantEmptyState")?.remove();
+
+  const node = document.createElement("div");
+  renderAssistantMessage(node, message);
+  thread.append(node);
+  scrollAssistantThreadToEnd();
+  return node;
+}
+
+function renderAssistantMessage(node, message) {
+  node.className = `assistant-message is-${message.role}`;
+
+  if (message.role === "user") {
+    const text = document.createElement("p");
+    text.className = "assistant-message-question";
+    text.textContent = message.text;
+    node.replaceChildren(text);
+    return;
+  }
+
+  if (message.role === "pending") {
+    const orb = document.createElement("div");
+    orb.className = "thinking-orb-root";
+    orb.setAttribute("role", "status");
+    orb.setAttribute("aria-label", "جاري إنشاء الإجابة");
+    node.replaceChildren(orb);
+    return;
+  }
+
+  if (message.role === "notice") {
+    const text = document.createElement("p");
+    text.className = "assistant-response-summary";
+    text.textContent = message.text;
+    node.replaceChildren(text);
+    return;
+  }
+
+  node.innerHTML = buildAssistantAnswerHtml(message.text, message.question);
+}
+
+function scrollAssistantThreadToEnd() {
+  const thread = getAssistantThread();
+  if (thread) thread.scrollTop = thread.scrollHeight;
+}
+
+// The question is sent with the page the reader has open as context. A stage link they followed is
+// sent too, so a follow-up such as "شو بيجي بعد هالمرحلة؟" resolves against the stage on screen.
+function buildAssistantRequestPayload(question) {
+  return {
+    pageId: assistantContext.pageId,
+    question,
+    ...(assistantContext.stageId ? { stageId: assistantContext.stageId, stageTitle: assistantContext.stageTitle } : {}),
+  };
+}
+
 function initPageAssistant() {
   const assistant = document.querySelector("#pageAssistant");
   const toggle = document.querySelector("#assistantToggle");
@@ -2723,23 +4255,6 @@ function initPageAssistant() {
   if (!assistant || !toggle || !panel || !close || !form || !input || !answer) {
     return;
   }
-
-  const ODOO_TERMS = [
-    "Appointment From",
-    "Appointment To",
-    "Source Invoice",
-    "Task Forms",
-    "Trip Date",
-    "End Task",
-    "Assignees",
-    "Completed",
-    "Project",
-    "Invoice",
-    "Assign",
-    "Stage",
-    "Start",
-    "OTP",
-  ];
 
   function updatePromptState() {
     const hasText = input.value.trim().length > 0;
@@ -2754,73 +4269,45 @@ function initPageAssistant() {
     }
   }
 
+  // The pending turn is a placeholder message in the thread; the answer replaces it in place, so the
+  // turns above it are never re-rendered.
   function showThinkingState() {
     answer.setAttribute("aria-busy", "true");
-    answer.innerHTML = `
-      <div id="thinking-orb-root" class="thinking-orb-root" role="status" aria-live="polite" aria-label="جاري إنشاء الإجابة"></div>
-    `;
-
-    window.ThinkingOrbMount?.mount(document.querySelector("#thinking-orb-root"));
+    const node = appendAssistantMessage({ role: "pending" });
+    window.ThinkingOrbMount?.mount(node?.querySelector(".thinking-orb-root"));
+    return node;
   }
 
-  function renderAssistantAnswer(text) {
+  // The answer is laid out as title / summary / body / related links, with every service, workflow
+  // and stage it names turned into a link into this site.
+  function resolveThinkingState(node, message) {
     window.ThinkingOrbMount?.unmount();
     answer.removeAttribute("aria-busy");
-    answer.innerHTML = formatAssistantAnswer(stripGroundingIntro(text));
+    assistantConversation.messages.push(message);
+
+    if (node) renderAssistantMessage(node, message);
+    else appendAssistantMessage(message);
+
+    scrollAssistantThreadToEnd();
   }
 
-  function stripGroundingIntro(text) {
-    return String(text || "")
-      .replace(/^\s*(وفقًا للمعلومات المتاحة في الصفحة|وفقًا للمعلومات المتاحة|حسب المعلومات المتاحة|حسب المعلومات المتوفرة|بناءً على المعلومات المتاحة)\s*[:：،.-]?\s*/i, "")
-      .trim();
+  function renderAssistantNotice(text) {
+    window.ThinkingOrbMount?.unmount();
+    answer.removeAttribute("aria-busy");
+    appendAssistantMessage({ role: "notice", text });
   }
 
-  function formatAssistantAnswer(text) {
-    return String(text || "")
-      .split(/\r?\n/)
-      .map((line) => formatAssistantLine(line))
-      .join("<br>");
-  }
+  // Following a link never closes or resets the assistant: it is an ordinary hash navigation under a
+  // panel that is mounted at shell level. A link to the route already open does not fire
+  // `hashchange`, so that one stage is focused directly instead.
+  answer.addEventListener("click", (event) => {
+    const link = event.target.closest?.("[data-assistant-link]");
+    if (!link || link.getAttribute("href") !== window.location.hash) return;
 
-  function formatAssistantLine(line) {
-    const cleanedLine = line.replace(/^\s{0,3}#{1,6}\s*/, "").replace(/^\s*[*]\s+/, "");
-    const parts = cleanedLine.split(/(\*\*[^*]+\*\*)/g);
-
-    return parts
-      .map((part) => {
-        if (part.startsWith("**") && part.endsWith("**")) {
-          const content = part.slice(2, -2);
-          return highlightOdooTerms(escapeHtml(content), true);
-        }
-
-        return highlightOdooTerms(escapeHtml(part).replace(/\*/g, ""), false);
-      })
-      .join("");
-  }
-
-  function highlightOdooTerms(escapedText, isStrong) {
-    const highlighted = ODOO_TERMS.reduce((currentText, term) => {
-      const pattern = escapeRegExp(term).replace(/\s+/g, "\\s+");
-      const regex = new RegExp(`(^|[^A-Za-z0-9])(${pattern})(?=$|[^A-Za-z0-9])`, "gi");
-
-      return currentText.replace(regex, `$1<span class="odoo-term">$2</span>`);
-    }, escapedText);
-
-    return isStrong && highlighted === escapedText ? `<strong>${highlighted}</strong>` : highlighted;
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function escapeRegExp(value) {
-    return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
+    if (focusAssistantStage(link.dataset.assistantTour, link.dataset.assistantStage)) {
+      event.preventDefault();
+    }
+  });
 
   let assistantState = panel.hidden ? "closed" : "open";
   let closeFallbackTimer = null;
@@ -2840,6 +4327,7 @@ function initPageAssistant() {
     toggle.setAttribute("aria-expanded", "true");
     input.focus();
     updatePromptState();
+    scrollAssistantThreadToEnd();
   }
 
   function closeAssistant() {
@@ -2898,17 +4386,23 @@ function initPageAssistant() {
     const question = input.value.trim();
 
     if (!question) {
-      answer.textContent = "يرجى كتابة سؤال واضح.";
+      renderAssistantNotice("يرجى كتابة سؤال واضح.");
       return;
     }
 
     if (question.length > 500) {
-      answer.textContent = "يرجى كتابة سؤال لا يتجاوز 500 حرف.";
+      renderAssistantNotice("يرجى كتابة سؤال لا يتجاوز 500 حرف.");
       return;
     }
 
     const submitButton = form.querySelector("button");
-    showThinkingState();
+    const payload = buildAssistantRequestPayload(question);
+
+    assistantConversation.messages.push({ role: "user", text: question, pageId: payload.pageId });
+    appendAssistantMessage({ role: "user", text: question });
+    input.value = "";
+
+    const pendingNode = showThinkingState();
     submitButton.dataset.loading = "true";
     submitButton.disabled = true;
     input.disabled = true;
@@ -2919,16 +4413,18 @@ function initPageAssistant() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          pageId: getActivePageAssistantId(),
-          question,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await response.json().catch(() => ({}));
 
-      renderAssistantAnswer(data.answer || "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى.");
+      resolveThinkingState(
+        pendingNode,
+        data.answer
+          ? { role: "assistant", text: data.answer, question }
+          : { role: "notice", text: "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى." },
+      );
     } catch {
-      renderAssistantAnswer("تعذر الحصول على إجابة حاليًا. حاول مرة أخرى.");
+      resolveThinkingState(pendingNode, { role: "notice", text: "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى." });
     } finally {
       delete submitButton.dataset.loading;
       submitButton.disabled = false;

@@ -18,6 +18,11 @@ const DEFAULT_PAGE_PRIORITY_BOOST = 0.045;
 const DEFAULT_SERVICE_BOOST = 0.035;
 const DEFAULT_GLOBAL_INTENT_BOOST = 0.09;
 const DEFAULT_OFF_SERVICE_PENALTY = 0.05;
+// Applied instead when the focus came from the open page rather than from the question. A question
+// naming two services is meant to cross them, so its penalty stays light; a question naming none is
+// about the service in front of the reader, and "مرحلة ملئ النموذج" has to resolve to that service
+// rather than to the identically named stage of six others.
+const DEFAULT_PAGE_CONTEXT_OFF_SERVICE_PENALTY = 0.2;
 const DEFAULT_POWERPOINT_TOP_K = 3;
 // PowerPoint chunks are a secondary source: on equal relevance the website chunk ranks first.
 const DEFAULT_POWERPOINT_PENALTY = 0.02;
@@ -190,6 +195,7 @@ async function retrieveGlobalAssistantChunks({
   lexicalFallbackMinScore = readNumberEnv("HYBRID_LEXICAL_FALLBACK_MIN_SCORE", DEFAULT_LEXICAL_FALLBACK_MIN_SCORE),
   serviceBoost = readNumberEnv("HYBRID_SERVICE_BOOST", DEFAULT_SERVICE_BOOST),
   offServicePenalty = DEFAULT_OFF_SERVICE_PENALTY,
+  pageContextOffServicePenalty = readNumberEnv("HYBRID_PAGE_CONTEXT_OFF_SERVICE_PENALTY", DEFAULT_PAGE_CONTEXT_OFF_SERVICE_PENALTY),
   powerpointPenalty = readNumberEnv("HYBRID_POWERPOINT_PENALTY", DEFAULT_POWERPOINT_PENALTY),
   queryUnderstanding = null,
 } = {}) {
@@ -205,6 +211,16 @@ async function retrieveGlobalAssistantChunks({
   const effectiveMinScore = queryEmbedding ? minScore : lexicalFallbackMinScore;
   const mentionedServices = detectMentionedServices(retrievalQuery);
 
+  // Which services the ranking leans towards. A service the question names always wins, which is
+  // what lets a reader ask about another service from any page. When the question names none — "ماذا
+  // يحدث في مرحلة ملئ النموذج؟" — the open page's services stand in, so the stage of the service the
+  // reader is actually reading outranks the same-named stage of six other services. Nothing is
+  // filtered out either way: every service stays reachable, it just ranks lower.
+  const namedFocus = mentionedServices.length > 0;
+  const focusServices = namedFocus ? mentionedServices : getPageServices(currentPageId);
+  const appliedOffServicePenalty =
+    focusServices.length === 0 ? 0 : namedFocus ? offServicePenalty : pageContextOffServicePenalty;
+
   const powerpoint = loadPowerPointSource(queryEmbedding, referenceModel, referenceDimension);
 
   const rankAll = (records, sourceType, sourceBoost = 0) =>
@@ -216,10 +232,10 @@ async function retrieveGlobalAssistantChunks({
       sourceType,
       sourceBoost,
       serviceBoost,
-      mentionedServices,
+      mentionedServices: focusServices,
       understanding,
       currentWorkflow: [],
-      offServicePenalty: mentionedServices.length > 0 ? offServicePenalty : 0,
+      offServicePenalty: appliedOffServicePenalty,
     });
 
   const ranked = [

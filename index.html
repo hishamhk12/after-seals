@@ -627,10 +627,13 @@
             <strong>المساعد الشخصي</strong>
             <span id="assistantContextLabel" class="assistant-context"></span>
           </span>
-          <button id="assistantClose" class="assistant-close" type="button" aria-label="إغلاق المساعد">×</button>
+          <span class="assistant-header-actions">
+            <button id="assistantGuideButton" class="assistant-help" type="button" aria-label="كيف أستخدم المساعد" title="كيف أستخدم المساعد">؟</button>
+            <button id="assistantClose" class="assistant-close" type="button" aria-label="إغلاق المساعد">×</button>
+          </span>
         </div>
         <div id="assistantAnswer" class="assistant-answer" aria-live="polite">
-          <p id="assistantEmptyState" class="assistant-empty">اسأل سؤالًا عن خدمات ما بعد البيع.</p>
+          <div id="assistantEmptyState" class="assistant-empty assistant-guide"></div>
         </div>
         <form id="assistantForm" class="assistant-form">
           <label class="sr-only" for="assistantQuestion">السؤال</label>

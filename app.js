@@ -60,6 +60,23 @@ const deliveryInstallationTour = {
   ],
 };
 
+// خدمة التركيب → الباب الأول — أنواع خدمات التركيب → تركيب جزئي.
+// Partial Installation is not a separate workflow that starts from SAP on its own: it is a
+// Sub Task created inside the main Installation task (the Parent Task), and the Sub Task is then
+// executed with the normal Installation stages (deliveryInstallationTour).
+const installationPartialTour = {
+  id: "installation-partial",
+  title: "تركيب جزئي",
+  children: [
+    { id: "invoice", title: "فاتورة من SAP", targetId: "installation-partial-step-invoice" },
+    { id: "parent-task", title: "طلب تركيب رئيسي", targetId: "installation-partial-step-parent" },
+    { id: "create-sub-task", title: "إنشاء Sub Task", targetId: "installation-partial-step-create" },
+    { id: "blocked-by-subtasks", title: "Blocked by Subtasks", targetId: "installation-partial-step-blocked" },
+    { id: "execute", title: "تنفيذ التركيب داخل Sub Task", targetId: "installation-partial-step-execute" },
+    { id: "completed", title: "اكتمال Sub Task", targetId: "installation-partial-step-completed" },
+  ],
+};
+
 // Relationship page خدمة التركيب → الباب الثاني → تركيب مع توصيل.
 const installationWithDeliveryTour = {
   id: "installation-with-delivery",
@@ -159,6 +176,73 @@ const manufacturingTour = {
     { id: "manufacturing-workshop", title: "إرسال إلى ورشة التصنيع", targetId: "manufacturing-step-workshop" },
     { id: "manufacturing-in-progress", title: "جاري التصنيع", targetId: "manufacturing-step-in-progress" },
     { id: "manufacturing-completed", title: "تم الانتهاء من الخدمة", targetId: "manufacturing-step-completed" },
+  ],
+};
+
+// Relationship page خدمة التصنيع → الباب الأول → التصنيع مع رفع المقاسات. The three cards are the
+// dependency chain رفع المقاسات ← التصميم ← التصنيع, not a service workflow: each one stands for a
+// whole service and links to that service's own page instead of repeating its stages here.
+const manufacturingWithMeasurementTour = {
+  id: "manufacturing-with-measurement",
+  title: "التصنيع مع رفع المقاسات",
+  children: [
+    { id: "measurement", title: "رفع المقاسات", targetId: "manufacturing-measurement-step-measurement" },
+    { id: "design", title: "التصميم", targetId: "manufacturing-measurement-step-design" },
+    { id: "manufacturing", title: "التصنيع", targetId: "manufacturing-measurement-step-manufacturing" },
+  ],
+};
+
+// Relationship page خدمة التصنيع → الباب الأول → التصنيع مع التصميم. Only the direct dependency
+// التصميم ← التصنيع: رفع المقاسات is upstream of the design but is not a stage here, because the
+// full chain belongs to التصنيع مع رفع المقاسات.
+const manufacturingWithDesignTour = {
+  id: "manufacturing-with-design",
+  title: "التصنيع مع التصميم",
+  children: [
+    { id: "design", title: "التصميم", targetId: "manufacturing-design-step-design" },
+    { id: "manufacturing", title: "التصنيع", targetId: "manufacturing-design-step-manufacturing" },
+  ],
+};
+
+// Relationship page خدمة التصنيع → الباب الأول → التصنيع مع التوصيل. Only the direct handover
+// التصنيع ← التوصيل: what happens inside either service stays on that service's own page.
+const manufacturingWithDeliveryTour = {
+  id: "manufacturing-with-delivery",
+  title: "التصنيع مع التوصيل",
+  children: [
+    { id: "manufacturing", title: "التصنيع", targetId: "manufacturing-delivery-step-manufacturing" },
+    { id: "delivery", title: "التوصيل", targetId: "manufacturing-delivery-step-delivery" },
+  ],
+};
+
+// Relationship page خدمة التصنيع → الباب الأول → التصنيع مع التركيب. Read from the Manufacturing
+// side: التصنيع ← التوصيل ← التركيب. Delivery is a stage of its own here precisely because the
+// manufactured product never goes straight from Manufacturing to Installation.
+const manufacturingWithInstallationTour = {
+  id: "manufacturing-with-installation",
+  title: "التصنيع مع التركيب",
+  children: [
+    { id: "manufacturing", title: "التصنيع", targetId: "manufacturing-installation-step-manufacturing" },
+    { id: "delivery", title: "التوصيل", targetId: "manufacturing-installation-step-delivery" },
+    { id: "installation", title: "التركيب", targetId: "manufacturing-installation-step-installation" },
+  ],
+};
+
+// دورات العمل المركبة → دورة متكاملة. Seven stages spanning six services, in the order the project
+// documents them: Manufacturing finishes BEFORE the internal transfer in this scenario, and the
+// transfer is what the delivery task waits on.
+const compositeManufacturingTour = {
+  id: "composite-manufacturing-end-to-end",
+  title: "دورة العمل المركبة",
+  subtitle: "رفع المقاسات ← التصميم ← التصنيع ← التحويلات الداخلية ← التوصيل ← التركيب",
+  children: [
+    { id: "invoice", title: "فاتورة من SAP", targetId: "composite-step-invoice" },
+    { id: "measurement", title: "رفع المقاسات", targetId: "composite-step-measurement" },
+    { id: "design", title: "التصميم", targetId: "composite-step-design" },
+    { id: "manufacturing", title: "التصنيع", targetId: "composite-step-manufacturing" },
+    { id: "internal-transfer", title: "التحويلات الداخلية", targetId: "composite-step-internal-transfer" },
+    { id: "delivery", title: "التوصيل", targetId: "composite-step-delivery" },
+    { id: "installation", title: "التركيب", targetId: "composite-step-installation" },
   ],
 };
 
@@ -357,10 +441,9 @@ const chapters = [
       {
         id: "installation-partial",
         title: "تركيب جزئي",
-        description: "سيتم توثيق هذه الدورة لاحقًا.",
-        status: "قيد الإعداد",
+        description: "التركيب الجزئي يُنفَّذ كمهمة فرعية (Sub Task) داخل طلب التركيب الرئيسي (Parent Task)، وتبقى المهمة الرئيسية بحالة Blocked by Subtasks حتى تكتمل المهمة الفرعية.",
+        status: "مكتمل",
         visible: true,
-        placeholderOnly: true,
       },
     ],
   },
@@ -416,6 +499,64 @@ const chapters = [
         status: "مكتمل",
         visible: true,
         partialReturnService: "installation",
+      },
+    ],
+  },
+  // The four relationships are documented; each one has its own renderer and page knowledge.
+  // The order follows the service chain رفع المقاسات → التصميم → التصنيع → التوصيل → التركيب.
+  {
+    id: "manufacturing-relationships",
+    number: "الباب الأول",
+    title: "علاقات خدمة التصنيع",
+    description: "علاقات خدمة التصنيع بالخدمات التي تسبقها وتليها: رفع المقاسات، التصميم، التوصيل، والتركيب.",
+    visible: true,
+    items: [
+      {
+        id: "manufacturing-with-measurement",
+        title: "التصنيع مع رفع المقاسات",
+        description: "لا يمكن البدء بتنفيذ خدمة التصنيع قبل اكتمال رفع المقاسات والتصميم المعتمد، والترتيب هو: رفع المقاسات ← التصميم ← التصنيع.",
+        status: "مكتمل",
+        visible: true,
+      },
+      {
+        id: "manufacturing-with-design",
+        title: "التصنيع مع التصميم",
+        description: "لا يمكن البدء بتنفيذ خدمة التصنيع قبل اكتمال واعتماد التصميم، ويتم التصنيع وفق التصميم المعتمد.",
+        status: "مكتمل",
+        visible: true,
+      },
+      {
+        id: "manufacturing-with-delivery",
+        title: "التصنيع مع التوصيل",
+        description: "لا يمكن تنفيذ توصيل المنتج المُصنَّع قبل اكتمال خدمة التصنيع، والاعتماد المباشر هو: التصنيع ← التوصيل.",
+        status: "مكتمل",
+        visible: true,
+      },
+      {
+        id: "manufacturing-with-installation",
+        title: "التصنيع مع التركيب",
+        description: "لا يمكن البدء بتنفيذ خدمة التركيب للمنتج المُصنَّع قبل اكتمال التصنيع ووصول المنتج إلى العميل بالتوصيل، والتسلسل هو: التصنيع ← التوصيل ← التركيب.",
+        status: "مكتمل",
+        visible: true,
+      },
+    ],
+  },
+  // Top-level section, not part of any one service: scenarios that run across several After-Sales
+  // services end to end. buildSidebarTree appends it after the services.
+  {
+    id: "composite-workflows",
+    number: "قسم مستقل",
+    title: "دورات العمل المركبة",
+    description: "سيناريوهات متكاملة تمتد عبر أكثر من خدمة من خدمات ما بعد البيع.",
+    visible: true,
+    items: [
+      {
+        id: "composite-manufacturing-end-to-end",
+        title: "رفع مقاسات + تصميم + تصنيع + تحويلات داخلية + توصيل + تركيب",
+        description:
+          "دورة متكاملة من وصول الفاتورة من SAP وحتى اكتمال التركيب، تمر برفع المقاسات والتصميم والتصنيع والتحويلات الداخلية والتوصيل.",
+        status: "مكتمل",
+        visible: true,
       },
     ],
   },
@@ -493,8 +634,8 @@ const services = [
   {
     id: "measurement",
     title: "رفع المقاسات",
-    description: "سيتم إضافة محتوى هذه الخدمة لاحقًا.",
-    status: "قريبًا",
+    description: "دورة عمل خدمة رفع المقاسات من وصول الفاتورة من SAP وحتى اكتمال الخدمة.",
+    status: "متاح",
   },
   {
     id: "design",
@@ -507,6 +648,7 @@ const services = [
     title: "خدمة التصنيع",
     description: "دورة عمل خدمة التصنيع من وصول الفاتورة من SAP وحتى الانتهاء من الخدمة.",
     status: "متاح",
+    chapterIds: ["manufacturing-relationships"],
   },
   {
     id: "customer-service",
@@ -752,9 +894,15 @@ const PAGE_ASSISTANT_ROUTES = {
     "full-cancellation": "delivery-returns",
     "partial-return": "delivery-returns",
     "installation-full": "installation",
+    "installation-partial": "installation-partial",
     "installation-with-delivery": "installation-delivery-link",
     "installation-with-internal-transfer": "installation-internal-transfer-link",
     "installation-with-manufacturing": "installation-manufacturing-link",
+    "manufacturing-with-measurement": "manufacturing-measurement-link",
+    "manufacturing-with-design": "manufacturing-design-link",
+    "manufacturing-with-delivery": "manufacturing-delivery-link",
+    "manufacturing-with-installation": "manufacturing-installation-link",
+    "composite-manufacturing-end-to-end": "composite-manufacturing-end-to-end",
     "installation-full-cancellation": "installation-returns",
     "installation-partial-return": "installation-returns",
   },
@@ -1928,6 +2076,292 @@ function renderInstallationManufacturingLinkContent() {
     </div>`;
 }
 
+// A dependency page, not a workflow page: it says why Manufacturing waits for Measurement and for
+// the approved Design, and sends the reader to each service's own page for that service's stages.
+function renderManufacturingMeasurementLinkContent() {
+  const [measurement, design, manufacturing] = manufacturingWithMeasurementTour.children;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content manufacturing-with-measurement-workflow">
+      <header class="case-header" aria-labelledby="manufacturingWithMeasurementTitle">
+        <div>
+          <h1 id="manufacturingWithMeasurementTitle">${manufacturingWithMeasurementTour.title}</h1>
+          ${renderWorkflowFlow(manufacturingWithMeasurementTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro"><strong>لا يمكن البدء بتنفيذ خدمة التصنيع قبل اكتمال رفع المقاسات والتصميم المعتمد.</strong></p>
+
+      <p class="field-explanation-intro">المنتج المُصنَّع في هذا المسار، مثل مغسلة مفصّلة حسب الطلب، يحتاج إلى مقاسات فعلية قبل إعداد التصميم، ويُنفَّذ التصنيع بناءً على التصميم المعتمد. لذلك تمر هذه العلاقة بثلاث خدمات بالترتيب: رفع المقاسات، ثم التصميم، ثم التصنيع.</p>
+
+      ${section(measurement, "00", `
+        <p class="field-explanation-intro">يتم رفع المقاسات الفعلية للمنتج أو موقع التنفيذ، وهي الأساس الذي سيتم الاعتماد عليه في إعداد التصميم.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "measurement")}">فتح خدمة رفع المقاسات <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(design, "01", `
+        <p class="field-explanation-intro">يتم إعداد التصميم بناءً على المقاسات المعتمدة، ويجب اعتماد التصميم قبل الانتقال إلى التصنيع.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "design")}">فتح خدمة التصميم <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(manufacturing, "02", `
+        <p class="field-explanation-intro">بعد اكتمال رفع المقاسات واعتماد التصميم، يمكن البدء بتنفيذ خدمة التصنيع وفق التصميم المعتمد.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "manufacturing")}">فتح خدمة التصنيع <span aria-hidden="true">↗</span></a></p>`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        التسلسل المعتمد لهذه العلاقة هو رفع المقاسات ← التصميم ← التصنيع. تبدأ العلاقة برفع المقاسات الفعلية، ثم يُعد التصميم بناءً على هذه المقاسات ويُعتمد، وبعد اعتماد التصميم يمكن البدء بتنفيذ خدمة التصنيع. لا تنتقل خدمة رفع المقاسات إلى التصنيع مباشرة، لأن التصميم يقع بينهما.
+      </aside>
+    </div>`;
+}
+
+// The direct dependency only: Manufacturing executes against the approved design. The upstream
+// رفع المقاسات is named once as a pointer to its own relationship page, never as a stage here.
+function renderManufacturingDesignLinkContent() {
+  const [design, manufacturing] = manufacturingWithDesignTour.children;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content manufacturing-with-design-workflow">
+      <header class="case-header" aria-labelledby="manufacturingWithDesignTitle">
+        <div>
+          <h1 id="manufacturingWithDesignTitle">${manufacturingWithDesignTour.title}</h1>
+          ${renderWorkflowFlow(manufacturingWithDesignTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro"><strong>لا يمكن البدء بتنفيذ خدمة التصنيع قبل اكتمال واعتماد التصميم.</strong></p>
+
+      <p class="field-explanation-intro">توضح هذه الصفحة الاعتماد المباشر لخدمة التصنيع على التصميم المعتمد. التصميم المعتمد هو المرجع الذي يُنفَّذ المنتج بناءً عليه، ولا يدخل المنتج مرحلة التصنيع قبل اكتمال التصميم واعتماده.</p>
+
+      ${section(design, "00", `
+        <p class="field-explanation-intro">يتم إعداد التصميم واعتماده قبل بدء التصنيع، ويصبح التصميم المعتمد المرجع الذي سيتم تنفيذ المنتج بناءً عليه.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "design")}">فتح خدمة التصميم <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(manufacturing, "01", `
+        <p class="field-explanation-intro">بعد اكتمال واعتماد التصميم، يمكن البدء بتنفيذ خدمة التصنيع وفق التفاصيل والمواصفات الواردة في التصميم المعتمد.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "manufacturing")}">فتح خدمة التصنيع <span aria-hidden="true">↗</span></a></p>`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        الاعتماد المباشر في هذه العلاقة هو التصميم ← التصنيع. يُعد التصميم ويُعتمد أولًا، ثم يُنفَّذ التصنيع وفق التصميم المعتمد، ولا يبدأ التصنيع قبل اعتماد التصميم.
+      </aside>
+
+      <p class="field-explanation-intro">أما السلسلة الكاملة التي تسبق التصميم فهي موضحة في صفحة <a class="secondary-link" href="${routeHref("lesson", "manufacturing-with-measurement")}">التصنيع مع رفع المقاسات <span aria-hidden="true">↗</span></a></p>
+    </div>`;
+}
+
+// The handover only: the manufactured product continues into Delivery once Manufacturing is
+// complete. Whether that handover is created or unlocked by the system is not documented, so this
+// page says when Delivery may run, never how the task gets there.
+function renderManufacturingDeliveryLinkContent() {
+  const [manufacturing, delivery] = manufacturingWithDeliveryTour.children;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content manufacturing-with-delivery-workflow">
+      <header class="case-header" aria-labelledby="manufacturingWithDeliveryTitle">
+        <div>
+          <h1 id="manufacturingWithDeliveryTitle">${manufacturingWithDeliveryTour.title}</h1>
+          ${renderWorkflowFlow(manufacturingWithDeliveryTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro"><strong>لا يمكن تنفيذ توصيل المنتج المُصنَّع قبل اكتمال خدمة التصنيع.</strong></p>
+
+      <p class="field-explanation-intro">توضح هذه الصفحة انتقال المنتج المُصنَّع من خدمة التصنيع إلى خدمة التوصيل. بالنسبة للمنتج الذي يتطلب تصنيعًا، يجب اكتمال المنتج المُصنَّع أولًا، وبعدها تكون خدمة التوصيل هي الخدمة التالية التي ينتقل بها المنتج إلى العميل.</p>
+
+      ${section(manufacturing, "00", `
+        <p class="field-explanation-intro">يتم تنفيذ خدمة التصنيع حتى يصبح المنتج المُصنَّع جاهزًا للانتقال إلى الخدمة التالية.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "manufacturing")}">فتح خدمة التصنيع <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(delivery, "01", `
+        <p class="field-explanation-intro">بعد اكتمال خدمة التصنيع، يمكن متابعة دورة المنتج من خلال خدمة التوصيل حتى يصل المنتج إلى العميل.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "delivery")}">فتح خدمة التوصيل <span aria-hidden="true">↗</span></a></p>`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        الاعتماد المباشر في هذه العلاقة هو التصنيع ← التوصيل. يكتمل التصنيع أولًا، وبعد اكتماله يمكن تنفيذ خدمة التوصيل لإيصال المنتج المُصنَّع إلى العميل.
+      </aside>
+
+      <p class="field-explanation-intro">تقع هذه العلاقة ضمن سلسلة الخدمات الأوسع، والجزء الذي يسبق التصنيع موضح في صفحة <a class="secondary-link" href="${routeHref("lesson", "manufacturing-with-measurement")}">التصنيع مع رفع المقاسات <span aria-hidden="true">↗</span></a></p>
+    </div>`;
+}
+
+// The Manufacturing-side view of the chain. The same dependency is documented from the Installation
+// side on تركيب مع تصنيع, which keeps the installation execution detail; this page links to it
+// instead of repeating it.
+function renderManufacturingInstallationLinkContent() {
+  const [manufacturing, delivery, installation] = manufacturingWithInstallationTour.children;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content manufacturing-with-installation-workflow">
+      <header class="case-header" aria-labelledby="manufacturingWithInstallationTitle">
+        <div>
+          <h1 id="manufacturingWithInstallationTitle">${manufacturingWithInstallationTour.title}</h1>
+          ${renderWorkflowFlow(manufacturingWithInstallationTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro"><strong>لا يمكن البدء بتنفيذ خدمة التركيب للمنتج المُصنَّع قبل اكتمال خدمة التصنيع ووصول المنتج إلى العميل من خلال خدمة التوصيل.</strong></p>
+
+      <p class="field-explanation-intro">توضح هذه الصفحة كيف يصل المنتج المُصنَّع إلى خدمة التركيب. لا ينتقل المنتج من التصنيع إلى التركيب مباشرة، لأن خدمة التوصيل تقع بينهما: يكتمل التصنيع أولًا، ثم يُنفَّذ التوصيل لإيصال المنتج إلى العميل، وبعد وصوله يمكن البدء بأعمال التركيب.</p>
+
+      ${section(manufacturing, "00", `
+        <p class="field-explanation-intro">يتم تنفيذ خدمة التصنيع حتى يكتمل المنتج المُصنَّع ويصبح جاهزًا للانتقال إلى الخدمة التالية.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "manufacturing")}">فتح خدمة التصنيع <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(delivery, "01", `
+        <p class="field-explanation-intro">بعد اكتمال التصنيع، يتم تنفيذ خدمة التوصيل لإيصال المنتج المُصنَّع إلى العميل.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "delivery")}">فتح خدمة التوصيل <span aria-hidden="true">↗</span></a></p>`)}
+
+      ${section(installation, "02", `
+        <p class="field-explanation-intro">بعد اكتمال التوصيل ووصول المنتج إلى العميل، يمكن البدء بتنفيذ خدمة التركيب.</p>
+        <p><a class="secondary-link" href="${routeHref("service", "installation")}">فتح خدمة التركيب <span aria-hidden="true">↗</span></a></p>`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        التسلسل المعتمد لهذه العلاقة هو التصنيع ← التوصيل ← التركيب. التوصيل يقع بين التصنيع والتركيب، ولا ينتقل المنتج المُصنَّع من التصنيع إلى التركيب مباشرة.
+      </aside>
+
+      <p class="field-explanation-intro">هذه العلاقة موثقة من جهة خدمة التركيب أيضًا في صفحة <a class="secondary-link" href="${routeHref("lesson", "installation-with-manufacturing")}">تركيب مع تصنيع <span aria-hidden="true">↗</span></a></p>
+    </div>`;
+}
+
+// دورات العمل المركبة → the end-to-end scenario. A training page, so every stage keeps its own
+// section and screenshots, but the detail of each service stays on that service's page: this page
+// explains the order and the one dependency the reader can see on screen (Delivery waiting on the
+// internal transfer), and links out for the rest.
+function renderCompositeManufacturingContent() {
+  const [invoice, measurement, design, manufacturing, internalTransfer, delivery, installation] =
+    compositeManufacturingTour.children;
+  const measurementImages = "assest/رفع مقاسات";
+  const transferImages = "assest/النقل الداخلي";
+  const dependencyImages = "assest/علاقة خدمة النقل الداخلي بخدمة التوصيل للعميل";
+  const installationImages = "assest/installation";
+
+  const shot = (src, alt, label) => `
+        <figure class="odoo-screenshot-frame">
+          <img src="${src}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+        </figure>`;
+  const openService = (type, id, label) =>
+    `<p><a class="secondary-link" href="${routeHref(type, id)}">${label} <span aria-hidden="true">↗</span></a></p>`;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content composite-manufacturing-workflow">
+      <header class="case-header" aria-labelledby="compositeManufacturingTitle">
+        <div>
+          <h1 id="compositeManufacturingTitle">${compositeManufacturingTour.title}</h1>
+          <p>${compositeManufacturingTour.subtitle}</p>
+          ${renderWorkflowFlow(compositeManufacturingTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <p class="field-explanation-intro">تجمع هذه الدورة ست خدمات في سيناريو واحد: تبدأ بفاتورة من SAP تحتوي على الخدمات المطلوبة، ثم تمر برفع المقاسات والتصميم والتصنيع، وبعد اكتمال التصنيع تُنفَّذ التحويلات الداخلية لنقل البضاعة إلى مستودع التجمع، ثم تُنفَّذ خدمة التوصيل، وأخيرًا تبدأ خدمة التركيب لدى العميل.</p>
+
+      <p class="field-explanation-intro"><strong>في هذا السيناريو يأتي التصنيع قبل التحويلات الداخلية.</strong> ولا يمكن البدء بتنفيذ خدمة التركيب قبل اكتمال التوصيل ووصول المنتج إلى العميل.</p>
+
+      ${section(invoice, "00", `
+        <p class="field-explanation-intro">تبدأ الدورة بوصول فاتورة من SAP إلى نظام خدمات مابعد البيع، وتحتوي على الخدمات والمنتجات المطلوبة في هذا السيناريو. يُنشأ لكل خدمة طلبها الخاص داخل النظام، وتظهر الخدمات المرتبطة بالفاتورة معًا.</p>
+        ${shot("assest/2a.png", "تفاصيل فاتورة SAP داخل نظام خدمات مابعد البيع", "تفاصيل فاتورة SAP")}
+        ${shot(`${dependencyImages}/1.png`, "مهام الفاتورة في نظام خدمات مابعد البيع تعرض التحويلات الداخلية وخدمة التوصيل معًا على نفس الفاتورة", "مهام الفاتورة")}`)}
+
+      ${section(measurement, "01", `
+        <p class="field-explanation-intro">يتم رفع المقاسات الفعلية المطلوبة للمنتج المُصنَّع. هذه المقاسات هي الأساس الذي سيتم الاعتماد عليه في إعداد التصميم، ورفع المقاسات مطلوب قبل التصميم.</p>
+        ${shot(`${measurementImages}/1.png`, "طلب رفع المقاسات المنشأ من فاتورة SAP ويظهر في مرحلة طلب رفع مقاسات", "طلب رفع المقاسات")}
+        ${shot(`${measurementImages}/12.png`, "تسجيل الغرف والمقاسات وإرفاق الصور والملاحظات داخل نموذج رفع المقاسات", "تسجيل المقاسات")}
+        ${openService("service", "measurement", "فتح خدمة رفع المقاسات")}`)}
+
+      ${section(design, "02", `
+        <p class="field-explanation-intro">يتم إعداد التصميم بناءً على المقاسات المعتمدة. ويجب اكتمال التصميم واعتماده قبل البدء بالتصنيع، لأن التصنيع يُنفَّذ وفق التصميم المعتمد.</p>
+        ${shot("assest/التصميم/1.png", "لوحة عمليات خدمة التصميم في نظام خدمات مابعد البيع وتعرض مراحل طلب تصميم ومُسندة لمصمم وجاري العمل على التصميم وموافقات داخلية وبانتظار موافقة العميل ومكتمل ومعتمد", "لوحة خدمة التصميم")}
+        ${openService("service", "design", "فتح خدمة التصميم")}`)}
+
+      ${section(manufacturing, "03", `
+        <p class="field-explanation-intro">بعد اعتماد التصميم يبدأ تنفيذ خدمة التصنيع، ويُصنَّع المنتج وفق التصميم المعتمد. ويجب اكتمال خدمة التصنيع قبل الانتقال إلى بقية خدمات هذا السيناريو.</p>
+        ${shot("assest/التصنيع/1.png", "لوحة عمليات خدمة التصنيع في نظام خدمات مابعد البيع وتعرض مراحل طلب خدمة تصنيع وإرسال إلى ورشة التصنيع وجاري التصنيع وتم الانتهاء من الخدمة", "لوحة خدمة التصنيع")}
+        ${openService("service", "manufacturing", "فتح خدمة التصنيع")}`)}
+
+      ${section(internalTransfer, "04", `
+        <p class="field-explanation-intro">في هذا السيناريو يكون التصنيع قد اكتمل قبل هذه المرحلة. وإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن مستودع التجمع، تُنفَّذ التحويلات الداخلية لنقل البضاعة إلى مستودع التجمع وفق دورة عمل التحويلات الداخلية الحالية، حتى يتم تأكيد استلامها وتنتقل المهمة إلى مرحلة تم الاستلام.</p>
+        ${shot(`${transferImages}/7.png`, "التحويلات الداخلية تعرض طلب نقل من مستودع الرياض R574 إلى مستودع جدة J521", "طلب نقل بين المستودعات")}
+        ${shot(`${transferImages}/8.png`, "لوحة عمليات التحويلات الداخلية في نظام خدمات مابعد البيع مع تمييز مهمة التحويلات الداخلية في عمود تم الاستلام", "مرحلة تم الاستلام")}
+        ${openService("lesson", "internal-transfer", "فتح خدمة التحويلات الداخلية")}`)}
+
+      ${section(delivery, "05", `
+        <p class="field-explanation-intro">تعتمد خدمة التوصيل في هذا السيناريو على وصول البضاعة إلى مستودع التجمع. فطالما لم تكتمل التحويلات الداخلية، تكون خدمة التوصيل موجودة لكنها لا تستطيع المتابعة.</p>
+
+        <div class="dependency-status-definitions" aria-label="تعريف حالات اعتماد خدمة التوصيل">
+          <article class="dependency-status-definition dependency-status-definition--blocked">
+            <h2>الحالة الحمراء — محظور بسبب الاعتماد</h2>
+            <bdi class="dependency-status-technical-label" dir="ltr">(Blocked by Dependency)</bdi>
+            <p>تعني أن خدمة التوصيل موجودة، ولكن لا يمكن البدء بها لأن التحويلات الداخلية لم تكتمل بعد.</p>
+          </article>
+          <article class="dependency-status-definition dependency-status-definition--ready">
+            <h2>الحالة الخضراء — جاهز بعد اكتمال الاعتماد</h2>
+            <bdi class="dependency-status-technical-label" dir="ltr">(Dependency Ready)</bdi>
+            <p>تعني أن التحويلات الداخلية اكتملت، وأصبحت خدمة التوصيل جاهزة للمتابعة.</p>
+          </article>
+        </div>
+
+        <p class="field-explanation-intro">قبل اكتمال التحويلات الداخلية تظهر خدمة التوصيل بالحالة الحمراء: محظور بسبب الاعتماد <bdi dir="ltr">(Blocked by Dependency)</bdi>.</p>
+        ${shot(`${dependencyImages}/4.png`, "بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بالحالة الحمراء محظور بسبب الاعتماد (Blocked by Dependency)", "الحالة الحمراء محظور بسبب الاعتماد")}
+
+        <p class="field-explanation-intro">بعد اكتمال التحويلات الداخلية ووصول البضاعة بالكامل إلى مستودع التجمع، يُفك الاعتماد وتتحول خدمة التوصيل إلى الحالة الخضراء: جاهز بعد اكتمال الاعتماد <bdi dir="ltr">(Dependency Ready)</bdi>، وعندها يمكن متابعة دورة التوصيل للعميل.</p>
+        ${shot(`${dependencyImages}/3.png`, "بطاقة خدمة التوصيل في نظام خدمات مابعد البيع تظهر بالحالة الخضراء جاهز بعد اكتمال الاعتماد (Dependency Ready)", "الحالة الخضراء جاهز بعد اكتمال الاعتماد")}
+
+        ${openService("service", "delivery", "فتح خدمة التوصيل")}
+        ${openService("lesson", "customer-delivery", "عرض دورة عمل التوصيل")}`)}
+
+      ${section(installation, "06", `
+        <p class="field-explanation-intro">بعد اكتمال خدمة التوصيل ووصول المنتج إلى العميل، يمكن البدء بتنفيذ خدمة التركيب، وهي الخدمة الأخيرة في هذه الدورة المركبة.</p>
+        ${shot(`${installationImages}/11.png`, "زر بدء التركيب (Start Installation) لبدء تنفيذ خدمة التركيب في موقع العميل", "بدء التركيب")}
+        ${shot(`${installationImages}/14.png`, "اكتمال دورة خدمة التركيب وانتقال المهمة إلى مرحلة تم التركيب", "اكتمال التركيب")}
+        ${openService("service", "installation", "فتح خدمة التركيب")}`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        التسلسل الكامل لهذه الدورة هو: فاتورة من SAP ← رفع المقاسات ← التصميم ← التصنيع ← التحويلات الداخلية ← التوصيل ← التركيب. رفع المقاسات يسبق التصميم، والتصميم يسبق التصنيع، والتصنيع يسبق التحويلات الداخلية في هذا السيناريو، والتحويلات الداخلية تسبق التوصيل عندما تحتاج البضاعة إلى النقل إلى مستودع التجمع، والتوصيل يسبق التركيب.
+      </aside>
+    </div>`;
+}
+
 function renderSubTaskCycleFlowDiagram() {
   return renderWorkflowFlow(subTaskCycleTour, { numberStart: 0 });
 }
@@ -1981,6 +2415,92 @@ function renderSubTaskCycleContent() {
           <img src="assest/subtask/4.png" alt="الفاتورة الرئيسية بعد اكتمال المهمة الفرعية مع ظهور مؤشر المهام الفرعية بحالة 1/1" tabindex="0" role="button" aria-label="اضغط لتكبير صورة اكتمال المهمة الفرعية" title="اضغط لتكبير الصورة" />
         </figure>
       </section>
+    </div>`;
+}
+
+// خدمة التركيب → الباب الأول — أنواع خدمات التركيب → تركيب جزئي.
+// The partial installation is a Sub Task inside the main Installation task, not a second workflow
+// that starts from SAP: stage 04 links to the full Installation page instead of repeating its stages.
+function renderInstallationPartialContent() {
+  const [invoice, parentTask, createSubTask, blocked, execute, completed] = installationPartialTour.children;
+  const section = (step, number, body) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${step.targetId}-title">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${number}</span>
+          <div><h2 id="${step.targetId}-title">${step.title}</h2></div>
+        </div>
+        ${body}
+      </section>`;
+
+  return `
+    <div class="workflow-content installation-partial-workflow">
+      <header class="case-header" aria-labelledby="installationPartialTitle">
+        <div>
+          <h1 id="installationPartialTitle">${installationPartialTour.title}</h1>
+          ${renderWorkflowFlow(installationPartialTour, { numberStart: 0 })}
+        </div>
+      </header>
+
+      <aside class="internal-transfer-example">
+        <strong>الفكرة الأساسية:</strong>
+        التركيب الجزئي يتم من خلال إنشاء مهمة فرعية (<bdi dir="ltr">Sub Task</bdi>) داخل طلب التركيب الرئيسي (<bdi dir="ltr">Parent Task</bdi>). وبعد إنشاء المهمة الفرعية يتم تنفيذها كأنها مهمة تركيب عادية. وطالما توجد مهمة فرعية غير مكتملة، تظهر على المهمة الرئيسية حالة <bdi dir="ltr">Blocked by Subtasks</bdi>، وبعد اكتمال المهمة الفرعية يظهر عدّاد المهام الفرعية مكتملًا مثل <bdi dir="ltr">1/1</bdi> وتختفي حالة <bdi dir="ltr">Blocked by Subtasks</bdi>.
+      </aside>
+
+      ${section(invoice, "00", `
+        <p class="field-explanation-intro">التركيب الجزئي لا يصل من SAP كطلب مستقل. تبدأ الدورة كما تبدأ أي خدمة تركيب: تصل الفاتورة من SAP إلى نظام خدمات مابعد البيع، فيُنشأ طلب التركيب ويدخل دورة عمل خدمة التركيب العادية ويظهر في مرحلة طلب تركيب على لوحة خدمة التركيب.</p>
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/تركيب جزئي/1.png" alt="لوحة خدمة التركيب في نظام خدمات مابعد البيع مع تحديد طلب التركيب الذي أنشأته الفاتورة القادمة من SAP في مرحلة طلب تركيب" tabindex="0" role="button" aria-label="اضغط لتكبير صورة طلب التركيب في مرحلة طلب تركيب" title="اضغط لتكبير الصورة" />
+        </figure>`)}
+
+      ${section(parentTask, "01", `
+        <p class="field-explanation-intro">طلب التركيب الذي أنشأته الفاتورة هو المهمة الرئيسية (Parent Task)، ومن داخلها تُدار عملية التركيب الجزئي. لا توجد دورة تركيب جزئي مستقلة عن المهمة الرئيسية، ولا يُنشأ طلب تركيب جزئي منفصل من SAP: المهمة الفرعية تُنشأ من داخل طلب التركيب الرئيسي وتبقى مرتبطة به.</p>
+        <p><a class="secondary-link" href="${routeHref("lesson", "installation-full")}">عرض تركيب كامل <span aria-hidden="true">←</span></a></p>`)}
+
+      ${section(createSubTask, "02", `
+        <p class="field-explanation-intro">من داخل طلب التركيب الرئيسي ننتقل إلى تبويب Sub-tasks في أسفل المهمة، ومنه تُضاف المهمة الفرعية المطلوبة. تظهر المهمة الفرعية بعد إضافتها كسطر داخل التبويب يحمل عمودي Title و Assignees، ويظهر بجانبه زر View لفتح المهمة الفرعية والانتقال إليها. وفي أعلى المهمة الرئيسية يظهر عدّاد المهام الفرعية Sub-tasks بالقيمة 0 / 1 (0%) ما دامت المهمة الفرعية غير مكتملة.</p>
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/تركيب جزئي/2.png" alt="تبويب Sub-tasks داخل المهمة الرئيسية يعرض سطر المهمة الفرعية مع عمودي Title و Assignees وزر View، وفي أعلى المهمة عدّاد Sub-tasks بالقيمة 0 / 1 (0%)" tabindex="0" role="button" aria-label="اضغط لتكبير صورة تبويب Sub-tasks وإنشاء المهمة الفرعية" title="اضغط لتكبير الصورة" />
+        </figure>`)}
+
+      ${section(blocked, "03", `
+        <p class="field-explanation-intro">بعد إنشاء المهمة الفرعية يتغيّر شكل المهمة الرئيسية على اللوحة: تظهر بطاقتها باللون البرتقالي ويظهر عليها شريط Blocked by Subtasks مع عدّاد المهام الفرعية بالقيمة 0/1. وتبقى المهمة الرئيسية بهذه الحالة ما دامت هناك مهمة فرعية واحدة على الأقل غير مكتملة.</p>
+        <div class="dependency-status-definitions" aria-label="الفرق بين Blocked by Subtasks و Blocked by Dependency">
+          <article class="dependency-status-definition dependency-status-definition--subtasks">
+            <h2>محظور بسبب المهام الفرعية</h2>
+            <bdi class="dependency-status-technical-label" dir="ltr">(Blocked by Subtasks)</bdi>
+            <p>تعني أن المهمة الرئيسية تحتوي على مهمة فرعية واحدة أو أكثر غير مكتملة، ويظهر معها عدّاد المهام الفرعية بالقيمة 0/1. ويختفي هذا الشريط بعد اكتمال المهام الفرعية.</p>
+          </article>
+          <article class="dependency-status-definition dependency-status-definition--blocked">
+            <h2>محظور بسبب الاعتماد</h2>
+            <bdi class="dependency-status-technical-label" dir="ltr">(Blocked by Dependency)</bdi>
+            <p>حالة مختلفة تمامًا: تعني أن المهمة محظورة لأن خدمة أخرى مرتبطة بها لم تكتمل بعد، وليس بسبب وجود مهام فرعية.</p>
+          </article>
+        </div>
+        <aside class="internal-transfer-dependency-note"><strong>تنبيه:</strong> Blocked by Subtasks ليست Blocked by Dependency. الأولى سببها وجود مهام فرعية غير مكتملة داخل المهمة نفسها، والثانية سببها اعتماد المهمة على خدمة أخرى لم تكتمل. لا يتم الخلط بينهما.</aside>
+        <figure class="odoo-screenshot-frame">
+          <img src="assest/تركيب جزئي/3.png" alt="بطاقة المهمة الرئيسية على لوحة خدمة التركيب تظهر باللون البرتقالي مع شريط Blocked by Subtasks وعدّاد المهام الفرعية 0/1" tabindex="0" role="button" aria-label="اضغط لتكبير صورة المهمة الرئيسية بحالة Blocked by Subtasks" title="اضغط لتكبير الصورة" />
+        </figure>`)}
+
+      ${section(execute, "04", `
+        <p class="field-explanation-intro">تُفتح المهمة الفرعية من زر View داخل تبويب Sub-tasks، ثم تُنفَّذ كأنها مهمة تركيب عادية. المهمة الفرعية تمشي بنفس مراحل دورة خدمة التركيب المعتمدة من طلب تركيب وحتى تم التركيب، ولا توجد مراحل خاصة بالتركيب الجزئي تختلف عن دورة التركيب العادية.</p>
+        <p><a class="secondary-link" href="${routeHref("lesson", "installation-full")}">عرض دورة خدمة التركيب — تركيب كامل <span aria-hidden="true">←</span></a></p>`)}
+
+      ${section(completed, "05", `
+        <p class="field-explanation-intro">بعد اكتمال المهمة الفرعية يتحدّث عدّاد المهام الفرعية على المهمة الرئيسية ليصبح 1/1، ويختفي شريط Blocked by Subtasks وتعود بطاقة المهمة الرئيسية إلى شكلها الطبيعي. ظهور العدّاد بالقيمة 1/1 بدون شريط Blocked by Subtasks هو المؤشر على أن المهمة الفرعية قد انتهت.</p>
+        <div class="installation-partial-image-pair">
+          <figure class="odoo-screenshot-frame">
+            <img src="assest/تركيب جزئي/4.png" alt="لوحة خدمة التركيب بعد اكتمال المهمة الفرعية: بطاقة المهمة الرئيسية عادت إلى شكلها الطبيعي وعدّاد المهام الفرعية أصبح 1/1 وشريط Blocked by Subtasks اختفى" tabindex="0" role="button" aria-label="اضغط لتكبير صورة المهمة الرئيسية بعد اكتمال المهمة الفرعية" title="اضغط لتكبير الصورة" />
+          </figure>
+          <figure class="odoo-screenshot-frame">
+            <img src="assest/تركيب جزئي/5.png" alt="تكبير لبطاقة المهمة الرئيسية يوضح عدّاد المهام الفرعية بالقيمة 1/1" tabindex="0" role="button" aria-label="اضغط لتكبير صورة عدّاد المهام الفرعية 1/1" title="اضغط لتكبير الصورة" />
+          </figure>
+        </div>
+        <p class="installation-partial-pair-note">توضح الصورتان الحالة النهائية للمهمة الرئيسية: الصورة الأولى تعرض البطاقة على لوحة خدمة التركيب بعد اختفاء شريط Blocked by Subtasks، والصورة الثانية تكبير للعدّاد نفسه بالقيمة 1/1.</p>`)}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        التركيب الجزئي هو مهمة فرعية (Sub Task) داخل طلب التركيب الرئيسي (Parent Task) وليس دورة عمل مستقلة تبدأ من SAP. التسلسل الكامل هو: فاتورة من SAP ← طلب تركيب رئيسي ← إنشاء Sub Task ← ظهور Blocked by Subtasks على المهمة الرئيسية ← تنفيذ التركيب داخل Sub Task بنفس دورة التركيب العادية ← اكتمال Sub Task وظهور 1/1 واختفاء Blocked by Subtasks.
+      </aside>
     </div>`;
 }
 
@@ -2311,6 +2831,36 @@ function renderBookPortal() {
     return;
   }
 
+  if (match?.item.id === "manufacturing-with-measurement") {
+    portal.innerHTML = renderManufacturingMeasurementLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "manufacturing-with-design") {
+    portal.innerHTML = renderManufacturingDesignLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "manufacturing-with-delivery") {
+    portal.innerHTML = renderManufacturingDeliveryLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "manufacturing-with-installation") {
+    portal.innerHTML = renderManufacturingInstallationLinkContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "composite-manufacturing-end-to-end") {
+    portal.innerHTML = renderCompositeManufacturingContent();
+    document.title = `${compositeManufacturingTour.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
   if (match?.item.id === "installation-with-internal-transfer") {
     portal.innerHTML = renderInstallationInternalTransferLinkContent();
     document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
@@ -2325,6 +2875,12 @@ function renderBookPortal() {
 
   if (match?.item.id === "sub-task-cycle") {
     portal.innerHTML = renderSubTaskCycleContent();
+    document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
+  if (match?.item.id === "installation-partial") {
+    portal.innerHTML = renderInstallationPartialContent();
     document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
     return;
   }
@@ -2412,7 +2968,20 @@ function buildSidebarTree() {
     };
   });
 
-  return [generalEntry, ...serviceNodes];
+  // Composite scenarios belong to no single service, so they sit at the end as their own top-level
+  // branch rather than under one of the services they happen to pass through.
+  const compositeChapter = getChapter("composite-workflows");
+  const compositeNode = compositeChapter && {
+    key: `chapter:${compositeChapter.id}`,
+    meta: compositeChapter.number,
+    title: compositeChapter.title,
+    href: routeHref("chapter", compositeChapter.id),
+    children: compositeChapter.items
+      .filter((item) => item.visible !== false)
+      .map((item) => ({ key: `item:${item.id}`, title: item.title, href: routeHref("lesson", item.id) })),
+  };
+
+  return [generalEntry, ...serviceNodes, ...(compositeNode ? [compositeNode] : [])];
 }
 
 function getCurrentSidebarNodeKey() {
@@ -2580,9 +3149,15 @@ const ROUTE_WORKFLOW_TOURS = {
   "lesson:internal-transfer": internalTransferTour,
   "lesson:warehouse-pickup": warehousePickupTour,
   "lesson:sub-task-cycle": subTaskCycleTour,
+  "lesson:installation-partial": installationPartialTour,
   "lesson:installation-with-delivery": installationWithDeliveryTour,
   "lesson:installation-with-internal-transfer": installationWithInternalTransferTour,
   "lesson:installation-with-manufacturing": installationWithManufacturingTour,
+  "lesson:manufacturing-with-measurement": manufacturingWithMeasurementTour,
+  "lesson:manufacturing-with-design": manufacturingWithDesignTour,
+  "lesson:manufacturing-with-delivery": manufacturingWithDeliveryTour,
+  "lesson:manufacturing-with-installation": manufacturingWithInstallationTour,
+  "lesson:composite-manufacturing-end-to-end": compositeManufacturingTour,
   "service:measurement": measurementTour,
   "service:design": designTour,
   "service:manufacturing": manufacturingTour,
@@ -3364,6 +3939,16 @@ const ASSISTANT_WORKFLOW_ENTITIES = [
     tour: deliveryInstallationTour,
     serviceId: "service:installation",
     aliases: ["تركيب كامل", "دورة عمل خدمة توصيل مع تركيب", "توصيل مع تركيب"],
+  },
+  {
+    id: "workflow:installation-partial",
+    type: "workflow",
+    title: "تركيب جزئي",
+    actionLabel: "فتح تركيب جزئي",
+    href: routeHref("lesson", "installation-partial"),
+    tour: installationPartialTour,
+    serviceId: "service:installation",
+    aliases: ["تركيب جزئي", "التركيب الجزئي", "مهمة فرعية للتركيب", "Sub Task تركيب"],
   },
   {
     id: "workflow:installation-with-delivery",
@@ -4172,6 +4757,61 @@ function focusAssistantStage(tourId, stageId) {
   return true;
 }
 
+// ---------------------------------------------------------------- Assistant onboarding guide
+// The first thing a reader sees in an empty thread, and what the "؟" button in the panel header
+// brings back at any time: what the assistant answers and one-tap example questions per service.
+// The service chips and their examples are derived from ASSISTANT_SERVICE_ENTITIES, so adding a
+// service there adds it here too.
+const ASSISTANT_GUIDE_INTRO =
+  "أستطيع الإجابة عن خطوات كل خدمة، المسؤول عن كل مرحلة، حالات أودو، والمستندات والحقول المطلوبة.";
+
+// Shown before the reader picks a service: the questions that need no service name to be clear.
+const ASSISTANT_GUIDE_EXAMPLES = [
+  "ما الخدمات المتوفرة في ما بعد البيع؟",
+  "ما خطوات خدمة التوصيل من البداية إلى النهاية؟",
+  "ما الفرق بين تركيب كامل وتركيب مع توصيل؟",
+];
+
+// The four questions every service answers, filled with the service title the reader picked.
+const ASSISTANT_GUIDE_QUESTION_TEMPLATES = [
+  (title) => `ما خطوات ${title} من البداية إلى النهاية؟`,
+  (title) => `من المسؤول عن كل مرحلة في ${title}؟`,
+  (title) => `ما حالات أودو التي تمر بها ${title}؟`,
+  (title) => `ما المستندات والحقول المطلوبة في ${title}؟`,
+];
+
+function renderAssistantGuideChip(question) {
+  const value = escapeAssistantHtml(question);
+  return `<button class="assistant-chip is-ask" type="button" data-assistant-ask="${value}">${value}</button>`;
+}
+
+// Rebuilt in place when a service chip is picked; `serviceId` null means the generic examples.
+function renderAssistantGuideQuestions(serviceId) {
+  const service = serviceId ? ASSISTANT_ENTITY_INDEX.byId.get(serviceId) : null;
+  const questions = service
+    ? ASSISTANT_GUIDE_QUESTION_TEMPLATES.map((template) => template(service.title))
+    : ASSISTANT_GUIDE_EXAMPLES;
+  const label = service ? `أسئلة جاهزة عن ${service.title}` : "جرّب أحد هذه الأسئلة";
+
+  return [
+    `<span class="assistant-guide-label">${escapeAssistantHtml(label)}</span>`,
+    `<div class="assistant-guide-row">${questions.map(renderAssistantGuideChip).join("")}</div>`,
+  ].join("");
+}
+
+function buildAssistantGuideHtml() {
+  const services = ASSISTANT_SERVICE_ENTITIES.map(
+    (service) =>
+      `<button class="assistant-chip is-service" type="button" aria-pressed="false" data-assistant-service="${escapeAssistantHtml(service.id)}">${escapeAssistantHtml(service.title)}</button>`,
+  ).join("");
+
+  return [
+    `<p class="assistant-guide-intro">${escapeAssistantHtml(ASSISTANT_GUIDE_INTRO)}</p>`,
+    `<div class="assistant-guide-block"><span class="assistant-guide-label">اختر الخدمة التي تبحث عنها</span><div class="assistant-guide-row">${services}</div></div>`,
+    `<div class="assistant-guide-block" data-assistant-suggestions>${renderAssistantGuideQuestions(null)}</div>`,
+  ].join("");
+}
+
 // ---------------------------------------------------------------- Assistant conversation
 // One assistant for the whole site. Its markup lives in index.html next to #bookPortal — the only
 // container route rendering replaces — so navigating never unmounts it, and this array is its only
@@ -4225,6 +4865,12 @@ function renderAssistantMessage(node, message) {
     return;
   }
 
+  // The same guide as the empty thread, re-shown from the header button without clearing the history.
+  if (message.role === "guide") {
+    node.innerHTML = `<div class="assistant-guide">${buildAssistantGuideHtml()}</div>`;
+    return;
+  }
+
   node.innerHTML = buildAssistantAnswerHtml(message.text, message.question);
 }
 
@@ -4251,10 +4897,20 @@ function initPageAssistant() {
   const form = document.querySelector("#assistantForm");
   const input = document.querySelector("#assistantQuestion");
   const answer = document.querySelector("#assistantAnswer");
+  const guideButton = document.querySelector("#assistantGuideButton");
 
   if (!assistant || !toggle || !panel || !close || !form || !input || !answer) {
     return;
   }
+
+  // The empty thread is the guide. It is removed by the first turn like any other empty state, and
+  // the header button appends it again as a turn of its own.
+  const emptyState = answer.querySelector("#assistantEmptyState");
+  if (emptyState) emptyState.innerHTML = buildAssistantGuideHtml();
+
+  guideButton?.addEventListener("click", () => {
+    appendAssistantMessage({ role: "guide" });
+  });
 
   function updatePromptState() {
     const hasText = input.value.trim().length > 0;
@@ -4307,6 +4963,35 @@ function initPageAssistant() {
     if (focusAssistantStage(link.dataset.assistantTour, link.dataset.assistantStage)) {
       event.preventDefault();
     }
+  });
+
+  // The guide's chips are shortcuts for typing: a service chip swaps the example questions inside its
+  // own guide, and a question chip is sent through the normal form, so the answer is identical to a
+  // question the reader typed.
+  answer.addEventListener("click", (event) => {
+    const serviceChip = event.target.closest?.("[data-assistant-service]");
+
+    if (serviceChip) {
+      const guide = serviceChip.closest(".assistant-guide");
+      const suggestions = guide?.querySelector("[data-assistant-suggestions]");
+
+      if (suggestions) {
+        suggestions.innerHTML = renderAssistantGuideQuestions(serviceChip.dataset.assistantService);
+      }
+
+      for (const chip of guide?.querySelectorAll("[data-assistant-service]") || []) {
+        chip.setAttribute("aria-pressed", String(chip === serviceChip));
+      }
+
+      return;
+    }
+
+    const askChip = event.target.closest?.("[data-assistant-ask]");
+    if (!askChip || input.disabled) return;
+
+    input.value = askChip.dataset.assistantAsk;
+    updatePromptState();
+    form.requestSubmit();
   });
 
   let assistantState = panel.hidden ? "closed" : "open";

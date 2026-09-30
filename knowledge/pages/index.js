@@ -7,10 +7,16 @@ const design = require("./design");
 const manufacturing = require("./manufacturing");
 const measurement = require("./measurement");
 const installation = require("./installation");
+const installationPartial = require("./installationPartial");
 const internalTransferDeliveryLink = require("./internalTransferDeliveryLink");
 const installationDeliveryLink = require("./installationDeliveryLink");
 const installationInternalTransferLink = require("./installationInternalTransferLink");
 const installationManufacturingLink = require("./installationManufacturingLink");
+const manufacturingMeasurementLink = require("./manufacturingMeasurementLink");
+const manufacturingDesignLink = require("./manufacturingDesignLink");
+const manufacturingDeliveryLink = require("./manufacturingDeliveryLink");
+const manufacturingInstallationLink = require("./manufacturingInstallationLink");
+const compositeManufacturingEndToEnd = require("./compositeManufacturingEndToEnd");
 const { deliveryReturns, installationReturns } = require("./returns");
 const { customerService, complaints, maintenance } = require("./customerService");
 
@@ -23,9 +29,15 @@ const structuredPages = [
   design,
   manufacturing,
   installation,
+  installationPartial,
   installationDeliveryLink,
   installationInternalTransferLink,
   installationManufacturingLink,
+  manufacturingMeasurementLink,
+  manufacturingDesignLink,
+  manufacturingDeliveryLink,
+  manufacturingInstallationLink,
+  compositeManufacturingEndToEnd,
   installationReturns,
   customerService,
   complaints,

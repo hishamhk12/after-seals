@@ -1527,6 +1527,32 @@ body.workflow-overlay-open {
   line-height: var(--leading-body);
 }
 
+.assistant-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+/* Brings the onboarding guide back into the thread without clearing the conversation. */
+.assistant-help {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--surface-soft-surface);
+  color: var(--color-atlassian-blue);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.assistant-help:hover,
+.assistant-help:focus-visible {
+  background: var(--surface-tinted-surface);
+}
+
 .assistant-close {
   width: 32px;
   height: 32px;
@@ -1584,11 +1610,54 @@ body.workflow-overlay-open {
   color: var(--color-muted-indigo);
 }
 
+/* The onboarding guide: what the assistant answers, service chips with one-tap example questions,
+   and how to phrase a question. Shown in an empty thread and from the header "؟" button. */
+.assistant-guide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.assistant-guide-intro {
+  margin: 0;
+  color: var(--color-midnight-navy);
+}
+
+.assistant-guide-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.assistant-guide-label {
+  color: var(--color-muted-indigo);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+}
+
+.assistant-guide-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8);
+}
+
+button.assistant-chip {
+  text-align: right;
+  cursor: pointer;
+}
+
+.assistant-chip.is-service[aria-pressed="true"] {
+  border-color: var(--color-atlassian-blue);
+  background: var(--color-atlassian-blue);
+  color: var(--color-pure-white);
+}
+
 .assistant-message {
   display: flex;
   flex-direction: column;
 }
 
+.assistant-message + .assistant-message.is-guide,
 .assistant-message + .assistant-message.is-user {
   padding-top: var(--spacing-16);
   border-top: 1px solid rgba(9, 30, 66, 0.08);
@@ -3155,7 +3224,8 @@ tbody tr:last-child td {
   margin: 0 auto;
 }
 
-.internal-transfer-delivery-link-pair-note {
+.internal-transfer-delivery-link-pair-note,
+.installation-partial-pair-note {
   margin: var(--spacing-16) 0 0;
   padding: var(--spacing-16) var(--spacing-20);
   border-radius: var(--radius-inputs);
@@ -3189,6 +3259,12 @@ tbody tr:last-child td {
 .dependency-status-definition--ready {
   border-color: #9bc9a9;
   background: #f1faf3;
+}
+
+/* Blocked by Subtasks: Odoo shows it in the orange/yellow band, not the red dependency band. */
+.dependency-status-definition--subtasks {
+  border-color: #edcf86;
+  background: #fff8e6;
 }
 
 .dependency-status-definition h2 {
@@ -4134,6 +4210,29 @@ tbody tr:last-child td {
   width: 100%;
   max-width: 100%;
   height: auto;
+}
+
+/* تركيب جزئي stage 05 shows the board card and the 1/1 counter close-up together. They sit in the
+   same 880px content width as every other screenshot on the page, each taking half of it. No frame
+   height is set, so both keep their own aspect ratio (the two sources are within ~5% of each other,
+   so the halves come out the same height). They stack on narrow screens. */
+.installation-partial-image-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--spacing-24);
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  /* RTL reading order, so the board screenshot is the first one the reader meets (right),
+     matching "الصورة الأولى / الصورة الثانية" in the caption below it. */
+  direction: rtl;
+}
+
+@media (max-width: 720px) {
+  .installation-partial-image-pair {
+    grid-template-columns: 1fr;
+  }
 }
 
 #step-invoice .delivery-invoice-image-pair {

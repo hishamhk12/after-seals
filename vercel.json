@@ -32,6 +32,10 @@
     {
       "src": "assest/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "videos/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [

@@ -1230,6 +1230,21 @@ function renderOdooEntryContent(chapter) {
     </div>`;
 }
 
+// Full-cycle overview video, same markup as the delivery and installation videos in index.html.
+function renderOverviewVideo(titleId, title, description, src) {
+  return `
+      <section class="delivery-overview-video" aria-labelledby="${titleId}" dir="rtl">
+        <div class="delivery-overview-video-copy">
+          <h2 id="${titleId}">${title}</h2>
+          <p>${description}</p>
+        </div>
+        <video class="delivery-overview-video-player" controls preload="metadata">
+          <source src="${src}" type="video/mp4" />
+          متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+      </section>`;
+}
+
 function renderWorkflowImagePlaceholder(label) {
   return `
     <div class="workflow-image-placeholder" role="img" aria-label="${label}">
@@ -1608,6 +1623,7 @@ function renderComplaintsWorkflow() {
           ${renderWorkflowFlow(complaintsTour, { activeTargetId: complaintsTour.children[0].targetId, numberStart: 0 })}
         </div>
       </header>
+      ${renderOverviewVideo("complaintsOverviewVideoTitle", "فيديو شرح دورة الشكاوى والاستفسارات كاملة", "شاهد دورة معالجة الشكاوى والاستفسارات كاملة داخل تطبيق مكتب المساعدة، من فتح التذكرة وحتى متابعتها داخليًا.", "videos/customer-service-complaints.mp4")}
       ${complaintsTour.children.map((step, index) => `
       <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="complaintsStage${index}Title">
         <div class="section-title">
@@ -1752,6 +1768,7 @@ function renderCustomerServiceSources() {
           </div>
         </div>
       </header>
+      ${renderOverviewVideo("customerServiceSourcesVideoTitle", "فيديو شرح مصادر الحالات", "شاهد كيف تصل الحالات إلى خدمة العملاء من المصادر الثلاثة: الإدارات الداخلية، والعميل مباشرة، والنظام.", "videos/customer-service-sources.mp4")}
       <p class="internal-transfer-result-note"><strong>ملاحظة:</strong> جميع القنوات الثلاثة تصب في جهة واحدة لإدارة الحالة ومتابعتها حتى الإغلاق.</p>
       ${customerServiceSources.map((source, index) => `
       <section class="panel invoice-training-section" aria-labelledby="customerServiceSource${index + 1}Title">
@@ -2268,6 +2285,7 @@ function renderInternalTransferDeliveryLinkContent() {
   return `
     <div class="workflow-content internal-transfer-workflow">
       ${renderRelationshipFlowDiagram()}
+      ${renderOverviewVideo("internalTransferDeliveryLinkVideoTitle", "فيديو شرح علاقة التحويلات الداخلية بخدمة التوصيل", "شاهد كيف تبقى خدمة التوصيل محظورة بسبب الاعتماد حتى تكتمل التحويلات الداخلية، ثم تصبح جاهزة للمتابعة.", "videos/internal-transfer-delivery.mp4")}
 
       <p class="field-explanation-intro internal-transfer-delivery-link-summary">تعتمد خدمة التوصيل للعميل على توفر البضاعة في مستودع التجمع. فإذا كانت البضاعة أو جزء منها موجودة في مستودع مختلف عن مستودع التجمع، فلا يمكن البدء بخدمة التوصيل مباشرة، ويجب أولًا تنفيذ التحويلات الداخلية لنقل البضاعة إلى مستودع التجمع.</p>
 
@@ -3100,6 +3118,7 @@ function renderBookPortal() {
               ${renderWorkflowFlow(measurementTour, { interactive: false, numberStart: 0 })}
             </div>
           </header>
+          ${renderOverviewVideo("measurementOverviewVideoTitle", "فيديو شرح دورة رفع المقاسات كاملة", "شاهد دورة خدمة رفع المقاسات كاملة من وصول الفاتورة من SAP وحتى اكتمال الخدمة.", "videos/measurement-workflow.mp4")}
 
           <section id="measurement-step-request" class="panel invoice-training-section" aria-labelledby="measurementRequestTitle">
             <div class="section-title">

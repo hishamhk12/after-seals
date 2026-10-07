@@ -120,6 +120,7 @@ function renderText(url, profileDir) {
       .replace(/<img\b[^>]*\balt="([^"]*)"[^>]*>/giu, " $1 ")
       .replace(/<\/?(?:bdi|span|strong|b|em|i|code|small|a)\b[^>]*>/giu, "")
       .replace(/<[^>]+>/gu, " ")
+      .replace(/&nbsp;/gu, " ")
       .replace(/&quot;/gu, '"')
       .replace(/&amp;/gu, "&")
       .replace(/&lt;/gu, "<")
@@ -139,8 +140,12 @@ function stripEnd(value) {
 }
 
 // Diacritics (tashkeel) are ignored: their order can differ between sources without changing text.
+// Typography-only characters are ignored too: invisible bidi isolates (U+2066–U+2069) around English
+// terms, and the non-breaking hyphen (U+2011) that keeps a term on one line reads as "-".
 function normalize(value) {
   return String(value)
+    .replace(/[\u2066-\u2069]/gu, "")
+    .replace(/\u2011/gu, "-")
     .replace(/[ً-ٰٟ]/gu, "")
     .replace(/[—–]/gu, "—")
     .replace(/\s+/gu, " ")

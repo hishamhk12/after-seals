@@ -3034,9 +3034,61 @@ tbody tr:last-child td {
   border-color: #b8d4fb;
 }
 
+/* Customer Service employee tools: supporting navigation, deliberately lighter and smaller than
+   the main Customer Service cards above. */
+.customer-service-tools {
+  margin-top: var(--spacing-48);
+  padding-top: var(--spacing-32);
+  border-top: 1px solid var(--color-fog-white);
+}
+
+.customer-service-tools .index-heading {
+  margin-bottom: var(--spacing-16);
+}
+
+.customer-service-tools .index-heading h2 {
+  font-size: var(--text-subheading);
+  line-height: var(--leading-subheading);
+}
+
+.customer-service-tools .chapter-grid {
+  width: min(100%, 860px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-16);
+}
+
+.customer-service-tools .entry-card--tool {
+  min-height: 0;
+  padding: var(--spacing-16) var(--spacing-20);
+  background: var(--surface-soft-surface);
+  box-shadow: none;
+}
+
+.customer-service-tools .entry-card--tool .entry-card-index {
+  margin-bottom: var(--spacing-8);
+  color: var(--color-muted-indigo);
+  font-weight: var(--font-weight-medium);
+}
+
+.customer-service-tools .entry-card--tool .entry-card-title {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+.customer-service-tools .entry-card--tool .entry-card-description {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.customer-service-tools .entry-card--tool .entry-card-action {
+  margin-top: var(--spacing-4);
+  font-size: 14px;
+}
+
 @media (max-width: 820px) {
   .customer-service-layout,
-  .customer-service-layout .chapter-grid {
+  .customer-service-layout .chapter-grid,
+  .customer-service-tools .chapter-grid {
     grid-template-columns: 1fr;
   }
 
@@ -3111,6 +3163,20 @@ tbody tr:last-child td {
   .cs-sources-row {
     grid-template-columns: 1fr;
   }
+}
+
+/* Helpdesk (complaints) reference notes — ticket stages and Inquiry Types — between the
+   Delivery-style sub-steps. */
+.customer-service-complaints-workflow .helpdesk-reference {
+  margin-top: var(--spacing-32);
+}
+
+.customer-service-complaints-workflow .helpdesk-reference .installation-substep-heading {
+  margin-bottom: var(--spacing-12);
+}
+
+.customer-service-complaints-workflow .helpdesk-reference .driver-portal-flow {
+  margin-bottom: var(--spacing-8);
 }
 
 /* Phone-width fallback for the Customer Service complaints and Maintenance stages. */

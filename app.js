@@ -246,15 +246,17 @@ const compositeManufacturingTour = {
   ],
 };
 
+// الشكاوى / الاستفسارات as the Helpdesk training flow (00–04), built from the screenshots in
+// assest/خدمة العملاء/helpdesk.
 const complaintsTour = {
   id: "customer-service-complaints",
   title: "الشكاوى / الاستفسارات",
   children: [
-    { id: "complaints-received", title: "شكوى/استفسار العميل", targetId: "complaints-step-received" },
-    { id: "complaints-type", title: "تحديد النوع", targetId: "complaints-step-type" },
-    { id: "complaints-forward", title: "ارسال إلى الجهة المختصة", targetId: "complaints-step-forward" },
-    { id: "complaints-follow-up", title: "متابعة", targetId: "complaints-step-follow-up" },
-    { id: "complaints-resolution", title: "حل أو تصعيد", targetId: "complaints-step-resolution" },
+    { id: "helpdesk-entry", title: "الدخول إلى مكتب المساعدة \u2066(Helpdesk)\u2069", targetId: "complaints-step-helpdesk-entry" },
+    { id: "ticket-from-invoice", title: "إنشاء تذكرة من فاتورة العميل", targetId: "complaints-step-ticket-from-invoice" },
+    { id: "ticket-details", title: "إدخال بيانات التذكرة", targetId: "complaints-step-ticket-details" },
+    { id: "ticket-save", title: "حفظ التذكرة", targetId: "complaints-step-ticket-save" },
+    { id: "internal-follow-up", title: "المتابعة الداخلية", targetId: "complaints-step-internal-follow-up" },
   ],
 };
 
@@ -572,7 +574,7 @@ const chapters = [
     id: "customer-service-complaints",
     number: "القسم الثاني",
     title: "الشكاوى / الاستفسارات",
-    description: "دورة معالجة شكوى أو استفسار العميل من الاستقبال وتحديد النوع وحتى الحل أو التصعيد.",
+    description: "إنشاء تذكرة الشكوى أو الاستفسار وتصنيف نوعها وإسنادها وحفظها، ثم متابعتها داخليًا من خلال الأنشطة ومراحل التذكرة.",
     visible: true,
     items: [],
   },
@@ -581,6 +583,24 @@ const chapters = [
     number: "مسار مستقل",
     title: "الصيانة",
     description: "دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى تنفيذ أعمال الصيانة وتسليم الخدمة.",
+    visible: true,
+    items: [],
+  },
+  // Customer Service employee tools: supporting navigation guides, not Customer Service workflows.
+  // Both are guide pages: renderAccessServicesGuide and renderAccessInvoicesGuide.
+  {
+    id: "customer-service-access-services",
+    number: "أداة مساندة",
+    title: "الدخول إلى الخدمات",
+    description: "استعراض خدمات ما بعد البيع ومتابعة مهام العميل وحالة الخدمة.",
+    visible: true,
+    items: [],
+  },
+  {
+    id: "customer-service-access-invoices",
+    number: "أداة مساندة",
+    title: "الدخول إلى فواتير العميل",
+    description: "الوصول إلى بيانات العميل وفواتيره والمهام المرتبطة بها ومعلومات SAP والتذاكر.",
     visible: true,
     items: [],
   },
@@ -655,7 +675,13 @@ const services = [
     title: "خدمة العملاء",
     description: "كيف تصل الحالات إلى خدمة العملاء، ودورة معالجة الشكاوى والاستفسارات، ومسار الصيانة.",
     status: "متاح",
-    chapterIds: ["customer-service-sources", "customer-service-complaints", "customer-service-maintenance"],
+    chapterIds: [
+      "customer-service-sources",
+      "customer-service-complaints",
+      "customer-service-maintenance",
+      "customer-service-access-services",
+      "customer-service-access-invoices",
+    ],
   },
 ];
 
@@ -916,6 +942,8 @@ const PAGE_ASSISTANT_ROUTES = {
     "customer-service-sources": "customer-service",
     "customer-service-complaints": "complaints",
     "customer-service-maintenance": "maintenance",
+    "customer-service-access-services": "access-services",
+    "customer-service-access-invoices": "access-invoices",
   },
 };
 
@@ -1465,57 +1493,129 @@ function renderManufacturingWorkflow() {
     </div>`;
 }
 
-function renderResponsibilityWorkflow(tour, stages, className, titleIdPrefix) {
+// الشكاوى / الاستفسارات — the Helpdesk training flow. Same markup and classes as the Delivery flow
+// (#workflowContent in index.html): numbered sections, lettered sub-steps (title → explanation →
+// screenshot), full-width frames for full Odoo screens and booking-tour-grid pairs for related steps.
+// Screenshots: helpdesk/1–3 → 00; complaint folder 1–2 → 01, 3–5 → 02, 6–7 → 03 (ticket #00265);
+// 8–11 → 04 (a different ticket, #00202).
+function renderComplaintsWorkflow() {
+  const helpdesk = "assest/خدمة العملاء/helpdesk";
+  const tickets = `${helpdesk}/من وين تأتي الشكوى وانواع الشكوى`;
+  const ltr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+  // Arabic meaning first, the original Odoo term in parentheses. Non-breaking spaces keep the
+  // English term, and the term with its Arabic meaning, from splitting across lines.
+  const term = (ar, en) => `${ar}\u00A0${ltr(`(${en.replace(/ /g, "\u00A0")})`)}`;
+  const shot = (src, alt, label, frameClass = "") => `
+            <figure class="odoo-screenshot-frame${frameClass ? ` ${frameClass}` : ""}">
+              <img src="${src}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+            </figure>`;
+  const substep = (badge, id, title, explanation, figure, articleClass = "") => `
+          <article class="training-screen-column${articleClass ? ` ${articleClass}` : ""}" aria-labelledby="${id}">
+            <div class="section-title compact">
+              <span class="icon-tile" aria-hidden="true">${badge}</span>
+              <div><h2 id="${id}">${title}</h2></div>
+            </div>
+            ${figure}
+            <div class="field-explanation" aria-label="${title.replace(/<[^>]+>/g, "")}">
+              <p class="field-explanation-intro">${explanation}</p>
+            </div>
+          </article>`;
+  const single = (...args) => substep(...args, "booking-confirmation-step");
+  const pair = (...steps) => `
+        <div class="booking-tour-grid">${steps.join("")}
+        </div>`;
+  const reference = (title, body) => `
+        <div class="field-explanation helpdesk-reference">
+          <h3 class="installation-substep-heading"><strong>${title}</strong></h3>
+          ${body}
+        </div>`;
+
+  const bodies = [
+    // 00 — الدخول إلى Helpdesk
+    `
+        <p class="field-explanation-intro" dir="rtl">تتم معالجة الشكاوى والاستفسارات من خلال تطبيق ${term("مكتب المساعدة", "Helpdesk")}، حيث تُسجَّل الحالة على شكل ${term("تذكرة", "Ticket")} ضمن فريق ${term("خدمة العملاء", "Customer Care")}.</p>
+        ${single("أ", "helpdeskAppTitle", `فتح تطبيق ${term("مكتب المساعدة", "Helpdesk")}`,
+          `من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("مكتب المساعدة", "Helpdesk")}.`,
+          shot(`${helpdesk}/1.png`, "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Helpdesk", "تطبيق Helpdesk", "booking-confirmation-frame"))}
+        ${single("ب", "helpdeskTeamTitle", `الدخول إلى ${term("خدمة العملاء", "Customer Care")} وفتح ${term("التذاكر", "Tickets")}`,
+          `تظهر صفحة ${term("نظرة عامة على مكتب المساعدة", "Helpdesk Overview")}، ومنها يتم الضغط على زر ${term("التذاكر", "Tickets")} داخل بطاقة فريق ${term("خدمة العملاء", "Customer Care")} لعرض تذاكر الفريق.`,
+          shot(`${helpdesk}/2.png`, "صفحة Helpdesk Overview مع تحديد زر Tickets في بطاقة فريق Customer Care", "بطاقة فريق Customer Care"))}
+        ${single("ج", "helpdeskBoardTitle", "عرض لوحة التذاكر",
+          `تظهر لوحة تذاكر ${term("خدمة العملاء", "Customer Care")} وفيها التذاكر موزعة على مراحل ${term("مكتب المساعدة", "Helpdesk")}، ويظهر على كل بطاقة عنوان التذكرة ورقمها واسم العميل و${term("الوسوم", "Tags")} الخاصة بها.`,
+          shot(`${helpdesk}/3.png`, "لوحة تذاكر Customer Care وتظهر فيها مراحل New و Assigned to و In Progress و waiting on CS و Solved", "لوحة التذاكر"))}
+        ${reference(`مراحل التذكرة في ${term("مكتب المساعدة", "Helpdesk")}`, `
+          <p class="driver-portal-flow">${term("جديد", "New")} ← ${term("مُسند إلى", "Assigned to")} ← ${term("قيد التنفيذ", "In Progress")} ← ${term("بانتظار خدمة العملاء", "waiting on CS")} ← ${term("تم الحل", "Solved")}</p>
+          <p class="field-explanation-intro">كما تتوفر مرحلة ${term("ملغي", "Cancelled")} ضمن مراحل لوحة التذاكر.</p>`)}`,
+    // 01 — إنشاء تذكرة من فاتورة العميل
+    `
+        <p class="field-explanation-intro" dir="rtl">يمكن إنشاء التذكرة من داخل فاتورة العميل، بحيث ترتبط التذكرة بالعميل والفاتورة الخاصة بالشكوى أو الاستفسار.</p>
+        ${single("أ", "ticketInvoiceTitle", `فتح فاتورة العميل والدخول إلى ${term("مكتب المساعدة", "Helpdesk")}`,
+          `من فاتورة العميل، يتم الضغط على زر ${term("مكتب المساعدة", "Helpdesk")} أعلى الفاتورة لعرض التذاكر المرتبطة بها، ويظهر على الزر عدد هذه التذاكر.`,
+          shot(`${tickets}/1 انشئ تذكرة للعميل على مكشلة معينة.png`, "فاتورة العميل في نظام خدمات مابعد البيع مع تحديد زر Helpdesk", "زر Helpdesk في فاتورة العميل"))}
+        ${single("ب", "ticketListTitle", "عرض التذاكر الموجودة وإنشاء تذكرة جديدة",
+          `تظهر قائمة التذاكر الموجودة على هذه الفاتورة مع المرحلة الحالية لكل تذكرة، ولإنشاء تذكرة جديدة يتم الضغط على زر ${term("جديد", "New")}.`,
+          shot(`${tickets}/2 هون منشوف التذاكر الموجودة على هل فاتورة.png`, "قائمة التذاكر الموجودة على الفاتورة مع تحديد زر New لإنشاء تذكرة جديدة", "قائمة تذاكر الفاتورة"))}`,
+    // 02 — إدخال بيانات التذكرة
+    `
+        <p class="field-explanation-intro" dir="rtl">بعد الضغط على ${term("جديد", "New")} يُفتح نموذج التذكرة الجديدة ضمن فريق ${term("خدمة العملاء", "Customer Care")}، وتظهر فيه بيانات ${term("العميل", "Customer")} و${term("حالة العملية", "Operation Case")} و${term("الفاتورة", "Invoice")}، ثم يتم إدخال بيانات الشكوى أو الاستفسار.</p>
+        ${single("أ", "ticketMainDataTitle", "عنوان التذكرة ونوعها ووصفها وأولويتها",
+          `يتم إدخال اسم الشكوى كعنوان للتذكرة، مثل «تأخير التوصيل»، ثم اختيار نوع الحالة من حقل ${term("نوع الاستفسار", "Inquiry Type")}، وكتابة تفاصيل الحالة في تبويب ${term("الوصف", "Description")}، وتحديد ${term("أولوية التذكرة", "Priority")} من خلال النجوم.`,
+          shot(`${tickets}/3 هون منحط اسم الشكوى ونوع الشكوى  وديسكبريشن وقوة العميل يعني البيروتي.png`, "نموذج تذكرة جديدة بعنوان تأخير التوصيل مع تحديد حقول Inquiry Type و Priority و Description", "بيانات التذكرة"))}
+        ${reference(`أنواع الحالة في حقل ${term("نوع الاستفسار", "Inquiry Type")}`, `
+          <p class="field-explanation-intro">يحتوي حقل ${term("نوع الاستفسار", "Inquiry Type")} على أربعة أنواع: ${term("استفسار مباشر", "Direct Inquiry")}، ${term("استفسار غير مباشر", "Indirect Inquiry")}، ${term("شكوى فنية", "Technical Complaint")}، ${term("شكوى إدارية", "Administrative Complaint")}.</p>`)}
+        ${pair(
+          substep("ب", "ticketAssigneeTitle", `حقل ${term("مُسند إلى", "Assigned to")}`,
+            `يتم اختيار الشخص المسؤول عن متابعة الحالة مع العميل من حقل ${term("مُسند إلى", "Assigned to")}.`,
+            shot(`${tickets}/4 عميل اسين لشخص للمتابعه مع العميل .png`, "قائمة المستخدمين في حقل Assigned to داخل التذكرة", "حقل Assigned to")),
+          substep("ج", "ticketTaskTitle", `ربط التذكرة ${term("بالمهمة", "Task")}`,
+            `يتم اختيار المهمة من حقل ${term("المهمة", "Task")} لربط التذكرة بالخدمة الموجودة على الفاتورة.`,
+            shot(`${tickets}/5 الخدمات الموجودة على هل فاتورة.png`, "قائمة المهام في حقل Task داخل التذكرة", "حقل Task")),
+        )}`,
+    // 03 — حفظ التذكرة
+    `
+        <p class="field-explanation-intro" dir="rtl">بعد الانتهاء من إدخال بيانات التذكرة وحفظها، يظهر رقم التذكرة ويتم إرسال رسالة إلى العميل برقم الشكوى.</p>
+        ${single("أ", "ticketNumberTitle", "ظهور رقم التذكرة ورسالة العميل",
+          `يظهر رقم التذكرة بجانب عنوانها ${ltr("(#00265)")}، وتظهر في سجل التذكرة الرسالة المرسلة إلى العميل، والتي تفيد باستلام طلبه ومراجعته من فريق ${term("خدمة العملاء", "Customer Care")}، وتتضمن رقم مرجع التذكرة ${ltr("00265")}.`,
+          shot(`${tickets}/6 عند الانتهاء من ادخال بيانات الشكوى يتم ارسال رساله للعميل برقم الشكوةى.png`, "التذكرة بعد الحفظ برقم 00265 والرسالة المرسلة إلى العميل في سجل التذكرة", "رقم التذكرة ورسالة العميل"))}
+        ${single("ب", "ticketNewStageTitle", `ظهور التذكرة في مرحلة ${term("جديد", "New")}`,
+          `بعد إنشاء التذكرة تظهر في لوحة تذاكر ${term("خدمة العملاء", "Customer Care")} ضمن مرحلة ${term("جديد", "New")}.`,
+          shot(`${tickets}/7 بعد انتهاء من انشاء التذكرة تظهر في نيو.png`, "لوحة تذاكر Customer Care وتظهر فيها تذكرة تأخير التوصيل في مرحلة New", "التذكرة في مرحلة New"))}`,
+    // 04 — المتابعة الداخلية (a different ticket: #00202)
+    `
+        <p class="field-explanation-intro" dir="rtl">يمكن مشاركة التذكرة مع شخص آخر في الإدارة، مثل فني أو مشرف، لمتابعة الحالة وتسجيل الإجراء الذي تم.</p>
+        <p class="field-explanation-intro" dir="rtl"><strong>ملاحظة:</strong> صور هذه المرحلة مأخوذة من تذكرة أخرى ${ltr("(#00202)")} غير التذكرة المستخدمة في المراحل السابقة، وتظهر فيها التذكرة في مرحلة ${term("قيد التنفيذ", "In Progress")}.</p>
+        ${single("أ", "ticketShareTitle", `${term("مشاركة التذكرة", "Share Ticket")}`,
+          `لمشاركة التذكرة مع شخص آخر، يتم الضغط على زر ${term("مشاركة التذكرة", "Share Ticket")} أعلى التذكرة.`,
+          shot(`${tickets}/8 لمشاركة التذكرة مع شخص اخر في الادارة مع فني او مشرف نضغط.png`, "تذكرة في مرحلة In Progress مع تحديد زر Share Ticket", "زر Share Ticket"))}
+        ${pair(
+          substep("ب", "ticketShareWithTitle", "اختيار من تتم مشاركة التذكرة معه",
+            `تظهر نافذة ${term("مشاركة المستند", "Share Document")}، ويتم من خلالها اختيار مشاركة التذكرة داخليًا أو خارجيًا من قائمة ${term("المشاركة مع", "Share With")} التي تتضمن ${term("مستخدمون داخليون", "Internal Users")} و${term("مستخدمو البوابة", "Portal Users")} و${term("جهة اتصال", "Contact")}، ثم تحديد ${term("المستلمين", "Recipients")} والضغط على ${term("إرسال", "Send")}.`,
+            shot(`${tickets}/9 بعد الضغط على شير تيكت يمكن اختيار من تريد انت تعمله شير داخلي ام خارجي.png`, "نافذة Share Document مع خيارات Internal Users و Portal Users و Contact", "نافذة Share Document")),
+          substep("ج", "ticketActivityTitle", `${term("جدولة نشاط", "Schedule Activity")}`,
+            `يفتح الشخص الذي تمت مشاركة التذكرة معه التذكرة ويضغط على ${term("النشاط", "Activity")}، فتظهر نافذة ${term("جدولة نشاط", "Schedule Activity")}، ثم يختار نوع النشاط مثل ${term("مكالمة", "Call")} ويكتب الإجراء الذي تم، مثل: «تم التواصل مع العميل وسيتم ارسال فني لمعالجة المشكلة»، ثم يحفظ النشاط.`,
+            shot(`${tickets}/10 يضغط الشخص لي عملناله شير على اكتفيتي ويكتب شو عمل .png`, "نافذة Schedule Activity لتسجيل الإجراء الذي تم على التذكرة", "نافذة Schedule Activity")),
+        )}
+        ${single("د", "ticketPlannedActivitiesTitle", `ظهور النشاط في ${term("الأنشطة المخططة", "Planned Activities")}`,
+          `يظهر النشاط المسجل في قسم ${term("الأنشطة المخططة", "Planned Activities")} على يمين التذكرة، مع موعد استحقاقه ونص الإجراء الذي تم تسجيله.`,
+          shot(`${tickets}/11 تظهر في الاكفيتي عل اليمين.png`, "قسم Planned Activities في التذكرة ويظهر فيه نشاط Call والإجراء المسجل", "قسم Planned Activities"))}`,
+  ];
+
   return `
-    <div class="workflow-content ${className}">
-      <header class="case-header" aria-labelledby="${titleIdPrefix}Title">
+    <div class="workflow-content customer-service-complaints-workflow">
+      <header class="case-header" aria-labelledby="complaintsTitle">
         <div>
-          <h1 id="${titleIdPrefix}Title">${tour.title}</h1>
-          ${renderWorkflowFlow(tour, {
-            activeTargetId: tour.children[0].targetId,
-            numberStart: 0,
-          })}
+          <h1 id="complaintsTitle">${complaintsTour.title}</h1>
+          ${renderWorkflowFlow(complaintsTour, { activeTargetId: complaintsTour.children[0].targetId, numberStart: 0 })}
         </div>
       </header>
-      ${tour.children.map((step, index) => {
-        const stage = stages[index];
-        const titleId = `${titleIdPrefix}Stage${index}Title`;
-        return `
-      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+      ${complaintsTour.children.map((step, index) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="complaintsStage${index}Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
-          <div><h2 id="${titleId}">${step.title}</h2></div>
-        </div>
-        <p class="field-explanation-intro">${stage.description}</p>
-        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> ${stage.execution}</aside>
-      </section>`;
-      }).join("")}
+          <div><h2 id="complaintsStage${index}Title">${step.title}</h2></div>
+        </div>${bodies[index]}
+      </section>`).join("")}
     </div>`;
-}
-
-function renderComplaintsWorkflow() {
-  return renderResponsibilityWorkflow(complaintsTour, [
-    {
-      description: "تبدأ الدورة باستقبال شكوى أو استفسار العميل من قبل خدمة العملاء، ويتم توثيق تفاصيل الحالة لتكون مرجعًا في بقية مراحل المعالجة.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد توثيق الحالة، تقوم خدمة العملاء بتحديد نوع الحالة وتصنيفها، تمهيدًا لتحويلها إلى الجهة المختصة بمعالجتها.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد تحديد نوع الحالة، يتم تحويل الشكوى إلى الجهة المختصة بالمعالجة، وتشترك خدمة العملاء والجهة المختصة في تنفيذ هذه المرحلة.",
-      execution: "يدوي / خدمة العملاء / الجهة المختصة",
-    },
-    {
-      description: "بعد تحويل الشكوى، تتابع خدمة العملاء الحالة مع الجهة المختصة حتى اكتمال الإجراء المطلوب.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد اكتمال الإجراء، يتم الوصول إلى حل الشكوى، أو تصعيدها عند الحاجة، وبذلك تنتهي دورة معالجة الشكوى أو الاستفسار.",
-      execution: "يدوي / خدمة العملاء",
-    },
-  ], "customer-service-complaints-workflow", "complaints");
 }
 
 // خدمة الصيانة. Screenshots from assest/الصيانة: 1–2 → 00, 3 → 01, 4–8 → 03 (activating and filling
@@ -1613,16 +1713,19 @@ const customerServiceSources = [
     title: "من الإدارات الداخلية",
     description: "تصل الحالة إلى خدمة العملاء من إحدى الإدارات الداخلية عندما يظهر موقف مع العميل يحتاج إلى متابعة من خدمة العملاء.",
     examples: ["عميل رفض التوقيع", "عميل غير راضٍ عن التركيب", "صعوبة تواصل"],
+    flow: renderConvertToTicketFlow,
   },
   {
     title: "من العميل مباشرة",
     description: "يتواصل العميل مباشرة مع خدمة العملاء لتقديم استفسار أو شكوى.",
     examples: ["استفسار", "شكوى"],
+    flow: renderNoAccountComplaintFlow,
   },
   {
     title: "من النظام",
     description: "تظهر الحالة من خلال النظام عند وجود طلب يحتاج إلى متابعة من خدمة العملاء.",
     examples: ["حالة عالقة", "عميل لم يحجز موعد", "تأخر في إجراء مطلوب"],
+    flow: renderAppointmentNotBookedFlow,
   },
 ];
 
@@ -1657,29 +1760,420 @@ function renderCustomerServiceSources() {
           <div><h2 id="customerServiceSource${index + 1}Title">${source.title}</h2></div>
         </div>
         <p class="field-explanation-intro">${source.description}</p>
-        <aside class="internal-transfer-example"><strong>أمثلة:</strong> ${source.examples.join("، ")}.</aside>
+        <aside class="internal-transfer-example"><strong>أمثلة:</strong> ${source.examples.join("، ")}.</aside>${source.flow ? source.flow() : ""}
       </section>`).join("")}
     </div>`;
 }
 
-function renderCustomerServiceEntryCard(chapterId, meta) {
+// Worked examples under the case sources on كيف تصل الحالات إلى خدمة العملاء؟, in the Helpdesk /
+// Delivery sub-step style (title → screenshot → explanation). Screenshots are frames from the
+// Customer Service training video in assest/review_selected_frames, used uncropped.
+const sourceLtr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+// Arabic meaning first, the original Odoo term in parentheses, kept on one line.
+const sourceTerm = (ar, en) => `${ar}\u00A0${sourceLtr(`(${en.replace(/ /g, "\u00A0")})`)}`;
+
+function renderSourceExampleFlow({ images, heading, intro, steps }) {
+  const step = ({ badge, id, title, explanation, file, alt, label }) => `
+        <article class="training-screen-column booking-confirmation-step" aria-labelledby="${id}">
+          <div class="section-title compact">
+            <span class="icon-tile" aria-hidden="true">${badge}</span>
+            <div><h2 id="${id}">${title}</h2></div>
+          </div>${file ? `
+          <figure class="odoo-screenshot-frame">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>` : ""}
+          <div class="field-explanation" aria-label="${title.replace(/<[^>]+>/g, "")}">
+            <p class="field-explanation-intro">${explanation}</p>
+          </div>
+        </article>`;
+
+  return `
+        <div class="field-explanation source-example-flow">
+          <h3 class="installation-substep-heading"><strong>مثال: ${heading}</strong></h3>
+          <p class="field-explanation-intro">${intro}</p>
+        </div>${steps.map(step).join("")}`;
+}
+
+// مصدر «من العميل مباشرة»: an administrative complaint from a customer with no account or invoice.
+// Frames: a new contact, the saved contact, a ticket opened from the contact, the saved
+// Administrative Complaint (In Progress), Share Ticket, and the copied ticket link.
+function renderNoAccountComplaintFlow() {
+  const term = sourceTerm;
+  return renderSourceExampleFlow({
+    images: "assest/review_selected_frames/03_شكوى_بلا_حساب",
+    heading: "شكوى إدارية لعميل ليس له حساب",
+    intro: "عندما يتواصل العميل مباشرة بشكوى وليس له حساب أو فاتورة في النظام، مثل شكوى عن استقبال غير جيد، يتم إنشاء كرت عميل له أولًا، ثم إنشاء التذكرة من كرت العميل.",
+    steps: [
+      {
+        badge: "أ",
+        id: "noAccountNewContactTitle",
+        title: "إنشاء كرت عميل جديد",
+        explanation: `من تطبيق ${term("جهات الاتصال", "Contacts")}، يتم الضغط على ${term("جديد", "New")} لفتح كرت عميل جديد.`,
+        file: "00-35-12__frame_002112500.png",
+        alt: "كرت جهة اتصال جديد فارغ في تطبيق Contacts",
+        label: "كرت عميل جديد",
+      },
+      {
+        badge: "ب",
+        id: "noAccountContactSavedTitle",
+        title: "إدخال بيانات العميل وحفظ الكرت",
+        explanation: `يتم إدخال اسم العميل والبريد الإلكتروني ورقم الجوال والعنوان، ثم حفظ الكرت، فيظهر في سجل الكرت ${term("تم إنشاء جهة الاتصال", "Contact created")}.`,
+        file: "00-35-41__frame_002141500.png",
+        alt: "كرت العميل بعد إدخال الاسم والبريد ورقم الجوال والعنوان ويظهر في سجله Contact created",
+        label: "كرت العميل بعد الحفظ",
+      },
+      {
+        badge: "ج",
+        id: "noAccountTicketFromContactTitle",
+        title: "فتح تذكرة جديدة من كرت العميل",
+        explanation: `من كرت العميل، يتم فتح تذاكره ثم الضغط على ${term("جديد", "New")}، كما يوضح مسار التنقل أعلى الصفحة: ${term("جهات الاتصال", "Contacts")} ← اسم العميل ← ${term("مكتب المساعدة", "Helpdesk")}. تظهر في التذكرة بيانات ${term("العميل", "Customer")} و${term("رقم الجوال", "Phone")} ضمن فريق ${term("خدمة العملاء", "Customer Care")}، بينما تبقى حقول ${term("حالة العملية", "Operation Case")} و${term("الفاتورة", "Invoice")} و${term("المهمة", "Task")} فارغة لعدم وجود فاتورة.`,
+        file: "00-35-55__frame_002155000.png",
+        alt: "تذكرة جديدة مفتوحة من كرت العميل وتظهر فيها بيانات العميل ورقم الجوال بينما حقول Operation Case و Invoice و Task فارغة",
+        label: "تذكرة جديدة من كرت العميل",
+      },
+      {
+        badge: "د",
+        id: "noAccountAdministrativeTitle",
+        title: `${term("شكوى إدارية", "Administrative Complaint")} وحفظ التذكرة`,
+        explanation: `يتم إدخال عنوان الشكوى ووصفها، مثل «استقبال غير جيد»، واختيار ${term("شكوى إدارية", "Administrative Complaint")} في حقل ${term("نوع الاستفسار", "Inquiry Type")}، ثم الحفظ. بعد الحفظ تنتقل التذكرة تلقائيًا إلى مرحلة ${term("قيد التنفيذ", "In Progress")} وتُسند إلى الموظف الذي أنشأها، ويُضاف وسم «شكوى إدارية»، ويظهر زر ${term("مشاركة التذكرة", "Share Ticket")}.`,
+        file: "00-36-17__frame_002177000.png",
+        alt: "تذكرة استقبال غير جيد بنوع Administrative Complaint في مرحلة In Progress وعليها وسم شكوى إدارية ويظهر زر Share Ticket",
+        label: "الشكوى الإدارية بعد الحفظ",
+      },
+      {
+        badge: "هـ",
+        id: "noAccountShareTitle",
+        title: "مشاركة التذكرة مع الجهة المختصة",
+        explanation: `من زر ${term("مشاركة التذكرة", "Share Ticket")} تظهر نافذة ${term("مشاركة المستند", "Share Document")}، وعند المشاركة مع ${term("مستخدمون داخليون", "Internal Users")} يتم اختيار الأشخاص من قائمة ${term("المستلمين", "Recipients")}.`,
+        file: "00-36-37__frame_002197500.png",
+        alt: "نافذة Share Document مع اختيار Internal Users وقائمة المستلمين",
+        label: "مشاركة التذكرة",
+      },
+      {
+        badge: "و",
+        id: "noAccountCopyLinkTitle",
+        title: "نسخ رابط التذكرة",
+        explanation: `كما يمكن نسخ رابط التذكرة من حقل ${term("الرابط", "Link")} في النافذة نفسها وإرساله، مثل إرساله بالبريد الإلكتروني.`,
+        file: "00-36-56__frame_002216083.png",
+        alt: "نافذة Share Document بعد نسخ رابط التذكرة وظهور Copied",
+        label: "نسخ رابط التذكرة",
+      },
+      {
+        badge: "ز",
+        id: "noAccountFollowUpTitle",
+        title: "متابعة التذكرة",
+        explanation: `بعد المشاركة، تتم متابعة التذكرة بالطريقة نفسها الموضحة في <a href="${routeHref("chapter", "customer-service-complaints")}/internal-follow-up">مرحلة المتابعة الداخلية</a> في صفحة الشكاوى / الاستفسارات.`,
+      },
+    ],
+  });
+}
+
+// مصدر «من النظام»: the Appointment not booked ticket. Frames: the OdooBot message in the delivery
+// task, the task's Appointments tab, and the ticket in Helpdesk. Booking on the customer's behalf
+// links to the existing Delivery booking steps.
+function renderAppointmentNotBookedFlow() {
+  const term = sourceTerm;
+  return renderSourceExampleFlow({
+    images: "assest/review_selected_frames/02_Appointment_not_booked",
+    heading: term("تذكرة عدم حجز الموعد", "Appointment not booked"),
+    intro: `إذا لم يحجز العميل موعد التوصيل من خلال الرابط المرسل إليه، يقوم النظام تلقائيًا بإنشاء تذكرة في ${term("مكتب المساعدة", "Helpdesk")} لتتابع خدمة العملاء الحالة مع العميل.`,
+    steps: [
+      {
+        badge: "أ",
+        id: "appointmentNotBookedCreatedTitle",
+        title: "إنشاء التذكرة تلقائيًا",
+        explanation: `إذا لم يحجز العميل الموعد خلال 24 ساعة، يقوم النظام تلقائيًا بإنشاء ${term("تذكرة عدم حجز الموعد", "Appointment not booked")} مع رقم المهمة، وتظهر في سجل مهمة التوصيل رسالة من النظام توضح عدم حجز الموعد خلال 24 ساعة ورقم التذكرة التي تم إنشاؤها.`,
+        file: "01-21-16__frame_004876500.png",
+        alt: "سجل مهمة التوصيل وتظهر فيه رسالة النظام بعدم حجز العميل للموعد خلال 24 ساعة وإنشاء تذكرة Appointment not booked",
+        label: "رسالة النظام في مهمة التوصيل",
+      },
+      {
+        badge: "ب",
+        id: "appointmentNotBookedEscalatedTitle",
+        title: `حالة الرابط في تبويب ${term("المواعيد", "Appointments")}`,
+        explanation: `في تبويب ${term("المواعيد", "Appointments")} داخل مهمة التوصيل، يظهر رابط الحجز بحالة ${term("مُصعَّد", "Escalated")} مع رقم التذكرة المرتبطة في عمود ${term("مكتب المساعدة", "Helpdesk")}، بينما يظهر الرابط الذي تم الحجز من خلاله بحالة ${term("محجوز", "Booked")}.`,
+        file: "01-21-17__frame_004877500.png",
+        alt: "تبويب Appointments في مهمة التوصيل ويظهر فيه رابط حجز بحالة Escalated مرتبط بتذكرة وآخر بحالة Booked",
+        label: "تبويب المواعيد",
+      },
+      {
+        badge: "ج",
+        id: "appointmentNotBookedTicketTitle",
+        title: "التذكرة في مكتب المساعدة",
+        explanation: `تظهر التذكرة ضمن فريق ${term("خدمة العملاء", "Customer Care")} وعليها وسم ${sourceLtr("(Appointment)")}، وترتبط بالعميل والفاتورة والمهمة، ويتضمن ${term("الوصف", "Description")} تاريخ إرسال رابط الحجز عبر واتساب ورابط الحجز نفسه.`,
+        file: "01-05-12__frame_003912500.png",
+        alt: "تذكرة Appointment not booked في مكتب المساعدة ضمن فريق Customer Care وعليها وسم Appointment ويظهر في وصفها رابط الحجز",
+        label: "تذكرة عدم حجز الموعد",
+      },
+      {
+        badge: "د",
+        id: "appointmentNotBookedBookingTitle",
+        title: "التواصل مع العميل وحجز الموعد",
+        explanation: `تتواصل خدمة العملاء مع العميل، ويمكنها فتح رابط الحجز واستكمال حجز موعد التوصيل نيابةً عنه، باتباع خطوات الحجز نفسها الموضحة في <a href="${routeHref("lesson", "customer-delivery")}/delivery-scheduling">مرحلة جدولة التوصيل</a>: اختيار الموعد، ثم بيانات العميل وموقع التسليم، ثم تأكيد الموعد.`,
+      },
+    ],
+  });
+}
+
+// مصدر «من الإدارات الداخلية»: a technician converts a problem on a service task into a Customer
+// Service ticket (Convert to Ticket). Frames: the button on an installation task, the dialog, the
+// created ticket, and the ticket taken to Assigned to. Follow-up links to the Helpdesk page.
+function renderConvertToTicketFlow() {
+  const term = sourceTerm;
+  return renderSourceExampleFlow({
+    images: "assest/review_selected_frames/01_Convert_to_Ticket",
+    heading: term("تذكرة محوّلة من الفني", "Convert to Ticket"),
+    intro: `عندما تظهر مشكلة مع العميل أثناء تنفيذ مهمة الخدمة، مثل رفض العميل الاستلام، يمكن للفني تحويلها إلى تذكرة لدى خدمة العملاء من داخل المهمة باستخدام زر ${term("تحويل إلى تذكرة", "Convert to Ticket")}.`,
+    steps: [
+      {
+        badge: "أ",
+        id: "convertToTicketButtonTitle",
+        title: `زر ${term("تحويل إلى تذكرة", "Convert to Ticket")} في المهمة`,
+        explanation: `من مهمة الخدمة، يضغط الفني على زر ${term("تحويل إلى تذكرة", "Convert to Ticket")} أعلى المهمة. في المثال، مهمة في مشروع خدمة التركيب وهي في مرحلة جاري التركيب.`,
+        file: "00-40-39__frame_002439000.png",
+        alt: "مهمة تركيب في مرحلة جاري التركيب ويظهر أعلاها زر Convert to Ticket",
+        label: "زر تحويل إلى تذكرة",
+      },
+      {
+        badge: "ب",
+        id: "convertToTicketDialogTitle",
+        title: "نافذة التحويل",
+        explanation: `تظهر نافذة ${term("تحويل إلى تذكرة", "Convert to Ticket")}، ويكون فيها ${term("الفريق", "Team")} ${term("خدمة العملاء", "Customer Care")} و${term("المرحلة", "Stage")} ${term("جديد", "New")}، ويكتب الفني تفاصيل المشكلة في ${term("الوصف", "Description")}، ثم يضغط ${term("تحويل", "Convert")}.`,
+        file: "00-40-47__frame_002447000.png",
+        alt: "نافذة Convert to Ticket ويظهر فيها الفريق Customer Care والمرحلة New وحقل الوصف وزر Convert",
+        label: "نافذة التحويل",
+      },
+      {
+        badge: "ج",
+        id: "convertToTicketCreatedTitle",
+        title: "إنشاء التذكرة لدى خدمة العملاء",
+        explanation: `يتم إنشاء تذكرة في مرحلة ${term("جديد", "New")} وعليها وسم «محوله»، مرتبطة بالعميل والفاتورة والمهمة، ويظهر فيها وصف المشكلة الذي كتبه الفني، مثل «العميل رفض الاستلام». ويظهر في سجل التذكرة أنها أُنشئت من المهمة، مع رسالة استلام الطلب المرسلة إلى العميل ورقم التذكرة.`,
+        file: "00-41-00__frame_002460500.png",
+        alt: "تذكرة جديدة في مرحلة New عليها وسم محوله ووصف العميل رفض الاستلام ومرتبطة بالمهمة",
+        label: "التذكرة المحوّلة",
+      },
+      {
+        badge: "د",
+        id: "convertToTicketAssignedTitle",
+        title: "استلام خدمة العملاء للتذكرة",
+        explanation: `تنقل خدمة العملاء بطاقة التذكرة في لوحة التذاكر من مرحلة ${term("جديد", "New")} إلى ${term("مُسند إلى", "Assigned to")}، فتُسند التذكرة تلقائيًا إلى الموظف الذي نقلها، ويظهر تغيير المرحلة والإسناد في سجل التذكرة.`,
+        file: "00-41-41__frame_002501000.png",
+        alt: "التذكرة في مرحلة Assigned to ومسندة إلى الموظف ويظهر في سجلها تغيير المرحلة من New إلى Assigned to",
+        label: "التذكرة بعد الإسناد",
+      },
+      {
+        badge: "هـ",
+        id: "convertToTicketFollowUpTitle",
+        title: "متابعة التذكرة",
+        explanation: `بعد استلام التذكرة، تتم متابعتها بالطريقة نفسها الموضحة في <a href="${routeHref("chapter", "customer-service-complaints")}/internal-follow-up">مرحلة المتابعة الداخلية</a> في صفحة الشكاوى / الاستفسارات.`,
+      },
+    ],
+  });
+}
+
+// أداة مساندة — الدخول إلى الخدمات: a guide page in the same style as الدخول إلى النظام
+// (renderOdooEntryContent). Screenshots from assest/خدمة العملاء/الدخول الى الخدمات in order:
+// 1 → 01, 2 → 02, 3 → 04, 3.5 → 05. Step 03 has no screenshot: none shows the project being opened.
+function renderAccessServicesGuide() {
+  const chapter = getChapter("customer-service-access-services");
+  const images = "assest/خدمة العملاء/الدخول الى الخدمات";
+  // Arabic meaning first, the original Odoo term in parentheses, kept on one line.
+  const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${en.replace(/ /g, "\u00A0").replace(/-/g, "\u2011")})</bdi>`;
+  const shot = (file, alt, label, frameClass = "guide-screenshot") => `
+          <figure class="odoo-screenshot-frame ${frameClass}">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+  const section = (number, id, title, body) => `
+      <section class="guide-section" aria-labelledby="${id}">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">${number}</span>
+          <h2 id="${id}">${title}</h2>
+        </div>
+        <div class="guide-section-body">${body}
+        </div>
+      </section>`;
+
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>${chapter.description}</p>
+    </header>
+
+    <div class="odoo-entry-guide">
+      ${section("01", "accessServicesProjectTitle", `فتح ${term("المشاريع", "Project")}`, `
+          <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("المشاريع", "Project")}.</p>
+          <p class="guide-key-term">${term("المشاريع", "Project")}</p>
+          ${shot("1.png", "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Project", "تطبيق المشاريع", "guide-screenshot guide-screenshot-portrait")}`)}
+
+      ${section("02", "accessServicesProjectsTitle", "عرض مشاريع خدمات ما بعد البيع", `
+          <p>بعد فتح تطبيق ${term("المشاريع", "Project")} تظهر صفحة ${term("المشاريع", "Projects")}، وتُعرض فيها مشاريع الخدمات على شكل بطاقات مجمّعة في أعمدة، ويظهر على كل بطاقة عدد ${term("المهام", "Tasks")} الخاصة بالمشروع.</p>
+          <p>ومن الخدمات الظاهرة في الصفحة:</p>
+          <ul>
+            <li>عمود خدمات مابعد البيع: خدمة التركيب، خدمة رفع القياسات، خدمة تصميم، التحويلات الداخلية.</li>
+            <li>عمود ${term("خدمات ما بعد البيع", "After-sales services")}: ${term("خدمة التوصيل", "Delivery service")}، خدمة التصنيع، الصيانة الميدانية، الاستلام من المستودع.</li>
+          </ul>
+          ${shot("2.png", "صفحة المشاريع في تطبيق Project وتظهر فيها مشاريع خدمات ما بعد البيع وعدد المهام لكل مشروع", "صفحة المشاريع")}`)}
+
+      ${section("03", "accessServicesSelectTitle", "اختيار الخدمة المطلوبة", `
+          <p>من صفحة ${term("المشاريع", "Projects")}، يختار الموظف مشروع الخدمة المطلوبة حسب الخدمة التي يتابعها مع العميل، فتُفتح لوحة مهام هذه الخدمة.</p>
+          <aside class="guide-note">
+            <strong>ملاحظة:</strong>
+            يعرض المثال في الخطوة التالية لوحة مهام خدمة التركيب.
+          </aside>`)}
+
+      ${section("04", "accessServicesBoardTitle", "فتح لوحة مهام الخدمة", `
+          <p>تظهر لوحة مهام الخدمة المختارة، وتُعرض فيها المهام موزعة على مراحل الخدمة. في مثال خدمة التركيب تظهر المراحل: طلب تركيب، جدولة خدمة التركيب، في انتظار تعيين الفني، ملئ النموذج، جاري التركيب، تم التركيب.</p>
+          <p>يظهر على كل بطاقة مهمة رقم الفاتورة واسم العميل و${term("عدد الأيام في المرحلة", "days in stage")}، ويظهر في شريط البحث فلتر ${term("مفتوح", "Open")} مطبقًا على اللوحة.</p>
+          ${shot("3.png", "لوحة مهام خدمة التركيب مع تحديد شريط البحث وفلتر Open", "لوحة مهام الخدمة")}`)}
+
+      ${section("05", "accessServicesSearchTitle", "استخدام أدوات البحث والتصفية عند الحاجة", `
+          <p>عند الحاجة إلى الوصول إلى مهمة معينة أو عرض المهام بطريقة مختلفة، يتم الضغط على السهم بجانب شريط البحث لفتح خيارات البحث، وتتضمن:</p>
+          <ul>
+            <li>${term("الفلاتر", "Filters")}: مثل ${term("مهامي", "My Tasks")}، ${term("غير مُسندة", "Unassigned")}، ${term("مفتوح", "Open")}، ${term("مغلق", "Closed")}.</li>
+            <li>${term("التجميع حسب", "Group By")}: مثل ${term("المرحلة", "Stage")}، ${term("المُسند إليهم", "Assignees")}، ${term("المشروع", "Project")}، ${term("الأولوية", "Priority")}.</li>
+            <li>${term("المفضلة", "Favorites")}: ${term("حفظ البحث الحالي", "Save current search")}.</li>
+          </ul>
+          ${shot("3.5.png", "قائمة خيارات البحث في لوحة مهام الخدمة وتظهر فيها أقسام Filters و Group By و Favorites", "خيارات البحث")}`)}
+    </div>`;
+}
+
+// أداة مساندة — الدخول إلى فواتير العميل: a guide page in the same style as الدخول إلى الخدمات
+// (renderAccessServicesGuide). Screenshots from assest/خدمة العملاء/الدخول الى فواتير العميل in
+// order: 1 → 01, 2 → 02, 3 → 03, 4 → 04, 5 → 05, 6 → 06, 6.5 → 07, 7 → 08. The screenshots come
+// from different customers and invoices, so each step is written as an example, not one transaction.
+function renderAccessInvoicesGuide() {
+  const chapter = getChapter("customer-service-access-invoices");
+  const images = "assest/خدمة العملاء/الدخول الى فواتير العميل";
+  // Arabic meaning first, the original Odoo term in parentheses. Short terms stay on one line;
+  // long ones (e.g. SAP Collection Warehouse Code) may wrap between words on narrow screens.
+  const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${(en.length > 22 ? en : en.replace(/ /g, "\u00A0")).replace(/-/g, "\u2011")})</bdi>`;
+  const shot = (file, alt, label, frameClass = "guide-screenshot") => `
+          <figure class="odoo-screenshot-frame ${frameClass}">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+  const section = (number, id, title, body) => `
+      <section class="guide-section" aria-labelledby="${id}">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">${number}</span>
+          <h2 id="${id}">${title}</h2>
+        </div>
+        <div class="guide-section-body">${body}
+        </div>
+      </section>`;
+  const note = (text) => `
+          <aside class="guide-note">
+            <strong>ملاحظة:</strong>
+            ${text}
+          </aside>`;
+
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>${chapter.description}</p>
+    </header>
+
+    <div class="odoo-entry-guide">
+      ${section("01", "accessInvoicesContactsTitle", `فتح ${term("جهات الاتصال", "Contacts")}`, `
+          <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("جهات الاتصال", "Contacts")}.</p>
+          <p class="guide-key-term">${term("جهات الاتصال", "Contacts")}</p>
+          ${note("الصور في هذا الدليل أمثلة مأخوذة من عملاء وفواتير مختلفة، والهدف منها توضيح أماكن التنقل والمعلومات المتاحة لموظف خدمة العملاء، وليست خطوات معاملة واحدة متصلة.")}
+          ${shot("1.png", "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Contacts", "تطبيق جهات الاتصال")}`)}
+
+      ${section("02", "accessInvoicesSearchTitle", "البحث عن العميل", `
+          <p>تظهر قائمة ${term("جهات الاتصال", "Contacts")}، ويُعرض فيها لكل جهة اتصال ${term("الاسم", "Name")} و${term("البريد الإلكتروني", "Email")} و${term("الرقم المرجعي في SAP", "SAP Reference Number")} و${term("الهاتف", "Phone")}.</p>
+          <p>للوصول إلى العميل المطلوب، يتم البحث عنه من خلال شريط البحث أعلى القائمة.</p>
+          ${shot("2.png", "قائمة جهات الاتصال في تطبيق Contacts وتظهر فيها أعمدة الاسم والبريد الإلكتروني والرقم المرجعي في SAP والهاتف", "قائمة جهات الاتصال")}`)}
+
+      ${section("03", "accessInvoicesIdentifyTitle", "تحديد العميل الصحيح", `
+          <p>في المثال، تم البحث عن العميل باستخدام ${term("الاسم", "Name")}، فظهرت في النتائج عدة جهات اتصال بأسماء متقاربة.</p>
+          <p>لتحديد العميل الصحيح، يتم الاستعانة بالمعلومات الظاهرة في النتائج:</p>
+          <ul>
+            <li>${term("الاسم", "Name")}.</li>
+            <li>${term("الهاتف", "Phone")}.</li>
+            <li>${term("الرقم المرجعي في SAP", "SAP Reference Number")}.</li>
+          </ul>
+          ${shot("3.png", "نتائج البحث عن العميل باستخدام الاسم مع تحديد عمود الهاتف والرقم المرجعي في SAP", "نتائج البحث عن العميل")}`)}
+
+      ${section("04", "accessInvoicesRecordTitle", "فتح سجل العميل", `
+          <p>عند فتح سجل العميل تظهر بياناته، وتظهر أعلى السجل أزرار مختصرة تساعد موظف خدمة العملاء على الوصول إلى معلومات العميل، منها:</p>
+          <ul>
+            <li>${term("المهام", "Tasks")}: مهام العميل.</li>
+            <li>${term("التذاكر", "Tickets")}: تذاكر العميل.</li>
+            <li>${term("المفوتر", "Invoiced")}: ويظهر عليه إجمالي المبلغ المفوتر للعميل.</li>
+          </ul>
+          <p>كما يعرض تبويب ${term("واتساب", "WhatsApp")} في سجل العميل ${term("سجل محادثات واتساب للعميل", "Customer WhatsApp Timeline")}، ويتضمن الرسائل المرسلة إلى العميل مع وقت كل رسالة واتجاهها وحالتها.</p>
+          ${shot("4.png", "سجل العميل في تطبيق Contacts مع تحديد زر Invoiced وتبويب WhatsApp", "سجل العميل")}`)}
+
+      ${section("05", "accessInvoicesListTitle", "فتح فواتير العميل", `
+          <p>يتم فتح فواتير العميل من سجل العميل، فتظهر قائمة ${term("الفواتير", "Invoices")} الخاصة به، كما يوضح مسار التنقل أعلى الصفحة: ${term("جهات الاتصال", "Contacts")} ← اسم العميل ← ${term("الفواتير", "Invoices")}.</p>
+          <p>للوصول إلى فاتورة معينة، يتم كتابة رقمها في شريط البحث ثم اختيار نوع البحث المناسب، ومنها:</p>
+          <ul>
+            <li>البحث في ${term("الرقم", "Number")}: رقم الفاتورة في نظام خدمات مابعد البيع.</li>
+            <li>البحث في ${term("رقم فاتورة SAP", "SAP Invoice Number")}.</li>
+          </ul>
+          ${shot("5.png", "قائمة فواتير العميل مع خيارات البحث وتحديد خياري Number و SAP Invoice Number", "قائمة فواتير العميل")}`)}
+
+      ${section("06", "accessInvoicesInvoiceTitle", "فتح الفاتورة ومراجعة بياناتها", `
+          <p>عند فتح الفاتورة تظهر بياناتها، ومن المعلومات المهمة لموظف خدمة العملاء:</p>
+          <ul>
+            <li>${term("رقم فاتورة SAP", "SAP Invoice")}.</li>
+            <li>${term("رقم عميل SAP", "SAP Customer No")}.</li>
+            <li>${term("بنود الفاتورة", "Invoice Lines")}: المنتجات أو الخدمات الموجودة على الفاتورة مع الكمية والسعر والمبلغ.</li>
+          </ul>
+          <p>وتظهر أعلى الفاتورة أزرار مختصرة، منها ${term("المهام", "Tasks")} لعرض مهام الخدمات المرتبطة بالفاتورة، و${term("مكتب المساعدة", "Helpdesk")} لعرض التذاكر المرتبطة بها.</p>
+          ${shot("6.png", "فاتورة العميل مع تحديد الأزرار المختصرة وزر Tasks ورقم فاتورة SAP ورقم عميل SAP وبنود الفاتورة", "بيانات الفاتورة")}`)}
+
+      ${section("07", "accessInvoicesTasksTitle", "مراجعة مهام الخدمات المرتبطة بالفاتورة", `
+          <p>قد ترتبط الفاتورة الواحدة بعدة مهام لخدمات ما بعد البيع. تعرض قائمة ${term("المهام", "Tasks")} الخاصة بالفاتورة هذه المهام مجمّعة حسب مرحلتها، ويمكن أن تشمل خدمات مختلفة، مثل:</p>
+          <ul>
+            <li>التركيب: مهام في مرحلة طلب تركيب.</li>
+            <li>التوصيل: مهمة في مرحلة ${term("طلب توصيل", "Delivery Request")}.</li>
+            <li>التصنيع: مهمة في مرحلة إرسال إلي ورشة التصنيع.</li>
+            <li>الصيانة الميدانية: مهمة في مرحلة التقرير المبدئي.</li>
+          </ul>
+          <p>ومن الأعمدة المفيدة في القائمة: ${term("تاريخ الرحلة", "Trip Date")} و${term("المرحلة", "Stage")}، والتي توضح موعد الخدمة والمرحلة الحالية لكل مهمة.</p>
+          ${note("تعرض هذه الصورة مهام فاتورة أخرى غير الفاتورة المعروضة في الخطوة السابقة.")}
+          ${shot("6.5.png", "قائمة مهام الخدمات المرتبطة بفاتورة ومجمّعة حسب المرحلة مع تحديد عمودي Trip Date و Stage", "مهام الخدمات المرتبطة بالفاتورة")}`)}
+
+      ${section("08", "accessInvoicesSapTitle", "مراجعة معلومات SAP والبائع", `
+          <p>من تبويب ${term("المعلومات الأخرى", "Other Info")} في الفاتورة، يمكن مراجعة معلومات ${term("تكامل SAP", "SAP Integration")} ومعلومات ${term("البائع", "Seller")}، ومنها:</p>
+          <ul>
+            <li>${term("رقم فاتورة SAP", "SAP Invoice Number")}.</li>
+            <li>${term("الرقم المرجعي في SAP", "SAP Reference Number")}.</li>
+            <li>${term("نوع فاتورة SAP", "SAP Invoice Type")}.</li>
+            <li>${term("اسم بائع SAP", "SAP Seller Name")}.</li>
+            <li>${term("كود المعرض", "SAP Seller Hall Code")}.</li>
+            <li>${term("كود مستودع التحصيل", "SAP Collection Warehouse Code")}.</li>
+          </ul>
+          ${shot("7.png", "تبويب Other Info في الفاتورة ويعرض معلومات SAP Integration ومعلومات البائع", "معلومات SAP والبائع")}`)}
+    </div>`;
+}
+
+// `title` overrides the chapter title on the overview card only; `tool` renders the lighter card used
+// for the employee tools.
+function renderCustomerServiceEntryCard(chapterId, meta, { title, tool = false } = {}) {
   const chapter = getChapter(chapterId);
   return `
-    <a class="entry-card" href="${routeHref("chapter", chapter.id)}">
+    <a class="entry-card${tool ? " entry-card--tool" : ""}" href="${routeHref("chapter", chapter.id)}">
       <span class="entry-card-index" aria-hidden="true">${chapter.number}</span>
-      <strong class="entry-card-title">${chapter.title}</strong>
+      <strong class="entry-card-title">${title || chapter.title}</strong>
       <span class="entry-card-description">${chapter.description}</span>
       <span class="entry-card-meta">${meta}</span>
-      <span class="entry-card-action">فتح القسم <span aria-hidden="true">←</span></span>
+      <span class="entry-card-action">${tool ? "فتح الأداة" : "فتح القسم"} <span aria-hidden="true">←</span></span>
     </a>`;
 }
+
+const CUSTOMER_SERVICE_OVERVIEW_INTRO =
+  "إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، مع الوصول إلى خدمات العميل وفواتيره ومسار الصيانة.";
 
 function renderCustomerServiceOverview(service) {
   return `
     <header class="chapter-header service-header">
       <p class="chapter-number">نطاق الخدمة</p>
       <h1>${service.title}</h1>
-      <p>${service.description}</p>
+      <p>${CUSTOMER_SERVICE_OVERVIEW_INTRO}</p>
     </header>
     <div class="customer-service-layout">
       <section class="chapter-index customer-service-main" aria-labelledby="customerServiceContentTitle">
@@ -1688,8 +2182,8 @@ function renderCustomerServiceOverview(service) {
           <h2 id="customerServiceContentTitle">محتوى خدمة العملاء</h2>
         </div>
         <div class="chapter-grid">
-          ${renderCustomerServiceEntryCard("customer-service-sources", "3 مصادر")}
-          ${renderCustomerServiceEntryCard("customer-service-complaints", "5 مراحل")}
+          ${renderCustomerServiceEntryCard("customer-service-sources", "3 مصادر", { title: "مصادر الحالات" })}
+          ${renderCustomerServiceEntryCard("customer-service-complaints", "5 مراحل", { title: "الشكاوى والاستفسارات" })}
         </div>
       </section>
       <aside class="chapter-index customer-service-maintenance-path" aria-labelledby="customerServiceMaintenanceTitle">
@@ -1699,7 +2193,17 @@ function renderCustomerServiceOverview(service) {
         </div>
         ${renderCustomerServiceEntryCard("customer-service-maintenance", "8 مراحل")}
       </aside>
-    </div>`;
+    </div>
+    <section class="chapter-index customer-service-tools" aria-labelledby="customerServiceToolsTitle">
+      <div class="index-heading">
+        <span>أدوات مساندة</span>
+        <h2 id="customerServiceToolsTitle">أدوات موظف خدمة العملاء</h2>
+      </div>
+      <div class="chapter-grid">
+        ${renderCustomerServiceEntryCard("customer-service-access-services", "5 خطوات", { tool: true })}
+        ${renderCustomerServiceEntryCard("customer-service-access-invoices", "8 خطوات", { tool: true })}
+      </div>
+    </section>`;
 }
 
 // Overview (نظرة عامة) of خدمة التركيب: an index of its three chapters. The workflow itself is
@@ -2780,6 +3284,8 @@ function renderBookPortal() {
       "customer-service-sources": renderCustomerServiceSources,
       "customer-service-complaints": renderComplaintsWorkflow,
       "customer-service-maintenance": renderMaintenanceWorkflow,
+      "customer-service-access-services": renderAccessServicesGuide,
+      "customer-service-access-invoices": renderAccessInvoicesGuide,
     };
     if (customerServiceChapterRenderers[chapter.id]) {
       portal.innerHTML = customerServiceChapterRenderers[chapter.id]();

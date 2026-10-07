@@ -96,12 +96,26 @@ const pageTests = [
   }),
   t("customer-service-C-signature", "customer-service", "C", "حالة عميل رفض التوقيع تصل من أي مصدر؟", { expect: [["الإدارات الداخلية"]] }),
   t("customer-service-G-channel", "customer-service", "G", "ما رقم هاتف خدمة العملاء؟", { expectFallback: true }),
+  t("customer-service-B-appointment-not-booked", "customer-service", "B", "ماذا يحدث إذا لم يحجز العميل موعد التوصيل؟", {
+    expect: [["عدم حجز الموعد", "Appointment not booked"], ["24"], ["تلقائي"]],
+  }),
+  t("customer-service-B-convert-to-ticket", "customer-service", "B", "كيف يحوّل الفني مشكلة في مهمة التركيب إلى خدمة العملاء؟", {
+    expect: [["تحويل إلى تذكرة", "Convert to Ticket"], ["محوله"]],
+  }),
+  t("customer-service-B-converted-assign", "customer-service", "B", "ماذا يحدث عند نقل التذكرة المحوّلة من جديد إلى مسند إلى؟", { expect: [["تلقائي"]] }),
+  t("customer-service-B-no-account", "customer-service", "B", "كيف أسجل شكوى لعميل ليس له حساب أو فاتورة؟", {
+    expect: [["جهات الاتصال", "Contacts"], ["كرت"]],
+  }),
+  t("customer-service-D-administrative-saved", "customer-service", "D", "ماذا يحدث بعد حفظ تذكرة نوعها شكوى إدارية؟", {
+    expect: [["قيد التنفيذ", "In Progress"], ["تلقائي"]],
+  }),
+  t("customer-service-B-escalated", "customer-service", "B", "ما حالة رابط الحجز في تبويب المواعيد عندما لا يحجز العميل؟", { expect: [["مُصعَّد", "مصعد", "Escalated"]] }),
 
   // Shared terms must stay on the current page's workflow.
   t("maintenance-F-technician", "maintenance", "F", "من يقوم بتعيين الفني؟", { expect: [["الجهة المختصة"]], forbid: [["Assign"], ["الموظف المختص"], ["المشرف"]] }),
   t("measurement-F-technician", "measurement", "F", "من يقوم بتعيين الفني؟", { expect: [["الموظف المختص"]], forbid: [["الجهة المختصة"]] }),
   t("design-F-invoice", "design", "F", "ماذا يحدث في مرحلة فاتورة من SAP؟", { expect: [["التصميم"]], forbid: [["التوصيل"], ["التصنيع"]] }),
-  t("complaints-F-last", "complaints", "F", "ما هي المرحلة الأخيرة؟", { expect: [["حل أو تصعيد"]], forbid: [["تسليم الخدمة"]] }),
+  t("complaints-F-last", "complaints", "F", "ما هي المرحلة الأخيرة؟", { expect: [["المتابعة الداخلية"]], forbid: [["تسليم الخدمة"], ["حل أو تصعيد"]] }),
   t("manufacturing-F-last", "manufacturing", "F", "ما هي المرحلة الأخيرة؟", { expect: [["تم الانتهاء من الخدمة"]], forbid: [["مكتمل ومعتمد"]] }),
   t("warehouse-F-message", "warehouse-pickup", "F", "هل يتم إرسال رسالة للعميل؟", { expect: [["جاهزية البضاعة"]], forbid: [["واتساب"], ["رابط حجز"]] }),
   t("installation-F-form", "installation", "F", "ماذا يحدث في مرحلة ملئ النموذج؟", { expect: [["Start Installation", "بدء التركيب"]], forbid: [["سند التحميل"], ["Start Measurement"]] }),
@@ -113,9 +127,38 @@ const pageTests = [
     forbid: [["سند التحميل"], ["بوابة السائق"]],
   }),
 
+  // Customer Service pages: the Helpdesk flow and the two employee tools.
+  t("complaints-B-inquiry-types", "complaints", "B", "هل يتم تصنيف الشكوى إلى إدارية أو فنية؟", {
+    expect: [["نوع الاستفسار", "Inquiry Type"], ["شكوى إدارية", "Administrative Complaint"], ["شكوى فنية", "Technical Complaint"]],
+  }),
+  t("complaints-B-ticket-stages", "complaints", "B", "ما مراحل التذكرة في مكتب المساعدة؟", {
+    expect: [["جديد", "New"], ["مسند إلى", "Assigned to"], ["قيد التنفيذ", "In Progress"], ["بانتظار خدمة العملاء", "waiting on CS"], ["تم الحل", "Solved"]],
+  }),
+  t("complaints-B-new-ticket", "complaints", "B", "أين تظهر التذكرة بعد إنشائها وحفظها؟", { expect: [["جديد", "New"]] }),
+  t("complaints-B-share", "complaints", "B", "مع من يمكن مشاركة التذكرة؟", {
+    expect: [["مستخدمون داخليون", "Internal Users"], ["مستخدمو البوابة", "Portal Users"], ["جهة اتصال", "Contact"]],
+  }),
+  t("complaints-B-planned", "complaints", "B", "أين يظهر النشاط المسجل على التذكرة؟", { expect: [["الأنشطة المخططة", "Planned Activities"]] }),
+  t("access-services-B-open-filter", "access-services", "B", "ما الفلتر المطبق على لوحة مهام الخدمة؟", { expect: [["مفتوح", "Open"]] }),
+  t("access-services-B-group-by", "access-services", "B", "ما خيارات التجميع حسب في لوحة المهام؟", {
+    expect: [["المرحلة", "Stage"], ["المسند إليهم", "Assignees"], ["الأولوية", "Priority"]],
+  }),
+  t("access-services-G-create-project", "access-services", "G", "كيف أنشئ مشروع خدمة جديد؟", { expectFallback: true }),
+  t("access-invoices-B-identify", "access-invoices", "B", "كيف أحدد العميل الصحيح إذا ظهرت أسماء متقاربة؟", {
+    expect: [["الهاتف", "Phone"], ["الرقم المرجعي في SAP", "SAP Reference Number"]],
+  }),
+  t("access-invoices-B-sap-search", "access-invoices", "B", "كيف أبحث عن فاتورة برقم فاتورة SAP؟", { expect: [["رقم فاتورة SAP", "SAP Invoice Number"]] }),
+  t("access-invoices-B-task-columns", "access-invoices", "B", "ما الأعمدة المفيدة في قائمة مهام الفاتورة؟", {
+    expect: [["تاريخ الرحلة", "Trip Date"], ["المرحلة", "Stage"]],
+  }),
+  t("access-invoices-B-warehouse-code", "access-invoices", "B", "أين أجد كود مستودع التحصيل للفاتورة؟", {
+    expect: [["المعلومات الأخرى", "Other Info"]],
+  }),
+  t("access-invoices-G-edit-invoice", "access-invoices", "G", "كيف أعدل مبلغ فاتورة العميل؟", { expectFallback: true }),
+
   // Unsupported details on pages must not be invented.
   t("design-G-whatsapp", "design", "G", "هل يتم إرسال إشعار واتساب للعميل عند اعتماد التصميم؟", { expectFallback: true }),
-  t("complaints-G-admin-technical", "complaints", "G", "هل يتم تصنيف الشكوى إلى إدارية أو فنية؟", { expectFallback: true, forbid: [["إدارية / فنية", "إدارية أو فنية حسب"]] }),
+  t("complaints-G-escalation", "complaints", "G", "كيف يتم تصعيد الشكوى؟", { expectFallback: true }),
   t("manufacturing-G-duration", "manufacturing", "G", "كم يوم تستغرق مرحلة جاري التصنيع؟", { expectFallback: true }),
 ];
 
@@ -138,7 +181,10 @@ const globalTests = [
   }),
   t("global-C-maintenance-on-site", GLOBAL, "C", "من ينفذ أعمال الصيانة في مرحلة جاري العمل بالموقع؟", { expect: [["الفني"]], expectPages: ["maintenance"] }),
   t("global-C-design", GLOBAL, "C", "من المسؤول عن مراحل خدمة التصميم؟", { expect: [["إدارة التصميم"]], expectPages: ["design"] }),
-  t("global-C-complaint-forward", GLOBAL, "C", "من يقوم بإرسال الشكوى إلى الجهة المختصة؟", { expect: [["خدمة العملاء"], ["الجهة المختصة"]], expectPages: ["complaints"] }),
+  t("global-C-ticket-activity", GLOBAL, "C", "من يسجل الإجراء الذي تم على تذكرة الشكوى بعد مشاركتها؟", {
+    expect: [["تمت مشاركة التذكرة معه"], ["جدولة نشاط", "Schedule Activity"]],
+    expectPages: ["complaints"],
+  }),
   t("global-D-all", GLOBAL, "D", "أي خدمات فيها مراحل آلية وأيها يدوية؟", {
     expect: [["المستودع"], ["التصنيع"], ["التصميم"], ["الصيانة"]],
   }),
@@ -166,7 +212,18 @@ const globalTests = [
   }),
   t("global-G-sla", GLOBAL, "G", "كم مدة SLA لخدمة التصميم؟", { expectFallback: true }),
   t("global-G-price", GLOBAL, "G", "كم سعر خدمة التركيب؟", { expectFallback: true }),
-  t("global-G-admin-technical", GLOBAL, "G", "هل يتم تصنيف الشكاوى إلى إدارية وفنية؟", { expectFallback: true }),
+  t("global-B-inquiry-types", GLOBAL, "B", "هل يتم تصنيف الشكاوى إلى إدارية وفنية؟", {
+    expect: [["شكوى إدارية", "Administrative Complaint"], ["شكوى فنية", "Technical Complaint"]],
+    expectPages: ["complaints"],
+  }),
+  t("global-B-customer-invoices", GLOBAL, "B", "كيف يصل موظف خدمة العملاء إلى فواتير العميل؟", {
+    expect: [["جهات الاتصال", "Contacts"], ["سجل العميل"]],
+    expectPages: ["access-invoices"],
+  }),
+  t("global-B-service-board", GLOBAL, "B", "كيف أفتح لوحة مهام خدمة معينة من تطبيق المشاريع؟", {
+    expect: [["المشاريع", "Project"], ["لوحة مهام"]],
+    expectPages: ["access-services"],
+  }),
   t("global-G-japan", GLOBAL, "G", "شو عاصمة اليابان؟", { expectFallback: true }),
   t("global-G-manufacturing-whatsapp", GLOBAL, "G", "هل ترسل خدمة التصنيع رسالة واتساب للعميل؟", { expectFallback: true }),
 ];

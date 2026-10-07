@@ -22,9 +22,11 @@ const RELATED_PAGES = {
   "manufacturing-installation-link": ["manufacturing", "installation", "manufacturing-delivery-link", "installation-manufacturing-link"],
   "composite-manufacturing-end-to-end": ["measurement", "design", "manufacturing", "internal-transfer", "intro-tour", "installation", "internal-transfer-delivery-link"],
   "installation-returns": ["installation"],
-  "customer-service": ["complaints", "maintenance"],
-  complaints: ["customer-service"],
+  "customer-service": ["complaints", "maintenance", "access-services", "access-invoices"],
+  complaints: ["customer-service", "access-invoices"],
   maintenance: ["customer-service"],
+  "access-services": ["customer-service", "access-invoices"],
+  "access-invoices": ["customer-service", "access-services", "complaints"],
 };
 
 const NO_EXECUTION_LABEL_NOTE =

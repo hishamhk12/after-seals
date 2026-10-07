@@ -1,47 +1,9 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/ask.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "styles.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "app.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "thinkingOrbMount.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "assest/**",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "videos/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/ask",
-      "dest": "/api/ask.js"
-    },
-    {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/api/ask",
+      "destination": "/api/ask.js"
     }
   ]
 }

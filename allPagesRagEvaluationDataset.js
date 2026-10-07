@@ -99,6 +99,10 @@ const pageTests = [
   t("customer-service-B-appointment-not-booked", "customer-service", "B", "ماذا يحدث إذا لم يحجز العميل موعد التوصيل؟", {
     expect: [["عدم حجز الموعد", "Appointment not booked"], ["24"], ["تلقائي"]],
   }),
+  t("customer-service-B-convert-to-ticket", "customer-service", "B", "كيف يحوّل الفني مشكلة في مهمة التركيب إلى خدمة العملاء؟", {
+    expect: [["تحويل إلى تذكرة", "Convert to Ticket"], ["محوله"]],
+  }),
+  t("customer-service-B-converted-assign", "customer-service", "B", "ماذا يحدث عند نقل التذكرة المحوّلة من جديد إلى مسند إلى؟", { expect: [["تلقائي"]] }),
   t("customer-service-B-escalated", "customer-service", "B", "ما حالة رابط الحجز في تبويب المواعيد عندما لا يحجز العميل؟", { expect: [["مُصعَّد", "مصعد", "Escalated"]] }),
 
   // Shared terms must stay on the current page's workflow.

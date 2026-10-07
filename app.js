@@ -1713,6 +1713,7 @@ const customerServiceSources = [
     title: "من الإدارات الداخلية",
     description: "تصل الحالة إلى خدمة العملاء من إحدى الإدارات الداخلية عندما يظهر موقف مع العميل يحتاج إلى متابعة من خدمة العملاء.",
     examples: ["عميل رفض التوقيع", "عميل غير راضٍ عن التركيب", "صعوبة تواصل"],
+    flow: renderConvertToTicketFlow,
   },
   {
     title: "من العميل مباشرة",
@@ -1763,16 +1764,15 @@ function renderCustomerServiceSources() {
     </div>`;
 }
 
-// مصدر «من النظام» — the Appointment not booked ticket, in the Helpdesk / Delivery sub-step style.
-// Screenshots from the training video (assest/review_selected_frames/02_Appointment_not_booked): the
-// OdooBot message in the delivery task, the task's Appointments tab, and the ticket in Helpdesk.
-// Booking on the customer's behalf links to the existing Delivery booking steps.
-function renderAppointmentNotBookedFlow() {
-  const images = "assest/review_selected_frames/02_Appointment_not_booked";
-  const ltr = (text) => `<bdi dir="ltr">${text}</bdi>`;
-  // Arabic meaning first, the original Odoo term in parentheses, kept on one line.
-  const term = (ar, en) => `${ar}\u00A0${ltr(`(${en.replace(/ /g, "\u00A0")})`)}`;
-  const step = (badge, id, title, explanation, file, alt, label) => `
+// Worked examples under the case sources on كيف تصل الحالات إلى خدمة العملاء؟, in the Helpdesk /
+// Delivery sub-step style (title → screenshot → explanation). Screenshots are frames from the
+// Customer Service training video in assest/review_selected_frames, used uncropped.
+const sourceLtr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+// Arabic meaning first, the original Odoo term in parentheses, kept on one line.
+const sourceTerm = (ar, en) => `${ar}\u00A0${sourceLtr(`(${en.replace(/ /g, "\u00A0")})`)}`;
+
+function renderSourceExampleFlow({ images, heading, intro, steps }) {
+  const step = ({ badge, id, title, explanation, file, alt, label }) => `
         <article class="training-screen-column booking-confirmation-step" aria-labelledby="${id}">
           <div class="section-title compact">
             <span class="icon-tile" aria-hidden="true">${badge}</span>
@@ -1787,21 +1787,113 @@ function renderAppointmentNotBookedFlow() {
         </article>`;
 
   return `
-        <div class="field-explanation appointment-not-booked-flow">
-          <h3 class="installation-substep-heading"><strong>مثال: ${term("تذكرة عدم حجز الموعد", "Appointment not booked")}</strong></h3>
-          <p class="field-explanation-intro">إذا لم يحجز العميل موعد التوصيل من خلال الرابط المرسل إليه، يقوم النظام تلقائيًا بإنشاء تذكرة في ${term("مكتب المساعدة", "Helpdesk")} لتتابع خدمة العملاء الحالة مع العميل.</p>
-        </div>
-        ${step("أ", "appointmentNotBookedCreatedTitle", "إنشاء التذكرة تلقائيًا",
-          `إذا لم يحجز العميل الموعد خلال 24 ساعة، يقوم النظام تلقائيًا بإنشاء ${term("تذكرة عدم حجز الموعد", "Appointment not booked")} مع رقم المهمة، وتظهر في سجل مهمة التوصيل رسالة من النظام توضح عدم حجز الموعد خلال 24 ساعة ورقم التذكرة التي تم إنشاؤها.`,
-          "01-21-16__frame_004876500.png", "سجل مهمة التوصيل وتظهر فيه رسالة النظام بعدم حجز العميل للموعد خلال 24 ساعة وإنشاء تذكرة Appointment not booked", "رسالة النظام في مهمة التوصيل")}
-        ${step("ب", "appointmentNotBookedEscalatedTitle", `حالة الرابط في تبويب ${term("المواعيد", "Appointments")}`,
-          `في تبويب ${term("المواعيد", "Appointments")} داخل مهمة التوصيل، يظهر رابط الحجز بحالة ${term("مُصعَّد", "Escalated")} مع رقم التذكرة المرتبطة في عمود ${term("مكتب المساعدة", "Helpdesk")}، بينما يظهر الرابط الذي تم الحجز من خلاله بحالة ${term("محجوز", "Booked")}.`,
-          "01-21-17__frame_004877500.png", "تبويب Appointments في مهمة التوصيل ويظهر فيه رابط حجز بحالة Escalated مرتبط بتذكرة وآخر بحالة Booked", "تبويب المواعيد")}
-        ${step("ج", "appointmentNotBookedTicketTitle", "التذكرة في مكتب المساعدة",
-          `تظهر التذكرة ضمن فريق ${term("خدمة العملاء", "Customer Care")} وعليها وسم ${ltr("(Appointment)")}، وترتبط بالعميل والفاتورة والمهمة، ويتضمن ${term("الوصف", "Description")} تاريخ إرسال رابط الحجز عبر واتساب ورابط الحجز نفسه.`,
-          "01-05-12__frame_003912500.png", "تذكرة Appointment not booked في مكتب المساعدة ضمن فريق Customer Care وعليها وسم Appointment ويظهر في وصفها رابط الحجز", "تذكرة عدم حجز الموعد")}
-        ${step("د", "appointmentNotBookedBookingTitle", "التواصل مع العميل وحجز الموعد",
-          `تتواصل خدمة العملاء مع العميل، ويمكنها فتح رابط الحجز واستكمال حجز موعد التوصيل نيابةً عنه، باتباع خطوات الحجز نفسها الموضحة في <a href="${routeHref("lesson", "customer-delivery")}/delivery-scheduling">مرحلة جدولة التوصيل</a>: اختيار الموعد، ثم بيانات العميل وموقع التسليم، ثم تأكيد الموعد.`)}`;
+        <div class="field-explanation source-example-flow">
+          <h3 class="installation-substep-heading"><strong>مثال: ${heading}</strong></h3>
+          <p class="field-explanation-intro">${intro}</p>
+        </div>${steps.map(step).join("")}`;
+}
+
+// مصدر «من النظام»: the Appointment not booked ticket. Frames: the OdooBot message in the delivery
+// task, the task's Appointments tab, and the ticket in Helpdesk. Booking on the customer's behalf
+// links to the existing Delivery booking steps.
+function renderAppointmentNotBookedFlow() {
+  const term = sourceTerm;
+  return renderSourceExampleFlow({
+    images: "assest/review_selected_frames/02_Appointment_not_booked",
+    heading: term("تذكرة عدم حجز الموعد", "Appointment not booked"),
+    intro: `إذا لم يحجز العميل موعد التوصيل من خلال الرابط المرسل إليه، يقوم النظام تلقائيًا بإنشاء تذكرة في ${term("مكتب المساعدة", "Helpdesk")} لتتابع خدمة العملاء الحالة مع العميل.`,
+    steps: [
+      {
+        badge: "أ",
+        id: "appointmentNotBookedCreatedTitle",
+        title: "إنشاء التذكرة تلقائيًا",
+        explanation: `إذا لم يحجز العميل الموعد خلال 24 ساعة، يقوم النظام تلقائيًا بإنشاء ${term("تذكرة عدم حجز الموعد", "Appointment not booked")} مع رقم المهمة، وتظهر في سجل مهمة التوصيل رسالة من النظام توضح عدم حجز الموعد خلال 24 ساعة ورقم التذكرة التي تم إنشاؤها.`,
+        file: "01-21-16__frame_004876500.png",
+        alt: "سجل مهمة التوصيل وتظهر فيه رسالة النظام بعدم حجز العميل للموعد خلال 24 ساعة وإنشاء تذكرة Appointment not booked",
+        label: "رسالة النظام في مهمة التوصيل",
+      },
+      {
+        badge: "ب",
+        id: "appointmentNotBookedEscalatedTitle",
+        title: `حالة الرابط في تبويب ${term("المواعيد", "Appointments")}`,
+        explanation: `في تبويب ${term("المواعيد", "Appointments")} داخل مهمة التوصيل، يظهر رابط الحجز بحالة ${term("مُصعَّد", "Escalated")} مع رقم التذكرة المرتبطة في عمود ${term("مكتب المساعدة", "Helpdesk")}، بينما يظهر الرابط الذي تم الحجز من خلاله بحالة ${term("محجوز", "Booked")}.`,
+        file: "01-21-17__frame_004877500.png",
+        alt: "تبويب Appointments في مهمة التوصيل ويظهر فيه رابط حجز بحالة Escalated مرتبط بتذكرة وآخر بحالة Booked",
+        label: "تبويب المواعيد",
+      },
+      {
+        badge: "ج",
+        id: "appointmentNotBookedTicketTitle",
+        title: "التذكرة في مكتب المساعدة",
+        explanation: `تظهر التذكرة ضمن فريق ${term("خدمة العملاء", "Customer Care")} وعليها وسم ${sourceLtr("(Appointment)")}، وترتبط بالعميل والفاتورة والمهمة، ويتضمن ${term("الوصف", "Description")} تاريخ إرسال رابط الحجز عبر واتساب ورابط الحجز نفسه.`,
+        file: "01-05-12__frame_003912500.png",
+        alt: "تذكرة Appointment not booked في مكتب المساعدة ضمن فريق Customer Care وعليها وسم Appointment ويظهر في وصفها رابط الحجز",
+        label: "تذكرة عدم حجز الموعد",
+      },
+      {
+        badge: "د",
+        id: "appointmentNotBookedBookingTitle",
+        title: "التواصل مع العميل وحجز الموعد",
+        explanation: `تتواصل خدمة العملاء مع العميل، ويمكنها فتح رابط الحجز واستكمال حجز موعد التوصيل نيابةً عنه، باتباع خطوات الحجز نفسها الموضحة في <a href="${routeHref("lesson", "customer-delivery")}/delivery-scheduling">مرحلة جدولة التوصيل</a>: اختيار الموعد، ثم بيانات العميل وموقع التسليم، ثم تأكيد الموعد.`,
+      },
+    ],
+  });
+}
+
+// مصدر «من الإدارات الداخلية»: a technician converts a problem on a service task into a Customer
+// Service ticket (Convert to Ticket). Frames: the button on an installation task, the dialog, the
+// created ticket, and the ticket taken to Assigned to. Follow-up links to the Helpdesk page.
+function renderConvertToTicketFlow() {
+  const term = sourceTerm;
+  return renderSourceExampleFlow({
+    images: "assest/review_selected_frames/01_Convert_to_Ticket",
+    heading: term("تذكرة محوّلة من الفني", "Convert to Ticket"),
+    intro: `عندما تظهر مشكلة مع العميل أثناء تنفيذ مهمة الخدمة، مثل رفض العميل الاستلام، يمكن للفني تحويلها إلى تذكرة لدى خدمة العملاء من داخل المهمة باستخدام زر ${term("تحويل إلى تذكرة", "Convert to Ticket")}.`,
+    steps: [
+      {
+        badge: "أ",
+        id: "convertToTicketButtonTitle",
+        title: `زر ${term("تحويل إلى تذكرة", "Convert to Ticket")} في المهمة`,
+        explanation: `من مهمة الخدمة، يضغط الفني على زر ${term("تحويل إلى تذكرة", "Convert to Ticket")} أعلى المهمة. في المثال، مهمة في مشروع خدمة التركيب وهي في مرحلة جاري التركيب.`,
+        file: "00-40-39__frame_002439000.png",
+        alt: "مهمة تركيب في مرحلة جاري التركيب ويظهر أعلاها زر Convert to Ticket",
+        label: "زر تحويل إلى تذكرة",
+      },
+      {
+        badge: "ب",
+        id: "convertToTicketDialogTitle",
+        title: "نافذة التحويل",
+        explanation: `تظهر نافذة ${term("تحويل إلى تذكرة", "Convert to Ticket")}، ويكون فيها ${term("الفريق", "Team")} ${term("خدمة العملاء", "Customer Care")} و${term("المرحلة", "Stage")} ${term("جديد", "New")}، ويكتب الفني تفاصيل المشكلة في ${term("الوصف", "Description")}، ثم يضغط ${term("تحويل", "Convert")}.`,
+        file: "00-40-47__frame_002447000.png",
+        alt: "نافذة Convert to Ticket ويظهر فيها الفريق Customer Care والمرحلة New وحقل الوصف وزر Convert",
+        label: "نافذة التحويل",
+      },
+      {
+        badge: "ج",
+        id: "convertToTicketCreatedTitle",
+        title: "إنشاء التذكرة لدى خدمة العملاء",
+        explanation: `يتم إنشاء تذكرة في مرحلة ${term("جديد", "New")} وعليها وسم «محوله»، مرتبطة بالعميل والفاتورة والمهمة، ويظهر فيها وصف المشكلة الذي كتبه الفني، مثل «العميل رفض الاستلام». ويظهر في سجل التذكرة أنها أُنشئت من المهمة، مع رسالة استلام الطلب المرسلة إلى العميل ورقم التذكرة.`,
+        file: "00-41-00__frame_002460500.png",
+        alt: "تذكرة جديدة في مرحلة New عليها وسم محوله ووصف العميل رفض الاستلام ومرتبطة بالمهمة",
+        label: "التذكرة المحوّلة",
+      },
+      {
+        badge: "د",
+        id: "convertToTicketAssignedTitle",
+        title: "استلام خدمة العملاء للتذكرة",
+        explanation: `تنقل خدمة العملاء بطاقة التذكرة في لوحة التذاكر من مرحلة ${term("جديد", "New")} إلى ${term("مُسند إلى", "Assigned to")}، فتُسند التذكرة تلقائيًا إلى الموظف الذي نقلها، ويظهر تغيير المرحلة والإسناد في سجل التذكرة.`,
+        file: "00-41-41__frame_002501000.png",
+        alt: "التذكرة في مرحلة Assigned to ومسندة إلى الموظف ويظهر في سجلها تغيير المرحلة من New إلى Assigned to",
+        label: "التذكرة بعد الإسناد",
+      },
+      {
+        badge: "هـ",
+        id: "convertToTicketFollowUpTitle",
+        title: "متابعة التذكرة",
+        explanation: `بعد استلام التذكرة، تتم متابعتها بالطريقة نفسها الموضحة في <a href="${routeHref("chapter", "customer-service-complaints")}/internal-follow-up">مرحلة المتابعة الداخلية</a> في صفحة الشكاوى / الاستفسارات.`,
+      },
+    ],
+  });
 }
 
 // أداة مساندة — الدخول إلى الخدمات: a guide page in the same style as الدخول إلى النظام

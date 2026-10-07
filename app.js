@@ -252,7 +252,7 @@ const complaintsTour = {
   id: "customer-service-complaints",
   title: "الشكاوى / الاستفسارات",
   children: [
-    { id: "helpdesk-entry", title: "الدخول إلى Helpdesk", targetId: "complaints-step-helpdesk-entry" },
+    { id: "helpdesk-entry", title: "الدخول إلى مكتب المساعدة \u2066(Helpdesk)\u2069", targetId: "complaints-step-helpdesk-entry" },
     { id: "ticket-from-invoice", title: "إنشاء تذكرة من فاتورة العميل", targetId: "complaints-step-ticket-from-invoice" },
     { id: "ticket-details", title: "إدخال بيانات التذكرة", targetId: "complaints-step-ticket-details" },
     { id: "ticket-save", title: "حفظ التذكرة", targetId: "complaints-step-ticket-save" },
@@ -1502,6 +1502,9 @@ function renderComplaintsWorkflow() {
   const helpdesk = "assest/خدمة العملاء/helpdesk";
   const tickets = `${helpdesk}/من وين تأتي الشكوى وانواع الشكوى`;
   const ltr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+  // Arabic meaning first, the original Odoo term in parentheses. Non-breaking spaces keep the
+  // English term, and the term with its Arabic meaning, from splitting across lines.
+  const term = (ar, en) => `${ar}\u00A0${ltr(`(${en.replace(/ /g, "\u00A0")})`)}`;
   const shot = (src, alt, label, frameClass = "") => `
             <figure class="odoo-screenshot-frame${frameClass ? ` ${frameClass}` : ""}">
               <img src="${src}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
@@ -1530,70 +1533,70 @@ function renderComplaintsWorkflow() {
   const bodies = [
     // 00 — الدخول إلى Helpdesk
     `
-        <p class="field-explanation-intro" dir="rtl">تتم معالجة الشكاوى والاستفسارات من خلال تطبيق ${ltr("Helpdesk")}، حيث تُسجَّل الحالة على شكل تذكرة ${ltr("(Ticket)")} ضمن فريق ${ltr("Customer Care")}.</p>
-        ${single("أ", "helpdeskAppTitle", `فتح تطبيق ${ltr("Helpdesk")}`,
-          `من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${ltr("Helpdesk")}.`,
+        <p class="field-explanation-intro" dir="rtl">تتم معالجة الشكاوى والاستفسارات من خلال تطبيق ${term("مكتب المساعدة", "Helpdesk")}، حيث تُسجَّل الحالة على شكل ${term("تذكرة", "Ticket")} ضمن فريق ${term("خدمة العملاء", "Customer Care")}.</p>
+        ${single("أ", "helpdeskAppTitle", `فتح تطبيق ${term("مكتب المساعدة", "Helpdesk")}`,
+          `من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("مكتب المساعدة", "Helpdesk")}.`,
           shot(`${helpdesk}/1.png`, "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Helpdesk", "تطبيق Helpdesk", "booking-confirmation-frame"))}
-        ${single("ب", "helpdeskTeamTitle", `الدخول إلى ${ltr("Customer Care")} وفتح ${ltr("Tickets")}`,
-          `تظهر صفحة ${ltr("Helpdesk Overview")}، ومنها يتم الضغط على زر ${ltr("Tickets")} داخل بطاقة فريق ${ltr("Customer Care")} لعرض تذاكر الفريق.`,
+        ${single("ب", "helpdeskTeamTitle", `الدخول إلى ${term("خدمة العملاء", "Customer Care")} وفتح ${term("التذاكر", "Tickets")}`,
+          `تظهر صفحة ${term("نظرة عامة على مكتب المساعدة", "Helpdesk Overview")}، ومنها يتم الضغط على زر ${term("التذاكر", "Tickets")} داخل بطاقة فريق ${term("خدمة العملاء", "Customer Care")} لعرض تذاكر الفريق.`,
           shot(`${helpdesk}/2.png`, "صفحة Helpdesk Overview مع تحديد زر Tickets في بطاقة فريق Customer Care", "بطاقة فريق Customer Care"))}
         ${single("ج", "helpdeskBoardTitle", "عرض لوحة التذاكر",
-          `تظهر لوحة تذاكر ${ltr("Customer Care")} وفيها التذاكر موزعة على مراحل ${ltr("Helpdesk")}، ويظهر على كل بطاقة عنوان التذكرة ورقمها واسم العميل والوسوم ${ltr("(Tags)")} الخاصة بها.`,
+          `تظهر لوحة تذاكر ${term("خدمة العملاء", "Customer Care")} وفيها التذاكر موزعة على مراحل ${term("مكتب المساعدة", "Helpdesk")}، ويظهر على كل بطاقة عنوان التذكرة ورقمها واسم العميل و${term("الوسوم", "Tags")} الخاصة بها.`,
           shot(`${helpdesk}/3.png`, "لوحة تذاكر Customer Care وتظهر فيها مراحل New و Assigned to و In Progress و waiting on CS و Solved", "لوحة التذاكر"))}
-        ${reference(`مراحل التذكرة في ${ltr("Helpdesk")}`, `
-          <p class="driver-portal-flow">${ltr("New")} ← ${ltr("Assigned to")} ← ${ltr("In Progress")} ← ${ltr("waiting on CS")} ← ${ltr("Solved")}</p>
-          <p class="field-explanation-intro">كما تتوفر مرحلة ${ltr("Cancelled")} ضمن مراحل لوحة التذاكر.</p>`)}`,
+        ${reference(`مراحل التذكرة في ${term("مكتب المساعدة", "Helpdesk")}`, `
+          <p class="driver-portal-flow">${term("جديد", "New")} ← ${term("مُسند إلى", "Assigned to")} ← ${term("قيد التنفيذ", "In Progress")} ← ${term("بانتظار خدمة العملاء", "waiting on CS")} ← ${term("تم الحل", "Solved")}</p>
+          <p class="field-explanation-intro">كما تتوفر مرحلة ${term("ملغي", "Cancelled")} ضمن مراحل لوحة التذاكر.</p>`)}`,
     // 01 — إنشاء تذكرة من فاتورة العميل
     `
         <p class="field-explanation-intro" dir="rtl">يمكن إنشاء التذكرة من داخل فاتورة العميل، بحيث ترتبط التذكرة بالعميل والفاتورة الخاصة بالشكوى أو الاستفسار.</p>
-        ${single("أ", "ticketInvoiceTitle", `فتح فاتورة العميل والدخول إلى ${ltr("Helpdesk")}`,
-          `من فاتورة العميل، يتم الضغط على زر ${ltr("Helpdesk")} أعلى الفاتورة لعرض التذاكر المرتبطة بها، ويظهر على الزر عدد هذه التذاكر.`,
+        ${single("أ", "ticketInvoiceTitle", `فتح فاتورة العميل والدخول إلى ${term("مكتب المساعدة", "Helpdesk")}`,
+          `من فاتورة العميل، يتم الضغط على زر ${term("مكتب المساعدة", "Helpdesk")} أعلى الفاتورة لعرض التذاكر المرتبطة بها، ويظهر على الزر عدد هذه التذاكر.`,
           shot(`${tickets}/1 انشئ تذكرة للعميل على مكشلة معينة.png`, "فاتورة العميل في نظام خدمات مابعد البيع مع تحديد زر Helpdesk", "زر Helpdesk في فاتورة العميل"))}
         ${single("ب", "ticketListTitle", "عرض التذاكر الموجودة وإنشاء تذكرة جديدة",
-          `تظهر قائمة التذاكر الموجودة على هذه الفاتورة مع المرحلة الحالية لكل تذكرة، ولإنشاء تذكرة جديدة يتم الضغط على زر ${ltr("New")}.`,
+          `تظهر قائمة التذاكر الموجودة على هذه الفاتورة مع المرحلة الحالية لكل تذكرة، ولإنشاء تذكرة جديدة يتم الضغط على زر ${term("جديد", "New")}.`,
           shot(`${tickets}/2 هون منشوف التذاكر الموجودة على هل فاتورة.png`, "قائمة التذاكر الموجودة على الفاتورة مع تحديد زر New لإنشاء تذكرة جديدة", "قائمة تذاكر الفاتورة"))}`,
     // 02 — إدخال بيانات التذكرة
     `
-        <p class="field-explanation-intro" dir="rtl">بعد الضغط على ${ltr("New")} يُفتح نموذج التذكرة الجديدة ضمن فريق ${ltr("Customer Care")}، وتظهر فيه بيانات العميل ${ltr("(Customer)")} و${ltr("Operation Case")} والفاتورة ${ltr("(Invoice)")}، ثم يتم إدخال بيانات الشكوى أو الاستفسار.</p>
+        <p class="field-explanation-intro" dir="rtl">بعد الضغط على ${term("جديد", "New")} يُفتح نموذج التذكرة الجديدة ضمن فريق ${term("خدمة العملاء", "Customer Care")}، وتظهر فيه بيانات ${term("العميل", "Customer")} و${term("حالة العملية", "Operation Case")} و${term("الفاتورة", "Invoice")}، ثم يتم إدخال بيانات الشكوى أو الاستفسار.</p>
         ${single("أ", "ticketMainDataTitle", "عنوان التذكرة ونوعها ووصفها وأولويتها",
-          `يتم إدخال اسم الشكوى كعنوان للتذكرة، مثل «تأخير التوصيل»، ثم اختيار نوع الحالة من حقل ${ltr("Inquiry Type")}، وكتابة تفاصيل الحالة في تبويب ${ltr("Description")}، وتحديد أولوية التذكرة ${ltr("(Priority)")} من خلال النجوم.`,
+          `يتم إدخال اسم الشكوى كعنوان للتذكرة، مثل «تأخير التوصيل»، ثم اختيار نوع الحالة من حقل ${term("نوع الاستفسار", "Inquiry Type")}، وكتابة تفاصيل الحالة في تبويب ${term("الوصف", "Description")}، وتحديد ${term("أولوية التذكرة", "Priority")} من خلال النجوم.`,
           shot(`${tickets}/3 هون منحط اسم الشكوى ونوع الشكوى  وديسكبريشن وقوة العميل يعني البيروتي.png`, "نموذج تذكرة جديدة بعنوان تأخير التوصيل مع تحديد حقول Inquiry Type و Priority و Description", "بيانات التذكرة"))}
-        ${reference(`أنواع الحالة في حقل ${ltr("Inquiry Type")}`, `
-          <p class="field-explanation-intro">يحتوي حقل ${ltr("Inquiry Type")} على أربعة أنواع: ${ltr("Direct Inquiry")} (استفسار مباشر)، ${ltr("Indirect Inquiry")} (استفسار غير مباشر)، ${ltr("Technical Complaint")} (شكوى فنية)، ${ltr("Administrative Complaint")} (شكوى إدارية).</p>`)}
+        ${reference(`أنواع الحالة في حقل ${term("نوع الاستفسار", "Inquiry Type")}`, `
+          <p class="field-explanation-intro">يحتوي حقل ${term("نوع الاستفسار", "Inquiry Type")} على أربعة أنواع: ${term("استفسار مباشر", "Direct Inquiry")}، ${term("استفسار غير مباشر", "Indirect Inquiry")}، ${term("شكوى فنية", "Technical Complaint")}، ${term("شكوى إدارية", "Administrative Complaint")}.</p>`)}
         ${pair(
-          substep("ب", "ticketAssigneeTitle", `تعيين المسؤول ${ltr("(Assigned to)")}`,
-            `يتم اختيار الشخص المسؤول عن متابعة الحالة مع العميل من حقل ${ltr("Assigned to")}.`,
+          substep("ب", "ticketAssigneeTitle", `حقل ${term("مُسند إلى", "Assigned to")}`,
+            `يتم اختيار الشخص المسؤول عن متابعة الحالة مع العميل من حقل ${term("مُسند إلى", "Assigned to")}.`,
             shot(`${tickets}/4 عميل اسين لشخص للمتابعه مع العميل .png`, "قائمة المستخدمين في حقل Assigned to داخل التذكرة", "حقل Assigned to")),
-          substep("ج", "ticketTaskTitle", `ربط التذكرة بالمهمة ${ltr("(Task)")}`,
-            `يتم اختيار المهمة من حقل ${ltr("Task")} لربط التذكرة بالخدمة الموجودة على الفاتورة.`,
+          substep("ج", "ticketTaskTitle", `ربط التذكرة ${term("بالمهمة", "Task")}`,
+            `يتم اختيار المهمة من حقل ${term("المهمة", "Task")} لربط التذكرة بالخدمة الموجودة على الفاتورة.`,
             shot(`${tickets}/5 الخدمات الموجودة على هل فاتورة.png`, "قائمة المهام في حقل Task داخل التذكرة", "حقل Task")),
         )}`,
     // 03 — حفظ التذكرة
     `
         <p class="field-explanation-intro" dir="rtl">بعد الانتهاء من إدخال بيانات التذكرة وحفظها، يظهر رقم التذكرة ويتم إرسال رسالة إلى العميل برقم الشكوى.</p>
         ${single("أ", "ticketNumberTitle", "ظهور رقم التذكرة ورسالة العميل",
-          `يظهر رقم التذكرة بجانب عنوانها ${ltr("(#00265)")}، وتظهر في سجل التذكرة الرسالة المرسلة إلى العميل، والتي تفيد باستلام طلبه ومراجعته من فريق ${ltr("Customer Care")}، وتتضمن رقم مرجع التذكرة ${ltr("00265")}.`,
+          `يظهر رقم التذكرة بجانب عنوانها ${ltr("(#00265)")}، وتظهر في سجل التذكرة الرسالة المرسلة إلى العميل، والتي تفيد باستلام طلبه ومراجعته من فريق ${term("خدمة العملاء", "Customer Care")}، وتتضمن رقم مرجع التذكرة ${ltr("00265")}.`,
           shot(`${tickets}/6 عند الانتهاء من ادخال بيانات الشكوى يتم ارسال رساله للعميل برقم الشكوةى.png`, "التذكرة بعد الحفظ برقم 00265 والرسالة المرسلة إلى العميل في سجل التذكرة", "رقم التذكرة ورسالة العميل"))}
-        ${single("ب", "ticketNewStageTitle", `ظهور التذكرة في مرحلة ${ltr("New")}`,
-          `بعد إنشاء التذكرة تظهر في لوحة تذاكر ${ltr("Customer Care")} ضمن مرحلة ${ltr("New")}.`,
+        ${single("ب", "ticketNewStageTitle", `ظهور التذكرة في مرحلة ${term("جديد", "New")}`,
+          `بعد إنشاء التذكرة تظهر في لوحة تذاكر ${term("خدمة العملاء", "Customer Care")} ضمن مرحلة ${term("جديد", "New")}.`,
           shot(`${tickets}/7 بعد انتهاء من انشاء التذكرة تظهر في نيو.png`, "لوحة تذاكر Customer Care وتظهر فيها تذكرة تأخير التوصيل في مرحلة New", "التذكرة في مرحلة New"))}`,
     // 04 — المتابعة الداخلية (a different ticket: #00202)
     `
         <p class="field-explanation-intro" dir="rtl">يمكن مشاركة التذكرة مع شخص آخر في الإدارة، مثل فني أو مشرف، لمتابعة الحالة وتسجيل الإجراء الذي تم.</p>
-        <p class="field-explanation-intro" dir="rtl"><strong>ملاحظة:</strong> صور هذه المرحلة مأخوذة من تذكرة أخرى ${ltr("(#00202)")} غير التذكرة المستخدمة في المراحل السابقة، وتظهر فيها التذكرة في مرحلة ${ltr("In Progress")}.</p>
-        ${single("أ", "ticketShareTitle", `مشاركة التذكرة ${ltr("(Share Ticket)")}`,
-          `لمشاركة التذكرة مع شخص آخر، يتم الضغط على زر ${ltr("Share Ticket")} أعلى التذكرة.`,
+        <p class="field-explanation-intro" dir="rtl"><strong>ملاحظة:</strong> صور هذه المرحلة مأخوذة من تذكرة أخرى ${ltr("(#00202)")} غير التذكرة المستخدمة في المراحل السابقة، وتظهر فيها التذكرة في مرحلة ${term("قيد التنفيذ", "In Progress")}.</p>
+        ${single("أ", "ticketShareTitle", `${term("مشاركة التذكرة", "Share Ticket")}`,
+          `لمشاركة التذكرة مع شخص آخر، يتم الضغط على زر ${term("مشاركة التذكرة", "Share Ticket")} أعلى التذكرة.`,
           shot(`${tickets}/8 لمشاركة التذكرة مع شخص اخر في الادارة مع فني او مشرف نضغط.png`, "تذكرة في مرحلة In Progress مع تحديد زر Share Ticket", "زر Share Ticket"))}
         ${pair(
           substep("ب", "ticketShareWithTitle", "اختيار من تتم مشاركة التذكرة معه",
-            `تظهر نافذة ${ltr("Share Document")}، ويتم من خلالها اختيار مشاركة التذكرة داخليًا أو خارجيًا من قائمة ${ltr("Share With")} التي تتضمن ${ltr("Internal Users")} و${ltr("Portal Users")} و${ltr("Contact")}، ثم تحديد المستلمين ${ltr("(Recipients)")} والضغط على ${ltr("Send")}.`,
+            `تظهر نافذة ${term("مشاركة المستند", "Share Document")}، ويتم من خلالها اختيار مشاركة التذكرة داخليًا أو خارجيًا من قائمة ${term("المشاركة مع", "Share With")} التي تتضمن ${term("مستخدمون داخليون", "Internal Users")} و${term("مستخدمو البوابة", "Portal Users")} و${term("جهة اتصال", "Contact")}، ثم تحديد ${term("المستلمين", "Recipients")} والضغط على ${term("إرسال", "Send")}.`,
             shot(`${tickets}/9 بعد الضغط على شير تيكت يمكن اختيار من تريد انت تعمله شير داخلي ام خارجي.png`, "نافذة Share Document مع خيارات Internal Users و Portal Users و Contact", "نافذة Share Document")),
-          substep("ج", "ticketActivityTitle", `تسجيل الإجراء ${ltr("(Schedule Activity)")}`,
-            `يفتح الشخص الذي تمت مشاركة التذكرة معه التذكرة ويضغط على ${ltr("Activity")}، ثم يختار نوع النشاط مثل ${ltr("Call")} ويكتب الإجراء الذي تم، مثل: «تم التواصل مع العميل وسيتم ارسال فني لمعالجة المشكلة»، ثم يحفظ النشاط.`,
+          substep("ج", "ticketActivityTitle", `${term("جدولة نشاط", "Schedule Activity")}`,
+            `يفتح الشخص الذي تمت مشاركة التذكرة معه التذكرة ويضغط على ${term("النشاط", "Activity")}، فتظهر نافذة ${term("جدولة نشاط", "Schedule Activity")}، ثم يختار نوع النشاط مثل ${term("مكالمة", "Call")} ويكتب الإجراء الذي تم، مثل: «تم التواصل مع العميل وسيتم ارسال فني لمعالجة المشكلة»، ثم يحفظ النشاط.`,
             shot(`${tickets}/10 يضغط الشخص لي عملناله شير على اكتفيتي ويكتب شو عمل .png`, "نافذة Schedule Activity لتسجيل الإجراء الذي تم على التذكرة", "نافذة Schedule Activity")),
         )}
-        ${single("د", "ticketPlannedActivitiesTitle", `ظهور النشاط في ${ltr("Planned Activities")}`,
-          `يظهر النشاط المسجل في قسم ${ltr("Planned Activities")} على يمين التذكرة، مع موعد استحقاقه ونص الإجراء الذي تم تسجيله.`,
+        ${single("د", "ticketPlannedActivitiesTitle", `ظهور النشاط في ${term("الأنشطة المخططة", "Planned Activities")}`,
+          `يظهر النشاط المسجل في قسم ${term("الأنشطة المخططة", "Planned Activities")} على يمين التذكرة، مع موعد استحقاقه ونص الإجراء الذي تم تسجيله.`,
           shot(`${tickets}/11 تظهر في الاكفيتي عل اليمين.png`, "قسم Planned Activities في التذكرة ويظهر فيه نشاط Call والإجراء المسجل", "قسم Planned Activities"))}`,
   ];
 

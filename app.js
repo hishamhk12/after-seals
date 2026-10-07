@@ -4340,8 +4340,8 @@ function initWorkflowOverlay() {
   });
 }
 
-// ---------------------------------------------------------------- Assistant answer entities
-// Services, workflows and stages an answer mentions become links into this site. Every destination
+// ---------------------------------------------------------------- Assistant link entities
+// Services, workflows and stages that search results and the guide link to. Every destination
 // is an existing hash route (see parseRoute) or an existing overlay key (OVERLAY_WORKFLOW_TOURS) —
 // no route is invented here. Adding a service or a workflow means one entry in the two lists below;
 // stages are read from the workflow tours themselves, so a new stage needs no change here.
@@ -4609,33 +4609,11 @@ function buildAssistantStageEntities() {
   );
 }
 
-// Aliases longest first, so "خدمة التوصيل إلى العميل" wins over "خدمة التوصيل" at the same position.
-// One alias can belong to several stages (every cycle starts with "فاتورة من SAP"); the open page
-// and the question decide which one is meant — see resolveAssistantEntity.
 function buildAssistantEntityIndex() {
   const entities = [...ASSISTANT_SERVICE_ENTITIES, ...ASSISTANT_WORKFLOW_ENTITIES, ...buildAssistantStageEntities()];
-  const byAlias = new Map();
-
-  for (const entity of entities) {
-    for (const alias of entity.aliases) {
-      const key = normalizeAssistantText(alias);
-      if (!key) continue;
-      if (!byAlias.has(key)) byAlias.set(key, []);
-      byAlias.get(key).push(entity);
-    }
-  }
-
-  return {
-    byId: new Map(entities.map((entity) => [entity.id, entity])),
-    aliases: [...byAlias.entries()]
-      .map(([alias, matches]) => ({ alias, matches }))
-      .sort((a, b) => b.alias.length - a.alias.length),
-  };
+  return { byId: new Map(entities.map((entity) => [entity.id, entity])) };
 }
 
-const ARABIC_LETTER = /[ء-يٮ-ۓ]/u;
-// Letters Arabic glues to the front of a word (ال، بـ، لـ، وـ، فـ، كـ), so "بخدمة التوصيل" matches too.
-const ARABIC_CLITIC_RUN = /^[البوفك]+$/u;
 const ARABIC_MARK = /[ً-ٰٟـ]/u;
 
 function foldAssistantCharacter(character) {
@@ -4645,421 +4623,32 @@ function foldAssistantCharacter(character) {
   return character.toLowerCase();
 }
 
+// Folds a title for comparison: diacritics, letter variants, bidi isolates and spacing are ignored, so a
+// stage title from the knowledge base matches the same title in a workflow tour.
 function normalizeAssistantText(value) {
-  return normalizeAssistantWithIndex(value).text;
-}
-
-// Folds the text for matching and keeps, for every folded character, the index it came from — so a
-// match found on the folded text can be cut out of the original string exactly.
-function normalizeAssistantWithIndex(value) {
-  const source = String(value || "");
-  const map = [];
   let text = "";
   let previousWasSpace = false;
 
-  for (let index = 0; index < source.length; index += 1) {
-    const character = source[index];
+  for (const character of String(value || "").replace(/[‎‏‪-‮⁦-⁩]/gu, "")) {
     if (ARABIC_MARK.test(character)) continue;
 
     if (/\s/u.test(character)) {
       if (previousWasSpace || !text) continue;
       previousWasSpace = true;
       text += " ";
-      map.push(index);
       continue;
     }
 
     previousWasSpace = false;
     text += foldAssistantCharacter(character);
-    map.push(index);
   }
 
-  map.push(source.length);
-  return { text, map };
+  return text.trim();
 }
 
 const ASSISTANT_ENTITY_INDEX = buildAssistantEntityIndex();
 
-function hasAssistantWordBoundary(text, start, end) {
-  const after = text[end] || "";
-  if (after && (ARABIC_LETTER.test(after) || /[a-z0-9]/u.test(after))) return false;
-
-  const before = text[start - 1] || "";
-  if (!before) return true;
-  if (/[a-z0-9]/u.test(before)) return false;
-  if (!ARABIC_LETTER.test(before)) return true;
-
-  let cursor = start - 1;
-  let run = "";
-  while (cursor >= 0 && ARABIC_LETTER.test(text[cursor])) {
-    run = text[cursor] + run;
-    cursor -= 1;
-  }
-  return run.length <= 2 && ARABIC_CLITIC_RUN.test(run);
-}
-
-// Non-overlapping entity mentions, in the order they appear in `value`.
-function findAssistantEntities(value, context = {}) {
-  const { text, map } = normalizeAssistantWithIndex(value);
-  if (!text) return [];
-
-  const candidates = [];
-  for (const { alias, matches } of ASSISTANT_ENTITY_INDEX.aliases) {
-    let from = text.indexOf(alias);
-    while (from !== -1) {
-      const to = from + alias.length;
-      if (hasAssistantWordBoundary(text, from, to)) candidates.push({ from, to, matches });
-      from = text.indexOf(alias, from + 1);
-    }
-  }
-
-  candidates.sort((a, b) => a.from - b.from || b.to - a.to);
-
-  const found = [];
-  let cursor = -1;
-  for (const candidate of candidates) {
-    if (candidate.from < cursor) continue;
-
-    const matches = allowedAssistantMatches(candidate.matches, context);
-    if (!matches.length) continue;
-
-    cursor = candidate.to;
-    found.push({
-      entity: resolveAssistantEntity(matches, context),
-      start: map[candidate.from],
-      end: map[candidate.to],
-    });
-  }
-
-  return found;
-}
-
-// A stage is linked only when its workflow is in scope. Short stage titles such as "جدولة موعد"
-// otherwise match inside a sentence about another service and would link to the wrong page.
-function allowedAssistantMatches(matches, context) {
-  if (!context.scopedWorkflowIds) return matches;
-  return matches.filter((entity) => entity.type !== "stage" || context.scopedWorkflowIds.has(entity.workflow.id));
-}
-
-// A stage title shared by several workflows belongs to the workflow the reader is in: the open
-// page's workflow first, then a workflow or service the question/answer named, then list order.
-function resolveAssistantEntity(matches, context) {
-  if (matches.length === 1) return matches[0];
-
-  const preferences = [
-    (entity) => entity.type === "stage" && context.tourId && entity.workflow.tour.id === context.tourId,
-    (entity) => entity.type === "stage" && context.workflowIds?.has(entity.workflow.id),
-    (entity) => entity.type === "stage" && context.serviceIds?.has(entity.workflow.serviceId),
-  ];
-
-  for (const preference of preferences) {
-    const match = matches.find(preference);
-    if (match) return match;
-  }
-
-  return matches[0];
-}
-
-// Which workflow/service the question and the answer are about, used to disambiguate stage titles.
-function buildAssistantEntityContext(question, answerText) {
-  const context = { tourId: getRouteWorkflowTour()?.id || null, workflowIds: new Set(), serviceIds: new Set() };
-
-  for (const { entity } of findAssistantEntities(`${question}\n${answerText}`, context)) {
-    if (entity.type === "workflow") {
-      context.workflowIds.add(entity.id);
-      if (entity.serviceId) context.serviceIds.add(entity.serviceId);
-    }
-    if (entity.type === "service") {
-      context.serviceIds.add(entity.id);
-      if (entity.workflowId) context.workflowIds.add(entity.workflowId);
-    }
-  }
-
-  // In scope: the workflow of the open page, the workflows of the services and workflows the answer
-  // named, and the workflow of any stage the reader asked about.
-  const scoped = new Set(context.workflowIds);
-  for (const workflow of ASSISTANT_WORKFLOW_ENTITIES) {
-    if (context.tourId === workflow.tour.id) scoped.add(workflow.id);
-    if (context.serviceIds.has(workflow.serviceId)) scoped.add(workflow.id);
-  }
-  for (const { entity } of findAssistantEntities(question, context)) {
-    if (entity.type === "stage") scoped.add(entity.workflow.id);
-  }
-
-  context.scopedWorkflowIds = scoped;
-  return context;
-}
-
-// ---------------------------------------------------------------- Assistant answer model
-// A plain answer becomes { title, blocks, relatedLinks, referencedEntities } so the panel can lay it
-// out instead of printing one block of text.
-const ASSISTANT_FALLBACK_ANSWERS = [
-  "المعلومة غير متوفرة ضمن هذه الصفحة",
-  "المعلومة غير موثقة ضمن مسارات خدمات ما بعد البيع الحالية",
-];
-const ASSISTANT_GROUNDING_INTRO =
-  /^\s*(وفقًا للمعلومات المتاحة في الصفحة|وفقًا للمعلومات المتاحة|حسب المعلومات المتاحة|حسب المعلومات المتوفرة|بناءً على المعلومات المتاحة)\s*[:：،.-]?\s*/i;
-// A workflow sequence is recognised by its numbered stages, not by whatever an answer puts between
-// them: "00 — فاتورة من SAP → 01 — طلب توصيل → …", the same stages one per line, and the same stages
-// joined by "ثم" or by commas are one sequence written three ways, and all three become stage cards.
-// Three steps or more, so an ordinary sentence that happens to contain a number is never mistaken
-// for a workflow sequence.
-const ASSISTANT_STEP_MARKER = /(^|[\s([،,;؛:.—–>»→←])(\d{1,2})\s*[—–-]\s+/gu;
-const ASSISTANT_SEQUENCE_STEP = /^\s*(\d{1,2})\s*[—–-]\s*([\s\S]*)$/u;
-// Whatever is left between the end of one stage title and the next stage number.
-const ASSISTANT_STEP_SEPARATOR = /[\s.,،؛;]*(?:→|←|⟵|⟶|»|«|>|ثم|بعدها|بعد\s+ذلك)?[\s.,،؛;]*$/u;
-const ASSISTANT_SEQUENCE_MIN_STEPS = 3;
-// How much of a sequence a tour has to cover before its stages are linked to that workflow.
-const ASSISTANT_SEQUENCE_MATCH_RATIO = 0.7;
-const ASSISTANT_MAX_RELATED_LINKS = 6;
-// An answer that enumerates every service and stage would otherwise turn into a wall of links; the
-// entities past this point still appear under "روابط ذات صلة".
-const ASSISTANT_MAX_INLINE_LINKS = 10;
-const ASSISTANT_STAGE_LIST_MAX_LENGTH = 54;
-
-function isAssistantFallbackAnswer(text) {
-  const normalized = normalizeAssistantText(text).replace(/[.\s]+$/u, "");
-  return ASSISTANT_FALLBACK_ANSWERS.some((fallback) => normalized === normalizeAssistantText(fallback));
-}
-
-function stripAssistantGroundingIntro(text) {
-  return String(text || "").replace(ASSISTANT_GROUNDING_INTRO, "").trim();
-}
-
-function buildAssistantAnswerModel(rawAnswer, question) {
-  const answer = stripAssistantGroundingIntro(rawAnswer);
-
-  if (!answer || isAssistantFallbackAnswer(answer)) {
-    return { title: "", blocks: [{ kind: "paragraph", text: answer }], relatedLinks: [], referencedEntities: [], context: null, isPlain: true };
-  }
-
-  const context = buildAssistantEntityContext(question, answer);
-  const blocks = dedupeAssistantStageBlocks(buildAssistantBlocks(answer, context));
-  const heading = blocks[0]?.kind === "heading" ? blocks.shift().text : "";
-  const questionEntities = findAssistantEntities(question, context);
-  const referencedEntities = [...collectAssistantSequenceEntities(blocks, context), ...collectAssistantEntities(blocks, context)];
-
-  return {
-    title: heading || questionEntities[0]?.entity.title || "",
-    blocks,
-    relatedLinks: buildAssistantRelatedLinks(questionEntities, referencedEntities),
-    referencedEntities,
-    context,
-    isPlain: false,
-  };
-}
-
-function buildAssistantBlocks(answer, context) {
-  const blocks = [];
-  let paragraph = [];
-  let list = null;
-
-  const flushParagraph = () => {
-    if (!paragraph.length) return;
-    blocks.push(...splitAssistantSequence(paragraph.join(" ")));
-    paragraph = [];
-  };
-  const flushList = () => {
-    if (!list) return;
-    blocks.push(toAssistantListBlock(list, context));
-    list = null;
-  };
-
-  for (const rawLine of String(answer).split(/\r?\n/)) {
-    const line = rawLine.trim();
-
-    if (!line) {
-      flushParagraph();
-      flushList();
-      continue;
-    }
-
-    const heading = line.match(/^#{1,6}\s+(.+)$/u);
-    if (heading) {
-      flushParagraph();
-      flushList();
-      blocks.push({ kind: "heading", text: heading[1].trim() });
-      continue;
-    }
-
-    const bullet = line.match(/^(?:[-*•]|\d+[.)])\s+(.+)$/u);
-    if (bullet) {
-      flushParagraph();
-      list = list || [];
-      list.push(bullet[1].trim());
-      continue;
-    }
-
-    flushList();
-    paragraph.push(line);
-  }
-
-  flushParagraph();
-  flushList();
-  return blocks;
-}
-
-// Every "NN — " that opens a stage, in the order they appear. The number is what marks a step, so
-// the scan is blind to the punctuation the answer used to join the stages together — which is what
-// lets one parser handle an arrow sequence, a comma sequence and one stage per line alike.
-function scanAssistantStageSteps(text) {
-  const pattern = new RegExp(ASSISTANT_STEP_MARKER.source, "gu");
-  const markers = [];
-  let match = pattern.exec(text);
-
-  while (match) {
-    markers.push({ number: match[2], start: match.index + match[1].length, titleStart: match.index + match[0].length });
-    pattern.lastIndex = match.index + match[0].length;
-    match = pattern.exec(text);
-  }
-
-  return markers;
-}
-
-// A stage sequence written inline becomes its own block, keeping the sentence before it and the
-// sentence after it as ordinary text. A stage title runs up to the next stage number.
-function splitAssistantSequence(text) {
-  const markers = scanAssistantStageSteps(text);
-  if (markers.length < ASSISTANT_SEQUENCE_MIN_STEPS) return text ? [{ kind: "paragraph", text }] : [];
-
-  // Whatever the answer goes on to say after the last stage belongs to the text, not to its title.
-  const lastMarker = markers[markers.length - 1];
-  const sentenceEnd = text.slice(lastMarker.titleStart).search(/[.؟!]/u);
-  const runEnd = sentenceEnd > -1 ? lastMarker.titleStart + sentenceEnd : text.length;
-
-  const stages = markers.map((marker, index) => {
-    const next = markers[index + 1];
-    const title = text.slice(marker.titleStart, next ? next.start : runEnd).replace(ASSISTANT_STEP_SEPARATOR, "").trim();
-    return { number: marker.number.padStart(2, "0"), title };
-  });
-
-  // A "stage title" the length of a sentence means these numbers were never a stage sequence.
-  if (stages.some((stage) => !stage.title || stage.title.length > ASSISTANT_STAGE_LIST_MAX_LENGTH)) {
-    return [{ kind: "paragraph", text }];
-  }
-
-  const lead = text.slice(0, markers[0].start).trim();
-  const tail = text.slice(runEnd).replace(/^[\s.؟!]+/u, "").trim();
-
-  return [
-    lead ? { kind: "paragraph", text: lead } : null,
-    { kind: "stages", stages },
-    tail ? { kind: "paragraph", text: tail } : null,
-  ].filter(Boolean);
-}
-
-// A short list of stage names is shown as stage cards; anything longer stays a list, because
-// turning a full sentence into a card would hide the explanation. An item numbered like a stage
-// ("00 — فاتورة من SAP") is enough on its own; otherwise the item has to be a stage title in full.
-function toAssistantListBlock(items, context) {
-  const stages = items.map((item) => {
-    const plain = item.replace(/\*\*/gu, "").trim();
-
-    // A numbered item is a stage by construction, so the length limit applies to its title alone.
-    const step = plain.match(ASSISTANT_SEQUENCE_STEP);
-    if (step) {
-      const title = step[2].trim();
-      return title && title.length <= ASSISTANT_STAGE_LIST_MAX_LENGTH ? { number: step[1].padStart(2, "0"), title } : null;
-    }
-
-    if (plain.length > ASSISTANT_STAGE_LIST_MAX_LENGTH) return null;
-
-    const found = findAssistantEntities(plain, context)[0];
-    const coversWholeItem = found?.entity.type === "stage" && found.end - found.start >= plain.length - 2;
-    return coversWholeItem ? { number: "", title: plain } : null;
-  });
-
-  return stages.length >= 2 && stages.every(Boolean) ? { kind: "stages", stages } : { kind: "list", items };
-}
-
-// An answer that states its sequence twice — once as a sentence and once as a list — is still one
-// sequence. The first set of cards stays and any later block that repeats those same stages, or a
-// subset of them, is dropped rather than drawn a second time.
-function dedupeAssistantStageBlocks(blocks) {
-  const rendered = [];
-
-  return blocks.filter((block) => {
-    if (block.kind !== "stages") return true;
-
-    const titles = block.stages.map((stage) => normalizeAssistantText(stage.title));
-    if (rendered.some((shown) => titles.every((title) => shown.has(title)))) return false;
-
-    rendered.push(new Set(titles));
-    return true;
-  });
-}
-
-function collectAssistantEntities(blocks, context) {
-  const text = blocks
-    .map((block) => {
-      if (block.kind === "list") return block.items.join("\n");
-      // Stages shown as cards are already on screen; repeating them as chips adds nothing.
-      if (block.kind === "stages") return "";
-      return block.text;
-    })
-    .filter(Boolean)
-    .join("\n");
-
-  return findAssistantEntities(text, context).map((match) => match.entity);
-}
-
-// A workflow rendered as stage cards is offered as a link, together with its service.
-function collectAssistantSequenceEntities(blocks, context) {
-  const entities = [];
-
-  for (const block of blocks) {
-    if (block.kind !== "stages") continue;
-    const workflow = resolveAssistantSequenceWorkflow(block.stages, context);
-    if (!workflow) continue;
-    const service = workflow.serviceId ? ASSISTANT_ENTITY_INDEX.byId.get(workflow.serviceId) : null;
-    if (service) entities.push(service);
-    entities.push(workflow);
-  }
-
-  return entities;
-}
-
-// Question entities first, then the ones the answer names. A stage also offers its workflow and a
-// service also offers its workflow, so the reader can open the cycle and jump to the stage.
-// Where a workflow and its service are the same page (خدمة الصيانة، خدمة التصميم…), the service
-// label reads better than "عرض دورة …".
-function preferServiceOverWorkflow(entity) {
-  if (entity?.type !== "workflow" || !entity.serviceId) return entity;
-  const service = ASSISTANT_ENTITY_INDEX.byId.get(entity.serviceId);
-  return service?.href === entity.href ? service : entity;
-}
-
-const ASSISTANT_LINK_ORDER = { service: 0, workflow: 1, stage: 2 };
-
-function buildAssistantRelatedLinks(questionEntities, referencedEntities) {
-  const candidates = [];
-  const seenIds = new Set();
-  const seenHrefs = new Set();
-
-  // One chip per destination: a service and its workflow that share a route (خدمة الصيانة) collapse
-  // into a single link instead of two chips that go to the same page.
-  const add = (entity) => {
-    if (!entity || seenIds.has(entity.id) || seenHrefs.has(entity.href)) return;
-    seenIds.add(entity.id);
-    seenHrefs.add(entity.href);
-    candidates.push(entity);
-  };
-
-  for (const entity of [...questionEntities.map((match) => match.entity), ...referencedEntities]) {
-    add(preferServiceOverWorkflow(entity));
-
-    if (entity.type === "service" && entity.workflowId) add(ASSISTANT_ENTITY_INDEX.byId.get(entity.workflowId));
-    if (entity.type === "stage") add(preferServiceOverWorkflow(entity.workflow));
-  }
-
-  return candidates
-    .map((entity, index) => ({ entity, index }))
-    .sort((a, b) => ASSISTANT_LINK_ORDER[a.entity.type] - ASSISTANT_LINK_ORDER[b.entity.type] || a.index - b.index)
-    .slice(0, ASSISTANT_MAX_RELATED_LINKS)
-    .map((item) => item.entity);
-}
-
-// ---------------------------------------------------------------- Assistant answer rendering
+// ---------------------------------------------------------------- Assistant text rendering
 const ASSISTANT_ODOO_TERMS = [
   "Appointment From",
   "Appointment To",
@@ -5114,100 +4703,78 @@ function assistantLinkAttributes(entity) {
     .join(" ");
 }
 
-// Inline text: markdown bold, Odoo terms, and the first mention of each entity as a link.
-function renderAssistantInlineText(text, context, linkState) {
-  const entities = context ? findAssistantEntities(text, context) : [];
-  const segments = [];
-  let cursor = 0;
-
-  for (const match of entities) {
-    if (linkState.linked.size >= ASSISTANT_MAX_INLINE_LINKS) break;
-    if (linkState.linked.has(match.entity.id)) continue;
-    linkState.linked.add(match.entity.id);
-    segments.push({ text: text.slice(cursor, match.start) });
-    segments.push({ text: text.slice(match.start, match.end), entity: match.entity });
-    cursor = match.end;
-  }
-
-  segments.push({ text: text.slice(cursor) });
-
-  return segments
-    .filter((segment) => segment.text)
-    .map((segment) => {
-      const html = renderAssistantMarkdown(segment.text);
-      return segment.entity ? `<a class="assistant-entity-link" ${assistantLinkAttributes(segment.entity)}>${html}</a>` : html;
-    })
-    .join("");
-}
-
-function renderAssistantMarkdown(text) {
-  return String(text)
-    .split(/(\*\*[^*]+\*\*)/gu)
-    .map((part) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return `<strong>${highlightAssistantOdooTerms(escapeAssistantHtml(part.slice(2, -2)))}</strong>`;
-      }
-      return highlightAssistantOdooTerms(escapeAssistantHtml(part.replace(/\*/gu, "")));
-    })
-    .join("");
-}
-
-// A sequence belongs to one workflow, so all of its cards are resolved together against the tour
-// registry instead of matching each title on its own. Matching titles one by one is what used to
-// scatter a single answer across several workflows (or drop the links entirely when the service
-// name happened to be written in a form the text matcher missed).
-function resolveAssistantSequenceWorkflow(stages, context) {
-  const titles = stages.map((stage) => normalizeAssistantText(stage.title)).filter(Boolean);
-  if (titles.length === 0) return null;
-
-  const covers = (workflow) => {
-    const nodes = assistantWorkflowStageNodes(workflow);
-    const matched = titles.filter((title) => nodes.some((node) => normalizeAssistantText(node.title) === title)).length;
-    return { workflow, nodes, matched };
-  };
-
-  // The workflow of the page being read wins whenever it covers the sequence.
-  const openWorkflow = ASSISTANT_WORKFLOW_ENTITIES.find((workflow) => workflow.tour.id === context?.tourId);
-  if (openWorkflow) {
-    const open = covers(openWorkflow);
-    if (open.matched === titles.length) return openWorkflow;
-  }
-
-  // Otherwise a full match wins first: the tour holds every stage listed and is about the same
-  // length, so a longer workflow that merely contains these stages is not assumed.
-  const candidates = ASSISTANT_WORKFLOW_ENTITIES.map(covers);
-  const byFit = (a, b) => Math.abs(a.nodes.length - titles.length) - Math.abs(b.nodes.length - titles.length);
-  const exact = candidates
-    .filter((candidate) => candidate.matched === titles.length && Math.abs(candidate.nodes.length - titles.length) <= 1)
-    .sort(byFit)[0];
-
-  if (exact) return exact.workflow;
-
-  // Failing that, the workflow that covers most of the sequence, as long as it covers a clear
-  // majority of it and no other workflow covers as much. One stage the answer paraphrased, or one
-  // the page hides, then costs that single card its link instead of unlinking the whole sequence.
-  const ranked = candidates
-    .filter((candidate) => candidate.matched >= Math.ceil(titles.length * ASSISTANT_SEQUENCE_MATCH_RATIO))
-    .sort((a, b) => b.matched - a.matched || byFit(a, b));
-
-  if (!ranked.length || ranked[1]?.matched === ranked[0].matched) return null;
-  return ranked[0].workflow;
+function renderAssistantText(text) {
+  return highlightAssistantOdooTerms(escapeAssistantHtml(text));
 }
 
 function assistantWorkflowStageNodes(workflow) {
   return workflow.tour.children.filter((node) => node.visible !== false && node.targetId);
 }
 
-function renderAssistantStageCards(stages, context) {
-  const workflow = resolveAssistantSequenceWorkflow(stages, context);
-  const nodes = workflow ? assistantWorkflowStageNodes(workflow) : [];
+// ---------------------------------------------------------------- Search results
+// The panel shows passages of the guide itself, found by the local search behind /api/ask
+// (localSearchService.js): a title, the passage as the guide writes it, and a link to the page and
+// stage it comes from. Nothing here writes or rephrases an answer.
+const SEARCH_RESULT_KIND_LABELS = {
+  workflow: "مراحل الخدمة",
+  page: "نظرة عامة",
+  section: "مصدر الحالات",
+  note: "شرح",
+  relationship: "علاقة بين الخدمات",
+  faq: "سؤال شائع",
+  field: "حقل في النظام",
+  glossary: "مصطلح",
+  rule: "قاعدة عمل",
+};
+const SEARCH_NO_RESULT_TEXT = "لم أجد شرحًا مباشرًا لهذا السؤال في دليل خدمات ما بعد البيع.";
+const SEARCH_ERROR_TEXT = "تعذر البحث حاليًا. حاول مرة أخرى.";
 
-  const cards = stages
+// Only a route the router really opens is linked; anything else would land on the home page.
+function isKnownSearchRoute(route) {
+  const parts = String(route || "").replace(/^#\/?/, "").split("/").filter(Boolean);
+  return parts.length > 0 && parseRouteTarget(parts).type !== "home";
+}
+
+function findSearchResultWorkflow(result) {
+  return ASSISTANT_WORKFLOW_ENTITIES.find((entity) => entity.href === result.route) || null;
+}
+
+// The stage of the page's workflow tour with the same title, so the link opens the page on that stage.
+function findSearchResultStage(result, title = result.stageTitle) {
+  const workflow = title ? findSearchResultWorkflow(result) : null;
+  if (!workflow) return null;
+
+  const wanted = normalizeAssistantText(title);
+  const node = assistantWorkflowStageNodes(workflow).find((candidate) => normalizeAssistantText(candidate.title) === wanted);
+  return node ? ASSISTANT_ENTITY_INDEX.byId.get(`stage:${workflow.tour.id}:${node.id}`) || null : null;
+}
+
+function searchResultLinkAttributes(result) {
+  const stage = findSearchResultStage(result);
+  if (stage) return assistantLinkAttributes(stage);
+  if (!isKnownSearchRoute(result.route)) return "";
+  return `href="${escapeAssistantHtml(result.route)}" data-assistant-link="page"`;
+}
+
+function renderSearchResultMeta(result) {
+  const parts = [result.service];
+  const pageTitle = normalizeAssistantText(result.pageTitle);
+  if (pageTitle && !pageTitle.includes(normalizeAssistantText(result.service)) && pageTitle !== normalizeAssistantText(result.title)) {
+    parts.push(result.pageTitle);
+  }
+  if (result.stageNumber) parts.push(`المرحلة ${result.stageNumber}`);
+  else if (SEARCH_RESULT_KIND_LABELS[result.kind]) parts.push(SEARCH_RESULT_KIND_LABELS[result.kind]);
+
+  return `<span class="assistant-result-meta">${parts.filter(Boolean).map(escapeAssistantHtml).join(" · ")}</span>`;
+}
+
+// A whole-workflow result lists its stages as cards, each opening the page on that stage.
+function renderSearchStageCards(result) {
+  const cards = result.stages
     .map((stage) => {
-      const node = nodes.find((candidate) => normalizeAssistantText(candidate.title) === normalizeAssistantText(stage.title));
-      const entity = node ? ASSISTANT_ENTITY_INDEX.byId.get(`stage:${workflow.tour.id}:${node.id}`) : null;
+      const entity = findSearchResultStage(result, stage.title);
       const index = stage.number ? `<span class="assistant-stage-index">${escapeAssistantHtml(stage.number)}</span>` : "";
-      const label = `${index}<span class="assistant-stage-title">${renderAssistantMarkdown(stage.title)}</span>`;
+      const label = `${index}<span class="assistant-stage-title">${renderAssistantText(stage.title)}</span>`;
 
       return entity
         ? `<a class="assistant-stage-card" ${assistantLinkAttributes(entity)}>${label}</a>`
@@ -5218,54 +4785,62 @@ function renderAssistantStageCards(stages, context) {
   return `<div class="assistant-stage-cards">${cards}</div>`;
 }
 
-function renderAssistantRelatedLinks(links) {
-  if (!links.length) return "";
+function renderSearchResultCard(result, { primary = false, showStages = false } = {}) {
+  const link = searchResultLinkAttributes(result);
+  const title = renderAssistantText(result.title);
 
-  const chips = links
-    .map(
-      (entity) =>
-        `<a class="assistant-chip is-${escapeAssistantHtml(entity.type)}" ${assistantLinkAttributes(entity)}>${escapeAssistantHtml(entity.actionLabel)}</a>`,
-    )
-    .join("");
-
-  return `<div class="assistant-links"><span class="assistant-links-label">روابط ذات صلة</span><div class="assistant-links-row">${chips}</div></div>`;
+  return [
+    `<article class="assistant-result${primary ? " is-primary" : ""}">`,
+    renderSearchResultMeta(result),
+    `<p class="assistant-result-title">${link ? `<a ${link}>${title}</a>` : title}</p>`,
+    `<p class="assistant-result-excerpt">${renderAssistantText(result.excerpt)}</p>`,
+    showStages && result.stages?.length ? renderSearchStageCards(result) : "",
+    link ? `<a class="assistant-result-open" ${link}>فتح الشرح الكامل</a>` : "",
+    "</article>",
+  ].join("");
 }
 
-function renderAssistantAnswerModel(model) {
-  if (model.isPlain) {
-    return `<div class="assistant-response"><p class="assistant-response-summary">${renderAssistantMarkdown(model.blocks[0]?.text || "")}</p></div>`;
-  }
+function renderSearchRelated(results) {
+  if (!results.length) return "";
 
-  const linkState = { linked: new Set() };
-  const parts = [];
-
-  if (model.title) parts.push(`<p class="assistant-response-title">${renderAssistantMarkdown(model.title)}</p>`);
-
-  const body = model.blocks
-    .map((block, index) => {
-      if (block.kind === "stages") return renderAssistantStageCards(block.stages, model.context);
-      if (block.kind === "heading") {
-        return `<p class="assistant-response-heading">${renderAssistantInlineText(block.text, model.context, linkState)}</p>`;
-      }
-      if (block.kind === "list") {
-        const items = block.items
-          .map((item) => `<li>${renderAssistantInlineText(item, model.context, linkState)}</li>`)
-          .join("");
-        return `<ul class="assistant-response-list">${items}</ul>`;
-      }
-      const className = index === 0 ? "assistant-response-summary" : "assistant-response-text";
-      return `<p class="${className}">${renderAssistantInlineText(block.text, model.context, linkState)}</p>`;
+  const chips = results
+    .map((result) => {
+      const link = searchResultLinkAttributes(result);
+      const label = `${renderAssistantText(result.title)}<span class="assistant-chip-note">${escapeAssistantHtml(result.service)}</span>`;
+      return link ? `<a class="assistant-chip is-result" ${link}>${label}</a>` : `<span class="assistant-chip is-result">${label}</span>`;
     })
     .join("");
 
-  parts.push(`<div class="assistant-response-body">${body}</div>`);
-  parts.push(renderAssistantRelatedLinks(model.relatedLinks));
-
-  return `<div class="assistant-response">${parts.filter(Boolean).join("")}</div>`;
+  return `<div class="assistant-links"><span class="assistant-links-label">نتائج ذات صلة</span><div class="assistant-links-row">${chips}</div></div>`;
 }
 
-function buildAssistantAnswerHtml(rawAnswer, question) {
-  return renderAssistantAnswerModel(buildAssistantAnswerModel(rawAnswer, question));
+// No passage of the guide matches: say so, and offer the services and the way to search instead.
+function renderSearchNoResult() {
+  const services = ASSISTANT_SERVICE_ENTITIES.map(
+    (service) => `<a class="assistant-chip is-service" ${assistantLinkAttributes(service)}>${escapeAssistantHtml(service.title)}</a>`,
+  ).join("");
+
+  return [
+    `<div class="assistant-response assistant-search">`,
+    `<p class="assistant-response-summary">${escapeAssistantHtml(SEARCH_NO_RESULT_TEXT)}</p>`,
+    `<p class="assistant-response-text">جرّب البحث بكلمات أخرى، مثل اسم الخدمة أو اسم المرحلة («حجز موعد التوصيل»، «ملئ النموذج»)، أو افتح إحدى الخدمات:</p>`,
+    `<div class="assistant-links"><span class="assistant-links-label">الخدمات</span><div class="assistant-links-row">${services}</div></div>`,
+    `</div>`,
+  ].join("");
+}
+
+// One clear match is shown on its own with up to three related results under it; otherwise the
+// results are listed best first.
+function buildSearchResultsHtml(search) {
+  const results = Array.isArray(search?.results) ? search.results : [];
+  if (!results.length) return renderSearchNoResult();
+
+  if (search.strong) {
+    return `<div class="assistant-response assistant-search">${renderSearchResultCard(results[0], { primary: true, showStages: true })}${renderSearchRelated(search.related || [])}</div>`;
+  }
+
+  const items = results.map((result, index) => `<li>${renderSearchResultCard(result, { showStages: index === 0 })}</li>`).join("");
+  return `<div class="assistant-response assistant-search"><p class="assistant-search-heading">أفضل النتائج</p><ol class="assistant-result-list">${items}</ol></div>`;
 }
 
 // A link pointing at the route the reader is already on does not fire `hashchange`, so the stage is
@@ -5284,25 +4859,24 @@ function focusAssistantStage(tourId, stageId) {
 
 // ---------------------------------------------------------------- Assistant onboarding guide
 // The first thing a reader sees in an empty thread, and what the "؟" button in the panel header
-// brings back at any time: what the assistant answers and one-tap example questions per service.
+// brings back at any time: what the search covers and one-tap example searches per service.
 // The service chips and their examples are derived from ASSISTANT_SERVICE_ENTITIES, so adding a
 // service there adds it here too.
 const ASSISTANT_GUIDE_INTRO =
-  "أستطيع الإجابة عن خطوات كل خدمة، المسؤول عن كل مرحلة، حالات أودو، والمستندات والحقول المطلوبة.";
+  "ابحث في دليل خدمات ما بعد البيع: مراحل كل خدمة، وما يحدث في كل مرحلة، والمصطلحات المستخدمة في النظام. تظهر النتائج من نص الدليل نفسه مع رابط إلى الشرح الكامل.";
 
-// Shown before the reader picks a service: the questions that need no service name to be clear.
+// Shown before the reader picks a service: searches that need no service name to be clear.
 const ASSISTANT_GUIDE_EXAMPLES = [
-  "ما الخدمات المتوفرة في ما بعد البيع؟",
-  "ما خطوات خدمة التوصيل من البداية إلى النهاية؟",
-  "ما الفرق بين تركيب كامل وتركيب مع توصيل؟",
+  "كيف احجز موعد رفع المقاسات؟",
+  "مراحل خدمة التوصيل",
+  "ما هي التحويلات الداخلية؟",
 ];
 
-// The four questions every service answers, filled with the service title the reader picked.
+// The searches every service answers, filled with the service title the reader picked.
 const ASSISTANT_GUIDE_QUESTION_TEMPLATES = [
-  (title) => `ما خطوات ${title} من البداية إلى النهاية؟`,
-  (title) => `من المسؤول عن كل مرحلة في ${title}؟`,
-  (title) => `ما حالات أودو التي تمر بها ${title}؟`,
-  (title) => `ما المستندات والحقول المطلوبة في ${title}؟`,
+  (title) => `مراحل ${title}`,
+  (title) => `كيف تبدأ ${title}؟`,
+  (title) => `متى تكتمل ${title}؟`,
 ];
 
 function renderAssistantGuideChip(question) {
@@ -5316,7 +4890,7 @@ function renderAssistantGuideQuestions(serviceId) {
   const questions = service
     ? ASSISTANT_GUIDE_QUESTION_TEMPLATES.map((template) => template(service.title))
     : ASSISTANT_GUIDE_EXAMPLES;
-  const label = service ? `أسئلة جاهزة عن ${service.title}` : "جرّب أحد هذه الأسئلة";
+  const label = service ? `بحث جاهز عن ${service.title}` : "جرّب أحد هذه الأمثلة";
 
   return [
     `<span class="assistant-guide-label">${escapeAssistantHtml(label)}</span>`,
@@ -5377,7 +4951,7 @@ function renderAssistantMessage(node, message) {
     const orb = document.createElement("div");
     orb.className = "thinking-orb-root";
     orb.setAttribute("role", "status");
-    orb.setAttribute("aria-label", "جاري إنشاء الإجابة");
+    orb.setAttribute("aria-label", "جاري البحث");
     node.replaceChildren(orb);
     return;
   }
@@ -5396,7 +4970,7 @@ function renderAssistantMessage(node, message) {
     return;
   }
 
-  node.innerHTML = buildAssistantAnswerHtml(message.text, message.question);
+  node.innerHTML = buildSearchResultsHtml(message.search);
 }
 
 function scrollAssistantThreadToEnd() {
@@ -5404,14 +4978,10 @@ function scrollAssistantThreadToEnd() {
   if (thread) thread.scrollTop = thread.scrollHeight;
 }
 
-// The question is sent with the page the reader has open as context. A stage link they followed is
-// sent too, so a follow-up such as "شو بيجي بعد هالمرحلة؟" resolves against the stage on screen.
+// The question is sent with the page the reader has open: when the question names no service, the
+// search ranks that page's passages first.
 function buildAssistantRequestPayload(question) {
-  return {
-    pageId: assistantContext.pageId,
-    question,
-    ...(assistantContext.stageId ? { stageId: assistantContext.stageId, stageTitle: assistantContext.stageTitle } : {}),
-  };
+  return { pageId: assistantContext.pageId, question };
 }
 
 function initPageAssistant() {
@@ -5459,8 +5029,7 @@ function initPageAssistant() {
     return node;
   }
 
-  // The answer is laid out as title / summary / body / related links, with every service, workflow
-  // and stage it names turned into a link into this site.
+  // The results replace the pending turn: passages of the guide, each linked to its page and stage.
   function resolveThinkingState(node, message) {
     window.ThinkingOrbMount?.unmount();
     answer.removeAttribute("aria-busy");
@@ -5629,12 +5198,12 @@ function initPageAssistant() {
 
       resolveThinkingState(
         pendingNode,
-        data.answer
-          ? { role: "assistant", text: data.answer, question }
-          : { role: "notice", text: "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى." },
+        response.ok && Array.isArray(data.results)
+          ? { role: "search", search: data, question }
+          : { role: "notice", text: data.answer || SEARCH_ERROR_TEXT },
       );
     } catch {
-      resolveThinkingState(pendingNode, { role: "notice", text: "تعذر الحصول على إجابة حاليًا. حاول مرة أخرى." });
+      resolveThinkingState(pendingNode, { role: "notice", text: SEARCH_ERROR_TEXT });
     } finally {
       delete submitButton.dataset.loading;
       submitButton.disabled = false;

@@ -1872,6 +1872,105 @@ button.assistant-chip {
   color: var(--color-atlassian-blue);
 }
 
+/* Search results: passages of the guide with the page and stage they come from. */
+.assistant-search-heading {
+  margin: 0;
+  color: var(--color-muted-indigo);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+}
+
+.assistant-result-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.assistant-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-12);
+  border: 1px solid rgba(9, 30, 66, 0.1);
+  border-radius: var(--radius-inputs);
+  background: var(--color-pure-white);
+}
+
+.assistant-result.is-primary {
+  gap: var(--spacing-8);
+  border-color: rgba(24, 104, 219, 0.25);
+  background: var(--surface-tinted-surface);
+}
+
+.assistant-result-meta {
+  color: var(--color-muted-indigo);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
+.assistant-result-title {
+  margin: 0;
+  color: var(--color-midnight-navy);
+  font-size: 15px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.4;
+}
+
+.assistant-result.is-primary .assistant-result-title {
+  font-family: var(--font-charlie-display);
+  font-size: 17px;
+}
+
+.assistant-result-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.assistant-result-title a:hover,
+.assistant-result-title a:focus-visible {
+  color: var(--color-atlassian-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.assistant-result-excerpt {
+  margin: 0;
+  color: var(--color-midnight-navy);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.assistant-result-open {
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-atlassian-blue);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.assistant-result-open:hover,
+.assistant-result-open:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.assistant-chip.is-result {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.assistant-chip-note {
+  color: var(--color-muted-indigo);
+  font-size: 11px;
+}
+
 .thinking-orb-root {
   width: 100%;
   min-height: 72px;

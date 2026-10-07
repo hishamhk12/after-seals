@@ -2,13 +2,9 @@ const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const { ERROR_ANSWER, handleAskPayload } = require("./askHandler");
-const { loadEnvFile } = require("./embeddingService");
 
 const PORT = Number(process.env.PORT) || 3000;
 const ROOT = __dirname;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.7-flash";
-
-loadEnvFile();
 
 const mimeTypes = {
   ".css": "text/css; charset=utf-8",
@@ -43,8 +39,7 @@ const server = http.createServer(async (request, response) => {
 
 server.listen(PORT, () => {
   console.log(`Training portal server running at http://localhost:${PORT}`);
-  console.log(`Gemini key loaded: ${Boolean(process.env.ai)}`);
-  console.log(`Gemini model: ${GEMINI_MODEL}`);
+  console.log("Assistant: local knowledge search (no AI service)");
 });
 
 async function handleAsk(request, response) {

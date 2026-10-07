@@ -637,21 +637,21 @@
       </div>
     </div>
 
-    <section id="pageAssistant" class="page-assistant" aria-label="المساعد الشخصي" hidden>
+    <section id="pageAssistant" class="page-assistant" aria-label="مساعد دليل خدمات ما بعد البيع" hidden>
       <button id="assistantToggle" class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">
         <span class="assistant-toggle-dot" aria-hidden="true"></span>
-        <span>اسأل عن خدمات ما بعد البيع</span>
+        <span>ابحث في دليل الخدمات</span>
       </button>
 
       <div id="assistantPanel" class="assistant-panel" hidden>
         <div class="assistant-header">
           <span class="assistant-header-text">
-            <strong>المساعد الشخصي</strong>
+            <strong>مساعد دليل خدمات ما بعد البيع</strong>
             <span id="assistantContextLabel" class="assistant-context"></span>
           </span>
           <span class="assistant-header-actions">
-            <button id="assistantGuideButton" class="assistant-help" type="button" aria-label="كيف أستخدم المساعد" title="كيف أستخدم المساعد">؟</button>
-            <button id="assistantClose" class="assistant-close" type="button" aria-label="إغلاق المساعد">×</button>
+            <button id="assistantGuideButton" class="assistant-help" type="button" aria-label="كيف أستخدم البحث" title="كيف أستخدم البحث">؟</button>
+            <button id="assistantClose" class="assistant-close" type="button" aria-label="إغلاق البحث">×</button>
           </span>
         </div>
         <div id="assistantAnswer" class="assistant-answer" aria-live="polite">
@@ -660,8 +660,8 @@
         <form id="assistantForm" class="assistant-form">
           <label class="sr-only" for="assistantQuestion">السؤال</label>
           <div class="assistant-prompt-shell">
-            <textarea id="assistantQuestion" name="question" maxlength="500" autocomplete="off" rows="1" placeholder="اكتب سؤالك هنا"></textarea>
-            <button class="assistant-send" type="submit" aria-label="إرسال السؤال" disabled>
+            <textarea id="assistantQuestion" name="question" maxlength="500" autocomplete="off" rows="1" placeholder="اكتب سؤالك أو كلمات البحث"></textarea>
+            <button class="assistant-send" type="submit" aria-label="بحث" disabled>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>

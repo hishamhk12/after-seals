@@ -587,14 +587,14 @@ const chapters = [
     items: [],
   },
   // Customer Service employee tools: supporting navigation guides, not Customer Service workflows.
-  // Placeholder routes until their guide content is built.
+  // الدخول إلى الخدمات is a guide page (renderAccessServicesGuide); the invoices tool is still a
+  // placeholder route until its guide content is built.
   {
     id: "customer-service-access-services",
     number: "أداة مساندة",
     title: "الدخول إلى الخدمات",
     description: "استعراض خدمات ما بعد البيع ومتابعة مهام العميل وحالة الخدمة.",
     visible: true,
-    placeholderOnly: true,
     items: [],
   },
   {
@@ -1762,6 +1762,73 @@ function renderCustomerServiceSources() {
     </div>`;
 }
 
+// أداة مساندة — الدخول إلى الخدمات: a guide page in the same style as الدخول إلى النظام
+// (renderOdooEntryContent). Screenshots from assest/خدمة العملاء/الدخول الى الخدمات in order:
+// 1 → 01, 2 → 02, 3 → 04, 3.5 → 05. Step 03 has no screenshot: none shows the project being opened.
+function renderAccessServicesGuide() {
+  const chapter = getChapter("customer-service-access-services");
+  const images = "assest/خدمة العملاء/الدخول الى الخدمات";
+  // Arabic meaning first, the original Odoo term in parentheses, kept on one line.
+  const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${en.replace(/ /g, "\u00A0").replace(/-/g, "\u2011")})</bdi>`;
+  const shot = (file, alt, label, frameClass = "guide-screenshot") => `
+          <figure class="odoo-screenshot-frame ${frameClass}">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+  const section = (number, id, title, body) => `
+      <section class="guide-section" aria-labelledby="${id}">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">${number}</span>
+          <h2 id="${id}">${title}</h2>
+        </div>
+        <div class="guide-section-body">${body}
+        </div>
+      </section>`;
+
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>${chapter.description}</p>
+    </header>
+
+    <div class="odoo-entry-guide">
+      ${section("01", "accessServicesProjectTitle", `فتح ${term("المشاريع", "Project")}`, `
+          <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("المشاريع", "Project")}.</p>
+          <p class="guide-key-term">${term("المشاريع", "Project")}</p>
+          ${shot("1.png", "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Project", "تطبيق المشاريع", "guide-screenshot guide-screenshot-portrait")}`)}
+
+      ${section("02", "accessServicesProjectsTitle", "عرض مشاريع خدمات ما بعد البيع", `
+          <p>بعد فتح تطبيق ${term("المشاريع", "Project")} تظهر صفحة ${term("المشاريع", "Projects")}، وتُعرض فيها مشاريع الخدمات على شكل بطاقات مجمّعة في أعمدة، ويظهر على كل بطاقة عدد ${term("المهام", "Tasks")} الخاصة بالمشروع.</p>
+          <p>ومن الخدمات الظاهرة في الصفحة:</p>
+          <ul>
+            <li>عمود خدمات مابعد البيع: خدمة التركيب، خدمة رفع القياسات، خدمة تصميم، التحويلات الداخلية.</li>
+            <li>عمود ${term("خدمات ما بعد البيع", "After-sales services")}: ${term("خدمة التوصيل", "Delivery service")}، خدمة التصنيع، الصيانة الميدانية، الاستلام من المستودع.</li>
+          </ul>
+          ${shot("2.png", "صفحة المشاريع في تطبيق Project وتظهر فيها مشاريع خدمات ما بعد البيع وعدد المهام لكل مشروع", "صفحة المشاريع")}`)}
+
+      ${section("03", "accessServicesSelectTitle", "اختيار الخدمة المطلوبة", `
+          <p>من صفحة ${term("المشاريع", "Projects")}، يختار الموظف مشروع الخدمة المطلوبة حسب الخدمة التي يتابعها مع العميل، فتُفتح لوحة مهام هذه الخدمة.</p>
+          <aside class="guide-note">
+            <strong>ملاحظة:</strong>
+            يعرض المثال في الخطوة التالية لوحة مهام خدمة التركيب.
+          </aside>`)}
+
+      ${section("04", "accessServicesBoardTitle", "فتح لوحة مهام الخدمة", `
+          <p>تظهر لوحة مهام الخدمة المختارة، وتُعرض فيها المهام موزعة على مراحل الخدمة. في مثال خدمة التركيب تظهر المراحل: طلب تركيب، جدولة خدمة التركيب، في انتظار تعيين الفني، ملئ النموذج، جاري التركيب، تم التركيب.</p>
+          <p>يظهر على كل بطاقة مهمة رقم الفاتورة واسم العميل و${term("عدد الأيام في المرحلة", "days in stage")}، ويظهر في شريط البحث فلتر ${term("مفتوح", "Open")} مطبقًا على اللوحة.</p>
+          ${shot("3.png", "لوحة مهام خدمة التركيب مع تحديد شريط البحث وفلتر Open", "لوحة مهام الخدمة")}`)}
+
+      ${section("05", "accessServicesSearchTitle", "استخدام أدوات البحث والتصفية عند الحاجة", `
+          <p>عند الحاجة إلى الوصول إلى مهمة معينة أو عرض المهام بطريقة مختلفة، يتم الضغط على السهم بجانب شريط البحث لفتح خيارات البحث، وتتضمن:</p>
+          <ul>
+            <li>${term("الفلاتر", "Filters")}: مثل ${term("مهامي", "My Tasks")}، ${term("غير مُسندة", "Unassigned")}، ${term("مفتوح", "Open")}، ${term("مغلق", "Closed")}.</li>
+            <li>${term("التجميع حسب", "Group By")}: مثل ${term("المرحلة", "Stage")}، ${term("المُسند إليهم", "Assignees")}، ${term("المشروع", "Project")}، ${term("الأولوية", "Priority")}.</li>
+            <li>${term("المفضلة", "Favorites")}: ${term("حفظ البحث الحالي", "Save current search")}.</li>
+          </ul>
+          ${shot("3.5.png", "قائمة خيارات البحث في لوحة مهام الخدمة وتظهر فيها أقسام Filters و Group By و Favorites", "خيارات البحث")}`)}
+    </div>`;
+}
+
 // `title` overrides the chapter title on the overview card only; `tool` renders the lighter card used
 // for the employee tools.
 function renderCustomerServiceEntryCard(chapterId, meta, { title, tool = false } = {}) {
@@ -2895,6 +2962,7 @@ function renderBookPortal() {
       "customer-service-sources": renderCustomerServiceSources,
       "customer-service-complaints": renderComplaintsWorkflow,
       "customer-service-maintenance": renderMaintenanceWorkflow,
+      "customer-service-access-services": renderAccessServicesGuide,
     };
     if (customerServiceChapterRenderers[chapter.id]) {
       portal.innerHTML = customerServiceChapterRenderers[chapter.id]();

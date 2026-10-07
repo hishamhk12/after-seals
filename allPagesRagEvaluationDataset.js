@@ -103,6 +103,12 @@ const pageTests = [
     expect: [["تحويل إلى تذكرة", "Convert to Ticket"], ["محوله"]],
   }),
   t("customer-service-B-converted-assign", "customer-service", "B", "ماذا يحدث عند نقل التذكرة المحوّلة من جديد إلى مسند إلى؟", { expect: [["تلقائي"]] }),
+  t("customer-service-B-no-account", "customer-service", "B", "كيف أسجل شكوى لعميل ليس له حساب أو فاتورة؟", {
+    expect: [["جهات الاتصال", "Contacts"], ["كرت"]],
+  }),
+  t("customer-service-D-administrative-saved", "customer-service", "D", "ماذا يحدث بعد حفظ تذكرة نوعها شكوى إدارية؟", {
+    expect: [["قيد التنفيذ", "In Progress"], ["تلقائي"]],
+  }),
   t("customer-service-B-escalated", "customer-service", "B", "ما حالة رابط الحجز في تبويب المواعيد عندما لا يحجز العميل؟", { expect: [["مُصعَّد", "مصعد", "Escalated"]] }),
 
   // Shared terms must stay on the current page's workflow.

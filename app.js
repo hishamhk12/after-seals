@@ -1719,6 +1719,7 @@ const customerServiceSources = [
     title: "من العميل مباشرة",
     description: "يتواصل العميل مباشرة مع خدمة العملاء لتقديم استفسار أو شكوى.",
     examples: ["استفسار", "شكوى"],
+    flow: renderNoAccountComplaintFlow,
   },
   {
     title: "من النظام",
@@ -1791,6 +1792,80 @@ function renderSourceExampleFlow({ images, heading, intro, steps }) {
           <h3 class="installation-substep-heading"><strong>مثال: ${heading}</strong></h3>
           <p class="field-explanation-intro">${intro}</p>
         </div>${steps.map(step).join("")}`;
+}
+
+// مصدر «من العميل مباشرة»: an administrative complaint from a customer with no account or invoice.
+// Frames: a new contact, the saved contact, a ticket opened from the contact, the saved
+// Administrative Complaint (In Progress), Share Ticket, and the copied ticket link.
+function renderNoAccountComplaintFlow() {
+  const term = sourceTerm;
+  return renderSourceExampleFlow({
+    images: "assest/review_selected_frames/03_شكوى_بلا_حساب",
+    heading: "شكوى إدارية لعميل ليس له حساب",
+    intro: "عندما يتواصل العميل مباشرة بشكوى وليس له حساب أو فاتورة في النظام، مثل شكوى عن استقبال غير جيد، يتم إنشاء كرت عميل له أولًا، ثم إنشاء التذكرة من كرت العميل.",
+    steps: [
+      {
+        badge: "أ",
+        id: "noAccountNewContactTitle",
+        title: "إنشاء كرت عميل جديد",
+        explanation: `من تطبيق ${term("جهات الاتصال", "Contacts")}، يتم الضغط على ${term("جديد", "New")} لفتح كرت عميل جديد.`,
+        file: "00-35-12__frame_002112500.png",
+        alt: "كرت جهة اتصال جديد فارغ في تطبيق Contacts",
+        label: "كرت عميل جديد",
+      },
+      {
+        badge: "ب",
+        id: "noAccountContactSavedTitle",
+        title: "إدخال بيانات العميل وحفظ الكرت",
+        explanation: `يتم إدخال اسم العميل والبريد الإلكتروني ورقم الجوال والعنوان، ثم حفظ الكرت، فيظهر في سجل الكرت ${term("تم إنشاء جهة الاتصال", "Contact created")}.`,
+        file: "00-35-41__frame_002141500.png",
+        alt: "كرت العميل بعد إدخال الاسم والبريد ورقم الجوال والعنوان ويظهر في سجله Contact created",
+        label: "كرت العميل بعد الحفظ",
+      },
+      {
+        badge: "ج",
+        id: "noAccountTicketFromContactTitle",
+        title: "فتح تذكرة جديدة من كرت العميل",
+        explanation: `من كرت العميل، يتم فتح تذاكره ثم الضغط على ${term("جديد", "New")}، كما يوضح مسار التنقل أعلى الصفحة: ${term("جهات الاتصال", "Contacts")} ← اسم العميل ← ${term("مكتب المساعدة", "Helpdesk")}. تظهر في التذكرة بيانات ${term("العميل", "Customer")} و${term("رقم الجوال", "Phone")} ضمن فريق ${term("خدمة العملاء", "Customer Care")}، بينما تبقى حقول ${term("حالة العملية", "Operation Case")} و${term("الفاتورة", "Invoice")} و${term("المهمة", "Task")} فارغة لعدم وجود فاتورة.`,
+        file: "00-35-55__frame_002155000.png",
+        alt: "تذكرة جديدة مفتوحة من كرت العميل وتظهر فيها بيانات العميل ورقم الجوال بينما حقول Operation Case و Invoice و Task فارغة",
+        label: "تذكرة جديدة من كرت العميل",
+      },
+      {
+        badge: "د",
+        id: "noAccountAdministrativeTitle",
+        title: `${term("شكوى إدارية", "Administrative Complaint")} وحفظ التذكرة`,
+        explanation: `يتم إدخال عنوان الشكوى ووصفها، مثل «استقبال غير جيد»، واختيار ${term("شكوى إدارية", "Administrative Complaint")} في حقل ${term("نوع الاستفسار", "Inquiry Type")}، ثم الحفظ. بعد الحفظ تنتقل التذكرة تلقائيًا إلى مرحلة ${term("قيد التنفيذ", "In Progress")} وتُسند إلى الموظف الذي أنشأها، ويُضاف وسم «شكوى إدارية»، ويظهر زر ${term("مشاركة التذكرة", "Share Ticket")}.`,
+        file: "00-36-17__frame_002177000.png",
+        alt: "تذكرة استقبال غير جيد بنوع Administrative Complaint في مرحلة In Progress وعليها وسم شكوى إدارية ويظهر زر Share Ticket",
+        label: "الشكوى الإدارية بعد الحفظ",
+      },
+      {
+        badge: "هـ",
+        id: "noAccountShareTitle",
+        title: "مشاركة التذكرة مع الجهة المختصة",
+        explanation: `من زر ${term("مشاركة التذكرة", "Share Ticket")} تظهر نافذة ${term("مشاركة المستند", "Share Document")}، وعند المشاركة مع ${term("مستخدمون داخليون", "Internal Users")} يتم اختيار الأشخاص من قائمة ${term("المستلمين", "Recipients")}.`,
+        file: "00-36-37__frame_002197500.png",
+        alt: "نافذة Share Document مع اختيار Internal Users وقائمة المستلمين",
+        label: "مشاركة التذكرة",
+      },
+      {
+        badge: "و",
+        id: "noAccountCopyLinkTitle",
+        title: "نسخ رابط التذكرة",
+        explanation: `كما يمكن نسخ رابط التذكرة من حقل ${term("الرابط", "Link")} في النافذة نفسها وإرساله، مثل إرساله بالبريد الإلكتروني.`,
+        file: "00-36-56__frame_002216083.png",
+        alt: "نافذة Share Document بعد نسخ رابط التذكرة وظهور Copied",
+        label: "نسخ رابط التذكرة",
+      },
+      {
+        badge: "ز",
+        id: "noAccountFollowUpTitle",
+        title: "متابعة التذكرة",
+        explanation: `بعد المشاركة، تتم متابعة التذكرة بالطريقة نفسها الموضحة في <a href="${routeHref("chapter", "customer-service-complaints")}/internal-follow-up">مرحلة المتابعة الداخلية</a> في صفحة الشكاوى / الاستفسارات.`,
+      },
+    ],
+  });
 }
 
 // مصدر «من النظام»: the Appointment not booked ticket. Frames: the OdooBot message in the delivery

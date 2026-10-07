@@ -676,7 +676,7 @@ const SERVICE_TERMS = {
   internal_transfer: ["التحويلات الداخلية", "التحويل الداخلي", "النقل الداخلي", "Internal Transfer"],
   maintenance: ["الصيانة الميدانية", "الصيانة", "Field Maintenance", "Maintenance"],
   warehouse_pickup: ["الاستلام من المستودع", "استلام العميل البضاعة", "استلام البضاعة من المستودع", "يستلم من المستودع", "Warehouse Pickup"],
-  customer_service: ["خدمة العملاء", "الشكاوى", "شكوى", "الاستفسارات", "Customer Service"],
+  customer_service: ["خدمة العملاء", "الشكاوى", "شكوى", "الاستفسارات", "Customer Service", "مكتب المساعدة", "Helpdesk", "التذكرة", "التذاكر", "Customer Care"],
 };
 
 const GLOBAL_INTENT_TERMS = [

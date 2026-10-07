@@ -942,6 +942,8 @@ const PAGE_ASSISTANT_ROUTES = {
     "customer-service-sources": "customer-service",
     "customer-service-complaints": "complaints",
     "customer-service-maintenance": "maintenance",
+    "customer-service-access-services": "access-services",
+    "customer-service-access-invoices": "access-invoices",
   },
 };
 

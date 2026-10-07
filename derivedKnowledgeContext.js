@@ -30,6 +30,8 @@ const CATALOG_ORDER = [
   "customer-service",
   "complaints",
   "maintenance",
+  "access-services",
+  "access-invoices",
 ];
 
 const LEGACY_SERVICES = { "intro-tour": ["delivery"] };

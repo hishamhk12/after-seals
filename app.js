@@ -1993,6 +1993,8 @@ function renderAccessServicesGuide() {
   const chapter = getChapter("customer-service-access-services");
   const images = "assest/خدمة العملاء/الدخول الى الخدمات";
   // Arabic meaning first, the original Odoo term in parentheses, kept on one line.
+  // Section headings sit in a narrow 190px column, so there the English term may wrap between words.
+  const headTerm = (ar, en) => `${ar} <bdi dir="ltr">(${en})</bdi>`;
   const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${en.replace(/ /g, "\u00A0").replace(/-/g, "\u2011")})</bdi>`;
   const shot = (file, alt, label, frameClass = "guide-screenshot") => `
           <figure class="odoo-screenshot-frame ${frameClass}">
@@ -2016,7 +2018,7 @@ function renderAccessServicesGuide() {
     </header>
 
     <div class="odoo-entry-guide">
-      ${section("01", "accessServicesProjectTitle", `فتح ${term("المشاريع", "Project")}`, `
+      ${section("01", "accessServicesProjectTitle", `فتح ${headTerm("المشاريع", "Project")}`, `
           <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("المشاريع", "Project")}.</p>
           <p class="guide-key-term">${term("المشاريع", "Project")}</p>
           ${shot("1.png", "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Project", "تطبيق المشاريع", "guide-screenshot guide-screenshot-portrait")}`)}
@@ -2062,6 +2064,8 @@ function renderAccessInvoicesGuide() {
   const images = "assest/خدمة العملاء/الدخول الى فواتير العميل";
   // Arabic meaning first, the original Odoo term in parentheses. Short terms stay on one line;
   // long ones (e.g. SAP Collection Warehouse Code) may wrap between words on narrow screens.
+  // Section headings sit in a narrow 190px column, so there the English term may wrap between words.
+  const headTerm = (ar, en) => `${ar} <bdi dir="ltr">(${en})</bdi>`;
   const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${(en.length > 22 ? en : en.replace(/ /g, "\u00A0")).replace(/-/g, "\u2011")})</bdi>`;
   const shot = (file, alt, label, frameClass = "guide-screenshot") => `
           <figure class="odoo-screenshot-frame ${frameClass}">
@@ -2090,7 +2094,7 @@ function renderAccessInvoicesGuide() {
     </header>
 
     <div class="odoo-entry-guide">
-      ${section("01", "accessInvoicesContactsTitle", `فتح ${term("جهات الاتصال", "Contacts")}`, `
+      ${section("01", "accessInvoicesContactsTitle", `فتح ${headTerm("جهات الاتصال", "Contacts")}`, `
           <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("جهات الاتصال", "Contacts")}.</p>
           <p class="guide-key-term">${term("جهات الاتصال", "Contacts")}</p>
           ${note("الصور في هذا الدليل أمثلة مأخوذة من عملاء وفواتير مختلفة، والهدف منها توضيح أماكن التنقل والمعلومات المتاحة لموظف خدمة العملاء، وليست خطوات معاملة واحدة متصلة.")}
@@ -2174,6 +2178,8 @@ function renderAccessInvoicesGuide() {
 function renderMaintenanceRequestGuide() {
   const chapter = getChapter("customer-service-maintenance-request");
   const images = "assest/review_selected_frames/04_New_Operation";
+  // Section headings sit in a narrow 190px column, so there the English term may wrap between words.
+  const headTerm = (ar, en) => `${ar} <bdi dir="ltr">(${en})</bdi>`;
   const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${(en.length > 22 ? en : en.replace(/ /g, "\u00A0")).replace(/-/g, "\u2011")})</bdi>`;
   const shot = (file, alt, label) => `
           <figure class="odoo-screenshot-frame guide-screenshot">
@@ -2206,7 +2212,7 @@ function renderMaintenanceRequestGuide() {
           <p>يبدأ إنشاء طلب الصيانة من فاتورة العميل. للوصول إلى الفاتورة، يتم اتباع خطوات <a href="${routeHref("chapter", "customer-service-access-invoices")}">الدخول إلى فواتير العميل</a>.</p>
           ${note("الصور في هذا الدليل مأخوذة من فاتورتين مختلفتين لنفس العميل، والهدف منها توضيح الخطوات، وليست معاملة واحدة متصلة.")}`)}
 
-      ${section("02", "maintenanceRequestNewOperationTitle", `فتح نافذة ${term("عملية جديدة", "New Operation")}`, `
+      ${section("02", "maintenanceRequestNewOperationTitle", `فتح نافذة ${headTerm("عملية جديدة", "New Operation")}`, `
           <p>من أعلى الفاتورة، يتم الضغط على زر ${term("عملية جديدة", "New Operation")}، فتظهر نافذة ${term("عملية جديدة", "New Operation")}، ويكون حقل ${term("الفاتورة", "Invoice")} معبأً برقم الفاتورة.</p>
           <p>تظهر في النافذة الحقول التالية:</p>
           <ul>
@@ -2219,24 +2225,24 @@ function renderMaintenanceRequestGuide() {
           </ul>
           ${shot("00-53-55__frame_003235500.png", "نافذة New Operation مفتوحة من فاتورة العميل وحقل Invoice معبأ برقم الفاتورة", "نافذة عملية جديدة")}`)}
 
-      ${section("03", "maintenanceRequestServiceTitle", `اختيار ${term("الخدمة", "Service")}`, `
+      ${section("03", "maintenanceRequestServiceTitle", `اختيار ${headTerm("الخدمة", "Service")}`, `
           <p>في حقل ${term("مجموعة المواد / عائلة الخدمة", "Material Group / Service Family")} يتم اختيار صيانة، ثم في حقل ${term("الخدمة", "Service")} يتم اختيار نوع الصيانة المطلوب من القائمة، مثل: صيانة - مطابخ، صيانه ديكورات، صيانه صحية، صيانه مغاسل.</p>
           ${note(`حقل ${term("الخدمة", "Service")} إلزامي. إذا تم الضغط على ${term("إنشاء العملية", "Create Operation")} دون اختياره، تظهر رسالة ${term("حقول إلزامية ناقصة", "Missing required fields")} ويظهر اسم الحقل باللون الأحمر.`)}
           ${shot("00-55-40__frame_003340000.png", "قائمة الخدمات في حقل Service داخل نافذة New Operation مع رسالة Missing required fields", "اختيار الخدمة")}`)}
 
-      ${section("04", "maintenanceRequestSourceTitle", `اختيار ${term("المصدر", "Source")}`, `
+      ${section("04", "maintenanceRequestSourceTitle", `اختيار ${headTerm("المصدر", "Source")}`, `
           <p>في حقل ${term("المصدر", "Source")} تظهر الخيارات: ${term("يدوي", "Manual")}، ${term("الضمان", "Warranty")}، ${term("مكتب المساعدة", "Helpdesk")}.</p>
           <p>في المثال تم اختيار ${term("مكتب المساعدة", "Helpdesk")}.</p>
           ${shot("00-54-19__frame_003259500.png", "نافذة New Operation بعد اختيار صيانة وصيانه صحية وتظهر خيارات حقل Source وهي Manual و Warranty و Helpdesk", "اختيار المصدر")}`)}
 
-      ${section("05", "maintenanceRequestPriorityTitle", `تحديد ${term("الأولوية", "Priority")}`, `
+      ${section("05", "maintenanceRequestPriorityTitle", `تحديد ${headTerm("الأولوية", "Priority")}`, `
           <p>في حقل ${term("الأولوية", "Priority")} تظهر الخيارات: ${term("عادية", "Normal")}، ${term("منخفضة", "Low")}، ${term("عالية", "High")}، ${term("عاجلة", "Urgent")}.</p>
           ${shot("00-54-25__frame_003265000.png", "خيارات حقل Priority في نافذة New Operation وهي Normal و Low و High و Urgent", "تحديد الأولوية")}`)}
 
-      ${section("06", "maintenanceRequestCreateTitle", `${term("إنشاء العملية", "Create Operation")}`, `
+      ${section("06", "maintenanceRequestCreateTitle", `${headTerm("إنشاء العملية", "Create Operation")}`, `
           <p>بعد تعبئة البيانات، ويمكن إضافة وصف للطلب في حقل ${term("الوصف", "Description")}، يتم الضغط على ${term("إنشاء العملية", "Create Operation")} لتسجيل طلب الصيانة.</p>`)}
 
-      ${section("07", "maintenanceRequestOperationsTitle", `متابعة الطلب من تبويب ${term("العمليات", "Operations")}`, `
+      ${section("07", "maintenanceRequestOperationsTitle", `متابعة الطلب من تبويب ${headTerm("العمليات", "Operations")}`, `
           <p>من تبويب ${term("العمليات", "Operations")} في الفاتورة تظهر العمليات المرتبطة بها، ويُعرض لكل عملية:</p>
           <ul>
             <li>${term("مرجع العملية", "Operation Reference")}.</li>

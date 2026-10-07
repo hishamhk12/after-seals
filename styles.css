@@ -3165,6 +3165,20 @@ tbody tr:last-child td {
   }
 }
 
+/* Helpdesk (complaints) reference notes — ticket stages and Inquiry Types — between the
+   Delivery-style sub-steps. */
+.customer-service-complaints-workflow .helpdesk-reference {
+  margin-top: var(--spacing-32);
+}
+
+.customer-service-complaints-workflow .helpdesk-reference .installation-substep-heading {
+  margin-bottom: var(--spacing-12);
+}
+
+.customer-service-complaints-workflow .helpdesk-reference .driver-portal-flow {
+  margin-bottom: var(--spacing-8);
+}
+
 /* Phone-width fallback for the Customer Service complaints and Maintenance stages. */
 @media (max-width: 720px) {
   #bookPortal .customer-service-complaints-workflow > .case-header .workflow-flow,

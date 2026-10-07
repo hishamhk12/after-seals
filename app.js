@@ -246,15 +246,17 @@ const compositeManufacturingTour = {
   ],
 };
 
+// الشكاوى / الاستفسارات as the Helpdesk training flow (00–04), built from the screenshots in
+// assest/خدمة العملاء/helpdesk.
 const complaintsTour = {
   id: "customer-service-complaints",
   title: "الشكاوى / الاستفسارات",
   children: [
-    { id: "complaints-received", title: "شكوى/استفسار العميل", targetId: "complaints-step-received" },
-    { id: "complaints-type", title: "تحديد النوع", targetId: "complaints-step-type" },
-    { id: "complaints-forward", title: "ارسال إلى الجهة المختصة", targetId: "complaints-step-forward" },
-    { id: "complaints-follow-up", title: "متابعة", targetId: "complaints-step-follow-up" },
-    { id: "complaints-resolution", title: "حل أو تصعيد", targetId: "complaints-step-resolution" },
+    { id: "helpdesk-entry", title: "الدخول إلى Helpdesk", targetId: "complaints-step-helpdesk-entry" },
+    { id: "ticket-from-invoice", title: "إنشاء تذكرة من فاتورة العميل", targetId: "complaints-step-ticket-from-invoice" },
+    { id: "ticket-details", title: "إدخال بيانات التذكرة", targetId: "complaints-step-ticket-details" },
+    { id: "ticket-save", title: "حفظ التذكرة", targetId: "complaints-step-ticket-save" },
+    { id: "internal-follow-up", title: "المتابعة الداخلية", targetId: "complaints-step-internal-follow-up" },
   ],
 };
 
@@ -1491,57 +1493,126 @@ function renderManufacturingWorkflow() {
     </div>`;
 }
 
-function renderResponsibilityWorkflow(tour, stages, className, titleIdPrefix) {
+// الشكاوى / الاستفسارات — the Helpdesk training flow. Same markup and classes as the Delivery flow
+// (#workflowContent in index.html): numbered sections, lettered sub-steps (title → explanation →
+// screenshot), full-width frames for full Odoo screens and booking-tour-grid pairs for related steps.
+// Screenshots: helpdesk/1–3 → 00; complaint folder 1–2 → 01, 3–5 → 02, 6–7 → 03 (ticket #00265);
+// 8–11 → 04 (a different ticket, #00202).
+function renderComplaintsWorkflow() {
+  const helpdesk = "assest/خدمة العملاء/helpdesk";
+  const tickets = `${helpdesk}/من وين تأتي الشكوى وانواع الشكوى`;
+  const ltr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+  const shot = (src, alt, label, frameClass = "") => `
+            <figure class="odoo-screenshot-frame${frameClass ? ` ${frameClass}` : ""}">
+              <img src="${src}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+            </figure>`;
+  const substep = (badge, id, title, explanation, figure, articleClass = "") => `
+          <article class="training-screen-column${articleClass ? ` ${articleClass}` : ""}" aria-labelledby="${id}">
+            <div class="section-title compact">
+              <span class="icon-tile" aria-hidden="true">${badge}</span>
+              <div><h2 id="${id}">${title}</h2></div>
+            </div>
+            ${figure}
+            <div class="field-explanation" aria-label="${title.replace(/<[^>]+>/g, "")}">
+              <p class="field-explanation-intro">${explanation}</p>
+            </div>
+          </article>`;
+  const single = (...args) => substep(...args, "booking-confirmation-step");
+  const pair = (...steps) => `
+        <div class="booking-tour-grid">${steps.join("")}
+        </div>`;
+  const reference = (title, body) => `
+        <div class="field-explanation helpdesk-reference">
+          <h3 class="installation-substep-heading"><strong>${title}</strong></h3>
+          ${body}
+        </div>`;
+
+  const bodies = [
+    // 00 — الدخول إلى Helpdesk
+    `
+        <p class="field-explanation-intro" dir="rtl">تتم معالجة الشكاوى والاستفسارات من خلال تطبيق ${ltr("Helpdesk")}، حيث تُسجَّل الحالة على شكل تذكرة ${ltr("(Ticket)")} ضمن فريق ${ltr("Customer Care")}.</p>
+        ${single("أ", "helpdeskAppTitle", `فتح تطبيق ${ltr("Helpdesk")}`,
+          `من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${ltr("Helpdesk")}.`,
+          shot(`${helpdesk}/1.png`, "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Helpdesk", "تطبيق Helpdesk", "booking-confirmation-frame"))}
+        ${single("ب", "helpdeskTeamTitle", `الدخول إلى ${ltr("Customer Care")} وفتح ${ltr("Tickets")}`,
+          `تظهر صفحة ${ltr("Helpdesk Overview")}، ومنها يتم الضغط على زر ${ltr("Tickets")} داخل بطاقة فريق ${ltr("Customer Care")} لعرض تذاكر الفريق.`,
+          shot(`${helpdesk}/2.png`, "صفحة Helpdesk Overview مع تحديد زر Tickets في بطاقة فريق Customer Care", "بطاقة فريق Customer Care"))}
+        ${single("ج", "helpdeskBoardTitle", "عرض لوحة التذاكر",
+          `تظهر لوحة تذاكر ${ltr("Customer Care")} وفيها التذاكر موزعة على مراحل ${ltr("Helpdesk")}، ويظهر على كل بطاقة عنوان التذكرة ورقمها واسم العميل والوسوم ${ltr("(Tags)")} الخاصة بها.`,
+          shot(`${helpdesk}/3.png`, "لوحة تذاكر Customer Care وتظهر فيها مراحل New و Assigned to و In Progress و waiting on CS و Solved", "لوحة التذاكر"))}
+        ${reference(`مراحل التذكرة في ${ltr("Helpdesk")}`, `
+          <p class="driver-portal-flow">${ltr("New")} ← ${ltr("Assigned to")} ← ${ltr("In Progress")} ← ${ltr("waiting on CS")} ← ${ltr("Solved")}</p>
+          <p class="field-explanation-intro">كما تتوفر مرحلة ${ltr("Cancelled")} ضمن مراحل لوحة التذاكر.</p>`)}`,
+    // 01 — إنشاء تذكرة من فاتورة العميل
+    `
+        <p class="field-explanation-intro" dir="rtl">يمكن إنشاء التذكرة من داخل فاتورة العميل، بحيث ترتبط التذكرة بالعميل والفاتورة الخاصة بالشكوى أو الاستفسار.</p>
+        ${single("أ", "ticketInvoiceTitle", `فتح فاتورة العميل والدخول إلى ${ltr("Helpdesk")}`,
+          `من فاتورة العميل، يتم الضغط على زر ${ltr("Helpdesk")} أعلى الفاتورة لعرض التذاكر المرتبطة بها، ويظهر على الزر عدد هذه التذاكر.`,
+          shot(`${tickets}/1 انشئ تذكرة للعميل على مكشلة معينة.png`, "فاتورة العميل في نظام خدمات مابعد البيع مع تحديد زر Helpdesk", "زر Helpdesk في فاتورة العميل"))}
+        ${single("ب", "ticketListTitle", "عرض التذاكر الموجودة وإنشاء تذكرة جديدة",
+          `تظهر قائمة التذاكر الموجودة على هذه الفاتورة مع المرحلة الحالية لكل تذكرة، ولإنشاء تذكرة جديدة يتم الضغط على زر ${ltr("New")}.`,
+          shot(`${tickets}/2 هون منشوف التذاكر الموجودة على هل فاتورة.png`, "قائمة التذاكر الموجودة على الفاتورة مع تحديد زر New لإنشاء تذكرة جديدة", "قائمة تذاكر الفاتورة"))}`,
+    // 02 — إدخال بيانات التذكرة
+    `
+        <p class="field-explanation-intro" dir="rtl">بعد الضغط على ${ltr("New")} يُفتح نموذج التذكرة الجديدة ضمن فريق ${ltr("Customer Care")}، وتظهر فيه بيانات العميل ${ltr("(Customer)")} و${ltr("Operation Case")} والفاتورة ${ltr("(Invoice)")}، ثم يتم إدخال بيانات الشكوى أو الاستفسار.</p>
+        ${single("أ", "ticketMainDataTitle", "عنوان التذكرة ونوعها ووصفها وأولويتها",
+          `يتم إدخال اسم الشكوى كعنوان للتذكرة، مثل «تأخير التوصيل»، ثم اختيار نوع الحالة من حقل ${ltr("Inquiry Type")}، وكتابة تفاصيل الحالة في تبويب ${ltr("Description")}، وتحديد أولوية التذكرة ${ltr("(Priority)")} من خلال النجوم.`,
+          shot(`${tickets}/3 هون منحط اسم الشكوى ونوع الشكوى  وديسكبريشن وقوة العميل يعني البيروتي.png`, "نموذج تذكرة جديدة بعنوان تأخير التوصيل مع تحديد حقول Inquiry Type و Priority و Description", "بيانات التذكرة"))}
+        ${reference(`أنواع الحالة في حقل ${ltr("Inquiry Type")}`, `
+          <p class="field-explanation-intro">يحتوي حقل ${ltr("Inquiry Type")} على أربعة أنواع: ${ltr("Direct Inquiry")} (استفسار مباشر)، ${ltr("Indirect Inquiry")} (استفسار غير مباشر)، ${ltr("Technical Complaint")} (شكوى فنية)، ${ltr("Administrative Complaint")} (شكوى إدارية).</p>`)}
+        ${pair(
+          substep("ب", "ticketAssigneeTitle", `تعيين المسؤول ${ltr("(Assigned to)")}`,
+            `يتم اختيار الشخص المسؤول عن متابعة الحالة مع العميل من حقل ${ltr("Assigned to")}.`,
+            shot(`${tickets}/4 عميل اسين لشخص للمتابعه مع العميل .png`, "قائمة المستخدمين في حقل Assigned to داخل التذكرة", "حقل Assigned to")),
+          substep("ج", "ticketTaskTitle", `ربط التذكرة بالمهمة ${ltr("(Task)")}`,
+            `يتم اختيار المهمة من حقل ${ltr("Task")} لربط التذكرة بالخدمة الموجودة على الفاتورة.`,
+            shot(`${tickets}/5 الخدمات الموجودة على هل فاتورة.png`, "قائمة المهام في حقل Task داخل التذكرة", "حقل Task")),
+        )}`,
+    // 03 — حفظ التذكرة
+    `
+        <p class="field-explanation-intro" dir="rtl">بعد الانتهاء من إدخال بيانات التذكرة وحفظها، يظهر رقم التذكرة ويتم إرسال رسالة إلى العميل برقم الشكوى.</p>
+        ${single("أ", "ticketNumberTitle", "ظهور رقم التذكرة ورسالة العميل",
+          `يظهر رقم التذكرة بجانب عنوانها ${ltr("(#00265)")}، وتظهر في سجل التذكرة الرسالة المرسلة إلى العميل، والتي تفيد باستلام طلبه ومراجعته من فريق ${ltr("Customer Care")}، وتتضمن رقم مرجع التذكرة ${ltr("00265")}.`,
+          shot(`${tickets}/6 عند الانتهاء من ادخال بيانات الشكوى يتم ارسال رساله للعميل برقم الشكوةى.png`, "التذكرة بعد الحفظ برقم 00265 والرسالة المرسلة إلى العميل في سجل التذكرة", "رقم التذكرة ورسالة العميل"))}
+        ${single("ب", "ticketNewStageTitle", `ظهور التذكرة في مرحلة ${ltr("New")}`,
+          `بعد إنشاء التذكرة تظهر في لوحة تذاكر ${ltr("Customer Care")} ضمن مرحلة ${ltr("New")}.`,
+          shot(`${tickets}/7 بعد انتهاء من انشاء التذكرة تظهر في نيو.png`, "لوحة تذاكر Customer Care وتظهر فيها تذكرة تأخير التوصيل في مرحلة New", "التذكرة في مرحلة New"))}`,
+    // 04 — المتابعة الداخلية (a different ticket: #00202)
+    `
+        <p class="field-explanation-intro" dir="rtl">يمكن مشاركة التذكرة مع شخص آخر في الإدارة، مثل فني أو مشرف، لمتابعة الحالة وتسجيل الإجراء الذي تم.</p>
+        <p class="field-explanation-intro" dir="rtl"><strong>ملاحظة:</strong> صور هذه المرحلة مأخوذة من تذكرة أخرى ${ltr("(#00202)")} غير التذكرة المستخدمة في المراحل السابقة، وتظهر فيها التذكرة في مرحلة ${ltr("In Progress")}.</p>
+        ${single("أ", "ticketShareTitle", `مشاركة التذكرة ${ltr("(Share Ticket)")}`,
+          `لمشاركة التذكرة مع شخص آخر، يتم الضغط على زر ${ltr("Share Ticket")} أعلى التذكرة.`,
+          shot(`${tickets}/8 لمشاركة التذكرة مع شخص اخر في الادارة مع فني او مشرف نضغط.png`, "تذكرة في مرحلة In Progress مع تحديد زر Share Ticket", "زر Share Ticket"))}
+        ${pair(
+          substep("ب", "ticketShareWithTitle", "اختيار من تتم مشاركة التذكرة معه",
+            `تظهر نافذة ${ltr("Share Document")}، ويتم من خلالها اختيار مشاركة التذكرة داخليًا أو خارجيًا من قائمة ${ltr("Share With")} التي تتضمن ${ltr("Internal Users")} و${ltr("Portal Users")} و${ltr("Contact")}، ثم تحديد المستلمين ${ltr("(Recipients)")} والضغط على ${ltr("Send")}.`,
+            shot(`${tickets}/9 بعد الضغط على شير تيكت يمكن اختيار من تريد انت تعمله شير داخلي ام خارجي.png`, "نافذة Share Document مع خيارات Internal Users و Portal Users و Contact", "نافذة Share Document")),
+          substep("ج", "ticketActivityTitle", `تسجيل الإجراء ${ltr("(Schedule Activity)")}`,
+            `يفتح الشخص الذي تمت مشاركة التذكرة معه التذكرة ويضغط على ${ltr("Activity")}، ثم يختار نوع النشاط مثل ${ltr("Call")} ويكتب الإجراء الذي تم، مثل: «تم التواصل مع العميل وسيتم ارسال فني لمعالجة المشكلة»، ثم يحفظ النشاط.`,
+            shot(`${tickets}/10 يضغط الشخص لي عملناله شير على اكتفيتي ويكتب شو عمل .png`, "نافذة Schedule Activity لتسجيل الإجراء الذي تم على التذكرة", "نافذة Schedule Activity")),
+        )}
+        ${single("د", "ticketPlannedActivitiesTitle", `ظهور النشاط في ${ltr("Planned Activities")}`,
+          `يظهر النشاط المسجل في قسم ${ltr("Planned Activities")} على يمين التذكرة، مع موعد استحقاقه ونص الإجراء الذي تم تسجيله.`,
+          shot(`${tickets}/11 تظهر في الاكفيتي عل اليمين.png`, "قسم Planned Activities في التذكرة ويظهر فيه نشاط Call والإجراء المسجل", "قسم Planned Activities"))}`,
+  ];
+
   return `
-    <div class="workflow-content ${className}">
-      <header class="case-header" aria-labelledby="${titleIdPrefix}Title">
+    <div class="workflow-content customer-service-complaints-workflow">
+      <header class="case-header" aria-labelledby="complaintsTitle">
         <div>
-          <h1 id="${titleIdPrefix}Title">${tour.title}</h1>
-          ${renderWorkflowFlow(tour, {
-            activeTargetId: tour.children[0].targetId,
-            numberStart: 0,
-          })}
+          <h1 id="complaintsTitle">${complaintsTour.title}</h1>
+          ${renderWorkflowFlow(complaintsTour, { activeTargetId: complaintsTour.children[0].targetId, numberStart: 0 })}
         </div>
       </header>
-      ${tour.children.map((step, index) => {
-        const stage = stages[index];
-        const titleId = `${titleIdPrefix}Stage${index}Title`;
-        return `
-      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+      ${complaintsTour.children.map((step, index) => `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="complaintsStage${index}Title">
         <div class="section-title">
           <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
-          <div><h2 id="${titleId}">${step.title}</h2></div>
-        </div>
-        <p class="field-explanation-intro">${stage.description}</p>
-        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> ${stage.execution}</aside>
-      </section>`;
-      }).join("")}
+          <div><h2 id="complaintsStage${index}Title">${step.title}</h2></div>
+        </div>${bodies[index]}
+      </section>`).join("")}
     </div>`;
-}
-
-function renderComplaintsWorkflow() {
-  return renderResponsibilityWorkflow(complaintsTour, [
-    {
-      description: "تبدأ الدورة باستقبال شكوى أو استفسار العميل من قبل خدمة العملاء، ويتم توثيق تفاصيل الحالة لتكون مرجعًا في بقية مراحل المعالجة.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد توثيق الحالة، تقوم خدمة العملاء بتحديد نوع الحالة وتصنيفها، تمهيدًا لتحويلها إلى الجهة المختصة بمعالجتها.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد تحديد نوع الحالة، يتم تحويل الشكوى إلى الجهة المختصة بالمعالجة، وتشترك خدمة العملاء والجهة المختصة في تنفيذ هذه المرحلة.",
-      execution: "يدوي / خدمة العملاء / الجهة المختصة",
-    },
-    {
-      description: "بعد تحويل الشكوى، تتابع خدمة العملاء الحالة مع الجهة المختصة حتى اكتمال الإجراء المطلوب.",
-      execution: "يدوي / خدمة العملاء",
-    },
-    {
-      description: "بعد اكتمال الإجراء، يتم الوصول إلى حل الشكوى، أو تصعيدها عند الحاجة، وبذلك تنتهي دورة معالجة الشكوى أو الاستفسار.",
-      execution: "يدوي / خدمة العملاء",
-    },
-  ], "customer-service-complaints-workflow", "complaints");
 }
 
 // خدمة الصيانة. Screenshots from assest/الصيانة: 1–2 → 00, 3 → 01, 4–8 → 03 (activating and filling

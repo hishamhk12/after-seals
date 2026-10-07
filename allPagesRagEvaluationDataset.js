@@ -96,6 +96,10 @@ const pageTests = [
   }),
   t("customer-service-C-signature", "customer-service", "C", "حالة عميل رفض التوقيع تصل من أي مصدر؟", { expect: [["الإدارات الداخلية"]] }),
   t("customer-service-G-channel", "customer-service", "G", "ما رقم هاتف خدمة العملاء؟", { expectFallback: true }),
+  t("customer-service-B-appointment-not-booked", "customer-service", "B", "ماذا يحدث إذا لم يحجز العميل موعد التوصيل؟", {
+    expect: [["عدم حجز الموعد", "Appointment not booked"], ["24"], ["تلقائي"]],
+  }),
+  t("customer-service-B-escalated", "customer-service", "B", "ما حالة رابط الحجز في تبويب المواعيد عندما لا يحجز العميل؟", { expect: [["مُصعَّد", "مصعد", "Escalated"]] }),
 
   // Shared terms must stay on the current page's workflow.
   t("maintenance-F-technician", "maintenance", "F", "من يقوم بتعيين الفني؟", { expect: [["الجهة المختصة"]], forbid: [["Assign"], ["الموظف المختص"], ["المشرف"]] }),

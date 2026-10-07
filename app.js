@@ -584,6 +584,26 @@ const chapters = [
     visible: true,
     items: [],
   },
+  // Customer Service employee tools: supporting navigation guides, not Customer Service workflows.
+  // Placeholder routes until their guide content is built.
+  {
+    id: "customer-service-access-services",
+    number: "أداة مساندة",
+    title: "الدخول إلى الخدمات",
+    description: "استعراض خدمات ما بعد البيع ومتابعة مهام العميل وحالة الخدمة.",
+    visible: true,
+    placeholderOnly: true,
+    items: [],
+  },
+  {
+    id: "customer-service-access-invoices",
+    number: "أداة مساندة",
+    title: "الدخول إلى فواتير العميل",
+    description: "الوصول إلى بيانات العميل وفواتيره والمهام المرتبطة بها ومعلومات SAP والتذاكر.",
+    visible: true,
+    placeholderOnly: true,
+    items: [],
+  },
   {
     id: "other-after-sales-relationships",
     number: "الباب الرابع",
@@ -655,7 +675,13 @@ const services = [
     title: "خدمة العملاء",
     description: "كيف تصل الحالات إلى خدمة العملاء، ودورة معالجة الشكاوى والاستفسارات، ومسار الصيانة.",
     status: "متاح",
-    chapterIds: ["customer-service-sources", "customer-service-complaints", "customer-service-maintenance"],
+    chapterIds: [
+      "customer-service-sources",
+      "customer-service-complaints",
+      "customer-service-maintenance",
+      "customer-service-access-services",
+      "customer-service-access-invoices",
+    ],
   },
 ];
 
@@ -1662,24 +1688,29 @@ function renderCustomerServiceSources() {
     </div>`;
 }
 
-function renderCustomerServiceEntryCard(chapterId, meta) {
+// `title` overrides the chapter title on the overview card only; `tool` renders the lighter card used
+// for the employee tools.
+function renderCustomerServiceEntryCard(chapterId, meta, { title, tool = false } = {}) {
   const chapter = getChapter(chapterId);
   return `
-    <a class="entry-card" href="${routeHref("chapter", chapter.id)}">
+    <a class="entry-card${tool ? " entry-card--tool" : ""}" href="${routeHref("chapter", chapter.id)}">
       <span class="entry-card-index" aria-hidden="true">${chapter.number}</span>
-      <strong class="entry-card-title">${chapter.title}</strong>
+      <strong class="entry-card-title">${title || chapter.title}</strong>
       <span class="entry-card-description">${chapter.description}</span>
       <span class="entry-card-meta">${meta}</span>
-      <span class="entry-card-action">فتح القسم <span aria-hidden="true">←</span></span>
+      <span class="entry-card-action">${tool ? "فتح الأداة" : "فتح القسم"} <span aria-hidden="true">←</span></span>
     </a>`;
 }
+
+const CUSTOMER_SERVICE_OVERVIEW_INTRO =
+  "إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، مع الوصول إلى خدمات العميل وفواتيره ومسار الصيانة.";
 
 function renderCustomerServiceOverview(service) {
   return `
     <header class="chapter-header service-header">
       <p class="chapter-number">نطاق الخدمة</p>
       <h1>${service.title}</h1>
-      <p>${service.description}</p>
+      <p>${CUSTOMER_SERVICE_OVERVIEW_INTRO}</p>
     </header>
     <div class="customer-service-layout">
       <section class="chapter-index customer-service-main" aria-labelledby="customerServiceContentTitle">
@@ -1688,8 +1719,8 @@ function renderCustomerServiceOverview(service) {
           <h2 id="customerServiceContentTitle">محتوى خدمة العملاء</h2>
         </div>
         <div class="chapter-grid">
-          ${renderCustomerServiceEntryCard("customer-service-sources", "3 مصادر")}
-          ${renderCustomerServiceEntryCard("customer-service-complaints", "5 مراحل")}
+          ${renderCustomerServiceEntryCard("customer-service-sources", "3 مصادر", { title: "مصادر الحالات" })}
+          ${renderCustomerServiceEntryCard("customer-service-complaints", "5 مراحل", { title: "الشكاوى والاستفسارات" })}
         </div>
       </section>
       <aside class="chapter-index customer-service-maintenance-path" aria-labelledby="customerServiceMaintenanceTitle">
@@ -1699,7 +1730,17 @@ function renderCustomerServiceOverview(service) {
         </div>
         ${renderCustomerServiceEntryCard("customer-service-maintenance", "8 مراحل")}
       </aside>
-    </div>`;
+    </div>
+    <section class="chapter-index customer-service-tools" aria-labelledby="customerServiceToolsTitle">
+      <div class="index-heading">
+        <span>أدوات مساندة</span>
+        <h2 id="customerServiceToolsTitle">أدوات موظف خدمة العملاء</h2>
+      </div>
+      <div class="chapter-grid">
+        ${renderCustomerServiceEntryCard("customer-service-access-services", "قيد الإعداد", { tool: true })}
+        ${renderCustomerServiceEntryCard("customer-service-access-invoices", "قيد الإعداد", { tool: true })}
+      </div>
+    </section>`;
 }
 
 // Overview (نظرة عامة) of خدمة التركيب: an index of its three chapters. The workflow itself is

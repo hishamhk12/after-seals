@@ -1,25 +1,28 @@
 // Source of truth: rendered pages #/service/customer-service, #/chapter/customer-service-sources,
-// #/chapter/customer-service-complaints, #/chapter/customer-service-maintenance,
-// #/chapter/customer-service-access-services and #/chapter/customer-service-access-invoices
-// (app.js renderCustomerServiceOverview / renderCustomerServiceSources / renderComplaintsWorkflow /
-// renderMaintenanceWorkflow / renderAccessServicesGuide / renderAccessInvoicesGuide).
+// #/chapter/customer-service-complaints, #/chapter/customer-service-maintenance-request,
+// #/chapter/customer-service-access-services, #/chapter/customer-service-access-invoices and
+// #/service/maintenance (app.js renderCustomerServiceOverview / renderCustomerServiceSources /
+// renderComplaintsWorkflow / renderMaintenanceRequestGuide / renderAccessServicesGuide /
+// renderAccessInvoicesGuide / renderMaintenanceWorkflow). خدمة الصيانة is its own service; Customer
+// Service creates the maintenance request (القسم الثالث — إنشاء طلب صيانة).
 const customerService = {
   id: "customer-service",
   services: ["customer_service"],
   relatedServices: ["maintenance"],
-  relatedPages: ["complaints", "maintenance", "access-services", "access-invoices"],
+  relatedPages: ["complaints", "maintenance-request", "maintenance", "access-services", "access-invoices"],
   title: "خدمة العملاء",
   route: "#/service/customer-service + #/chapter/customer-service-sources",
   workflowLabel: "كيف تصل الحالات إلى خدمة العملاء",
   overview:
-    "صفحة خدمة العملاء: إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، مع الوصول إلى خدمات العميل وفواتيره ومسار الصيانة. محتوى خدمة العملاء: مصادر الحالات (القسم الأول، 3 مصادر)، والشكاوى والاستفسارات (القسم الثاني، 5 مراحل)، والصيانة كمسار مستقل (8 مراحل). وتحت عنوان أدوات موظف خدمة العملاء أداتان مساندتان: الدخول إلى الخدمات (5 خطوات) والدخول إلى فواتير العميل (8 خطوات). تصل الحالات إلى خدمة العملاء من ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة، وجميع القنوات الثلاثة تصب في جهة واحدة لإدارة الحالة ومتابعتها حتى الإغلاق. وتحت مصدر «من الإدارات الداخلية» تعرض الصفحة مثال التذكرة المحوّلة من الفني (Convert to Ticket): يحوّل الفني مشكلة في مهمة الخدمة، مثل رفض العميل الاستلام، إلى تذكرة جديدة لدى خدمة العملاء بوسم «محوله» ومرتبطة بالمهمة. وتحت مصدر «من العميل مباشرة» تعرض الصفحة مثال شكوى إدارية لعميل ليس له حساب: يتم إنشاء كرت عميل جديد من جهات الاتصال، ثم فتح التذكرة من كرت العميل بنوع شكوى إدارية (Administrative Complaint)، فتنتقل تلقائيًا إلى قيد التنفيذ (In Progress) بعد الحفظ. وتحت مصدر «من النظام» تعرض الصفحة مثال تذكرة عدم حجز الموعد (Appointment not booked): إذا لم يحجز العميل موعد التوصيل خلال 24 ساعة ينشئ النظام التذكرة تلقائيًا، وتتابع خدمة العملاء الحالة ويمكنها حجز الموعد نيابةً عن العميل. لا تذكر الصفحة ما يحدث للتذكرة بعد إتمام الحجز.",
+    "صفحة خدمة العملاء: إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، وإنشاء طلبات الصيانة، مع الوصول إلى خدمات العميل وفواتيره. محتوى خدمة العملاء: مصادر الحالات (القسم الأول، 3 مصادر)، والشكاوى والاستفسارات (القسم الثاني، 5 مراحل)، وإنشاء طلب صيانة (القسم الثالث، 8 خطوات) مع رابط إلى دورة الصيانة الكاملة في خدمة الصيانة، وهي خدمة مستقلة. وتحت عنوان أدوات موظف خدمة العملاء أداتان مساندتان: الدخول إلى الخدمات (5 خطوات) والدخول إلى فواتير العميل (8 خطوات). تصل الحالات إلى خدمة العملاء من ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة، وجميع القنوات الثلاثة تصب في جهة واحدة لإدارة الحالة ومتابعتها حتى الإغلاق. وتحت مصدر «من الإدارات الداخلية» تعرض الصفحة مثال التذكرة المحوّلة من الفني (Convert to Ticket): يحوّل الفني مشكلة في مهمة الخدمة، مثل رفض العميل الاستلام، إلى تذكرة جديدة لدى خدمة العملاء بوسم «محوله» ومرتبطة بالمهمة. وتحت مصدر «من العميل مباشرة» تعرض الصفحة مثال شكوى إدارية لعميل ليس له حساب: يتم إنشاء كرت عميل جديد من جهات الاتصال، ثم فتح التذكرة من كرت العميل بنوع شكوى إدارية (Administrative Complaint)، فتنتقل تلقائيًا إلى قيد التنفيذ (In Progress) بعد الحفظ. وتحت مصدر «من النظام» تعرض الصفحة مثال تذكرة عدم حجز الموعد (Appointment not booked): إذا لم يحجز العميل موعد التوصيل خلال 24 ساعة ينشئ النظام التذكرة تلقائيًا، وتتابع خدمة العملاء الحالة ويمكنها حجز الموعد نيابةً عن العميل. لا تذكر الصفحة ما يحدث للتذكرة بعد إتمام الحجز.",
   terms: [
     "خدمة العملاء",
     "Customer Service",
     "كيف تصل الحالات إلى خدمة العملاء",
     "مصادر الحالات",
     "الشكاوى والاستفسارات",
-    "الصيانة",
+    "إنشاء طلب صيانة",
+    "طلبات الصيانة",
     "أدوات موظف خدمة العملاء",
     "الدخول إلى الخدمات",
     "الدخول إلى فواتير العميل",
@@ -56,14 +59,14 @@ const customerService = {
     {
       id: "overview-intro",
       title: "مقدمة صفحة خدمة العملاء",
-      text: "إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، مع الوصول إلى خدمات العميل وفواتيره ومسار الصيانة.",
-      relatedTerms: ["خدمة العملاء", "التذكرة", "فواتير العميل", "مسار الصيانة"],
+      text: "إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، وإنشاء طلبات الصيانة، مع الوصول إلى خدمات العميل وفواتيره.",
+      relatedTerms: ["خدمة العملاء", "التذكرة", "فواتير العميل", "طلبات الصيانة"],
     },
     {
       id: "overview-content",
       title: "محتوى خدمة العملاء",
-      text: "مصادر الحالات: ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة: الإدارات الداخلية، والعميل مباشرة، والنظام. الشكاوى والاستفسارات: إنشاء تذكرة الشكوى أو الاستفسار وتصنيف نوعها وإسنادها وحفظها، ثم متابعتها داخليًا من خلال الأنشطة ومراحل التذكرة. الصيانة (مسار مستقل): دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى تنفيذ أعمال الصيانة وتسليم الخدمة.",
-      relatedTerms: ["مصادر الحالات", "الشكاوى والاستفسارات", "الصيانة", "مسار مستقل"],
+      text: "مصادر الحالات: ثلاثة مصادر تغذّي جهة واحدة مسؤولة عن كل حالة: الإدارات الداخلية، والعميل مباشرة، والنظام. الشكاوى والاستفسارات: إنشاء تذكرة الشكوى أو الاستفسار وتصنيف نوعها وإسنادها وحفظها، ثم متابعتها داخليًا من خلال الأنشطة ومراحل التذكرة. طلبات الصيانة: تسجيل طلب صيانة من فاتورة العميل من خلال عملية جديدة، ثم متابعته من تبويب العمليات في الفاتورة. دورة الصيانة الكاملة في خدمة الصيانة.",
+      relatedTerms: ["مصادر الحالات", "الشكاوى والاستفسارات", "طلبات الصيانة", "إنشاء طلب صيانة", "خدمة الصيانة"],
     },
     {
       id: "overview-tools",
@@ -313,10 +316,10 @@ const maintenance = {
   services: ["maintenance"],
   relatedServices: ["customer_service"],
   title: "خدمة الصيانة",
-  route: "#/chapter/customer-service-maintenance",
+  route: "#/service/maintenance",
   workflowLabel: "مسار خدمة الصيانة",
   overview:
-    "خدمة الصيانة مسار مستقل ضمن قسم خدمة العملاء. تعرض الصفحة دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى اكتمال الخدمة، في ثماني مراحل من 00 إلى 07. موعد المرحلة 01 (جدولة موعد) هو موعد معاينة المشكلة في موقع العميل، أما موعد المرحلة 05 (تحديد موعد الصيانة) فهو موعد تنفيذ أعمال الصيانة الفعلية. اعتمادات وتوقيعات المسؤولين جزء من نموذج التقرير المبدئي وليست مرحلة مستقلة.",
+    "خدمة الصيانة خدمة مستقلة ضمن خدمات ما بعد البيع، وتنشئ خدمة العملاء طلب الصيانة من فاتورة العميل من خلال عملية جديدة (New Operation)، كما يوضح دليل إنشاء طلب صيانة في خدمة العملاء. تعرض الصفحة دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى اكتمال الخدمة، في ثماني مراحل من 00 إلى 07. موعد المرحلة 01 (جدولة موعد) هو موعد معاينة المشكلة في موقع العميل، أما موعد المرحلة 05 (تحديد موعد الصيانة) فهو موعد تنفيذ أعمال الصيانة الفعلية. اعتمادات وتوقيعات المسؤولين جزء من نموذج التقرير المبدئي وليست مرحلة مستقلة.",
   terms: ["خدمة الصيانة", "الصيانة", "Maintenance", "طلب صيانة", "نموذج الصيانة"],
   stages: [
     {
@@ -325,8 +328,11 @@ const maintenance = {
       title: "طلب صيانة جديد",
       description:
         "تبدأ دورة خدمة الصيانة بإنشاء طلب صيانة جديد داخل نظام خدمات ما بعد البيع من قبل خدمة العملاء، فيظهر الطلب في مرحلة طلب صيانة جديد ويصبح جاهزًا للمعالجة ضمن مراحل الصيانة.",
+      details: [
+        "تنشئ خدمة العملاء الطلب من فاتورة العميل من خلال عملية جديدة (New Operation)، كما يوضح دليل إنشاء طلب صيانة في خدمة العملاء.",
+      ],
       execution: "يدوي / خدمة العملاء",
-      relatedTerms: ["طلب صيانة جديد", "الصيانة الميدانية"],
+      relatedTerms: ["طلب صيانة جديد", "الصيانة الميدانية", "عملية جديدة", "New Operation", "إنشاء طلب صيانة"],
     },
     {
       id: "scheduling",
@@ -713,4 +719,122 @@ const accessInvoices = {
   ],
 };
 
-module.exports = { customerService, complaints, maintenance, accessServices, accessInvoices };
+// القسم الثالث — إنشاء طلب صيانة: a guide page whose numbered steps are stored as stages 01–08.
+const maintenanceRequest = {
+  id: "maintenance-request",
+  services: ["customer_service"],
+  relatedServices: ["maintenance"],
+  title: "إنشاء طلب صيانة",
+  route: "#/chapter/customer-service-maintenance-request",
+  workflowLabel: "خطوات إنشاء طلب صيانة",
+  overview:
+    "القسم الثالث في خدمة العملاء: تسجيل طلب صيانة من فاتورة العميل من خلال عملية جديدة (New Operation)، ثم متابعته من تبويب العمليات (Operations) في الفاتورة. يشرح الدليل في ثماني خطوات من 01 إلى 08: فتح فاتورة العميل، فتح نافذة عملية جديدة (New Operation)، اختيار الخدمة (Service)، اختيار المصدر (Source)، تحديد الأولوية (Priority)، إنشاء العملية (Create Operation)، متابعة الطلب من تبويب العمليات (Operations)، ثم يبدأ طلب الصيانة دورة خدمة الصيانة من مرحلة طلب صيانة جديد. الصور في الدليل من فاتورتين مختلفتين لنفس العميل وليست معاملة واحدة متصلة. لا تشرح الصفحة متى يُختار كل مصدر أو كل أولوية.",
+  terms: [
+    "إنشاء طلب صيانة",
+    "طلب صيانة",
+    "عملية جديدة",
+    "New Operation",
+    "إنشاء العملية",
+    "Create Operation",
+    "تبويب العمليات",
+    "Operations",
+    "Material Group / Service Family",
+  ],
+  stages: [
+    {
+      id: "open-invoice",
+      number: "01",
+      title: "فتح فاتورة العميل",
+      description: "يبدأ إنشاء طلب الصيانة من فاتورة العميل. للوصول إلى الفاتورة، يتم اتباع خطوات الدخول إلى فواتير العميل.",
+      details: [
+        "ملاحظة: الصور في هذا الدليل مأخوذة من فاتورتين مختلفتين لنفس العميل، والهدف منها توضيح الخطوات، وليست معاملة واحدة متصلة.",
+      ],
+      execution: null,
+      relatedTerms: ["فاتورة العميل", "الدخول إلى فواتير العميل"],
+    },
+    {
+      id: "new-operation",
+      number: "02",
+      title: "فتح نافذة عملية جديدة (New Operation)",
+      description:
+        "من أعلى الفاتورة، يتم الضغط على زر عملية جديدة (New Operation)، فتظهر نافذة عملية جديدة (New Operation)، ويكون حقل الفاتورة (Invoice) معبأً برقم الفاتورة.",
+      details: [
+        "تظهر في النافذة الحقول التالية:",
+        "مجموعة المواد / عائلة الخدمة (Material Group / Service Family).",
+        "الخدمة (Service).",
+        "النطاق (Scope).",
+        "المصدر (Source): ويظهر بقيمة يدوي (Manual).",
+        "الأولوية (Priority): ويظهر بقيمة عادية (Normal).",
+        "الوصف (Description).",
+      ],
+      execution: null,
+      relatedTerms: ["عملية جديدة", "New Operation", "الفاتورة", "Invoice", "Material Group / Service Family", "Scope", "Source", "Priority", "Description"],
+    },
+    {
+      id: "service",
+      number: "03",
+      title: "اختيار الخدمة (Service)",
+      description:
+        "في حقل مجموعة المواد / عائلة الخدمة (Material Group / Service Family) يتم اختيار صيانة، ثم في حقل الخدمة (Service) يتم اختيار نوع الصيانة المطلوب من القائمة، مثل: صيانة - مطابخ، صيانه ديكورات، صيانه صحية، صيانه مغاسل.",
+      details: [
+        "ملاحظة: حقل الخدمة (Service) إلزامي. إذا تم الضغط على إنشاء العملية (Create Operation) دون اختياره، تظهر رسالة حقول إلزامية ناقصة (Missing required fields) ويظهر اسم الحقل باللون الأحمر.",
+      ],
+      execution: null,
+      relatedTerms: ["الخدمة", "Service", "صيانة", "صيانة - مطابخ", "صيانه ديكورات", "صيانه صحية", "صيانه مغاسل", "حقل إلزامي", "Missing required fields"],
+    },
+    {
+      id: "source",
+      number: "04",
+      title: "اختيار المصدر (Source)",
+      description: "في حقل المصدر (Source) تظهر الخيارات: يدوي (Manual)، الضمان (Warranty)، مكتب المساعدة (Helpdesk).",
+      details: ["في المثال تم اختيار مكتب المساعدة (Helpdesk)."],
+      execution: null,
+      relatedTerms: ["المصدر", "Source", "يدوي", "Manual", "الضمان", "Warranty", "مكتب المساعدة", "Helpdesk"],
+    },
+    {
+      id: "priority",
+      number: "05",
+      title: "تحديد الأولوية (Priority)",
+      description: "في حقل الأولوية (Priority) تظهر الخيارات: عادية (Normal)، منخفضة (Low)، عالية (High)، عاجلة (Urgent).",
+      execution: null,
+      relatedTerms: ["الأولوية", "Priority", "Normal", "Low", "High", "Urgent"],
+    },
+    {
+      id: "create-operation",
+      number: "06",
+      title: "إنشاء العملية (Create Operation)",
+      description:
+        "بعد تعبئة البيانات، ويمكن إضافة وصف للطلب في حقل الوصف (Description)، يتم الضغط على إنشاء العملية (Create Operation) لتسجيل طلب الصيانة.",
+      execution: null,
+      relatedTerms: ["إنشاء العملية", "Create Operation", "الوصف", "Description"],
+    },
+    {
+      id: "operations-tab",
+      number: "07",
+      title: "متابعة الطلب من تبويب العمليات (Operations)",
+      description: "من تبويب العمليات (Operations) في الفاتورة تظهر العمليات المرتبطة بها، ويُعرض لكل عملية:",
+      details: [
+        "مرجع العملية (Operation Reference).",
+        "الخدمة (Service).",
+        "المصدر (Source).",
+        "الحالة المالية (Financial Status).",
+        "الحالة (Status).",
+        "المشروع (Project).",
+        "المرحلة الحالية (Current Stage).",
+        "في المثال تظهر العملية OPS/2026/00132 بخدمة صيانه ديكورات ومصدر مكتب المساعدة (Helpdesk). ويظهر زر عملية جديدة (New Operation) داخل التبويب أيضًا.",
+      ],
+      execution: null,
+      relatedTerms: ["تبويب العمليات", "Operations", "Operation Reference", "Financial Status", "Status", "Project", "Current Stage"],
+    },
+    {
+      id: "after-request",
+      number: "08",
+      title: "بعد إنشاء طلب الصيانة",
+      description: "يبدأ طلب الصيانة دورة خدمة الصيانة من مرحلة طلب صيانة جديد.",
+      execution: null,
+      relatedTerms: ["خدمة الصيانة", "طلب صيانة جديد"],
+    },
+  ],
+};
+
+module.exports = { customerService, complaints, maintenance, maintenanceRequest, accessServices, accessInvoices };

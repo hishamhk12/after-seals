@@ -155,6 +155,15 @@ const pageTests = [
     expect: [["المعلومات الأخرى", "Other Info"]],
   }),
   t("access-invoices-G-edit-invoice", "access-invoices", "G", "كيف أعدل مبلغ فاتورة العميل؟", { expectFallback: true }),
+  t("maintenance-request-B-how", "maintenance-request", "B", "كيف أنشئ طلب صيانة لعميل؟", {
+    expect: [["عملية جديدة", "New Operation"], ["إنشاء العملية", "Create Operation"]],
+  }),
+  t("maintenance-request-B-required", "maintenance-request", "B", "ما الحقل الإلزامي عند إنشاء طلب صيانة؟", { expect: [["الخدمة", "Service"]] }),
+  t("maintenance-request-B-source", "maintenance-request", "B", "ما خيارات المصدر في نافذة العملية الجديدة؟", {
+    expect: [["يدوي", "Manual"], ["الضمان", "Warranty"], ["مكتب المساعدة", "Helpdesk"]],
+  }),
+  t("maintenance-request-B-follow-up", "maintenance-request", "B", "أين أتابع طلب الصيانة بعد إنشائه؟", { expect: [["العمليات", "Operations"]] }),
+  t("maintenance-request-G-when-warranty", "maintenance-request", "G", "متى أختار الضمان كمصدر لطلب الصيانة؟", { expectFallback: true }),
 
   // Unsupported details on pages must not be invented.
   t("design-G-whatsapp", "design", "G", "هل يتم إرسال إشعار واتساب للعميل عند اعتماد التصميم؟", { expectFallback: true }),
@@ -203,7 +212,9 @@ const globalTests = [
     expectPages: ["warehouse-pickup"],
   }),
   t("global-E-delivery-installation", GLOBAL, "E", "كيف ترتبط خدمة التوصيل بخدمة التركيب؟", { expect: [["48"]], expectPages: ["installation"] }),
-  t("global-E-maintenance-cs", GLOBAL, "E", "ما علاقة الصيانة بخدمة العملاء؟", { expect: [["مسار مستقل", "ضمن قسم خدمة العملاء", "ضمن خدمة العملاء"]] }),
+  t("global-E-maintenance-cs", GLOBAL, "E", "ما علاقة الصيانة بخدمة العملاء؟", {
+    expect: [["طلب صيانة", "طلب الصيانة"], ["عملية جديدة", "New Operation", "فاتورة العميل"]],
+  }),
   t("global-F-form", GLOBAL, "F", "ماذا يحدث في مرحلة ملئ النموذج؟", {
     minDistinct: [[["التوصيل", "سند التحميل"], ["التركيب"], ["المقاسات", "القياسات"]], 2],
   }),

@@ -29,6 +29,7 @@ const CATALOG_ORDER = [
   "installation-returns",
   "customer-service",
   "complaints",
+  "maintenance-request",
   "maintenance",
   "access-services",
   "access-invoices",

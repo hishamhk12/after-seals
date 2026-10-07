@@ -574,7 +574,7 @@ const chapters = [
     id: "customer-service-complaints",
     number: "القسم الثاني",
     title: "الشكاوى / الاستفسارات",
-    description: "دورة معالجة شكوى أو استفسار العميل من الاستقبال وتحديد النوع وحتى الحل أو التصعيد.",
+    description: "إنشاء تذكرة الشكوى أو الاستفسار وتصنيف نوعها وإسنادها وحفظها، ثم متابعتها داخليًا من خلال الأنشطة ومراحل التذكرة.",
     visible: true,
     items: [],
   },
@@ -1989,8 +1989,8 @@ function renderCustomerServiceOverview(service) {
         <h2 id="customerServiceToolsTitle">أدوات موظف خدمة العملاء</h2>
       </div>
       <div class="chapter-grid">
-        ${renderCustomerServiceEntryCard("customer-service-access-services", "قيد الإعداد", { tool: true })}
-        ${renderCustomerServiceEntryCard("customer-service-access-invoices", "قيد الإعداد", { tool: true })}
+        ${renderCustomerServiceEntryCard("customer-service-access-services", "5 خطوات", { tool: true })}
+        ${renderCustomerServiceEntryCard("customer-service-access-invoices", "8 خطوات", { tool: true })}
       </div>
     </section>`;
 }

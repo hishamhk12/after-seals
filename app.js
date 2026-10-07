@@ -587,8 +587,7 @@ const chapters = [
     items: [],
   },
   // Customer Service employee tools: supporting navigation guides, not Customer Service workflows.
-  // الدخول إلى الخدمات is a guide page (renderAccessServicesGuide); the invoices tool is still a
-  // placeholder route until its guide content is built.
+  // Both are guide pages: renderAccessServicesGuide and renderAccessInvoicesGuide.
   {
     id: "customer-service-access-services",
     number: "أداة مساندة",
@@ -603,7 +602,6 @@ const chapters = [
     title: "الدخول إلى فواتير العميل",
     description: "الوصول إلى بيانات العميل وفواتيره والمهام المرتبطة بها ومعلومات SAP والتذاكر.",
     visible: true,
-    placeholderOnly: true,
     items: [],
   },
   {
@@ -1829,6 +1827,119 @@ function renderAccessServicesGuide() {
     </div>`;
 }
 
+// أداة مساندة — الدخول إلى فواتير العميل: a guide page in the same style as الدخول إلى الخدمات
+// (renderAccessServicesGuide). Screenshots from assest/خدمة العملاء/الدخول الى فواتير العميل in
+// order: 1 → 01, 2 → 02, 3 → 03, 4 → 04, 5 → 05, 6 → 06, 6.5 → 07, 7 → 08. The screenshots come
+// from different customers and invoices, so each step is written as an example, not one transaction.
+function renderAccessInvoicesGuide() {
+  const chapter = getChapter("customer-service-access-invoices");
+  const images = "assest/خدمة العملاء/الدخول الى فواتير العميل";
+  // Arabic meaning first, the original Odoo term in parentheses. Short terms stay on one line;
+  // long ones (e.g. SAP Collection Warehouse Code) may wrap between words on narrow screens.
+  const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${(en.length > 22 ? en : en.replace(/ /g, "\u00A0")).replace(/-/g, "\u2011")})</bdi>`;
+  const shot = (file, alt, label, frameClass = "guide-screenshot") => `
+          <figure class="odoo-screenshot-frame ${frameClass}">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+  const section = (number, id, title, body) => `
+      <section class="guide-section" aria-labelledby="${id}">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">${number}</span>
+          <h2 id="${id}">${title}</h2>
+        </div>
+        <div class="guide-section-body">${body}
+        </div>
+      </section>`;
+  const note = (text) => `
+          <aside class="guide-note">
+            <strong>ملاحظة:</strong>
+            ${text}
+          </aside>`;
+
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>${chapter.description}</p>
+    </header>
+
+    <div class="odoo-entry-guide">
+      ${section("01", "accessInvoicesContactsTitle", `فتح ${term("جهات الاتصال", "Contacts")}`, `
+          <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("جهات الاتصال", "Contacts")}.</p>
+          <p class="guide-key-term">${term("جهات الاتصال", "Contacts")}</p>
+          ${note("الصور في هذا الدليل أمثلة مأخوذة من عملاء وفواتير مختلفة، والهدف منها توضيح أماكن التنقل والمعلومات المتاحة لموظف خدمة العملاء، وليست خطوات معاملة واحدة متصلة.")}
+          ${shot("1.png", "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Contacts", "تطبيق جهات الاتصال")}`)}
+
+      ${section("02", "accessInvoicesSearchTitle", "البحث عن العميل", `
+          <p>تظهر قائمة ${term("جهات الاتصال", "Contacts")}، ويُعرض فيها لكل جهة اتصال ${term("الاسم", "Name")} و${term("البريد الإلكتروني", "Email")} و${term("الرقم المرجعي في SAP", "SAP Reference Number")} و${term("الهاتف", "Phone")}.</p>
+          <p>للوصول إلى العميل المطلوب، يتم البحث عنه من خلال شريط البحث أعلى القائمة.</p>
+          ${shot("2.png", "قائمة جهات الاتصال في تطبيق Contacts وتظهر فيها أعمدة الاسم والبريد الإلكتروني والرقم المرجعي في SAP والهاتف", "قائمة جهات الاتصال")}`)}
+
+      ${section("03", "accessInvoicesIdentifyTitle", "تحديد العميل الصحيح", `
+          <p>في المثال، تم البحث عن العميل باستخدام ${term("الاسم", "Name")}، فظهرت في النتائج عدة جهات اتصال بأسماء متقاربة.</p>
+          <p>لتحديد العميل الصحيح، يتم الاستعانة بالمعلومات الظاهرة في النتائج:</p>
+          <ul>
+            <li>${term("الاسم", "Name")}.</li>
+            <li>${term("الهاتف", "Phone")}.</li>
+            <li>${term("الرقم المرجعي في SAP", "SAP Reference Number")}.</li>
+          </ul>
+          ${shot("3.png", "نتائج البحث عن العميل باستخدام الاسم مع تحديد عمود الهاتف والرقم المرجعي في SAP", "نتائج البحث عن العميل")}`)}
+
+      ${section("04", "accessInvoicesRecordTitle", "فتح سجل العميل", `
+          <p>عند فتح سجل العميل تظهر بياناته، وتظهر أعلى السجل أزرار مختصرة تساعد موظف خدمة العملاء على الوصول إلى معلومات العميل، منها:</p>
+          <ul>
+            <li>${term("المهام", "Tasks")}: مهام العميل.</li>
+            <li>${term("التذاكر", "Tickets")}: تذاكر العميل.</li>
+            <li>${term("المفوتر", "Invoiced")}: ويظهر عليه إجمالي المبلغ المفوتر للعميل.</li>
+          </ul>
+          <p>كما يعرض تبويب ${term("واتساب", "WhatsApp")} في سجل العميل ${term("سجل محادثات واتساب للعميل", "Customer WhatsApp Timeline")}، ويتضمن الرسائل المرسلة إلى العميل مع وقت كل رسالة واتجاهها وحالتها.</p>
+          ${shot("4.png", "سجل العميل في تطبيق Contacts مع تحديد زر Invoiced وتبويب WhatsApp", "سجل العميل")}`)}
+
+      ${section("05", "accessInvoicesListTitle", "فتح فواتير العميل", `
+          <p>يتم فتح فواتير العميل من سجل العميل، فتظهر قائمة ${term("الفواتير", "Invoices")} الخاصة به، كما يوضح مسار التنقل أعلى الصفحة: ${term("جهات الاتصال", "Contacts")} ← اسم العميل ← ${term("الفواتير", "Invoices")}.</p>
+          <p>للوصول إلى فاتورة معينة، يتم كتابة رقمها في شريط البحث ثم اختيار نوع البحث المناسب، ومنها:</p>
+          <ul>
+            <li>البحث في ${term("الرقم", "Number")}: رقم الفاتورة في نظام خدمات مابعد البيع.</li>
+            <li>البحث في ${term("رقم فاتورة SAP", "SAP Invoice Number")}.</li>
+          </ul>
+          ${shot("5.png", "قائمة فواتير العميل مع خيارات البحث وتحديد خياري Number و SAP Invoice Number", "قائمة فواتير العميل")}`)}
+
+      ${section("06", "accessInvoicesInvoiceTitle", "فتح الفاتورة ومراجعة بياناتها", `
+          <p>عند فتح الفاتورة تظهر بياناتها، ومن المعلومات المهمة لموظف خدمة العملاء:</p>
+          <ul>
+            <li>${term("رقم فاتورة SAP", "SAP Invoice")}.</li>
+            <li>${term("رقم عميل SAP", "SAP Customer No")}.</li>
+            <li>${term("بنود الفاتورة", "Invoice Lines")}: المنتجات أو الخدمات الموجودة على الفاتورة مع الكمية والسعر والمبلغ.</li>
+          </ul>
+          <p>وتظهر أعلى الفاتورة أزرار مختصرة، منها ${term("المهام", "Tasks")} لعرض مهام الخدمات المرتبطة بالفاتورة، و${term("مكتب المساعدة", "Helpdesk")} لعرض التذاكر المرتبطة بها.</p>
+          ${shot("6.png", "فاتورة العميل مع تحديد الأزرار المختصرة وزر Tasks ورقم فاتورة SAP ورقم عميل SAP وبنود الفاتورة", "بيانات الفاتورة")}`)}
+
+      ${section("07", "accessInvoicesTasksTitle", "مراجعة مهام الخدمات المرتبطة بالفاتورة", `
+          <p>قد ترتبط الفاتورة الواحدة بعدة مهام لخدمات ما بعد البيع. تعرض قائمة ${term("المهام", "Tasks")} الخاصة بالفاتورة هذه المهام مجمّعة حسب مرحلتها، ويمكن أن تشمل خدمات مختلفة، مثل:</p>
+          <ul>
+            <li>التركيب: مهام في مرحلة طلب تركيب.</li>
+            <li>التوصيل: مهمة في مرحلة ${term("طلب توصيل", "Delivery Request")}.</li>
+            <li>التصنيع: مهمة في مرحلة إرسال إلي ورشة التصنيع.</li>
+            <li>الصيانة الميدانية: مهمة في مرحلة التقرير المبدئي.</li>
+          </ul>
+          <p>ومن الأعمدة المفيدة في القائمة: ${term("تاريخ الرحلة", "Trip Date")} و${term("المرحلة", "Stage")}، والتي توضح موعد الخدمة والمرحلة الحالية لكل مهمة.</p>
+          ${note("تعرض هذه الصورة مهام فاتورة أخرى غير الفاتورة المعروضة في الخطوة السابقة.")}
+          ${shot("6.5.png", "قائمة مهام الخدمات المرتبطة بفاتورة ومجمّعة حسب المرحلة مع تحديد عمودي Trip Date و Stage", "مهام الخدمات المرتبطة بالفاتورة")}`)}
+
+      ${section("08", "accessInvoicesSapTitle", "مراجعة معلومات SAP والبائع", `
+          <p>من تبويب ${term("المعلومات الأخرى", "Other Info")} في الفاتورة، يمكن مراجعة معلومات ${term("تكامل SAP", "SAP Integration")} ومعلومات ${term("البائع", "Seller")}، ومنها:</p>
+          <ul>
+            <li>${term("رقم فاتورة SAP", "SAP Invoice Number")}.</li>
+            <li>${term("الرقم المرجعي في SAP", "SAP Reference Number")}.</li>
+            <li>${term("نوع فاتورة SAP", "SAP Invoice Type")}.</li>
+            <li>${term("اسم بائع SAP", "SAP Seller Name")}.</li>
+            <li>${term("كود المعرض", "SAP Seller Hall Code")}.</li>
+            <li>${term("كود مستودع التحصيل", "SAP Collection Warehouse Code")}.</li>
+          </ul>
+          ${shot("7.png", "تبويب Other Info في الفاتورة ويعرض معلومات SAP Integration ومعلومات البائع", "معلومات SAP والبائع")}`)}
+    </div>`;
+}
+
 // `title` overrides the chapter title on the overview card only; `tool` renders the lighter card used
 // for the employee tools.
 function renderCustomerServiceEntryCard(chapterId, meta, { title, tool = false } = {}) {
@@ -2963,6 +3074,7 @@ function renderBookPortal() {
       "customer-service-complaints": renderComplaintsWorkflow,
       "customer-service-maintenance": renderMaintenanceWorkflow,
       "customer-service-access-services": renderAccessServicesGuide,
+      "customer-service-access-invoices": renderAccessInvoicesGuide,
     };
     if (customerServiceChapterRenderers[chapter.id]) {
       portal.innerHTML = customerServiceChapterRenderers[chapter.id]();

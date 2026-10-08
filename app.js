@@ -1714,6 +1714,7 @@ function renderMaintenanceWorkflow() {
           ${renderWorkflowFlow(maintenanceTour, { activeTargetId: maintenanceTour.children[0].targetId, numberStart: 0 })}
         </div>
       </header>
+      ${renderOverviewVideo("maintenanceOverviewVideoTitle", "فيديو شرح دورة الصيانة كاملة", "شاهد دورة خدمة الصيانة كاملة من إنشاء طلب صيانة جديد وحتى إغلاق المهمة في مرحلة مكتملة.", "videos/maintenance-workflow.mp4")}
       ${maintenanceTour.children.map((step, index) => `
       <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="maintenanceStage${index}Title">
         <div class="section-title">

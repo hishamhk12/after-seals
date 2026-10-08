@@ -18,7 +18,7 @@ const manufacturingDeliveryLink = require("./manufacturingDeliveryLink");
 const manufacturingInstallationLink = require("./manufacturingInstallationLink");
 const compositeManufacturingEndToEnd = require("./compositeManufacturingEndToEnd");
 const { deliveryReturns, installationReturns } = require("./returns");
-const { customerService, complaints, maintenance, accessServices, accessInvoices } = require("./customerService");
+const { customerService, complaints, maintenance, maintenanceRequest, accessServices, accessInvoices } = require("./customerService");
 
 const structuredPages = [
   internalTransfer,
@@ -41,6 +41,7 @@ const structuredPages = [
   installationReturns,
   customerService,
   complaints,
+  maintenanceRequest,
   maintenance,
   accessServices,
   accessInvoices,

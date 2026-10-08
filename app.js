@@ -262,7 +262,7 @@ const complaintsTour = {
 
 // خدمة الصيانة (00–07): the top workflow row and the detailed sections.
 const maintenanceTour = {
-  id: "customer-service-maintenance",
+  id: "maintenance",
   title: "خدمة الصيانة",
   children: [
     { id: "maintenance-new-request", title: "طلب صيانة جديد", targetId: "maintenance-step-new-request" },
@@ -578,11 +578,13 @@ const chapters = [
     visible: true,
     items: [],
   },
+  // Customer Service creates the maintenance request from the customer's invoice; the maintenance
+  // workflow itself is its own service (services → maintenance, renderMaintenanceWorkflow).
   {
-    id: "customer-service-maintenance",
-    number: "مسار مستقل",
-    title: "الصيانة",
-    description: "دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى تنفيذ أعمال الصيانة وتسليم الخدمة.",
+    id: "customer-service-maintenance-request",
+    number: "القسم الثالث",
+    title: "إنشاء طلب صيانة",
+    description: "تسجيل طلب صيانة من فاتورة العميل من خلال عملية جديدة، ثم متابعته من تبويب العمليات في الفاتورة.",
     visible: true,
     items: [],
   },
@@ -673,15 +675,21 @@ const services = [
   {
     id: "customer-service",
     title: "خدمة العملاء",
-    description: "كيف تصل الحالات إلى خدمة العملاء، ودورة معالجة الشكاوى والاستفسارات، ومسار الصيانة.",
+    description: "كيف تصل الحالات إلى خدمة العملاء، ودورة معالجة الشكاوى والاستفسارات، وإنشاء طلبات الصيانة.",
     status: "متاح",
     chapterIds: [
       "customer-service-sources",
       "customer-service-complaints",
-      "customer-service-maintenance",
+      "customer-service-maintenance-request",
       "customer-service-access-services",
       "customer-service-access-invoices",
     ],
+  },
+  {
+    id: "maintenance",
+    title: "خدمة الصيانة",
+    description: "دورة عمل خدمة الصيانة من إنشاء طلب صيانة جديد وحتى تنفيذ أعمال الصيانة وتسليم الخدمة.",
+    status: "متاح",
   },
 ];
 
@@ -874,6 +882,11 @@ function parseRouteTarget(parts) {
     return { type: "lesson", itemId: "installation-full" };
   }
 
+  // The maintenance workflow moved from Customer Service to its own service; old links land there.
+  if (parts[0] === "chapter" && parts[1] === "customer-service-maintenance") {
+    return { type: "service", serviceId: "maintenance" };
+  }
+
   if (parts[0] === "chapter") {
     const chapter = getChapter(parts[1]);
     return chapter?.visible ? { type: "chapter", chapterId: chapter.id } : { type: "home" };
@@ -937,11 +950,12 @@ const PAGE_ASSISTANT_ROUTES = {
     design: "design",
     manufacturing: "manufacturing",
     "customer-service": "customer-service",
+    maintenance: "maintenance",
   },
   chapter: {
     "customer-service-sources": "customer-service",
     "customer-service-complaints": "complaints",
-    "customer-service-maintenance": "maintenance",
+    "customer-service-maintenance-request": "maintenance-request",
     "customer-service-access-services": "access-services",
     "customer-service-access-invoices": "access-invoices",
   },
@@ -1653,6 +1667,7 @@ function renderMaintenanceWorkflow() {
     // 00 — طلب صيانة جديد
     `
         <p class="field-explanation-intro">تبدأ دورة خدمة الصيانة بإنشاء طلب صيانة جديد داخل نظام خدمات ما بعد البيع من قبل خدمة العملاء، فيظهر الطلب في مرحلة طلب صيانة جديد ويصبح جاهزًا للمعالجة ضمن مراحل الصيانة.</p>
+        <p class="field-explanation-intro">تنشئ خدمة العملاء الطلب من فاتورة العميل من خلال عملية جديدة <bdi dir="ltr">(New Operation)</bdi>، كما يوضح دليل <a href="${routeHref("chapter", "customer-service-maintenance-request")}">إنشاء طلب صيانة</a> في خدمة العملاء.</p>
         ${shot("1.png", "لوحة مهام الصيانة في نظام خدمات مابعد البيع وتظهر فيها الطلبات في مرحلة طلب صيانة جديد", "لوحة طلبات الصيانة")}
         ${shot("2.png", "طلب صيانة جديد مفتوح في مرحلة طلب صيانة جديد ويعرض المشروع والفاتورة ومستودع التشغيل", "بيانات طلب الصيانة الجديد")}
         ${execution("يدوي / خدمة العملاء")}`,
@@ -1996,6 +2011,8 @@ function renderAccessServicesGuide() {
   const chapter = getChapter("customer-service-access-services");
   const images = "assest/خدمة العملاء/الدخول الى الخدمات";
   // Arabic meaning first, the original Odoo term in parentheses, kept on one line.
+  // Section headings sit in a narrow 190px column, so there the English term may wrap between words.
+  const headTerm = (ar, en) => `${ar} <bdi dir="ltr">(${en})</bdi>`;
   const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${en.replace(/ /g, "\u00A0").replace(/-/g, "\u2011")})</bdi>`;
   const shot = (file, alt, label, frameClass = "guide-screenshot") => `
           <figure class="odoo-screenshot-frame ${frameClass}">
@@ -2019,7 +2036,7 @@ function renderAccessServicesGuide() {
     </header>
 
     <div class="odoo-entry-guide">
-      ${section("01", "accessServicesProjectTitle", `فتح ${term("المشاريع", "Project")}`, `
+      ${section("01", "accessServicesProjectTitle", `فتح ${headTerm("المشاريع", "Project")}`, `
           <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("المشاريع", "Project")}.</p>
           <p class="guide-key-term">${term("المشاريع", "Project")}</p>
           ${shot("1.png", "الصفحة الرئيسية لنظام خدمات مابعد البيع مع تحديد تطبيق Project", "تطبيق المشاريع", "guide-screenshot guide-screenshot-portrait")}`)}
@@ -2065,6 +2082,8 @@ function renderAccessInvoicesGuide() {
   const images = "assest/خدمة العملاء/الدخول الى فواتير العميل";
   // Arabic meaning first, the original Odoo term in parentheses. Short terms stay on one line;
   // long ones (e.g. SAP Collection Warehouse Code) may wrap between words on narrow screens.
+  // Section headings sit in a narrow 190px column, so there the English term may wrap between words.
+  const headTerm = (ar, en) => `${ar} <bdi dir="ltr">(${en})</bdi>`;
   const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${(en.length > 22 ? en : en.replace(/ /g, "\u00A0")).replace(/-/g, "\u2011")})</bdi>`;
   const shot = (file, alt, label, frameClass = "guide-screenshot") => `
           <figure class="odoo-screenshot-frame ${frameClass}">
@@ -2093,7 +2112,7 @@ function renderAccessInvoicesGuide() {
     </header>
 
     <div class="odoo-entry-guide">
-      ${section("01", "accessInvoicesContactsTitle", `فتح ${term("جهات الاتصال", "Contacts")}`, `
+      ${section("01", "accessInvoicesContactsTitle", `فتح ${headTerm("جهات الاتصال", "Contacts")}`, `
           <p>من الصفحة الرئيسية لنظام خدمات مابعد البيع، يتم الضغط على تطبيق ${term("جهات الاتصال", "Contacts")}.</p>
           <p class="guide-key-term">${term("جهات الاتصال", "Contacts")}</p>
           ${note("الصور في هذا الدليل أمثلة مأخوذة من عملاء وفواتير مختلفة، والهدف منها توضيح أماكن التنقل والمعلومات المتاحة لموظف خدمة العملاء، وليست خطوات معاملة واحدة متصلة.")}
@@ -2169,6 +2188,97 @@ function renderAccessInvoicesGuide() {
     </div>`;
 }
 
+// القسم الثالث — إنشاء طلب صيانة: a guide page in the same style as الدخول إلى فواتير العميل
+// (renderAccessInvoicesGuide). Frames from the Customer Service training video in
+// assest/review_selected_frames/04_New_Operation, used uncropped: 00-53-55 → 02, 00-55-40 → 03,
+// 00-54-19 → 04, 00-54-25 → 05, 00-56-37 → 07. Two invoices of the same customer appear
+// (INV/2026/00137 and INV/2026/00123), so the steps are written as examples, not one transaction.
+function renderMaintenanceRequestGuide() {
+  const chapter = getChapter("customer-service-maintenance-request");
+  const images = "assest/review_selected_frames/04_New_Operation";
+  // Section headings sit in a narrow 190px column, so there the English term may wrap between words.
+  const headTerm = (ar, en) => `${ar} <bdi dir="ltr">(${en})</bdi>`;
+  const term = (ar, en) => `${ar}\u00A0<bdi dir="ltr">(${(en.length > 22 ? en : en.replace(/ /g, "\u00A0")).replace(/-/g, "\u2011")})</bdi>`;
+  const shot = (file, alt, label) => `
+          <figure class="odoo-screenshot-frame guide-screenshot">
+            <img src="${images}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>`;
+  const section = (number, id, title, body) => `
+      <section class="guide-section" aria-labelledby="${id}">
+        <div class="guide-section-heading">
+          <span class="guide-section-number" aria-hidden="true">${number}</span>
+          <h2 id="${id}">${title}</h2>
+        </div>
+        <div class="guide-section-body">${body}
+        </div>
+      </section>`;
+  const note = (text) => `
+          <aside class="guide-note">
+            <strong>ملاحظة:</strong>
+            ${text}
+          </aside>`;
+
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">${chapter.number}</p>
+      <h1>${chapter.title}</h1>
+      <p>${chapter.description}</p>
+    </header>
+
+    <div class="odoo-entry-guide">
+      ${section("01", "maintenanceRequestInvoiceTitle", "فتح فاتورة العميل", `
+          <p>يبدأ إنشاء طلب الصيانة من فاتورة العميل. للوصول إلى الفاتورة، يتم اتباع خطوات <a href="${routeHref("chapter", "customer-service-access-invoices")}">الدخول إلى فواتير العميل</a>.</p>
+          ${note("الصور في هذا الدليل مأخوذة من فاتورتين مختلفتين لنفس العميل، والهدف منها توضيح الخطوات، وليست معاملة واحدة متصلة.")}`)}
+
+      ${section("02", "maintenanceRequestNewOperationTitle", `فتح نافذة ${headTerm("عملية جديدة", "New Operation")}`, `
+          <p>من أعلى الفاتورة، يتم الضغط على زر ${term("عملية جديدة", "New Operation")}، فتظهر نافذة ${term("عملية جديدة", "New Operation")}، ويكون حقل ${term("الفاتورة", "Invoice")} معبأً برقم الفاتورة.</p>
+          <p>تظهر في النافذة الحقول التالية:</p>
+          <ul>
+            <li>${term("مجموعة المواد / عائلة الخدمة", "Material Group / Service Family")}.</li>
+            <li>${term("الخدمة", "Service")}.</li>
+            <li>${term("النطاق", "Scope")}.</li>
+            <li>${term("المصدر", "Source")}: ويظهر بقيمة ${term("يدوي", "Manual")}.</li>
+            <li>${term("الأولوية", "Priority")}: ويظهر بقيمة ${term("عادية", "Normal")}.</li>
+            <li>${term("الوصف", "Description")}.</li>
+          </ul>
+          ${shot("00-53-55__frame_003235500.png", "نافذة New Operation مفتوحة من فاتورة العميل وحقل Invoice معبأ برقم الفاتورة", "نافذة عملية جديدة")}`)}
+
+      ${section("03", "maintenanceRequestServiceTitle", `اختيار ${headTerm("الخدمة", "Service")}`, `
+          <p>في حقل ${term("مجموعة المواد / عائلة الخدمة", "Material Group / Service Family")} يتم اختيار صيانة، ثم في حقل ${term("الخدمة", "Service")} يتم اختيار نوع الصيانة المطلوب من القائمة، مثل: صيانة - مطابخ، صيانه ديكورات، صيانه صحية، صيانه مغاسل.</p>
+          ${note(`حقل ${term("الخدمة", "Service")} إلزامي. إذا تم الضغط على ${term("إنشاء العملية", "Create Operation")} دون اختياره، تظهر رسالة ${term("حقول إلزامية ناقصة", "Missing required fields")} ويظهر اسم الحقل باللون الأحمر.`)}
+          ${shot("00-55-40__frame_003340000.png", "قائمة الخدمات في حقل Service داخل نافذة New Operation مع رسالة Missing required fields", "اختيار الخدمة")}`)}
+
+      ${section("04", "maintenanceRequestSourceTitle", `اختيار ${headTerm("المصدر", "Source")}`, `
+          <p>في حقل ${term("المصدر", "Source")} تظهر الخيارات: ${term("يدوي", "Manual")}، ${term("الضمان", "Warranty")}، ${term("مكتب المساعدة", "Helpdesk")}.</p>
+          <p>في المثال تم اختيار ${term("مكتب المساعدة", "Helpdesk")}.</p>
+          ${shot("00-54-19__frame_003259500.png", "نافذة New Operation بعد اختيار صيانة وصيانه صحية وتظهر خيارات حقل Source وهي Manual و Warranty و Helpdesk", "اختيار المصدر")}`)}
+
+      ${section("05", "maintenanceRequestPriorityTitle", `تحديد ${headTerm("الأولوية", "Priority")}`, `
+          <p>في حقل ${term("الأولوية", "Priority")} تظهر الخيارات: ${term("عادية", "Normal")}، ${term("منخفضة", "Low")}، ${term("عالية", "High")}، ${term("عاجلة", "Urgent")}.</p>
+          ${shot("00-54-25__frame_003265000.png", "خيارات حقل Priority في نافذة New Operation وهي Normal و Low و High و Urgent", "تحديد الأولوية")}`)}
+
+      ${section("06", "maintenanceRequestCreateTitle", `${headTerm("إنشاء العملية", "Create Operation")}`, `
+          <p>بعد تعبئة البيانات، ويمكن إضافة وصف للطلب في حقل ${term("الوصف", "Description")}، يتم الضغط على ${term("إنشاء العملية", "Create Operation")} لتسجيل طلب الصيانة.</p>`)}
+
+      ${section("07", "maintenanceRequestOperationsTitle", `متابعة الطلب من تبويب ${headTerm("العمليات", "Operations")}`, `
+          <p>من تبويب ${term("العمليات", "Operations")} في الفاتورة تظهر العمليات المرتبطة بها، ويُعرض لكل عملية:</p>
+          <ul>
+            <li>${term("مرجع العملية", "Operation Reference")}.</li>
+            <li>${term("الخدمة", "Service")}.</li>
+            <li>${term("المصدر", "Source")}.</li>
+            <li>${term("الحالة المالية", "Financial Status")}.</li>
+            <li>${term("الحالة", "Status")}.</li>
+            <li>${term("المشروع", "Project")}.</li>
+            <li>${term("المرحلة الحالية", "Current Stage")}.</li>
+          </ul>
+          <p>في المثال تظهر العملية OPS/2026/00132 بخدمة صيانه ديكورات ومصدر ${term("مكتب المساعدة", "Helpdesk")}. ويظهر زر ${term("عملية جديدة", "New Operation")} داخل التبويب أيضًا.</p>
+          ${shot("00-56-37__frame_003397000.png", "تبويب Operations في الفاتورة ويعرض العملية OPS/2026/00132 بخدمة صيانه ديكورات ومصدر Helpdesk", "تبويب العمليات")}`)}
+
+      ${section("08", "maintenanceRequestNextTitle", "بعد إنشاء طلب الصيانة", `
+          <p>يبدأ طلب الصيانة دورة <a href="${routeHref("service", "maintenance")}">خدمة الصيانة</a> من مرحلة طلب صيانة جديد.</p>`)}
+    </div>`;
+}
+
 // `title` overrides the chapter title on the overview card only; `tool` renders the lighter card used
 // for the employee tools.
 function renderCustomerServiceEntryCard(chapterId, meta, { title, tool = false } = {}) {
@@ -2184,7 +2294,7 @@ function renderCustomerServiceEntryCard(chapterId, meta, { title, tool = false }
 }
 
 const CUSTOMER_SERVICE_OVERVIEW_INTRO =
-  "إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، مع الوصول إلى خدمات العميل وفواتيره ومسار الصيانة.";
+  "إدارة حالات العملاء من استقبال الطلب أو الشكوى، وإنشاء التذكرة ومتابعتها، وإنشاء طلبات الصيانة، مع الوصول إلى خدمات العميل وفواتيره.";
 
 function renderCustomerServiceOverview(service) {
   return `
@@ -2206,10 +2316,11 @@ function renderCustomerServiceOverview(service) {
       </section>
       <aside class="chapter-index customer-service-maintenance-path" aria-labelledby="customerServiceMaintenanceTitle">
         <div class="index-heading">
-          <span>مسار مستقل</span>
-          <h2 id="customerServiceMaintenanceTitle">الصيانة</h2>
+          <span>الصيانة</span>
+          <h2 id="customerServiceMaintenanceTitle">طلبات الصيانة</h2>
         </div>
-        ${renderCustomerServiceEntryCard("customer-service-maintenance", "8 مراحل")}
+        ${renderCustomerServiceEntryCard("customer-service-maintenance-request", "8 خطوات")}
+        <p><a class="secondary-link" href="${routeHref("service", "maintenance")}">دورة الصيانة الكاملة في خدمة الصيانة <span aria-hidden="true">↗</span></a></p>
       </aside>
     </div>
     <section class="chapter-index customer-service-tools" aria-labelledby="customerServiceToolsTitle">
@@ -3271,6 +3382,8 @@ function renderBookPortal() {
       portal.innerHTML = renderManufacturingWorkflow();
     } else if (service.id === "customer-service") {
       portal.innerHTML = renderCustomerServiceOverview(service);
+    } else if (service.id === "maintenance") {
+      portal.innerHTML = renderMaintenanceWorkflow();
     } else {
       portal.innerHTML = `
         <article class="placeholder-page service-placeholder">
@@ -3303,7 +3416,7 @@ function renderBookPortal() {
     const customerServiceChapterRenderers = {
       "customer-service-sources": renderCustomerServiceSources,
       "customer-service-complaints": renderComplaintsWorkflow,
-      "customer-service-maintenance": renderMaintenanceWorkflow,
+      "customer-service-maintenance-request": renderMaintenanceRequestGuide,
       "customer-service-access-services": renderAccessServicesGuide,
       "customer-service-access-invoices": renderAccessInvoicesGuide,
     };
@@ -3688,7 +3801,7 @@ const ROUTE_WORKFLOW_TOURS = {
   "service:design": designTour,
   "service:manufacturing": manufacturingTour,
   [`chapter:${complaintsTour.id}`]: complaintsTour,
-  [`chapter:${maintenanceTour.id}`]: maintenanceTour,
+  "service:maintenance": maintenanceTour,
 };
 
 // Workflows the shared overlay can open (data-workflow-overlay="<key>").
@@ -4405,7 +4518,7 @@ const ASSISTANT_SERVICE_ENTITIES = [
     type: "service",
     title: "خدمة الصيانة",
     actionLabel: "فتح خدمة الصيانة",
-    href: routeHref("chapter", "customer-service-maintenance"),
+    href: routeHref("service", "maintenance"),
     workflowId: "workflow:maintenance",
     aliases: ["خدمة الصيانة", "الصيانة الميدانية"],
   },
@@ -4583,7 +4696,7 @@ const ASSISTANT_WORKFLOW_ENTITIES = [
     type: "workflow",
     title: "دورة الصيانة",
     actionLabel: "عرض دورة الصيانة",
-    href: routeHref("chapter", "customer-service-maintenance"),
+    href: routeHref("service", "maintenance"),
     tour: maintenanceTour,
     serviceId: "service:maintenance",
     aliases: ["دورة عمل خدمة الصيانة", "دورة الصيانة"],

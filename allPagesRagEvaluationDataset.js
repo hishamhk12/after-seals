@@ -189,7 +189,7 @@ const globalTests = [
     expectPages: ["installation-returns"],
   }),
   t("global-C-maintenance-on-site", GLOBAL, "C", "من ينفذ أعمال الصيانة في مرحلة جاري العمل بالموقع؟", { expect: [["الفني"]], expectPages: ["maintenance"] }),
-  t("global-C-design", GLOBAL, "C", "من المسؤول عن مراحل خدمة التصميم؟", { expect: [["إدارة التصميم"]], expectPages: ["design"] }),
+  t("global-C-design", GLOBAL, "C", "من المسؤول عن مراحل خدمة التصميم؟", { expect: [["مشرف التصميم", "المصمم"]], expectPages: ["design"] }),
   t("global-C-ticket-activity", GLOBAL, "C", "من يسجل الإجراء الذي تم على تذكرة الشكوى بعد مشاركتها؟", {
     expect: [["تمت مشاركة التذكرة معه"], ["جدولة نشاط", "Schedule Activity"]],
     expectPages: ["complaints"],

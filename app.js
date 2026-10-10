@@ -1424,22 +1424,98 @@ function renderWarehousePickupWorkflow() {
     </div>`;
 }
 
+// خدمة التصميم — same markup and classes as the Delivery flow (#workflowContent in index.html):
+// numbered sections, explanation → screenshot → caption in a training-screen-column, and the
+// "مهام السائق" heading + driver-portal-flow line for the designer tasks and the approval paths.
+// Screenshots (assest/التصميم), matched by the highlighted stage and the chatter log:
+// 1 → 00 (board, task in طلب تصميم), 2 → 01 (task form, empty Assign), 3 → 02 (Assign filled,
+// Start shown), 4 → 03 (In Progress), 5 → 04 (Approve / Reject), 6 → 06 (مكتمل ومعتمد column).
+// No screenshot shows stage 05 or the designer portal, so neither gets an image or portal labels.
 function renderDesignWorkflow() {
-  const stageDescriptions = [
-    "تبدأ دورة خدمة التصميم بوصول فاتورة من SAP تحتوي على خدمة التصميم إلى نظام خدمات ما بعد البيع، حيث يتم إنشاء طلب التصميم وبدء متابعة الخدمة.",
-    "بعد وصول الفاتورة وإنشاء خدمة التصميم، يظهر الطلب في مرحلة طلب تصميم ليتم بدء متابعة الخدمة وتجهيزها للإسناد إلى المصمم.",
-    "في هذه المرحلة يتم إسناد طلب التصميم إلى المصمم المسؤول عن تنفيذ الخدمة، ليصبح الطلب جاهزًا للبدء في إعداد التصميم.",
-    "بعد إسناد الطلب إلى المصمم، تنتقل المهمة إلى مرحلة جاري العمل على التصميم، حيث يبدأ المصمم بإعداد التصميم ومتابعة متطلبات العميل والمواصفات المطلوبة.",
-    "بعد إعداد التصميم، يتم استكمال المراجعات والموافقات الداخلية المطلوبة للتأكد من جاهزية التصميم قبل عرضه على العميل.",
-    "بعد اكتمال الموافقات الداخلية، ينتقل الطلب إلى مرحلة بانتظار موافقة العميل، حيث يتم عرض أو إرسال التصميم للعميل لاعتماده.",
-    "بعد اعتماد العميل للتصميم، تنتقل المهمة إلى مرحلة مكتمل ومعتمد، وبذلك تكتمل دورة خدمة التصميم.",
+  const folder = "assest/التصميم";
+  const ltr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+  const shot = (file, alt, label, caption) => `
+        <div class="training-screen-column">
+          <figure class="odoo-screenshot-frame">
+            <img src="${folder}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>
+          <p class="field-explanation-intro">${caption}</p>
+        </div>`;
+  const flowLine = (text) => `<p class="driver-portal-flow">${text}</p>`;
+  const subHeading = (text) => `<h3 class="installation-substep-heading"><strong>${text}</strong></h3>`;
+
+  const stages = [
+    {
+      description: "تبدأ دورة العمل بوصول الفاتورة التي تحتوي على خدمة التصميم من SAP إلى نظام خدمات مابعد البيع، حيث تظهر المهمة في مرحلة \"طلب تصميم\" لبدء تنفيذ الخدمة.",
+      body: shot(
+        "1.png",
+        "لوحة خدمة التصميم في نظام خدمات مابعد البيع وتظهر فيها المهام المنشأة من فواتير SAP في مرحلة طلب تصميم",
+        "لوحة خدمة التصميم",
+        "لوحة خدمة التصميم بمراحلها، وتظهر المهام المنشأة من فواتير SAP في عمود طلب تصميم.",
+      ),
+    },
+    {
+      description: `تظهر المهمة في مرحلة "طلب تصميم" وتحتوي على بيانات الفاتورة المصدر (${ltr("Source Invoice")}) ونوع الخدمة (خدمة تصميم)، وتبقى في هذه المرحلة حتى يتم إسنادها إلى المصمم.`,
+      body: shot(
+        "2.png",
+        "مهمة خدمة التصميم في مرحلة طلب تصميم وحقل Assign فارغ بانتظار تحديد المصمم",
+        "مهمة في مرحلة طلب تصميم",
+        `المهمة في مرحلة طلب تصميم، وحقل الإسناد (${ltr("Assign")}) فارغ بانتظار تحديد المصمم المسؤول.`,
+      ),
+    },
+    {
+      description: `يقوم مشرف التصميم في المنطقة المعنية بتحديد المصمم المسؤول عن تنفيذ التصميم من خلال حقل ${ltr("Assign")}، وبعد تحديد المصمم تنتقل المهمة إلى مرحلة "مُسندة لمصمم".`,
+      body: shot(
+        "3.png",
+        "مهمة خدمة التصميم في مرحلة مُسندة لمصمم بعد تحديد المصمم في حقل Assign",
+        "مهمة في مرحلة مُسندة لمصمم",
+        `بعد اختيار المصمم في حقل ${ltr("Assign")} تنتقل المهمة إلى مرحلة مُسندة لمصمم، ويوثّق سجل المهمة تغيير الإسناد والمرحلة، ويظهر زر ${ltr("Start")} لبدء العمل على المهمة.`,
+      ),
+    },
+    {
+      description: `بعد إسناد المهمة، يبدأ المصمم العمل عليها فتنتقل إلى مرحلة "جاري العمل على التصميم" وتظهر حالتها ${ltr("In Progress")}.`,
+      body: `
+        ${subHeading("مهام المصمم")}
+        ${flowLine("بدء المهمة ← تنفيذ التصميم ← إنهاء المهمة")}
+        <p class="field-explanation-intro">يعمل المصمم على المهمة من خلال البوابة: يبدأ المهمة، ثم ينفّذ التصميم المطلوب، وعند الانتهاء من التصميم ينهي المهمة لتنتقل إلى مرحلة موافقات داخلية.</p>
+        ${shot(
+          "4.png",
+          "مهمة خدمة التصميم في مرحلة جاري العمل على التصميم بحالة In Progress",
+          "مهمة في مرحلة جاري العمل على التصميم",
+          `المهمة في مرحلة جاري العمل على التصميم بحالة ${ltr("In Progress")}، ويوثّق سجل المهمة انتقالها من مرحلة مُسندة لمصمم.`,
+        )}`,
+    },
+    {
+      description: `بعد انتهاء المصمم من التصميم وإنهاء المهمة، تنتقل المهمة إلى مرحلة "موافقات داخلية" لمراجعة التصميم داخليًا قبل عرضه على العميل، ويتم اتخاذ القرار من خلال زر الاعتماد (${ltr("Approve")}) أو زر الرفض (${ltr("Reject")}).`,
+      body: `
+        ${shot(
+          "5.png",
+          "مهمة خدمة التصميم في مرحلة موافقات داخلية مع زري Approve و Reject",
+          "مرحلة موافقات داخلية",
+          `المهمة في مرحلة موافقات داخلية، ويظهر أعلى المهمة زر الاعتماد (${ltr("Approve")}) وزر الرفض (${ltr("Reject")}).`,
+        )}
+        ${subHeading("نتيجة الموافقة الداخلية")}
+        ${flowLine(`عند الاعتماد (${ltr("Approve")}): موافقات داخلية ← بانتظار موافقة العميل`)}
+        ${flowLine(`عند الرفض (${ltr("Reject")}): موافقات داخلية ← إعادة المهمة إلى المصمم ← تعديل التصميم ← موافقات داخلية مرة أخرى`)}
+        <p class="field-explanation-intro">عند رفض التصميم داخليًا، تعود المهمة إلى المصمم لإجراء التعديلات المطلوبة على التصميم، وبعد التعديل يُعاد إرسالها إلى الموافقات الداخلية.</p>`,
+    },
+    {
+      description: "بعد اعتماد التصميم داخليًا، تنتقل المهمة إلى مرحلة \"بانتظار موافقة العميل\"، وتبقى فيها حتى يوافق العميل على التصميم.",
+      body: `
+        ${subHeading("نتيجة موافقة العميل")}
+        ${flowLine("عند موافقة العميل: بانتظار موافقة العميل ← مكتمل ومعتمد")}
+        <p class="field-explanation-intro">آلية الرفض وإعادة التصميم بعد رفض العميل غير موضحة في الصور الحالية.</p>`,
+    },
+    {
+      description: "بعد موافقة العميل على التصميم، تنتقل المهمة إلى مرحلة \"مكتمل ومعتمد\"، وبذلك تكتمل دورة خدمة التصميم.",
+      body: shot(
+        "6.png",
+        "لوحة خدمة التصميم وتظهر فيها المهمة المكتملة في مرحلة مكتمل ومعتمد",
+        "مرحلة مكتمل ومعتمد",
+        "لوحة خدمة التصميم وتظهر فيها المهمة المكتملة في عمود مكتمل ومعتمد.",
+      ),
+    },
   ];
-  const stageFigures = {
-    0: `
-        <figure class="odoo-screenshot-frame">
-          <img src="assest/التصميم/1.png" alt="لوحة عمليات خدمة التصميم في نظام خدمات مابعد البيع وتعرض مراحل طلب تصميم ومُسندة لمصمم وجاري العمل على التصميم وموافقات داخلية وبانتظار موافقة العميل ومكتمل ومعتمد" tabindex="0" role="button" aria-label="اضغط لتكبير صورة لوحة خدمة التصميم" title="اضغط لتكبير الصورة" />
-        </figure>`,
-  };
 
   return `
     <div class="workflow-content design-workflow">
@@ -1452,6 +1528,7 @@ function renderDesignWorkflow() {
           })}
         </div>
       </header>
+      ${renderOverviewVideo("designOverviewVideoTitle", "فيديو شرح دورة التصميم كاملة", "شاهد دورة خدمة التصميم كاملة من وصول الفاتورة من SAP وحتى اعتماد التصميم في مرحلة مكتمل ومعتمد.", "videos/design-workflow.mp4")}
       ${designTour.children.map((step, index) => {
         const titleId = `designStage${index}Title`;
         return `
@@ -1460,8 +1537,7 @@ function renderDesignWorkflow() {
           <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
           <div><h2 id="${titleId}">${step.title}</h2></div>
         </div>
-        <p class="field-explanation-intro">${stageDescriptions[index]}</p>
-        <aside class="internal-transfer-example"><strong>التنفيذ:</strong> يدوي / إدارة التصميم</aside>${stageFigures[index] || ""}
+        <p class="field-explanation-intro">${stages[index].description}</p>${stages[index].body}
       </section>`;
       }).join("")}
     </div>`;

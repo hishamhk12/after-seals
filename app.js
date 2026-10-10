@@ -3150,6 +3150,7 @@ function renderInstallationPartialContent() {
           ${renderWorkflowFlow(installationPartialTour, { numberStart: 0 })}
         </div>
       </header>
+      ${renderOverviewVideo("installationPartialOverviewVideoTitle", "فيديو شرح دورة التركيب الجزئي كاملة", "شاهد دورة التركيب الجزئي كاملة من إنشاء المهمة الفرعية (Sub Task) داخل طلب التركيب الرئيسي وحتى اكتمالها.", "videos/partial-installation-workflow.mp4")}
 
       <aside class="internal-transfer-example">
         <strong>الفكرة الأساسية:</strong>

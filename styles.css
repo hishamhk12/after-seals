@@ -4420,7 +4420,8 @@ tbody tr:last-child td {
   border-radius: 0;
 }
 
-.workflow-content .measurement-booking-screenshot {
+.workflow-content .measurement-booking-screenshot,
+.workflow-content .driver-portal-screen {
   max-width: 480px;
   margin-inline: auto;
 }

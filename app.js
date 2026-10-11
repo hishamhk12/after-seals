@@ -46,6 +46,24 @@ const introductoryTour = {
   ],
 };
 
+// خدمة التوصيل → الباب الأول → دورة عمل السائق: the driver's side of the Delivery workflow after the
+// task is assigned to the driver. It details جاري التوصيل and استلام الخدمة; the Delivery stages are
+// unchanged. `heading` is the section title where it differs from the short card title.
+const driverPortalTour = {
+  id: "driver-portal",
+  title: "دورة عمل السائق لتنفيذ خدمة التوصيل",
+  children: [
+    { id: "login", title: "تسجيل الدخول", targetId: "driver-portal-step-login" },
+    { id: "driver-tasks", title: "Driver Tasks", heading: "الدخول إلى Driver Tasks", targetId: "driver-portal-step-driver-tasks" },
+    { id: "open-task", title: "فتح المهمة", heading: "فتح مهمة التوصيل", targetId: "driver-portal-step-open-task" },
+    { id: "start-task", title: "Start Task", heading: "بدء المهمة", targetId: "driver-portal-step-start-task" },
+    { id: "upload-photo", title: "رفع صورة", heading: "رفع صورة التنفيذ", targetId: "driver-portal-step-upload-photo" },
+    { id: "end-task", title: "End Task", heading: "إنهاء المهمة", targetId: "driver-portal-step-end-task" },
+    { id: "customer-confirmation", title: "تأكيد العميل / OTP", targetId: "driver-portal-step-customer-confirmation" },
+    { id: "completed", title: "Completed", heading: "اكتمال المهمة", targetId: "driver-portal-step-completed" },
+  ],
+};
+
 const deliveryInstallationTour = {
   id: "delivery-installation",
   title: "دورة عمل خدمة توصيل مع تركيب",
@@ -342,7 +360,7 @@ const chapters = [
     number: "الباب الأول",
     title: "أنواع خدمات التوصيل",
     description: "اختر نوع عملية التوصيل للوصول إلى المحتوى التدريبي الخاص بها.",
-    sectionCount: 3,
+    sectionCount: 4,
     visible: true,
     items: [
       {
@@ -352,6 +370,13 @@ const chapters = [
         status: "مكتمل",
         visible: true,
         experienceId: "intro-tour",
+      },
+      {
+        id: "driver-portal",
+        title: "دورة عمل السائق لتنفيذ خدمة التوصيل",
+        description: "ما يقوم به السائق في بوابة السائق بعد إسناد مهمة التوصيل إليه: من تسجيل الدخول وبدء المهمة ورفع صورة التنفيذ، وحتى تأكيد العميل واكتمال المهمة.",
+        status: "مكتمل",
+        visible: true,
       },
       {
         id: "warehouse-pickup",
@@ -872,6 +897,8 @@ function parseRouteTarget(parts) {
     return legacyDeliveryRoutes[parts[0]];
   }
 
+  if (parts[0] === "videos") return { type: "videos" };
+
   if (parts[0] === "service") {
     const service = getService(parts[1]);
     return service ? { type: "service", serviceId: service.id } : { type: "home" };
@@ -979,6 +1006,7 @@ function getAssistantPageTitle(route = navigationState.route) {
   if (route.type === "lesson") return getItem(route.itemId)?.item.title || "";
   if (route.type === "service") return getService(route.serviceId)?.title || "";
   if (route.type === "chapter") return getChapter(route.chapterId)?.title || "";
+  if (route.type === "videos") return "الفيديوهات التدريبية";
   return "خدمات ما بعد البيع";
 }
 
@@ -1028,6 +1056,11 @@ function renderBreadcrumbs() {
   }
 
   crumbs.push(`<a href="${routeHref("home")}">الرئيسية</a>`);
+  if (route.type === "videos") {
+    crumbs.push('<span aria-current="page">الفيديوهات التدريبية</span>');
+    breadcrumbs.innerHTML = crumbs.join('<span class="breadcrumb-separator" aria-hidden="true">/</span>');
+    return;
+  }
   const serviceId = getActiveServiceId(route);
   const service = getService(serviceId);
   if (service) {
@@ -1257,6 +1290,77 @@ function renderOverviewVideo(titleId, title, description, src) {
           متصفحك لا يدعم تشغيل الفيديو.
         </video>
       </section>`;
+}
+
+// عام → الفيديوهات التدريبية (#/videos/): every training video of the site on one page, grouped under
+// its service in the sidebar's order. Titles and descriptions are the ones each video has on its own
+// page, and every video links back to that page. Services without a video are left out.
+const trainingVideoGroups = [
+  {
+    serviceId: "delivery",
+    videos: [
+      { title: "فيديو شرح دورة التوصيل كاملة", description: "شاهد دورة خدمة التوصيل كاملة من إنشاء المهمة وحتى استلام الخدمة.", src: "videos/delivery-workflow.mp4", route: ["lesson", "customer-delivery"] },
+      { title: "فيديو شرح دورة عمل السائق كاملة", description: "شاهد دورة عمل السائق كاملة من الجوال، من تسجيل الدخول إلى بوابة السائق وحتى اكتمال المهمة بعد تأكيد العميل.", src: "videos/driver-delivery-workflow.mp4", route: ["lesson", "driver-portal"] },
+      { title: "فيديو شرح علاقة التحويلات الداخلية بخدمة التوصيل", description: "شاهد كيف تبقى خدمة التوصيل محظورة بسبب الاعتماد حتى تكتمل التحويلات الداخلية، ثم تصبح جاهزة للمتابعة.", src: "videos/internal-transfer-delivery.mp4", route: ["lesson", "internal-transfer-delivery-link"] },
+    ],
+  },
+  {
+    serviceId: "installation",
+    videos: [
+      { title: "فيديو شرح دورة التركيب كاملة", description: "شاهد دورة خدمة التركيب كاملة من إنشاء المهمة وحتى تم التركيب.", src: "videos/installation-workflow.mp4", route: ["lesson", "installation-full"] },
+      { title: "فيديو شرح دورة التركيب الجزئي كاملة", description: "شاهد دورة التركيب الجزئي كاملة من إنشاء المهمة الفرعية (Sub Task) داخل طلب التركيب الرئيسي وحتى اكتمالها.", src: "videos/partial-installation-workflow.mp4", route: ["lesson", "installation-partial"] },
+    ],
+  },
+  {
+    serviceId: "measurement",
+    videos: [
+      { title: "فيديو شرح دورة رفع المقاسات كاملة", description: "شاهد دورة خدمة رفع المقاسات كاملة من وصول الفاتورة من SAP وحتى اكتمال الخدمة.", src: "videos/measurement-workflow.mp4", route: ["service", "measurement"] },
+    ],
+  },
+  {
+    serviceId: "design",
+    videos: [
+      { title: "فيديو شرح دورة التصميم كاملة", description: "شاهد دورة خدمة التصميم كاملة من وصول الفاتورة من SAP وحتى اعتماد التصميم في مرحلة مكتمل ومعتمد.", src: "videos/design-workflow.mp4", route: ["service", "design"] },
+    ],
+  },
+  {
+    serviceId: "customer-service",
+    videos: [
+      { title: "فيديو شرح مصادر الحالات", description: "شاهد كيف تصل الحالات إلى خدمة العملاء من المصادر الثلاثة: الإدارات الداخلية، والعميل مباشرة، والنظام.", src: "videos/customer-service-sources.mp4", route: ["chapter", "customer-service-sources"] },
+      { title: "فيديو شرح دورة الشكاوى والاستفسارات كاملة", description: "شاهد دورة معالجة الشكاوى والاستفسارات كاملة داخل تطبيق مكتب المساعدة، من فتح التذكرة وحتى متابعتها داخليًا.", src: "videos/customer-service-complaints.mp4", route: ["chapter", "customer-service-complaints"] },
+    ],
+  },
+  {
+    serviceId: "maintenance",
+    videos: [
+      { title: "فيديو شرح دورة الصيانة كاملة", description: "شاهد دورة خدمة الصيانة كاملة من إنشاء طلب صيانة جديد وحتى إغلاق المهمة في مرحلة مكتملة.", src: "videos/maintenance-workflow.mp4", route: ["service", "maintenance"] },
+    ],
+  },
+];
+
+function renderTrainingVideosPage() {
+  const groups = trainingVideoGroups
+    .map((group) => ({ ...group, service: getService(group.serviceId) }))
+    .filter((group) => group.service)
+    .sort((a, b) => services.indexOf(a.service) - services.indexOf(b.service));
+  const total = groups.reduce((sum, group) => sum + group.videos.length, 0);
+
+  return `
+    <header class="chapter-header">
+      <p class="chapter-number">عام</p>
+      <h1>الفيديوهات التدريبية</h1>
+      <p>جميع فيديوهات شرح دورات العمل في مكان واحد (${total} فيديو)، مرتبة حسب الخدمة. يمكن فتح صفحة الشرح الكاملة لكل فيديو من الرابط أسفله.</p>
+    </header>
+    ${groups.map((group) => `
+    <section class="service-index training-videos-group" aria-labelledby="trainingVideos-${group.service.id}">
+      <div class="index-heading">
+        <span>الخدمة ${String(services.indexOf(group.service) + 1).padStart(2, "0")}</span>
+        <h2 id="trainingVideos-${group.service.id}">${group.service.title}</h2>
+      </div>
+      ${group.videos.map((video, index) => `
+      ${renderOverviewVideo(`trainingVideo-${group.service.id}-${index}`, video.title, video.description, video.src)}
+      <p class="training-videos-link"><a class="secondary-link" href="${routeHref(...video.route)}">فتح صفحة الشرح <span aria-hidden="true">←</span></a></p>`).join("")}
+    </section>`).join("")}`;
 }
 
 function renderWorkflowImagePlaceholder(label) {
@@ -2543,6 +2647,133 @@ function renderInternalTransferDeliveryLinkContent() {
     </div>`;
 }
 
+// دورة عمل السائق — same sections, screenshot frames and captions as the Design page (which follows the
+// Delivery layout). The screenshots (assest/بورتل السائق) are tall phone captures, so each column is
+// capped like the other portrait screens (.driver-portal-screen) and every screenshot keeps its ratio.
+// Matched by what each one shows: 1 → 00 (login), 2 → 01 (Driver Tasks card), 3 → 02 (task list),
+// 4 → 03 (Assigned, Start), 5 → 04 (Started, Upload Photo), 6 → 05 (Photos, End Task), 7 → 07 (Completed).
+// Each stage has one screenshot, so none are paired. No screenshot shows the confirmation-code entry,
+// so stage 06 has no image and says so.
+function renderDriverPortalWorkflow() {
+  const folder = "assest/بورتل السائق";
+  const ltr = (text) => `<bdi dir="ltr">${text}</bdi>`;
+  const shot = (file, alt, label, caption) => `
+        <div class="training-screen-column driver-portal-screen">
+          <figure class="odoo-screenshot-frame">
+            <img src="${folder}/${file}" alt="${alt}" tabindex="0" role="button" aria-label="اضغط لتكبير صورة ${label}" title="اضغط لتكبير الصورة" />
+          </figure>
+          <p class="field-explanation-intro">${caption}</p>
+        </div>`;
+  const subHeading = (text) => `<h3 class="installation-substep-heading"><strong>${text}</strong></h3>`;
+
+  const stages = [
+    {
+      description: `يفتح السائق صفحة تسجيل الدخول إلى بوابة السائق، ويُدخل البريد الإلكتروني (${ltr("Email")}) وكلمة المرور (${ltr("Password")})، ثم يضغط على ${ltr("Log in")} للوصول إلى المهام المسندة إليه.`,
+      body: `
+        <p class="field-explanation-intro">يظهر في الصفحة أيضًا خيار ${ltr("Use a Passkey")} كطريقة دخول اختيارية، ويُشرح الدخول في هذا الدرس بالبريد الإلكتروني وكلمة المرور.</p>
+        ${shot(
+          "1.jpeg",
+          "صفحة تسجيل دخول السائق إلى البوابة على الجوال مع حقلي Email و Password وزر Log in",
+          "تسجيل دخول السائق",
+          `تسجيل دخول السائق إلى البوابة بحقلي ${ltr("Email")} و${ltr("Password")} ثم زر ${ltr("Log in")}.`,
+        )}`,
+    },
+    {
+      description: `بعد تسجيل الدخول تظهر الصفحة الرئيسية لحساب السائق في البوابة، ويختار السائق بطاقة ${ltr("Driver Tasks")} التي تحتوي على المهام المسندة إليه بصفته سائقًا (${ltr("Tasks assigned to you as driver")}).`,
+      body: shot(
+        "2.jpeg",
+        "الصفحة الرئيسية لحساب السائق في البوابة وتظهر فيها بطاقة Driver Tasks",
+        "بطاقة Driver Tasks",
+        `الدخول إلى ${ltr("Driver Tasks")} من حساب السائق، وتظهر البطاقة في آخر بطاقات الحساب.`,
+      ),
+    },
+    {
+      description: `تعرض قائمة ${ltr("Driver Tasks")} مهام التوصيل المسندة إلى السائق في جدول بالأعمدة: المهمة (${ltr("Task")}) والمشروع (${ltr("Project")}) والعميل (${ltr("Customer")}). يضغط السائق على اسم مهمة التوصيل المطلوبة لفتح تفاصيلها.`,
+      body: shot(
+        "3.jpeg",
+        "قائمة Driver Tasks تعرض مهمة توصيل بأعمدة Task و Project و Customer",
+        "قائمة مهام السائق",
+        `قائمة المهام المسندة إلى السائق، وتظهر مهمة التوصيل في مشروع ${ltr("Delivery service")} مع اسم العميل.`,
+      ),
+    },
+    {
+      description: `عند فتح المهمة تظهر بحالة ${ltr("Assigned")}، وتعرض دور المستخدم (${ltr("Your role: Driver")}) والمشروع (${ltr("Project")}) والعميل (${ltr("Customer")})، ويكون وقت البدء (${ltr("Started")}) ووقت الاكتمال (${ltr("Completed")}) فارغين. يبدأ السائق التنفيذ من قسم ${ltr("Start Task")} بالضغط على زر ${ltr("Start")}، فتتحول حالة المهمة إلى ${ltr("Started")} ويظهر وقت البدء في حقل ${ltr("Started")}.`,
+      body: `
+        ${shot(
+          "4.jpeg",
+          "تفاصيل مهمة التوصيل في بوابة السائق بحالة Assigned مع زر View Customer Location وقسم Start Task وزر Start",
+          "مهمة التوصيل بحالة Assigned",
+          `فتح مهمة التوصيل قبل بدء التنفيذ: المهمة بحالة ${ltr("Assigned")}، ويظهر زر ${ltr("View Customer Location")} وقسم ${ltr("Start Task")} مع زر ${ltr("Start")}.`,
+        )}
+        ${subHeading("عرض موقع العميل")}
+        <p class="field-explanation-intro">يظهر في صفحة المهمة زر ${ltr("View Customer Location")}، ومن خلاله يعرض السائق موقع العميل الخاص بالخدمة. ويبقى الزر ظاهرًا في صفحة المهمة قبل بدء التنفيذ وبعده.</p>`,
+    },
+    {
+      description: `بعد بدء المهمة تظهر بحالة ${ltr("Started")} مع وقت البدء، ويظهر قسم ${ltr("Upload Photo")}. يختار السائق صورة التنفيذ من خلال ${ltr("Choose File")}، ثم يضغط على زر ${ltr("Upload Photo")} لرفعها. يجب رفع صورة واحدة على الأقل قبل إنهاء المهمة، كما توضح الرسالة الظاهرة في القسم: ${ltr("Upload at least one photo before ending the task.")}`,
+      body: shot(
+        "5.jpeg",
+        "مهمة التوصيل بحالة Started في بوابة السائق مع قسم Upload Photo وزر Choose File ورسالة رفع صورة واحدة على الأقل قبل إنهاء المهمة",
+        "رفع صورة التنفيذ",
+        `بدء المهمة وتحول الحالة إلى ${ltr("Started")} مع ظهور وقت البدء، واختيار صورة التنفيذ في قسم ${ltr("Upload Photo")} قبل رفعها.`,
+      ),
+    },
+    {
+      description: `بعد رفع الصورة تظهر في قسم الصور (${ltr("Photos")}) داخل المهمة، ويظهر قسم ${ltr("End Task")}. يضغط السائق على زر ${ltr("End Task")} لإنهاء المهمة، وكما يوضح النص الظاهر في القسم، فإن إنهاء المهمة يرسل رمز تأكيد إلى العميل عبر واتساب: ${ltr("Ending the task sends a confirmation code to the customer over WhatsApp.")}`,
+      body: shot(
+        "6.jpeg",
+        "قسم Photos يعرض صورة التنفيذ المرفوعة وقسم End Task مع زر End Task في بوابة السائق",
+        "إنهاء المهمة",
+        `الصورة المرفوعة في قسم ${ltr("Photos")}، وقسم ${ltr("End Task")} الذي يرسل عند إنهاء المهمة رمز تأكيد إلى العميل عبر واتساب.`,
+      ),
+    },
+    {
+      description: `بعد إنهاء المهمة يُرسَل رمز التأكيد (${ltr("OTP")}) إلى العميل عبر واتساب، ويُستخدم هذا الرمز لتأكيد العميل لاستلام الخدمة، وهو خطوة أساسية في الدورة قبل أن تكتمل المهمة.`,
+      body: `
+        <p class="field-explanation-intro">شاشة إدخال رمز التأكيد غير موضحة في الصور الحالية لهذا الدرس.</p>
+        <p><a class="secondary-link" href="${routeHref("lesson", "customer-delivery")}/service-receipt">عرض مرحلة استلام الخدمة في دورة التوصيل <span aria-hidden="true">←</span></a></p>`,
+    },
+    {
+      description: `بعد تأكيد العميل تصبح المهمة بحالة ${ltr("Completed")}، ويظهر فيها وقت البدء (${ltr("Started")}) ووقت الاكتمال (${ltr("Completed")}) والصور المرفوعة في قسم ${ltr("Photos")}، مع رسالة تؤكد اكتمال المهمة وتأكيد العميل: ${ltr("This task has been completed and confirmed by the customer.")}`,
+      body: shot(
+        "7.jpeg",
+        "مهمة التوصيل بحالة Completed في بوابة السائق مع وقتي Started و Completed وقسم Photos ورسالة تأكيد العميل",
+        "اكتمال المهمة",
+        `اكتمال المهمة بعد تأكيد العميل: الحالة ${ltr("Completed")} مع وقتي البدء والاكتمال وصورة التنفيذ ورسالة تأكيد العميل.`,
+      ),
+    },
+  ];
+
+  return `
+    <div class="workflow-content driver-portal-workflow">
+      <header class="case-header" aria-labelledby="driverPortalWorkflowTitle">
+        <div>
+          <h1 id="driverPortalWorkflowTitle">${driverPortalTour.title}</h1>
+          ${renderWorkflowFlow(driverPortalTour, { numberStart: 0 })}
+        </div>
+      </header>
+      ${renderOverviewVideo("driverPortalOverviewVideoTitle", "فيديو شرح دورة عمل السائق كاملة", "شاهد دورة عمل السائق كاملة من الجوال، من تسجيل الدخول إلى بوابة السائق وحتى اكتمال المهمة بعد تأكيد العميل.", "videos/driver-delivery-workflow.mp4")}
+
+      <p class="field-explanation-intro">هذا الدرس جزء من دورة خدمة التوصيل، ويشرح ما يقوم به السائق في بوابة السائق بعد إسناد مهمة التوصيل إليه في مرحلة "ربط الخدمة بالسائق". لا يغيّر الدرس مراحل خدمة التوصيل، وإنما يوضح تنفيذ السائق لمرحلتي "جاري التوصيل" و"استلام الخدمة" من خلال البوابة.</p>
+      <p><a class="secondary-link" href="${routeHref("lesson", "customer-delivery")}" data-workflow-overlay="customer-delivery">عرض دورة التوصيل <span aria-hidden="true">↗</span></a></p>
+      ${driverPortalTour.children.map((step, index) => {
+        const titleId = `driverPortalStage${index}Title`;
+        return `
+      <section id="${step.targetId}" class="panel invoice-training-section" aria-labelledby="${titleId}">
+        <div class="section-title">
+          <span class="icon-tile" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+          <div><h2 id="${titleId}">${step.heading || step.title}</h2></div>
+        </div>
+        <p class="field-explanation-intro">${stages[index].description}</p>${stages[index].body}
+      </section>`;
+      }).join("")}
+
+      <aside class="internal-transfer-example">
+        <strong>الخلاصة:</strong>
+        يسجّل السائق الدخول إلى البوابة ويفتح مهمة التوصيل من ${ltr("Driver Tasks")}، ثم يبدأها بزر ${ltr("Start")}، ويرفع صورة تنفيذ واحدة على الأقل، ثم ينهيها بزر ${ltr("End Task")} فيُرسَل رمز تأكيد إلى العميل عبر واتساب، وبعد تأكيد العميل تصبح المهمة ${ltr("Completed")}.
+      </aside>
+    </div>`;
+}
+
 function renderInstallationDeliveryScreenshot(src, alt, label) {
   return `
           <figure class="odoo-screenshot-frame">
@@ -3279,6 +3510,12 @@ function renderBookPortal() {
     return;
   }
 
+  if (route.type === "videos") {
+    portal.innerHTML = renderTrainingVideosPage();
+    document.title = "الفيديوهات التدريبية | دليل خدمات ما بعد البيع";
+    return;
+  }
+
   if (route.type === "service") {
     const service = getService(route.serviceId);
     if (service.id === "delivery") {
@@ -3535,6 +3772,12 @@ function renderBookPortal() {
     return;
   }
 
+  if (match?.item.id === "driver-portal") {
+    portal.innerHTML = renderDriverPortalWorkflow();
+    document.title = `${driverPortalTour.title} | دليل خدمات ما بعد البيع`;
+    return;
+  }
+
   if (match?.item.id === "internal-transfer-delivery-link") {
     portal.innerHTML = renderInternalTransferDeliveryLinkContent();
     document.title = `${match.item.title} | دليل خدمات ما بعد البيع`;
@@ -3638,6 +3881,13 @@ function buildSidebarTree() {
     title: "الدخول إلى نظام خدمات مابعد البيع",
     href: routeHref("chapter", "odoo-entry"),
   };
+  // All training videos on one page, right under the system entry and above the first service.
+  const videosEntry = {
+    key: "general-videos",
+    meta: "عام",
+    title: "الفيديوهات التدريبية",
+    href: routeHref("videos"),
+  };
 
   const serviceNodes = services.map((service, serviceIndex) => {
     const chapterNodes = (service.chapterIds || [])
@@ -3697,13 +3947,14 @@ function buildSidebarTree() {
       .map((item) => ({ key: `item:${item.id}`, title: item.title, href: routeHref("lesson", item.id) })),
   };
 
-  return [generalEntry, ...serviceNodes, ...(compositeNode ? [compositeNode] : [])];
+  return [generalEntry, videosEntry, ...serviceNodes, ...(compositeNode ? [compositeNode] : [])];
 }
 
 function getCurrentSidebarNodeKey() {
   const route = navigationState.route;
 
   if (route.type === "chapter" && route.chapterId === "odoo-entry") return "general-entry";
+  if (route.type === "videos") return "general-videos";
   if (route.type === "service") {
     const service = getService(route.serviceId);
     const hasChildren = Boolean(service?.chapterIds?.length || service?.operations?.length);
@@ -3863,6 +4114,7 @@ function setActiveFlowCard(card) {
 // Workflow pages that have top workflow cards and detailed stage sections, by route.
 const ROUTE_WORKFLOW_TOURS = {
   "lesson:internal-transfer": internalTransferTour,
+  "lesson:driver-portal": driverPortalTour,
   "lesson:warehouse-pickup": warehousePickupTour,
   "lesson:sub-task-cycle": subTaskCycleTour,
   "lesson:installation-partial": installationPartialTour,
